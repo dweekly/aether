@@ -1,0 +1,2 @@
+research/FlightSchoolMapping/output/fleet_crawl_index.json filter=lfs diff=lfs merge=lfs -text
+research/FlightSchoolMapping/output/fleet_crawl_index.json !text !filter !merge !diff
