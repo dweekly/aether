@@ -1,0 +1,7 @@
+# Exclude raw ADS-B data dumps (large, reproducible via scripts)
+data/adsb/opensky_us_*.json
+
+# Keep processed outputs (smaller, represent analysis results)
+!output/*.csv
+!output/*.json
+!output/*.txt
