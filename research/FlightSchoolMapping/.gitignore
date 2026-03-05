@@ -5,3 +5,6 @@ data/adsb/opensky_us_*.json
 !output/*.csv
 !output/*.json
 !output/*.txt
+
+# Exclude large generated files (reproducible via pipeline)
+output/faa_ga_registry.csv
