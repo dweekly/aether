@@ -13,7 +13,7 @@ Usage:
     python 09_fleet_scraper_parallel.py --limit 500      # first 500
     python 09_fleet_scraper_parallel.py --concurrency 500 # max 500 in-flight
 
-Input:  output/flight_schools_enriched.json
+Input:  output/flight_schools_enriched.json (+ output/aopa_flight_schools.json)
 Output: output/flight_line.json
 """
 
@@ -104,6 +104,163 @@ EQUIPMENT_RE = re.compile(
 )
 
 
+# ── School list helpers ───────────────────────────────────────────
+
+def _slugify_name(name: str) -> str:
+    """Turn a business name into a plausible domain slug.
+
+    'JATO Aviation' → 'jatoaviation'
+    'San Carlos Flight Center Inc' → 'sancarlosflightcenter'
+    """
+    name = name.lower()
+    # Drop common suffixes that rarely appear in domains
+    for suffix in [" inc", " llc", " ltd", " corp", " co"]:
+        if name.endswith(suffix):
+            name = name[: -len(suffix)]
+    return re.sub(r"[^a-z0-9]", "", name)
+
+
+def _extract_aopa_business_id(aopa_url: str) -> str | None:
+    """Extract numeric business ID from an AOPA detail URL."""
+    m = re.search(r"/business/(\d+)", aopa_url)
+    return m.group(1) if m else None
+
+
+# The AOPA Airports webapp exposes a public JSON API for business details.
+# The bearer token is a static public key embedded in their Angular app.
+AOPA_API_BASE = "https://webapp.aopa.org/AirportsAPI/businesses"
+AOPA_API_TOKEN = "AOPA_PUBLIC_TOKEN_REDACTED"
+
+
+async def _resolve_aopa_websites(
+    session: aiohttp.ClientSession,
+    records: list[dict],
+    semaphore: asyncio.Semaphore,
+) -> dict[str, str]:
+    """Batch-resolve website URLs for AOPA schools via their detail API.
+
+    Returns a mapping of AOPA business ID → website URL.
+    """
+    # Collect all unique business IDs that need resolution
+    id_to_rec: dict[str, dict] = {}
+    for rec in records:
+        for aopa_url in rec.get("_aopa_urls", []):
+            bid = _extract_aopa_business_id(aopa_url)
+            if bid and bid not in id_to_rec:
+                id_to_rec[bid] = rec
+
+    if not id_to_rec:
+        return {}
+
+    results: dict[str, str] = {}
+    headers = {
+        "Accept": "application/json",
+        "Authorization": f"Bearer {AOPA_API_TOKEN}",
+        "Origin": "https://www.aopa.org",
+        "Referer": "https://www.aopa.org/",
+    }
+
+    async def fetch_one(bid: str) -> None:
+        async with semaphore:
+            url = f"{AOPA_API_BASE}/{bid}"
+            try:
+                async with session.get(
+                    url,
+                    headers=headers,
+                    timeout=aiohttp.ClientTimeout(total=10),
+                ) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        web = (data.get("webAddress") or "").strip()
+                        if web:
+                            if not web.startswith("http"):
+                                web = "https://" + web
+                            results[bid] = web
+            except (aiohttp.ClientError, asyncio.TimeoutError):
+                pass
+
+    tasks = [fetch_one(bid) for bid in id_to_rec]
+    await asyncio.gather(*tasks)
+    return results
+
+
+def merge_aopa_schools(enriched: list[dict]) -> list[dict]:
+    """Merge AOPA directory schools not already present in the enriched list.
+
+    Many AOPA schools overlap with the 3 directory sources.  We deduplicate
+    by normalized (name, city) pairs.  For AOPA-only schools without a
+    website, we store their AOPA business IDs for batch API resolution and
+    generate domain-guess candidates as a fallback.
+    """
+    aopa_path = OUTPUT_DIR / "aopa_flight_schools.json"
+    if not aopa_path.exists():
+        return enriched
+
+    with open(aopa_path) as f:
+        aopa_schools = json.load(f)
+
+    # Build lookup of existing enriched schools by (name_lower, city_lower)
+    existing: set[tuple[str, str]] = set()
+    for s in enriched:
+        key = (s.get("name", "").strip().lower(), s.get("city", "").strip().lower())
+        existing.add(key)
+
+    added = 0
+    # Collapse multi-location AOPA entries (same name) into one record,
+    # keeping the first entry's details but collecting all airport codes
+    # and AOPA detail URLs.
+    aopa_by_name: dict[str, dict] = {}
+    for s in aopa_schools:
+        name = s.get("name", "").strip()
+        if not name:
+            continue
+        aopa_url = s.get("aopa_url", "")
+        if name not in aopa_by_name:
+            aopa_by_name[name] = {
+                "name": name,
+                "city": s.get("city", ""),
+                "state_name": s.get("state_name", ""),
+                "phone": s.get("phone", ""),
+                "website": s.get("website", ""),
+                "airport_code": s.get("airport_id", ""),
+                "source": "aopa",
+                "sources": "aopa",
+                "n_sources": 1,
+                "_aopa_cities": {s.get("city", "").strip().lower()},
+                "_aopa_urls": [aopa_url] if aopa_url else [],
+            }
+        else:
+            aopa_by_name[name]["_aopa_cities"].add(s.get("city", "").strip().lower())
+            if aopa_url:
+                aopa_by_name[name]["_aopa_urls"].append(aopa_url)
+            # Keep website if any location has one
+            if not aopa_by_name[name]["website"] and s.get("website"):
+                aopa_by_name[name]["website"] = s["website"]
+
+    for name, rec in aopa_by_name.items():
+        # Skip if ANY of this school's city variants already exist
+        cities = rec.pop("_aopa_cities")
+        name_lower = name.strip().lower()
+        if any((name_lower, c) in existing for c in cities):
+            continue
+
+        # Generate fallback candidate website URLs from the business name
+        if not rec["website"]:
+            slug = _slugify_name(name)
+            if slug:
+                rec["_website_candidates"] = [
+                    f"https://{slug}.com",
+                    f"https://www.{slug}.com",
+                ]
+
+        enriched.append(rec)
+        added += 1
+
+    if added:
+        print(f"  AOPA-only schools merged: {added}")
+    return enriched
+
+
 # ── Async HTTP helpers ───────────────────────────────────────────
 
 async def fetch_page(session: aiohttp.ClientSession, url: str) -> BeautifulSoup | None:
@@ -122,6 +279,24 @@ async def fetch_page(session: aiohttp.ClientSession, url: str) -> BeautifulSoup 
     return None
 
 
+async def probe_url(session: aiohttp.ClientSession, url: str) -> str | None:
+    """Check if a URL resolves to a real website.  Returns final URL or None."""
+    try:
+        async with session.get(
+            url,
+            timeout=aiohttp.ClientTimeout(total=10),
+            allow_redirects=True,
+        ) as resp:
+            if resp.status == 200:
+                text = await resp.text(errors="replace")
+                # Reject parked / placeholder domains (very short pages)
+                if len(text) > 1000:
+                    return str(resp.url)
+    except (aiohttp.ClientError, asyncio.TimeoutError):
+        pass
+    return None
+
+
 # ── Page discovery (same logic, async fetch) ─────────────────────
 
 def _same_domain(base: str, candidate: str) -> bool:
@@ -130,9 +305,10 @@ def _same_domain(base: str, candidate: str) -> bool:
     return cand_domain == base_domain or cand_domain.endswith("." + base_domain)
 
 
-def find_fleet_pages(base_url: str, home_soup: BeautifulSoup) -> list[str]:
+def _find_fleet_links(base_url: str, soup: BeautifulSoup) -> list[str]:
+    """Extract fleet-related links from a page's <a> tags."""
     candidates: list[str] = []
-    for a in home_soup.find_all("a", href=True):
+    for a in soup.find_all("a", href=True):
         text = a.get_text(strip=True)
         href = a["href"]
         if FLEET_LINK_PATTERNS.search(text):
@@ -144,14 +320,47 @@ def find_fleet_pages(base_url: str, home_soup: BeautifulSoup) -> list[str]:
             full = urljoin(base_url, href)
             if _same_domain(base_url, full):
                 candidates.append(full)
+    return candidates
+
+
+def _dedupe_urls(urls: list[str], limit: int = 16) -> list[str]:
+    """Deduplicate URLs by stripping trailing slashes, preserving order."""
     seen = set()
     unique = []
-    for u in candidates:
+    for u in urls:
         normalized = u.rstrip("/")
         if normalized not in seen:
             seen.add(normalized)
             unique.append(u)
-    return unique[:8]
+    return unique[:limit]
+
+
+def _parent_paths(urls: list[str], base_url: str) -> list[str]:
+    """Compute parent directory URLs for a set of fleet page URLs.
+
+    E.g. /aircraft-rentals/advanced-aircraft/ → /aircraft-rentals/
+    Skips the site root and any URLs already in the input set.
+    """
+    existing = {u.rstrip("/") for u in urls}
+    existing.add(base_url.rstrip("/"))
+    parents: list[str] = []
+    for url in urls:
+        parsed = urlparse(url)
+        path = parsed.path.rstrip("/")
+        # Go up one level
+        parent_path = path.rsplit("/", 1)[0]
+        if parent_path and parent_path != "/":
+            parent_url = f"{parsed.scheme}://{parsed.netloc}{parent_path}/"
+            if parent_url.rstrip("/") not in existing:
+                parents.append(parent_url)
+                existing.add(parent_url.rstrip("/"))
+    return parents
+
+
+def find_fleet_pages(base_url: str, home_soup: BeautifulSoup) -> list[str]:
+    """Find fleet page URLs from the home page."""
+    candidates = _find_fleet_links(base_url, home_soup)
+    return _dedupe_urls(candidates, limit=8)
 
 
 def find_location_pages(base_url: str, home_soup: BeautifulSoup) -> list[str]:
@@ -168,14 +377,7 @@ def find_location_pages(base_url: str, home_soup: BeautifulSoup) -> list[str]:
             full = urljoin(base_url, href)
             if _same_domain(base_url, full):
                 candidates.append(full)
-    seen = set()
-    unique = []
-    for u in candidates:
-        n = u.rstrip("/")
-        if n not in seen:
-            seen.add(n)
-            unique.append(u)
-    return unique[:4]
+    return _dedupe_urls(candidates, limit=4)
 
 
 # ── Extraction (identical to serial version) ─────────────────────
@@ -363,11 +565,33 @@ async def scrape_school_fleet(
         return await _scrape_school_fleet_inner(session, school)
 
 
+async def _resolve_website(
+    session: aiohttp.ClientSession,
+    school: dict,
+) -> str | None:
+    """Try to resolve a website for a school that has no known URL.
+
+    Probes candidate domains derived from the business name (e.g.
+    'JATO Aviation' → jatoaviation.com).
+    """
+    candidates = school.get("_website_candidates", [])
+    for url in candidates:
+        resolved = await probe_url(session, url)
+        if resolved:
+            return resolved
+    return None
+
+
 async def _scrape_school_fleet_inner(
     session: aiohttp.ClientSession,
     school: dict,
 ) -> dict | None:
     website = (school.get("website") or "").strip()
+
+    # For schools without a known website, try to resolve one
+    if not website:
+        website = await _resolve_website(session, school) or ""
+
     if not website:
         return None
     if not website.startswith("http"):
@@ -378,29 +602,77 @@ async def _scrape_school_fleet_inner(
     if not home_soup:
         return None
 
-    # Find fleet pages
+    # ── Fleet page discovery (two levels) ────────────────────────
+    # Level 1: find fleet links from the home page
     fleet_urls = find_fleet_pages(website, home_soup)
+
+    # Level 2: also check parent paths of discovered fleet pages.
+    # This handles sites like WVFC where /aircraft-rentals/advanced-aircraft/
+    # is found from the home page but the sibling /aircraft-rentals/training-aircraft/
+    # is only linked from the parent /aircraft-rentals/ page.
+    parent_urls = _parent_paths(fleet_urls, website)
+    parent_soups: dict[str, BeautifulSoup] = {}
+    if parent_urls:
+        tasks = [fetch_page(session, url) for url in parent_urls]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        for url, r in zip(parent_urls, results):
+            if isinstance(r, BeautifulSoup):
+                parent_soups[url] = r
+                # Find more fleet links from the parent page
+                more = _find_fleet_links(url, r)
+                fleet_urls.extend(more)
+
+    # Dedupe after the two-level expansion
+    fleet_urls = _dedupe_urls(fleet_urls, limit=16)
+    # Remove home page URL from fleet list (we handle it separately)
+    fleet_urls = [u for u in fleet_urls if u.rstrip("/") != website.rstrip("/")]
 
     all_aircraft: list[dict] = []
     fleet_page_url = ""
 
-    # Check home page
+    # Check home page for aircraft
     home_fleet = extract_fleet_from_page(home_soup, website)
     if home_fleet:
         all_aircraft.extend(home_fleet)
         fleet_page_url = website
 
     # Fetch all fleet sub-pages concurrently (same domain, small fan-out)
-    if fleet_urls:
-        tasks = [fetch_page(session, url) for url in fleet_urls]
+    # Re-use parent soups we already fetched instead of hitting them again.
+    fleet_soups: dict[str, BeautifulSoup] = {}
+    urls_to_fetch = [u for u in fleet_urls if u not in parent_soups]
+    if urls_to_fetch:
+        tasks = [fetch_page(session, url) for url in urls_to_fetch]
         results = await asyncio.gather(*tasks, return_exceptions=True)
-        for url, r in zip(fleet_urls, results):
+        for url, r in zip(urls_to_fetch, results):
             if isinstance(r, BeautifulSoup):
-                page_fleet = extract_fleet_from_page(r, url)
-                if page_fleet:
-                    all_aircraft.extend(page_fleet)
-                    if not fleet_page_url or len(page_fleet) > len(home_fleet):
-                        fleet_page_url = url
+                fleet_soups[url] = r
+    fleet_soups.update({u: s for u, s in parent_soups.items() if u in fleet_urls})
+
+    # Level 3: scan fetched fleet pages for yet more fleet sub-page links
+    # (handles pagination, tabbed fleet pages, etc.)
+    extra_urls: list[str] = []
+    all_seen = {u.rstrip("/") for u in fleet_urls} | {website.rstrip("/")}
+    for url, soup in fleet_soups.items():
+        for link in _find_fleet_links(url, soup):
+            if link.rstrip("/") not in all_seen:
+                extra_urls.append(link)
+                all_seen.add(link.rstrip("/"))
+
+    if extra_urls:
+        extra_urls = extra_urls[:8]
+        tasks = [fetch_page(session, url) for url in extra_urls]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        for url, r in zip(extra_urls, results):
+            if isinstance(r, BeautifulSoup):
+                fleet_soups[url] = r
+
+    # Extract aircraft from all fleet pages
+    for url, soup in fleet_soups.items():
+        page_fleet = extract_fleet_from_page(soup, url)
+        if page_fleet:
+            all_aircraft.extend(page_fleet)
+            if not fleet_page_url or len(page_fleet) > len(home_fleet):
+                fleet_page_url = url
 
     # Merge by N-number
     merged: dict[str, dict] = {}
@@ -456,12 +728,15 @@ async def run_async(limit: int | None = None, concurrency: int = DEFAULT_CONCURR
     with open(enriched_path) as f:
         schools = json.load(f)
 
-    with_websites = [s for s in schools if s.get("website")]
+    print(f"  Directory schools: {len(schools):,}")
+
+    # Merge AOPA schools not already covered by the 3 directory sources
+    schools = merge_aopa_schools(schools)
+
     print(f"  Total schools: {len(schools):,}")
-    print(f"  With websites: {len(with_websites):,}")
 
     if limit:
-        with_websites = with_websites[:limit]
+        schools = schools[:limit]
         print(f"  Limited to: {limit}")
 
     school_semaphore = asyncio.Semaphore(concurrency)
@@ -477,7 +752,31 @@ async def run_async(limit: int | None = None, concurrency: int = DEFAULT_CONCURR
     t0 = time.time()
 
     async with aiohttp.ClientSession(connector=connector, timeout=timeout, headers=headers) as session:
-        tasks = [scrape_school_fleet(session, school, school_semaphore) for school in with_websites]
+        # ── Resolve websites for AOPA schools via their detail API ────
+        needs_website = [s for s in schools if not s.get("website") and s.get("_aopa_urls")]
+        if needs_website:
+            print(f"\n  Resolving websites for {len(needs_website):,} AOPA schools via API...")
+            api_semaphore = asyncio.Semaphore(50)  # polite concurrency for AOPA API
+            aopa_websites = await _resolve_aopa_websites(
+                session, needs_website, api_semaphore,
+            )
+            # Apply resolved websites back to school records
+            resolved_count = 0
+            for s in needs_website:
+                for aopa_url in s.get("_aopa_urls", []):
+                    bid = _extract_aopa_business_id(aopa_url)
+                    if bid and bid in aopa_websites:
+                        s["website"] = aopa_websites[bid]
+                        resolved_count += 1
+                        break
+            print(f"  Resolved {resolved_count:,} websites from AOPA API")
+
+        # Schools with a known website go straight to scraping.
+        # Schools with _website_candidates get probed for a working domain.
+        scrapeable = [s for s in schools if s.get("website") or s.get("_website_candidates")]
+        print(f"  Scrapeable (website or candidates): {len(scrapeable):,}")
+
+        tasks = [scrape_school_fleet(session, school, school_semaphore) for school in scrapeable]
 
         flight_line: list[dict] = []
         schools_with_fleet = 0
@@ -503,7 +802,7 @@ async def run_async(limit: int | None = None, concurrency: int = DEFAULT_CONCURR
         json.dump(flight_line, f, indent=2)
 
     print(f"\n  === Results ===")
-    print(f"  Schools scraped:      {len(with_websites):,}")
+    print(f"  Schools scraped:      {len(scrapeable):,}")
     print(f"  Schools with fleet:   {schools_with_fleet:,}")
     print(f"  Total aircraft found: {total_aircraft:,}")
     print(f"  Errors:               {errors:,}")
