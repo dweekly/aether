@@ -42,6 +42,7 @@ OUTPUT_DIR = Path(__file__).parent.parent / "output"
 DEFAULT_CONCURRENCY = 200       # simultaneous school-level tasks
 PER_SCHOOL_DELAY = 0.3          # polite pause between requests to the SAME domain
 REQUEST_TIMEOUT = 20            # per-request timeout
+PER_SCHOOL_TIMEOUT = 90         # hard cap on total time for any single school
 MAX_RETRIES = 2
 CONNECTOR_LIMIT = 500           # aiohttp TCP connector pool size
 
@@ -587,7 +588,13 @@ async def scrape_school_fleet(
 ) -> dict | None:
     """Scrape one school, respecting the global concurrency semaphore."""
     async with school_semaphore:
-        return await _scrape_school_fleet_inner(session, school)
+        try:
+            return await asyncio.wait_for(
+                _scrape_school_fleet_inner(session, school),
+                timeout=PER_SCHOOL_TIMEOUT,
+            )
+        except asyncio.TimeoutError:
+            return None
 
 
 async def _resolve_website(
