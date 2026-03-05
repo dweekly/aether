@@ -5,7 +5,7 @@ on their flight line (by make/model/type), their activity rates, and their conta
 information — using publicly available ADS-B telemetry, FAA registration data, and
 targeted web scraping?
 
-**Status:** Pipeline built, awaiting execution
+**Status:** Directory data collected (FAA Part 141 + AOPA + web scrapers); fleet mapping in progress
 
 ---
 
@@ -131,6 +131,17 @@ flight_schools:
 
 ## Data Sources Summary
 
+### School directories (collected)
+
+| Source | Records | Script | Notes |
+|--------|---------|--------|-------|
+| **FAA Part 141 Registry** | ~630 locations | `00_faa141_ingest.py` | Official FAA certificated pilot schools (UTF-16 TSV). Matched to airports via city+state with geocoding fallback. |
+| **AOPA Flight School Finder** | 2,255 schools | `08b_aopa_directory.py` | Coveo search API. 100% have airport IDs, lat/lon, certifications, ratings, services, aircraft rental types. Most comprehensive single source. |
+| **bestaviation.net** | ~500 | `08_directory_scraper.py` | Web scrape by state. |
+| **faaflightschools.com** | ~500 | `08_directory_scraper.py` | Web scrape by state. Largely overlaps with bestaviation. |
+
+### Aircraft & ADS-B
+
 | Source | Type | Access | Cost |
 |--------|------|--------|------|
 | FAA Aircraft Registry | Bulk CSV | Free download | Free |
@@ -138,7 +149,11 @@ flight_schools:
 | OurAirports | CSV | Free download | Free |
 | ADS-B Exchange | API | API key required | ~$10/mo hobbyist, enterprise pricing varies |
 | ADS-B Exchange Historical | Bulk feeds | Requires agreement | Varies |
-| AOPA Flight School Finder | Web scrape | Public website | Free (rate-limited) |
+
+### Other enrichment
+
+| Source | Type | Access | Cost |
+|--------|------|--------|------|
 | Google Maps API | API | API key | Free tier then pay-per-use |
 | Flight school websites | Web scrape | Public | Free (rate-limited) |
 
@@ -146,6 +161,7 @@ flight_schools:
 
 | Script | Purpose |
 |--------|---------|
+| `scripts/00_faa141_ingest.py` | Ingest FAA Part 141 certified schools, match to airports |
 | `scripts/01_faa_registry.py` | Download and parse FAA aircraft registration database |
 | `scripts/02_airport_reference.py` | Build airport reference table from FAA NASR + OurAirports |
 | `scripts/03_adsb_activity.py` | Query ADS-B Exchange for aircraft positions and activity |
@@ -153,6 +169,10 @@ flight_schools:
 | `scripts/05_school_identifier.py` | Identify likely flight schools from fleet clusters |
 | `scripts/06_web_enrichment.py` | Scrape flight school websites for contact info and fleet |
 | `scripts/07_assemble_dataset.py` | Combine all sources into final output dataset |
+| `scripts/08_directory_scraper.py` | Scrape bestaviation.net and faaflightschools.com directories |
+| `scripts/08b_aopa_directory.py` | Fetch AOPA flight school directory via Coveo API (2,255 schools) |
+| `scripts/09_fleet_scraper.py` | Scrape fleet info from school websites |
+| `scripts/10_adsb_scheduled.py` | Scheduled ADS-B data collection |
 | `scripts/run_pipeline.py` | Orchestrate full pipeline end-to-end |
 
 ## Legal & Ethical Notes
