@@ -27,8 +27,8 @@ def main():
         description="Flight School Aircraft Mapping Pipeline"
     )
     parser.add_argument(
-        "--from", dest="from_phase", type=int, default=1,
-        help="Start from this phase number (1-7)",
+        "--from", dest="from_phase", type=int, default=0,
+        help="Start from this phase number (0-10)",
     )
     parser.add_argument(
         "--only", nargs="+", type=int,
@@ -41,6 +41,7 @@ def main():
     args = parser.parse_args()
 
     phases = {
+        0: ("FAA Part 141 School Ingest", "00_faa141_ingest"),
         1: ("FAA Registry Download & Parse", "01_faa_registry"),
         2: ("Airport Reference Table", "02_airport_reference"),
         3: ("ADS-B Activity Data", "03_adsb_activity"),
@@ -72,6 +73,7 @@ def main():
         return
 
     # Run each phase
+    faa141 = None
     registry = None
     airports = None
     adsb_data = None
@@ -89,7 +91,9 @@ def main():
         try:
             module = __import__(module_name)
 
-            if phase_num == 1:
+            if phase_num == 0:
+                faa141 = module.run(airports=airports)
+            elif phase_num == 1:
                 registry = module.run()
             elif phase_num == 2:
                 airports = module.run()
