@@ -10,3 +10,7 @@ local.properties
 
 # Claude
 .claude/
+
+# Flight School Mapping — large data files
+research/FlightSchoolMapping/data/
+research/FlightSchoolMapping/output/faa_ga_registry.csv

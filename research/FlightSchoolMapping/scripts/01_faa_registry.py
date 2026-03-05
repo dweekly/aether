@@ -117,7 +117,7 @@ def extract_file_from_zip(zip_path: Path, filename: str) -> pd.DataFrame:
         print(f"  Extracting {target}...")
         with zf.open(target) as f:
             # FAA files are comma-delimited with trailing commas and spaces
-            content = f.read().decode("latin-1")
+            content = f.read().decode("utf-8-sig")
             df = pd.read_csv(
                 io.StringIO(content),
                 dtype=str,
@@ -126,7 +126,9 @@ def extract_file_from_zip(zip_path: Path, filename: str) -> pd.DataFrame:
             )
             # Strip whitespace from column names and values
             df.columns = [c.strip() for c in df.columns]
-            df = df.apply(lambda col: col.str.strip() if col.dtype == "object" else col)
+            for col in df.columns:
+                if hasattr(df[col], "str"):
+                    df[col] = df[col].str.strip()
             return df
 
 
