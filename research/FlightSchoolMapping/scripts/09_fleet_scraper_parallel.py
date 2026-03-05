@@ -50,19 +50,57 @@ USER_AGENT = "AetherResearch/1.0 (aviation research; contact: research@aether.ae
 
 # ── Regex patterns (identical to serial version) ─────────────────
 
-N_NUMBER_RE = re.compile(r"\bN(\d{1,5}[A-Z]{0,2})\b")
+N_NUMBER_RE = re.compile(r"\bN(\d{1,5}[A-Z]{0,2})\b", re.ASCII)
+
+# Minimum total length for a valid N-number suffix (digits + letters).
+# Real N-numbers are N + 1-5 digits + 0-2 letters, but single-digit
+# suffixes (N1, N6, …) are almost always false positives from page text.
+_MIN_N_SUFFIX_LEN = 2
 
 RATE_RE = re.compile(
     r"\$\s?([\d,]+(?:\.\d{2})?)\s*(?:/\s*h(?:ou)?r\.?|per\s+h(?:ou)?r\.?)",
     re.IGNORECASE,
 )
 
-AIRPORT_ICAO_RE = re.compile(r"\b(K[A-Z0-9]{3})\b")
+AIRPORT_ICAO_RE = re.compile(r"\b(K[A-Z]{3})\b")
 AIRPORT_FAA_RE = re.compile(
     r"(?:airport|field|located at|based at|fly(?:ing)?\s+out\s+of)\s+"
     r"(?:\w+\s+){0,4}?\(?([A-Z]{3,4})\)?",
     re.IGNORECASE,
 )
+
+# ── Valid airport code set (loaded once) ──────────────────────────
+_VALID_AIRPORT_IDS: set[str] | None = None
+
+
+def _load_valid_airports() -> set[str]:
+    """Load the set of valid US airport identifiers from airports.csv."""
+    global _VALID_AIRPORT_IDS
+    if _VALID_AIRPORT_IDS is not None:
+        return _VALID_AIRPORT_IDS
+    import csv
+    airports_path = OUTPUT_DIR / "airports.csv"
+    ids: set[str] = set()
+    if airports_path.exists():
+        with open(airports_path, newline="") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                aid = (row.get("airport_id") or "").strip().upper()
+                if aid:
+                    ids.add(aid)
+                    # Also add with K-prefix for 3-letter FAA codes
+                    if len(aid) == 3:
+                        ids.add("K" + aid)
+                faa = (row.get("faa_id") or "").strip().upper()
+                if faa:
+                    ids.add(faa)
+                    if len(faa) == 3:
+                        ids.add("K" + faa)
+                gps = (row.get("gps_code") or "").strip().upper()
+                if gps:
+                    ids.add(gps)
+    _VALID_AIRPORT_IDS = ids
+    return ids
 
 FLEET_LINK_PATTERNS = re.compile(
     r"\b(fleet|aircraft|our\s+planes?|rental(?:s)?|rates?\s*(?:&|and)?\s*fleet"
@@ -409,17 +447,19 @@ def find_location_pages(base_url: str, home_soup: BeautifulSoup) -> list[str]:
 # ── Extraction (identical to serial version) ─────────────────────
 
 def extract_airports(text: str) -> list[str]:
+    valid = _load_valid_airports()
     icao = AIRPORT_ICAO_RE.findall(text)
     faa = AIRPORT_FAA_RE.findall(text)
     codes = set()
     for c in icao:
-        codes.add(c.upper())
+        c = c.upper()
+        if c in valid:
+            codes.add(c)
     for c in faa:
         c = c.upper()
-        if len(c) == 3:
-            codes.add("K" + c)
-        else:
-            codes.add(c)
+        candidate = ("K" + c) if len(c) == 3 else c
+        if candidate in valid:
+            codes.add(candidate)
     return sorted(codes)
 
 
@@ -429,7 +469,7 @@ def _find_aircraft_containers(soup: BeautifulSoup) -> list[Tag]:
         n_num_containers = []
         for c in candidates:
             text = c.get_text(strip=True)
-            n_nums = N_NUMBER_RE.findall(text)
+            n_nums = [s for s in N_NUMBER_RE.findall(text) if len(s) >= _MIN_N_SUFFIX_LEN]
             if len(n_nums) == 1 and len(text) < 2000:
                 n_num_containers.append(c)
         if len(n_num_containers) >= 2:
@@ -439,7 +479,7 @@ def _find_aircraft_containers(soup: BeautifulSoup) -> list[Tag]:
 
 def _parse_aircraft_container(container: Tag) -> dict | None:
     text = container.get_text(separator=" ", strip=True)
-    n_nums = N_NUMBER_RE.findall(text)
+    n_nums = [s for s in N_NUMBER_RE.findall(text) if len(s) >= _MIN_N_SUFFIX_LEN]
     if not n_nums:
         return None
 
@@ -484,11 +524,14 @@ def _parse_aircraft_container(container: Tag) -> dict | None:
 def _extract_from_flat_text(text: str) -> list[dict]:
     aircraft = []
     for match in N_NUMBER_RE.finditer(text):
+        suffix = match.group(1)
+        if len(suffix) < _MIN_N_SUFFIX_LEN:
+            continue
         start = max(0, match.start() - 200)
         end = min(len(text), match.end() + 200)
         context = text[start:end]
 
-        n_number = "N" + match.group(1)
+        n_number = "N" + suffix
         display_name = ""
         desc_match = AIRCRAFT_DESCRIPTOR_RE.search(context)
         if desc_match:
@@ -569,7 +612,9 @@ async def extract_locations(
         code = known_airport.upper()
         if len(code) == 3:
             code = "K" + code
-        all_codes.append(code)
+        valid = _load_valid_airports()
+        if code in valid:
+            all_codes.append(code)
 
     seen = set()
     for code in all_codes:

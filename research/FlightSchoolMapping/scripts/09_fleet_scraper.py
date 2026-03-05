@@ -73,7 +73,8 @@ MAX_RETRIES = 2
 # ── Regex patterns ───────────────────────────────────────────────
 
 # Tail number: N followed by 1-5 digits and 0-2 letters
-N_NUMBER_RE = re.compile(r"\bN(\d{1,5}[A-Z]{0,2})\b")
+N_NUMBER_RE = re.compile(r"\bN(\d{1,5}[A-Z]{0,2})\b", re.ASCII)
+_MIN_N_SUFFIX_LEN = 2
 
 # Rental rate: dollar amounts like "$190.00/hr." or "$275 per hour" or "$189/hr"
 RATE_RE = re.compile(
@@ -82,12 +83,44 @@ RATE_RE = re.compile(
 )
 
 # Airport identifier patterns: ICAO (KXXX) or FAA (XXX) in context
-AIRPORT_ICAO_RE = re.compile(r"\b(K[A-Z0-9]{3})\b")
+AIRPORT_ICAO_RE = re.compile(r"\b(K[A-Z]{3})\b")
 AIRPORT_FAA_RE = re.compile(
     r"(?:airport|field|located at|based at|fly(?:ing)?\s+out\s+of)\s+"
     r"(?:\w+\s+){0,4}?\(?([A-Z]{3,4})\)?",
     re.IGNORECASE,
 )
+
+# ── Valid airport code set (loaded once) ──────────────────────────
+_VALID_AIRPORT_IDS: set[str] | None = None
+
+
+def _load_valid_airports() -> set[str]:
+    """Load the set of valid US airport identifiers from airports.csv."""
+    global _VALID_AIRPORT_IDS
+    if _VALID_AIRPORT_IDS is not None:
+        return _VALID_AIRPORT_IDS
+    import csv
+    airports_path = OUTPUT_DIR / "airports.csv"
+    ids: set[str] = set()
+    if airports_path.exists():
+        with open(airports_path, newline="") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                aid = (row.get("airport_id") or "").strip().upper()
+                if aid:
+                    ids.add(aid)
+                    if len(aid) == 3:
+                        ids.add("K" + aid)
+                faa = (row.get("faa_id") or "").strip().upper()
+                if faa:
+                    ids.add(faa)
+                    if len(faa) == 3:
+                        ids.add("K" + faa)
+                gps = (row.get("gps_code") or "").strip().upper()
+                if gps:
+                    ids.add(gps)
+    _VALID_AIRPORT_IDS = ids
+    return ids
 
 # Fleet/aircraft page link text patterns
 FLEET_LINK_PATTERNS = re.compile(
@@ -232,18 +265,19 @@ def _same_domain(base: str, candidate: str) -> bool:
 
 def extract_airports(text: str) -> list[str]:
     """Extract airport identifiers from page text."""
+    valid = _load_valid_airports()
     icao = AIRPORT_ICAO_RE.findall(text)
     faa = AIRPORT_FAA_RE.findall(text)
-    # Deduplicate; normalize KXXX format
     codes = set()
     for c in icao:
-        codes.add(c.upper())
+        c = c.upper()
+        if c in valid:
+            codes.add(c)
     for c in faa:
         c = c.upper()
-        if len(c) == 3:
-            codes.add("K" + c)
-        else:
-            codes.add(c)
+        candidate = ("K" + c) if len(c) == 3 else c
+        if candidate in valid:
+            codes.add(candidate)
     return sorted(codes)
 
 
@@ -293,7 +327,7 @@ def _find_aircraft_containers(soup: BeautifulSoup) -> list[Tag]:
         n_num_containers = []
         for c in candidates:
             text = c.get_text(strip=True)
-            n_nums = N_NUMBER_RE.findall(text)
+            n_nums = [s for s in N_NUMBER_RE.findall(text) if len(s) >= _MIN_N_SUFFIX_LEN]
             if len(n_nums) == 1 and len(text) < 2000:
                 n_num_containers.append(c)
 
@@ -309,7 +343,7 @@ def _find_aircraft_containers(soup: BeautifulSoup) -> list[Tag]:
 def _parse_aircraft_container(container: Tag) -> dict | None:
     """Parse a single aircraft container element."""
     text = container.get_text(separator=" ", strip=True)
-    n_nums = N_NUMBER_RE.findall(text)
+    n_nums = [s for s in N_NUMBER_RE.findall(text) if len(s) >= _MIN_N_SUFFIX_LEN]
     if not n_nums:
         return None
 
@@ -363,11 +397,14 @@ def _extract_from_flat_text(text: str) -> list[dict]:
     """Extract aircraft from unstructured text by finding N-numbers with context."""
     aircraft = []
     for match in N_NUMBER_RE.finditer(text):
+        suffix = match.group(1)
+        if len(suffix) < _MIN_N_SUFFIX_LEN:
+            continue
         start = max(0, match.start() - 200)
         end = min(len(text), match.end() + 200)
         context = text[start:end]
 
-        n_number = "N" + match.group(1)
+        n_number = "N" + suffix
         display_name = ""
         desc_match = AIRCRAFT_DESCRIPTOR_RE.search(context)
         if desc_match:
@@ -431,7 +468,9 @@ def extract_locations(
         code = known_airport.upper()
         if len(code) == 3:
             code = "K" + code
-        all_codes.append(code)
+        valid = _load_valid_airports()
+        if code in valid:
+            all_codes.append(code)
 
     # Deduplicate
     seen = set()
