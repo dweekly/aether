@@ -48,6 +48,9 @@ def main():
         5: ("Flight School Identification", "05_school_identifier"),
         6: ("Web Enrichment", "06_web_enrichment"),
         7: ("Assemble Final Dataset", "07_assemble_dataset"),
+        8: ("Directory Scraper", "08_directory_scraper"),
+        9: ("Flight Line Scraper", "09_fleet_scraper"),
+        10: ("ADS-B Scheduled Snapshot", "10_adsb_scheduled"),
     }
 
     # Determine which phases to run
@@ -101,6 +104,12 @@ def main():
             elif phase_num == 6:
                 module.run(schools=schools)
             elif phase_num == 7:
+                module.run()
+            elif phase_num == 8:
+                module.run()
+            elif phase_num == 9:
+                module.run()
+            elif phase_num == 10:
                 module.run()
 
             elapsed = time.time() - start
