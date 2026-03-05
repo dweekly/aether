@@ -185,12 +185,12 @@ async def _resolve_aopa_websites(
 
 
 def merge_aopa_schools(enriched: list[dict]) -> list[dict]:
-    """Merge AOPA directory schools not already present in the enriched list.
+    """Merge AOPA directory schools and annotate existing ones with AOPA data.
 
-    Many AOPA schools overlap with the 3 directory sources.  We deduplicate
-    by normalized (name, city) pairs.  For AOPA-only schools without a
-    website, we store their AOPA business IDs for batch API resolution and
-    generate domain-guess candidates as a fallback.
+    1. For enriched schools that already exist but lack a website, attach
+       their AOPA business IDs so we can batch-resolve via the AOPA API.
+    2. For AOPA-only schools not in the enriched list, add them with
+       business IDs and domain-guess candidates as fallback.
     """
     aopa_path = OUTPUT_DIR / "aopa_flight_schools.json"
     if not aopa_path.exists():
@@ -199,16 +199,8 @@ def merge_aopa_schools(enriched: list[dict]) -> list[dict]:
     with open(aopa_path) as f:
         aopa_schools = json.load(f)
 
-    # Build lookup of existing enriched schools by (name_lower, city_lower)
-    existing: set[tuple[str, str]] = set()
-    for s in enriched:
-        key = (s.get("name", "").strip().lower(), s.get("city", "").strip().lower())
-        existing.add(key)
-
-    added = 0
     # Collapse multi-location AOPA entries (same name) into one record,
-    # keeping the first entry's details but collecting all airport codes
-    # and AOPA detail URLs.
+    # keeping the first entry's details but collecting all AOPA detail URLs.
     aopa_by_name: dict[str, dict] = {}
     for s in aopa_schools:
         name = s.get("name", "").strip()
@@ -233,12 +225,40 @@ def merge_aopa_schools(enriched: list[dict]) -> list[dict]:
             aopa_by_name[name]["_aopa_cities"].add(s.get("city", "").strip().lower())
             if aopa_url:
                 aopa_by_name[name]["_aopa_urls"].append(aopa_url)
-            # Keep website if any location has one
             if not aopa_by_name[name]["website"] and s.get("website"):
                 aopa_by_name[name]["website"] = s["website"]
 
+    # Pass 1: annotate EXISTING enriched schools that lack websites with
+    # AOPA business IDs (matched by normalized name).
+    annotated = 0
+    for s in enriched:
+        if s.get("website"):
+            continue
+        name_lower = s.get("name", "").strip().lower()
+        for aopa_name, aopa_rec in aopa_by_name.items():
+            if aopa_name.lower() == name_lower and aopa_rec.get("_aopa_urls"):
+                s["_aopa_urls"] = list(aopa_rec["_aopa_urls"])
+                # Also attach domain-guess fallback
+                slug = _slugify_name(aopa_name)
+                if slug:
+                    s["_website_candidates"] = [
+                        f"https://{slug}.com",
+                        f"https://www.{slug}.com",
+                    ]
+                annotated += 1
+                break
+
+    if annotated:
+        print(f"  Existing schools annotated with AOPA IDs: {annotated}")
+
+    # Pass 2: add AOPA-only schools not already in the enriched list.
+    existing: set[tuple[str, str]] = set()
+    for s in enriched:
+        key = (s.get("name", "").strip().lower(), s.get("city", "").strip().lower())
+        existing.add(key)
+
+    added = 0
     for name, rec in aopa_by_name.items():
-        # Skip if ANY of this school's city variants already exist
         cities = rec.pop("_aopa_cities")
         name_lower = name.strip().lower()
         if any((name_lower, c) in existing for c in cities):
