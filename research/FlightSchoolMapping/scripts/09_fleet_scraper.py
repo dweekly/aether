@@ -75,9 +75,9 @@ MAX_RETRIES = 2
 # Tail number: N followed by 1-5 digits and 0-2 letters
 N_NUMBER_RE = re.compile(r"\bN(\d{1,5}[A-Z]{0,2})\b")
 
-# Rental rate: dollar amounts near keywords like "/hr", "per hour", "wet"
+# Rental rate: dollar amounts like "$190.00/hr." or "$275 per hour" or "$189/hr"
 RATE_RE = re.compile(
-    r"\$\s?([\d,]+(?:\.\d{2})?)\s*(?:/\s*h(?:ou)?r|per\s+h(?:ou)?r)",
+    r"\$\s?([\d,]+(?:\.\d{2})?)\s*(?:/\s*h(?:ou)?r\.?|per\s+h(?:ou)?r\.?)",
     re.IGNORECASE,
 )
 
@@ -493,14 +493,21 @@ def scrape_school_fleet(
                 if not fleet_page_url or len(page_fleet) > len(home_fleet):
                     fleet_page_url = fleet_url
 
-    # Deduplicate aircraft by N-number
-    seen_n = set()
-    unique_aircraft = []
+    # Merge aircraft by N-number (keep richest data from all pages)
+    merged: dict[str, dict] = {}
     for a in all_aircraft:
         nn = a.get("n_number", "")
-        if nn and nn not in seen_n:
-            seen_n.add(nn)
-            unique_aircraft.append(a)
+        if not nn:
+            continue
+        if nn not in merged:
+            merged[nn] = a
+        else:
+            existing = merged[nn]
+            # Merge in fields that the existing entry is missing
+            for key in ["display_name", "description", "wet_rate_hr", "equipment", "airport_hint"]:
+                if not existing.get(key) and a.get(key):
+                    existing[key] = a[key]
+    unique_aircraft = list(merged.values())
 
     # Only return a record if we found at least one tail number
     if not unique_aircraft:
