@@ -176,6 +176,24 @@ AOPA_API_BASE = "https://webapp.aopa.org/AirportsAPI/businesses"
 AOPA_API_TOKEN = "AOPA_PUBLIC_TOKEN_REDACTED"
 
 
+AOPA_CACHE_PATH = OUTPUT_DIR / "aopa_website_cache.json"
+
+
+def _load_aopa_cache() -> dict[str, str]:
+    """Load cached AOPA business-ID → website mappings from disk."""
+    if AOPA_CACHE_PATH.exists():
+        with open(AOPA_CACHE_PATH) as f:
+            return json.load(f)
+    return {}
+
+
+def _save_aopa_cache(cache: dict[str, str]) -> None:
+    """Persist AOPA website cache to disk."""
+    AOPA_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(AOPA_CACHE_PATH, "w") as f:
+        json.dump(cache, f, indent=2, sort_keys=True)
+
+
 async def _resolve_aopa_websites(
     session: aiohttp.ClientSession,
     records: list[dict],
@@ -183,8 +201,13 @@ async def _resolve_aopa_websites(
 ) -> dict[str, str]:
     """Batch-resolve website URLs for AOPA schools via their detail API.
 
+    Results are cached to output/aopa_website_cache.json so subsequent
+    runs don't re-hit the AOPA API for already-resolved business IDs.
+
     Returns a mapping of AOPA business ID → website URL.
     """
+    cache = _load_aopa_cache()
+
     # Collect all unique business IDs that need resolution
     id_to_rec: dict[str, dict] = {}
     for rec in records:
@@ -194,37 +217,55 @@ async def _resolve_aopa_websites(
                 id_to_rec[bid] = rec
 
     if not id_to_rec:
-        return {}
+        return cache
 
+    # Split into cached hits vs. IDs we still need to fetch
     results: dict[str, str] = {}
-    headers = {
-        "Accept": "application/json",
-        "Authorization": f"Bearer {AOPA_API_TOKEN}",
-        "Origin": "https://www.aopa.org",
-        "Referer": "https://www.aopa.org/",
-    }
+    ids_to_fetch: list[str] = []
+    for bid in id_to_rec:
+        if bid in cache:
+            results[bid] = cache[bid]
+        else:
+            ids_to_fetch.append(bid)
 
-    async def fetch_one(bid: str) -> None:
-        async with semaphore:
-            url = f"{AOPA_API_BASE}/{bid}"
-            try:
-                async with session.get(
-                    url,
-                    headers=headers,
-                    timeout=aiohttp.ClientTimeout(total=10),
-                ) as resp:
-                    if resp.status == 200:
-                        data = await resp.json()
-                        web = (data.get("webAddress") or "").strip()
-                        if web:
-                            if not web.startswith("http"):
-                                web = "https://" + web
-                            results[bid] = web
-            except (aiohttp.ClientError, asyncio.TimeoutError):
-                pass
+    if ids_to_fetch:
+        print(f"    Cache: {len(results):,} hits, {len(ids_to_fetch):,} to fetch from AOPA API")
+        headers = {
+            "Accept": "application/json",
+            "Authorization": f"Bearer {AOPA_API_TOKEN}",
+            "Origin": "https://www.aopa.org",
+            "Referer": "https://www.aopa.org/",
+        }
 
-    tasks = [fetch_one(bid) for bid in id_to_rec]
-    await asyncio.gather(*tasks)
+        async def fetch_one(bid: str) -> None:
+            async with semaphore:
+                url = f"{AOPA_API_BASE}/{bid}"
+                try:
+                    async with session.get(
+                        url,
+                        headers=headers,
+                        timeout=aiohttp.ClientTimeout(total=10),
+                    ) as resp:
+                        if resp.status == 200:
+                            data = await resp.json()
+                            web = (data.get("webAddress") or "").strip()
+                            if web:
+                                if not web.startswith("http"):
+                                    web = "https://" + web
+                                results[bid] = web
+                                cache[bid] = web
+                except (aiohttp.ClientError, asyncio.TimeoutError):
+                    pass
+
+        tasks = [fetch_one(bid) for bid in ids_to_fetch]
+        await asyncio.gather(*tasks)
+
+        # Persist updated cache
+        _save_aopa_cache(cache)
+        print(f"    Cache updated: {len(cache):,} total entries")
+    else:
+        print(f"    All {len(results):,} AOPA lookups served from cache")
+
     return results
 
 
