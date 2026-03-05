@@ -38,8 +38,10 @@ import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import requests
+from scipy.spatial import cKDTree
 
 DATA_DIR = Path(__file__).parent.parent / "data" / "adsb"
 OUTPUT_DIR = Path(__file__).parent.parent / "output"
@@ -188,9 +190,9 @@ def aggregate_snapshots():
     if not snapshot_files:
         return None
 
-    # Load airport reference for proximity matching
+    # Load airport reference and build spatial index
     airports_path = OUTPUT_DIR / "airports.csv"
-    airport_coords = None
+    apt_index = None
     if airports_path.exists():
         airports = pd.read_csv(airports_path, keep_default_na=False)
         airport_coords = airports[
@@ -198,7 +200,8 @@ def aggregate_snapshots():
         ][["airport_id", "faa_id", "latitude", "longitude"]].copy()
         airport_coords["latitude"] = airport_coords["latitude"].astype(float)
         airport_coords["longitude"] = airport_coords["longitude"].astype(float)
-        print(f"  Airport reference loaded: {len(airport_coords)} airports")
+        apt_index = AirportIndex(airport_coords)
+        print(f"  Airport KD-tree built: {len(airport_coords)} airports")
 
     # Process all snapshots
     from collections import Counter, defaultdict
@@ -217,13 +220,10 @@ def aggregate_snapshots():
             aircraft_sightings[hex_code] += 1
             if ac.get("on_ground"):
                 aircraft_ground[hex_code] += 1
-                # Find nearest airport
                 lat = ac.get("latitude")
                 lon = ac.get("longitude")
-                if lat and lon and airport_coords is not None:
-                    nearest = _find_nearest_airport(
-                        float(lat), float(lon), airport_coords
-                    )
+                if lat and lon and apt_index is not None:
+                    nearest = apt_index.nearest(float(lat), float(lon))
                     if nearest:
                         aircraft_airports[hex_code][nearest] += 1
 
@@ -271,18 +271,36 @@ def aggregate_snapshots():
     return summary_records
 
 
-def _find_nearest_airport(lat: float, lon: float, airports: pd.DataFrame) -> str:
-    """Find the nearest airport within AIRPORT_PROXIMITY_NM."""
-    min_dist = float("inf")
-    nearest = ""
-    for _, apt in airports.iterrows():
-        dist = haversine_nm(lat, lon, apt["latitude"], apt["longitude"])
-        if dist < min_dist:
-            min_dist = dist
-            nearest = apt["faa_id"] or apt["airport_id"]
-    if min_dist <= AIRPORT_PROXIMITY_NM:
-        return nearest
-    return ""
+class AirportIndex:
+    """KD-tree spatial index for fast nearest-airport lookups."""
+
+    def __init__(self, airports: pd.DataFrame):
+        lats = airports["latitude"].values.astype(float)
+        lons = airports["longitude"].values.astype(float)
+        # Convert to approximate Cartesian (nm) for KD-tree
+        # cos(37°) ≈ 0.8 is a reasonable US-average correction
+        cos_lat = np.cos(np.radians(lats))
+        x = lons * 60.0 * cos_lat  # rough nm
+        y = lats * 60.0            # rough nm
+        self._tree = cKDTree(np.column_stack([x, y]))
+        self._ids = [
+            (row["faa_id"] or row["airport_id"])
+            for _, row in airports.iterrows()
+        ]
+        self._lats = lats
+        self._lons = lons
+
+    def nearest(self, lat: float, lon: float) -> str:
+        """Return nearest airport ID if within AIRPORT_PROXIMITY_NM, else ''."""
+        cos_lat = math.cos(math.radians(lat))
+        qx = lon * 60.0 * cos_lat
+        qy = lat * 60.0
+        dist_approx, idx = self._tree.query([qx, qy])
+        # Verify with true haversine (the KD-tree uses approximate distances)
+        true_dist = haversine_nm(lat, lon, self._lats[idx], self._lons[idx])
+        if true_dist <= AIRPORT_PROXIMITY_NM:
+            return self._ids[idx]
+        return ""
 
 
 def show_status():
