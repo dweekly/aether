@@ -27,8 +27,22 @@ import pandas as pd
 OUTPUT_DIR = Path(__file__).parent.parent / "output"
 
 
+def _normalize_name(name: str) -> str:
+    """Normalize a school/entity name for matching."""
+    return name.strip().lower()
+
+
+def _school_key(name: str, airport: str) -> str:
+    """Composite key: normalized name + primary airport code."""
+    return f"{_normalize_name(name)}|{airport.strip().upper()}"
+
+
 def _load_flight_line() -> dict[str, dict]:
-    """Load Phase 9 flight-line data, keyed by normalized school name."""
+    """Load Phase 9 flight-line data, keyed by name|airport composite key.
+
+    Also builds a name-only fallback index for schools where the airport code
+    is missing from one side of the join.
+    """
     fl_path = OUTPUT_DIR / "flight_line.json"
     if not fl_path.exists():
         return {}
@@ -36,9 +50,21 @@ def _load_flight_line() -> dict[str, dict]:
         records = json.load(f)
     index = {}
     for rec in records:
-        key = rec.get("school_name", "").strip().lower()
-        if key:
-            index[key] = rec
+        name = rec.get("school_name", "").strip()
+        if not name:
+            continue
+        # Primary key: name + first airport
+        airports = [
+            loc.get("airport_id", "")
+            for loc in rec.get("locations", [])
+            if loc.get("airport_id")
+        ]
+        if airports:
+            for apt in airports:
+                key = _school_key(name, apt)
+                index[key] = rec
+        # Fallback: name-only key (prefixed to distinguish)
+        index[f"name_only|{_normalize_name(name)}"] = rec
     return index
 
 
@@ -88,9 +114,12 @@ def run():
     if dir_path.exists():
         with open(dir_path) as f:
             for rec in json.load(f):
-                key = rec.get("name", "").strip().lower()
-                if key:
-                    dir_index[key] = rec
+                name = rec.get("name", "").strip()
+                apt = rec.get("airport_code", "")
+                if name and apt:
+                    dir_index[_school_key(name, apt)] = rec
+                if name:
+                    dir_index[f"name_only|{_normalize_name(name)}"] = rec
 
     # ── Helper: look up registry by N-number ─────────────────────
     def enrich_from_registry(n_num: str) -> dict:
@@ -113,7 +142,7 @@ def run():
 
     for _, school in schools.iterrows():
         name = school.get("entity_name", "")
-        name_key = name.strip().lower()
+        name_key = _normalize_name(name)
 
         # Start with FAA-identified N-numbers
         n_numbers = str(school.get("n_numbers", "")).split(",")
@@ -124,9 +153,20 @@ def run():
         primary_airport_name = school.get("airport_name", "")
 
         # Check flight-line data for authoritative multi-location + fleet
-        fl_rec = flight_line_index.get(name_key)
+        # Try composite key (name + airport) first, fall back to name-only
+        composite = _school_key(name, primary_airport) if primary_airport else ""
+        fl_rec = (
+            flight_line_index.get(composite)
+            if composite
+            else None
+        ) or flight_line_index.get(f"name_only|{name_key}")
+
         # Also check directory data for extra contact info
-        dir_rec = dir_index.get(name_key)
+        dir_rec = (
+            dir_index.get(composite)
+            if composite
+            else None
+        ) or dir_index.get(f"name_only|{name_key}")
 
         # ── Build locations array ────────────────────────────────
         locations = []
@@ -223,6 +263,76 @@ def run():
             entry["fleet_page_url"] = fl_rec["fleet_page_url"]
 
         structured.append(entry)
+
+    # ── Add flight-line schools not already matched to a Phase 5 entity ──
+    # These are directory-discovered schools (Phase 8/9) whose names don't
+    # appear in the FAA registrant-based identified_schools.csv — i.e. the
+    # leaseback case where the school doesn't own aircraft under its own name.
+    matched_fl_keys = set()
+    for _, school in schools.iterrows():
+        name = school.get("entity_name", "")
+        apt = school.get("home_airport", "")
+        if apt:
+            matched_fl_keys.add(_school_key(name, apt))
+        matched_fl_keys.add(f"name_only|{_normalize_name(name)}")
+
+    fl_only_count = 0
+    for fl_key, fl_rec in flight_line_index.items():
+        if fl_key in matched_fl_keys or fl_key.startswith("name_only|"):
+            continue
+        # Check if this record was already added via a name_only fallback
+        fl_name = _normalize_name(fl_rec.get("school_name", ""))
+        if f"name_only|{fl_name}" in matched_fl_keys:
+            continue
+
+        # This school was only found via directory/website scraping
+        fleet = []
+        for ac in fl_rec.get("fleet", []):
+            nn = ac.get("n_number", "")
+            if nn:
+                entry = {
+                    "n_number": nn,
+                    "display_name": ac.get("display_name", ""),
+                    "description": ac.get("description", ""),
+                    "source": "website",
+                }
+                if ac.get("wet_rate_hr") is not None:
+                    entry["wet_rate_hr"] = ac["wet_rate_hr"]
+                if ac.get("equipment"):
+                    entry["equipment"] = ac["equipment"]
+                if ac.get("location_index") is not None:
+                    entry["location_index"] = ac["location_index"]
+                reg = enrich_from_registry(nn)
+                entry.update(reg)
+                fleet.append(entry)
+
+        # Pull contact info from directory data
+        dir_rec = dir_index.get(fl_key) or dir_index.get(f"name_only|{fl_name}") or {}
+
+        structured.append({
+            "name": fl_rec.get("school_name", ""),
+            "locations": fl_rec.get("locations", []),
+            "city": dir_rec.get("city", ""),
+            "state": dir_rec.get("state", ""),
+            "mailing_address": dir_rec.get("address", ""),
+            "phone": dir_rec.get("phone", ""),
+            "email": dir_rec.get("email", ""),
+            "website": fl_rec.get("school_website", dir_rec.get("website", "")),
+            "ratings_offered": (dir_rec.get("ratings_offered", "") or "").split(",")
+                if dir_rec.get("ratings_offered") else [],
+            "school_score": 0,
+            "fleet": fleet,
+            "fleet_size": len(fleet),
+            "has_flight_line": True,
+            "fleet_page_url": fl_rec.get("fleet_page_url", ""),
+            "source": "directory_only",
+        })
+        fl_only_count += 1
+        matched_fl_keys.add(fl_key)
+        matched_fl_keys.add(f"name_only|{fl_name}")
+
+    if fl_only_count:
+        print(f"  Directory-only schools added (not in FAA registrant list): {fl_only_count}")
 
     # Sort by score
     structured.sort(key=lambda x: x["school_score"], reverse=True)
