@@ -21,12 +21,17 @@ import asyncio
 import json
 import re
 import time
+import warnings
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
 
 import aiohttp
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, Tag, XMLParsedAsHTMLWarning
+
+# Some school URLs serve XML (sitemaps, RSS feeds) — we intentionally
+# parse everything as HTML, so silence this warning.
+warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
 from tqdm.asyncio import tqdm as atqdm
 
 OUTPUT_DIR = Path(__file__).parent.parent / "output"
