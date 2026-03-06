@@ -52,6 +52,7 @@ def main():
         8: ("Directory Scraper", "08_directory_scraper"),
         9: ("Flight Line Scraper", "09_fleet_scraper"),
         10: ("ADS-B Scheduled Snapshot", "10_adsb_scheduled"),
+        12: ("Night Flying Analysis", "12_night_flying"),
     }
 
     # Determine which phases to run
@@ -114,6 +115,8 @@ def main():
             elif phase_num == 9:
                 module.run()
             elif phase_num == 10:
+                module.run()
+            elif phase_num == 12:
                 module.run()
 
             elapsed = time.time() - start

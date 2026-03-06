@@ -173,6 +173,8 @@ flight_schools:
 | `scripts/08b_aopa_directory.py` | Fetch AOPA flight school directory via Coveo API (2,255 schools) |
 | `scripts/09_fleet_scraper.py` | Scrape fleet info from school websites |
 | `scripts/10_adsb_scheduled.py` | Scheduled ADS-B data collection |
+| `scripts/11_school_aircraft_merge.py` | Merge school directory with fleet/ADS-B data |
+| `scripts/12_night_flying.py` | Night flying analysis: solar position calc, day/night classification, per-school night ops |
 | `scripts/run_pipeline.py` | Orchestrate full pipeline end-to-end |
 
 ## Legal & Ethical Notes
