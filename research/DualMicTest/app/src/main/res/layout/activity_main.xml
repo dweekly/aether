@@ -26,15 +26,24 @@
             android:background="#F0F0F0"
             android:fontFamily="monospace"
             android:padding="8dp"
-            android:text="(enumerating…)"
+            android:text="(enumerating...)"
             android:textSize="12sp" />
 
-        <!-- Record button -->
+        <!-- Single recording button -->
         <Button
             android:id="@+id/btnRecord"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Start Recording"
+            android:textAllCaps="false" />
+
+        <!-- Combo test button -->
+        <Button
+            android:id="@+id/btnCombo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Run All AudioSource Combos (5x5)"
             android:textAllCaps="false" />
 
         <!-- Stream 1: Built-in Mic -->

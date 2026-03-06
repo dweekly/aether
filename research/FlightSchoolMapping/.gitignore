@@ -1,0 +1,15 @@
+# Exclude raw ADS-B data dumps (large, reproducible via scripts)
+data/adsb/opensky_us_*.json
+
+# Keep processed outputs (smaller, represent analysis results)
+!output/*.csv
+!output/*.json
+!output/*.txt
+
+# Exclude large generated files (reproducible via pipeline)
+output/faa_ga_registry.csv
+output/faa_master.csv
+output/faa_acftref.csv
+output/faa_school_candidates.csv
+output/fleet_html/
+output/fleet_crawl_index_jax.json
