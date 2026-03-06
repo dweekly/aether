@@ -5,7 +5,7 @@ on their flight line (by make/model/type), their activity rates, and their conta
 information — using publicly available ADS-B telemetry, FAA registration data, and
 targeted web scraping?
 
-**Status:** Fleet mapping complete for 2,593 schools; 1,314 with identified aircraft (7,457 total, 3,974 with N-numbers)
+**Status:** Fleet mapping complete for 2,593 schools; 1,290 with fleet data (7,297 aircraft total, 4,262 FAA-validated with N-numbers)
 
 ---
 
@@ -22,7 +22,7 @@ what activity rates, we can:
 
 ## Approach
 
-The pipeline has four phases:
+The pipeline has six phases:
 
 ### Phase 1: FAA Registration Data (Bulk Download)
 
@@ -114,11 +114,40 @@ sites like Squarespace, Wix, React apps):
 
 Cross-reference extracted N-numbers against FAA ReleasableAircraft database:
 
-- 97.4% of extracted N-numbers match valid FAA registrations
+- 97.6% of extracted N-numbers match valid, active FAA registrations
 - Each aircraft enriched with: serial number, FAA manufacturer/model, year
   manufactured, registrant name/address, Mode S hex code, airworthiness dates,
   engine/aircraft type codes
 - Mode S hex codes enable ADS-B cross-referencing
+
+### Phase 6: FAA Registrant Name Matching
+
+For the ~2,930 aircraft identified by make/model but lacking N-numbers, attempt
+reverse-lookup against the FAA registry by matching the flight school's business
+name to FAA registrant names:
+
+- Normalize both names (strip LLC/Inc/Corp suffixes, punctuation)
+- **Strict matching only**: exact normalized name match (no substring/fuzzy)
+- Filter to same state as the school's airport
+- Match aircraft type (model family) between website listing and FAA registration
+- Confidence scoring: "high" when fleet size roughly matches registrant's aircraft
+  count in state; "medium" otherwise
+
+Results: 448 N-numbers recovered across 178 schools (250 high confidence,
+198 medium confidence). Spot-checked against FAA registry to verify registrant
+names, cities, and states align.
+
+### Phase 6b: Rate Sheet PDF Extraction
+
+For 139 schools with `rate_sheet_url` but no fleet data, download and extract
+text from PDF rate sheets and pricing pages:
+
+- PDF text extraction via pdfplumber (up to 20 pages)
+- HTML rate pages parsed with BeautifulSoup
+- Sonnet 4.6 extraction of aircraft make/model, rental rates, equipment
+- Most rate sheets list aircraft types and hourly rates but not tail numbers
+  (only ~3% of rate sheets include N-numbers)
+- Results: 157 additional aircraft from 37 schools, with school_type classification
 
 ## Output Schema
 
@@ -206,6 +235,7 @@ flight_schools:
 | `scripts/09b_fleet_extract.py` | Sonnet 4.6 batch extraction of fleet data from cached HTML |
 | `scripts/10_fleet_browser_crawl.py` | Playwright browser crawl + Sonnet extraction for JS-rendered sites |
 | `scripts/10_adsb_scheduled.py` | Scheduled ADS-B data collection |
+| `scripts/11_rate_sheet_extract.py` | Download rate sheet PDFs/pages, extract fleet data with Sonnet |
 | `scripts/11_school_aircraft_merge.py` | Merge school directory with fleet/ADS-B data |
 | `scripts/12_night_flying.py` | Night flying analysis: solar position calc, day/night classification, per-school night ops |
 | `scripts/run_pipeline.py` | Orchestrate full pipeline end-to-end |
@@ -340,12 +370,26 @@ ADSBX_API_KEY="..."          # for ADS-B Exchange API
 | Metric | Count |
 |--------|------:|
 | Schools in dataset | 2,593 |
-| Schools with identified fleet | 1,314 |
-| Total aircraft found | 7,457 |
-| Aircraft with N-numbers | 3,974 |
-| Aircraft with rental rates | 3,414 |
-| Schools with phone contact | 1,655 |
-| N-numbers validated against FAA registry | 97.4% |
-| Schools classified as flight school w/ rentals | 844 |
-| Schools classified as flying clubs | 45 |
-| Defunct/irrelevant entities filtered | 96+ |
+| Schools with fleet data | 1,290 |
+| Total aircraft found | 7,297 |
+| Aircraft with N-numbers | 4,367 |
+| — FAA-validated (active registration) | 4,262 |
+| — via web scraping | 3,919 |
+| — via FAA registrant name matching | 448 |
+| Aircraft identified by make/model only | 2,930 |
+| Aircraft with rental rates | 3,401 |
+| Schools with phone contact | 1,663 |
+| N-number FAA validation rate | 97.6% |
+
+### School Type Classification
+
+| Type | Count |
+|------|------:|
+| Flight school with rentals | 843 |
+| University/college program | 114 |
+| Defunct/irrelevant | 96 |
+| FBO (no training) | 63 |
+| Flight school (no rentals) | 63 |
+| Flying club | 45 |
+| Other | 194 |
+| Unclassified (from HTTP crawl) | ~1,150 |
