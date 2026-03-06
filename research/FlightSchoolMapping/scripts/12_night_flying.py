@@ -316,31 +316,37 @@ def analyze_snapshots():
         # Build hex -> night sightings lookup
         night_by_hex = {r["icao_hex"]: r for r in aircraft_records if r["night_sightings"] > 0}
 
-        # Build N-number -> hex mapping from snapshot callsigns
+        # Also build N-number -> hex from snapshot callsigns as fallback
         n_to_hex = {}
         for hex_code, callsign in aircraft_callsigns.items():
-            # Callsigns for GA are typically N-numbers (e.g. "N12345")
             cs = callsign.strip().upper()
             if cs.startswith("N") and len(cs) >= 4:
                 n_to_hex[cs] = hex_code
 
         for school in school_map:
-            school_name = school.get("name", "")
-            airport = school.get("airport_id", "")
-            fleet = school.get("aircraft", [])
+            school_name = school.get("school_name", "") or school.get("name", "")
+            airport = school.get("school_airport", "") or school.get("airport_id", "")
+            fleet = school.get("fleet", []) or school.get("aircraft", [])
             night_aircraft = []
 
             for ac in fleet:
-                n_num = ac.get("n_number", "").strip().upper()
-                if not n_num.startswith("N"):
-                    n_num = "N" + n_num
-                hex_code = n_to_hex.get(n_num, "")
+                # Use icao_hex directly from fleet data if available
+                hex_code = ac.get("icao_hex", "").strip().upper()
+
+                # Fallback: look up by N-number from ADS-B callsigns
+                if not hex_code or hex_code not in night_by_hex:
+                    n_num = ac.get("n_number", "").strip().upper()
+                    if not n_num.startswith("N"):
+                        n_num = "N" + n_num
+                    hex_code = n_to_hex.get(n_num, hex_code)
+
                 if hex_code and hex_code in night_by_hex:
                     info = night_by_hex[hex_code]
+                    n_num = ac.get("n_number", "")
                     night_aircraft.append({
                         "n_number": n_num,
                         "icao_hex": hex_code,
-                        "make_model": ac.get("make", "") + " " + ac.get("model", ""),
+                        "make_model": (ac.get("mfr", "") or ac.get("make", "")) + " " + (ac.get("model", "")),
                         "night_sightings": info["night_sightings"],
                         "night_pct": info["night_pct"],
                     })
