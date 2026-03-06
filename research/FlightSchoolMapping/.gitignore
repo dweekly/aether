@@ -8,5 +8,8 @@ data/adsb/opensky_us_*.json
 
 # Exclude large generated files (reproducible via pipeline)
 output/faa_ga_registry.csv
+output/faa_master.csv
+output/faa_acftref.csv
+output/faa_school_candidates.csv
 output/fleet_html/
 output/fleet_crawl_index_jax.json
