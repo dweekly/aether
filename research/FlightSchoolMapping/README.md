@@ -5,7 +5,7 @@ on their flight line (by make/model/type), their activity rates, and their conta
 information — using publicly available ADS-B telemetry, FAA registration data, and
 targeted web scraping?
 
-**Status:** Fleet mapping complete for 2,593 schools; 1,290 with fleet data (7,297 aircraft total, 4,262 FAA-validated with N-numbers)
+**Status:** Fleet mapping complete for 2,150 deduplicated schools; 1,040 with fleet data (3,459 unique N-numbers, 3,369 FAA-validated)
 
 ---
 
@@ -369,27 +369,39 @@ ADSBX_API_KEY="..."          # for ADS-B Exchange API
 
 | Metric | Count |
 |--------|------:|
-| Schools in dataset | 2,593 |
-| Schools with fleet data | 1,290 |
-| Total aircraft found | 7,297 |
-| Aircraft with N-numbers | 4,367 |
-| — FAA-validated (active registration) | 4,262 |
-| — via web scraping | 3,919 |
-| — via FAA registrant name matching | 448 |
-| Aircraft identified by make/model only | 2,930 |
-| Aircraft with rental rates | 3,401 |
-| Schools with phone contact | 1,663 |
-| N-number FAA validation rate | 97.6% |
+| Schools in dataset (deduplicated) | 2,150 |
+| Schools with fleet data | 1,040 |
+| Total aircraft entries | 5,873 |
+| Unique N-numbers | 3,459 |
+| — FAA-validated (active registration) | 3,369 |
+| Aircraft identified by make/model only | 2,414 |
+| Aircraft with rental rates | 2,727 |
+| Schools with phone contact | 1,367 |
+| Duplicate N-numbers across schools | 0 |
+| N-number FAA validation rate | 97.4% |
 
 ### School Type Classification
 
 | Type | Count |
 |------|------:|
-| Flight school with rentals | 843 |
-| University/college program | 114 |
-| Defunct/irrelevant | 96 |
-| FBO (no training) | 63 |
-| Flight school (no rentals) | 63 |
-| Flying club | 45 |
-| Other | 194 |
-| Unclassified (from HTTP crawl) | ~1,150 |
+| Flight school with rentals | ~843 |
+| University/college program | ~114 |
+| Defunct/irrelevant | ~96 |
+| FBO (no training) | ~63 |
+| Flight school (no rentals) | ~63 |
+| Flying club | ~45 |
+| Other | ~194 |
+| Unclassified (from HTTP crawl) | ~730 |
+
+### ADS-B Cross-Validation
+
+Of 3,391 fleet aircraft with Mode S hex codes, 213 (6.3%) were observed in 7 ADS-B
+snapshots. Of those observations:
+
+- **75.4%** were within 30nm of the assigned airport (expected for training ops)
+- **41.7%** were within 10nm (pattern work / local flights)
+- **11.7%** were >100nm away (cross-country training, ferry flights)
+
+The low hit rate reflects limited snapshot coverage (7 captures over 2 days), not
+data quality — continuous ADS-B collection over weeks would validate a much larger
+fraction of the fleet.
