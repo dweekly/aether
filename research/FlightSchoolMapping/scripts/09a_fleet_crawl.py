@@ -39,11 +39,11 @@ OUTPUT_DIR = Path(__file__).parent.parent / "output"
 HTML_DIR = OUTPUT_DIR / "fleet_html"
 
 # ── Tuning knobs ─────────────────────────────────────────────────
-DEFAULT_CONCURRENCY = 200
+DEFAULT_CONCURRENCY = 50
 REQUEST_TIMEOUT = 20
-PER_SCHOOL_TIMEOUT = 90
+PER_SCHOOL_TIMEOUT = 120
 MAX_RETRIES = 2
-CONNECTOR_LIMIT = 500
+CONNECTOR_LIMIT = 300
 
 USER_AGENT = "AetherResearch/1.0 (aviation research; contact: research@aether.aero)"
 
@@ -251,7 +251,7 @@ async def fetch_html(session: aiohttp.ClientSession, url: str) -> str | None:
                     return await resp.text(errors="replace")
                 if resp.status == 429:
                     await asyncio.sleep(5 * (attempt + 1))
-        except (aiohttp.ClientError, asyncio.TimeoutError):
+        except (aiohttp.ClientError, asyncio.TimeoutError, RuntimeError):
             await asyncio.sleep(2 * (attempt + 1))
     return None
 
@@ -267,7 +267,7 @@ async def probe_url(session: aiohttp.ClientSession, url: str) -> str | None:
                 text = await resp.text(errors="replace")
                 if len(text) > 1000:
                     return str(resp.url)
-    except (aiohttp.ClientError, asyncio.TimeoutError):
+    except (aiohttp.ClientError, asyncio.TimeoutError, RuntimeError):
         pass
     return None
 
@@ -374,10 +374,11 @@ def _dedupe_urls(urls: list[str], limit: int = 16) -> list[str]:
     seen = set()
     unique = []
     for u in urls:
-        normalized = u.rstrip("/")
-        if normalized not in seen:
+        # Strip fragments — /page#section is the same as /page
+        normalized = u.split("#")[0].rstrip("/")
+        if normalized and normalized not in seen:
             seen.add(normalized)
-            unique.append(u)
+            unique.append(normalized)
     return unique[:limit]
 
 
@@ -495,18 +496,47 @@ async def _crawl_school_inner(
     # Include parent pages that are also fleet pages
     fleet_htmls.update({u: h for u, h in parent_htmls.items() if u in fleet_urls})
 
-    # Level 3: scan fleet pages for yet more sub-page links
+    # Level 3: from fleet pages, follow all same-domain links that
+    # aren't clearly site-wide nav (catches individual aircraft detail
+    # pages like /diamond-da40-180-g1000/ without following /admissions/)
+    #
+    # Heuristic: skip links whose path shares no common prefix with any
+    # fleet page beyond the bare domain root.
+    base_path = urlparse(website).path.rstrip("/") or ""
+    fleet_page_parents = set()
+    for u in fleet_urls:
+        p = urlparse(u).path.rstrip("/")
+        # Add the parent directory of each fleet page
+        parent = p.rsplit("/", 1)[0]
+        if parent:
+            fleet_page_parents.add(parent)
+    # Also include the school's base path
+    if base_path:
+        fleet_page_parents.add(base_path)
+    # For sites where fleet pages are at root (e.g. /our-fleet-rental/),
+    # allow all root-level pages
+    if "" in fleet_page_parents or "/" in fleet_page_parents or not fleet_page_parents:
+        fleet_page_parents.add("")  # allow everything
+
     extra_urls: list[str] = []
-    all_seen = {u.rstrip("/") for u in fleet_urls} | {website.rstrip("/")}
+    all_seen = {u.rstrip("/").split("#")[0].rstrip("/") for u in fleet_urls}
+    all_seen.add(website.rstrip("/"))
     for url, html in fleet_htmls.items():
         soup = BeautifulSoup(html, "html.parser")
-        for link in _find_fleet_links(url, soup):
-            if link.rstrip("/") not in all_seen:
-                extra_urls.append(link)
-                all_seen.add(link.rstrip("/"))
+        for a in soup.find_all("a", href=True):
+            full = urljoin(url, a["href"]).split("#")[0]  # strip fragments
+            if not full or full.rstrip("/") in all_seen:
+                continue
+            if not _same_domain(website, full):
+                continue
+            link_path = urlparse(full).path.rstrip("/")
+            # Check link shares a parent prefix with fleet pages
+            if any(link_path.startswith(pfx + "/") or pfx == "" for pfx in fleet_page_parents):
+                extra_urls.append(full)
+                all_seen.add(full.rstrip("/"))
 
     if extra_urls:
-        extra_urls = extra_urls[:8]
+        extra_urls = _dedupe_urls(extra_urls, limit=20)
         tasks = [fetch_html(session, url) for url in extra_urls]
         results = await asyncio.gather(*tasks, return_exceptions=True)
         for url, r in zip(extra_urls, results):
@@ -543,6 +573,38 @@ async def _crawl_school_inner(
         _save_html(rel_path, clean_html(html))
         saved_pages.append({"url": url, "html_path": rel_path, "type": "location"})
 
+    # ── Crawl quality assessment ────────────────────────────────
+    crawl_flags: list[str] = []
+
+    # Check if we found any fleet pages at all
+    fleet_pages = [p for p in saved_pages if p["type"] == "fleet"]
+    if not fleet_pages:
+        crawl_flags.append("no_fleet_pages")
+
+    # Check for thin/empty pages (JS-rendered sites return little text)
+    MIN_CONTENT_CHARS = 200
+    thin_pages = 0
+    for page in saved_pages:
+        full_path = HTML_DIR / page["html_path"]
+        if full_path.exists():
+            text = BeautifulSoup(
+                full_path.read_text(encoding="utf-8", errors="replace"),
+                "html.parser",
+            ).get_text(strip=True)
+            if len(text) < MIN_CONTENT_CHARS:
+                thin_pages += 1
+    if thin_pages == len(saved_pages):
+        crawl_flags.append("all_pages_thin")
+    elif fleet_pages and all(
+        len(BeautifulSoup(
+            (HTML_DIR / p["html_path"]).read_text(encoding="utf-8", errors="replace"),
+            "html.parser",
+        ).get_text(strip=True)) < MIN_CONTENT_CHARS
+        for p in fleet_pages
+        if (HTML_DIR / p["html_path"]).exists()
+    ):
+        crawl_flags.append("fleet_pages_thin")
+
     return {
         "school_name": school.get("name", ""),
         "school_website": website,
@@ -550,6 +612,7 @@ async def _crawl_school_inner(
         "city": school.get("city", ""),
         "state": school.get("state_name", school.get("state", "")),
         "pages": saved_pages,
+        "crawl_flags": crawl_flags,
         "crawl_ts": datetime.now(timezone.utc).isoformat(),
     }
 
@@ -615,7 +678,18 @@ async def run_async(limit: int | None = None, concurrency: int = DEFAULT_CONCURR
         total_pages = 0
         errors = 0
 
-        results = await atqdm.gather(*tasks, desc="  Crawling fleet pages")
+        pbar = atqdm(total=len(tasks), desc="  Crawling fleet pages")
+
+        async def _tracked(coro):
+            try:
+                result = await coro
+            except Exception as exc:
+                result = exc
+            pbar.update(1)
+            return result
+
+        results = await asyncio.gather(*[_tracked(t) for t in tasks])
+        pbar.close()
 
         for r in results:
             if isinstance(r, Exception):
@@ -635,12 +709,18 @@ async def run_async(limit: int | None = None, concurrency: int = DEFAULT_CONCURR
         1 for s in crawl_index
         if any(p["type"] == "fleet" for p in s["pages"])
     )
+    flagged = [s for s in crawl_index if s.get("crawl_flags")]
+    needs_browser = [s for s in flagged
+                     if "all_pages_thin" in s["crawl_flags"]
+                     or "fleet_pages_thin" in s["crawl_flags"]]
 
     print(f"\n  === Results ===")
     print(f"  Schools crawled:        {len(scrapeable):,}")
     print(f"  Schools with pages:     {len(crawl_index):,}")
     print(f"  Schools with fleet pg:  {schools_with_fleet:,}")
     print(f"  Total pages saved:      {total_pages:,}")
+    print(f"  Flagged (crawl issues): {len(flagged):,}")
+    print(f"  Needs browser (thin):   {len(needs_browser):,}")
     print(f"  Errors:                 {errors:,}")
     print(f"  Wall-clock time:        {elapsed:.1f}s")
     print(f"  HTML dir:               {HTML_DIR}")

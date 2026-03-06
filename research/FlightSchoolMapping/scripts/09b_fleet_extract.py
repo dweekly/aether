@@ -23,12 +23,15 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).resolve().parents[3] / ".env")
+
 import anthropic
 
 OUTPUT_DIR = Path(__file__).parent.parent / "output"
 HTML_DIR = OUTPUT_DIR / "fleet_html"
 
-MODEL = "claude-sonnet-4-20250514"
+MODEL = "claude-sonnet-4-6"
 MAX_TOKENS = 4096
 
 # ── Valid airport set for post-processing ────────────────────────
@@ -91,27 +94,31 @@ def _load_faa_n_numbers() -> set[str]:
 # ── Extraction prompt ────────────────────────────────────────────
 
 SYSTEM_PROMPT = """\
-You are an aviation data extraction specialist. You extract structured \
-information about flight school aircraft fleets from their website HTML.
+You are an aviation data extraction specialist. Your job is to find every \
+single aircraft that a flight school operates, rents, or uses for training, \
+plus the school's contact information.
 
-IMPORTANT RULES:
-- Only extract aircraft that the school actually operates, rents out, or \
-uses for training. Do NOT invent or hallucinate aircraft.
-- N-numbers are FAA tail numbers in the format N followed by 1-5 digits \
-and 0-2 letters (e.g., N172SP, N12345, N88PK). They uniquely identify \
-US-registered aircraft.
-- If you cannot find N-numbers on the page, still extract aircraft types \
-and other details — just leave n_number as empty string.
-- Airport codes should be 3-4 letter ICAO codes (e.g., KSQL, KPAO). \
-For 3-letter FAA codes, prepend K (e.g., SQL → KSQL).
-- Wet rates are per-hour rental rates that include fuel.
-- If information is not clearly stated on the page, leave the field empty \
-rather than guessing.
+CRITICAL: Be exhaustive. Scour every page thoroughly for:
+- FAA tail numbers (N-numbers): format is N followed by 1-5 digits and \
+0-2 letters (e.g., N172SP, N12345, N88PK, N5990E). They appear in page \
+text, URLs, image captions, table cells, sidebars — look EVERYWHERE.
+- Aircraft make/model: Cessna 172, Diamond DA40, Piper Archer, etc.
+- Rental rates: hourly wet rates, dry rates, block rates — capture what \
+you find.
+- Equipment: G1000, Garmin 430, autopilot, IFR certified, etc.
+- Contact info: phone numbers, email addresses, mailing addresses.
+
+RULES:
+- Extract EVERY aircraft you can find evidence of. Each tail number is a \
+separate aircraft entry even if same model.
+- If a page describes an aircraft without an N-number, still extract it.
+- Do NOT invent aircraft. Only extract what is actually on the pages.
+- Airport codes: use 4-letter ICAO (prepend K to 3-letter FAA codes).
 - Return ONLY the JSON object. No markdown, no explanation."""
 
 USER_PROMPT_TEMPLATE = """\
-Extract the fleet and location information for {school_name} from the \
-following web pages.
+Extract the fleet, location, and contact information for {school_name} \
+from the following web pages.
 
 Known information:
 - School website: {school_website}
@@ -120,6 +127,11 @@ Known information:
 
 Return a JSON object with this exact schema:
 {{
+  "contact": {{
+    "phone": "(555) 123-4567",
+    "email": "info@example.com",
+    "address": "123 Airport Rd, City, ST 12345"
+  }},
   "locations": [
     {{
       "airport_id": "KXXX",
@@ -134,12 +146,16 @@ Return a JSON object with this exact schema:
       "description": "IFR equipped, G1000 glass cockpit",
       "wet_rate_hr": 195.00,
       "equipment": ["G1000", "IFR certified"],
-      "airport_id": "KXXX"
+      "airport_id": "KXXX",
+      "source_url": "https://example.com/fleet/cessna-172s"
     }}
   ]
 }}
 
 Fields:
+- contact.phone: primary phone number, or "" if not found
+- contact.email: primary contact email, or "" if not found
+- contact.address: mailing/physical address, or "" if not found
 - locations[].airport_id: ICAO code (4 letters starting with K for US)
 - fleet[].n_number: FAA N-number if visible, else ""
 - fleet[].display_name: aircraft make/model (e.g. "Cessna 172S Skyhawk")
@@ -147,6 +163,10 @@ Fields:
 - fleet[].wet_rate_hr: hourly rental rate including fuel (number), or null
 - fleet[].equipment: list of notable avionics/features
 - fleet[].airport_id: which airport this aircraft is based at, if known
+- fleet[].source_url: the URL of the page with the best/most detailed \
+info about this aircraft. Prefer an individual aircraft detail page over \
+a fleet listing page. Use the exact URL from the "--- Page: <url> ---" \
+headers above.
 
 Web pages:
 
@@ -321,7 +341,7 @@ def process_results(
         # Validate and flag
         parsed = _validate_and_flag(parsed, school_meta)
 
-        # Find the best fleet page URL
+        # Find the best fleet listing page for the school
         fleet_page_url = ""
         for page in school_meta.get("pages", []):
             if page["type"] == "fleet":
@@ -331,13 +351,14 @@ def process_results(
         entry = {
             "school_name": school_meta["school_name"],
             "school_website": school_meta["school_website"],
+            "fleet_page_url": fleet_page_url,
+            "contact": parsed.get("contact", {}),
             "locations": parsed.get("locations", []),
             "fleet": parsed.get("fleet", []),
-            "fleet_page_url": fleet_page_url,
             "scrape_ts": school_meta.get("crawl_ts", ""),
         }
 
-        if entry["fleet"] or entry["locations"]:
+        if entry["fleet"] or entry["locations"] or any(entry.get("contact", {}).values()):
             flight_line.append(entry)
             successes += 1
 
@@ -355,17 +376,15 @@ def submit_batch(requests: list[dict]) -> str:
 
     batch_requests = []
     for req in requests:
-        batch_requests.append(
-            anthropic.types.messages.batch_create_params.Request(
-                custom_id=req["custom_id"],
-                params=anthropic.types.MessageCreateParamsNonStreaming(
-                    model=req["params"]["model"],
-                    max_tokens=req["params"]["max_tokens"],
-                    system=req["params"]["system"],
-                    messages=req["params"]["messages"],
-                ),
-            )
-        )
+        batch_requests.append({
+            "custom_id": req["custom_id"],
+            "params": {
+                "model": req["params"]["model"],
+                "max_tokens": req["params"]["max_tokens"],
+                "system": req["params"]["system"],
+                "messages": req["params"]["messages"],
+            },
+        })
 
     print(f"  Submitting batch of {len(batch_requests):,} requests...")
     batch = client.messages.batches.create(requests=batch_requests)
