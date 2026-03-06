@@ -127,6 +127,8 @@ Known information:
 
 Return a JSON object with this exact schema:
 {{
+  "canonical_name": "Best Human-Readable Name for This School",
+  "school_type": "flight_school_with_rentals",
   "contact": {{
     "phone": "(555) 123-4567",
     "email": "info@example.com",
@@ -153,6 +155,13 @@ Return a JSON object with this exact schema:
 }}
 
 Fields:
+- canonical_name: the best human-readable name for this flight school as it \
+would appear on a business card. Derive from the site's title, headers, \
+logo text, or about page — NOT from the directory listing or domain name. \
+For example, wvfc.org should be "West Valley Flying Club", not "WVFC".
+- school_type: one of "flight_school_with_rentals", "flight_school_no_rentals", \
+"flying_club", "fbo", "university_program", "maintenance_shop", \
+"charter_operator", "defunct", "other"
 - contact.phone: primary phone number, or "" if not found
 - contact.email: primary contact email, or "" if not found
 - contact.address: mailing/physical address, or "" if not found

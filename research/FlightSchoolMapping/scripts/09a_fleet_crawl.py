@@ -581,29 +581,38 @@ async def _crawl_school_inner(
     if not fleet_pages:
         crawl_flags.append("no_fleet_pages")
 
-    # Check for thin/empty pages (JS-rendered sites return little text)
-    MIN_CONTENT_CHARS = 200
+    # Check for thin/empty pages (JS-rendered sites return little text).
+    # Strip nav/footer/script/style before measuring — empty JS shells
+    # often have 200+ chars of HTML structure with zero visible content.
+    MIN_CONTENT_CHARS = 500
+
+    def _extract_visible_text(html_path: Path) -> str:
+        if not html_path.exists():
+            return ""
+        soup = BeautifulSoup(
+            html_path.read_text(encoding="utf-8", errors="replace"),
+            "html.parser",
+        )
+        for tag in soup(["script", "style", "nav", "footer", "header", "noscript"]):
+            tag.decompose()
+        return soup.get_text(separator=" ", strip=True)
+
     thin_pages = 0
     for page in saved_pages:
-        full_path = HTML_DIR / page["html_path"]
-        if full_path.exists():
-            text = BeautifulSoup(
-                full_path.read_text(encoding="utf-8", errors="replace"),
-                "html.parser",
-            ).get_text(strip=True)
-            if len(text) < MIN_CONTENT_CHARS:
-                thin_pages += 1
+        text = _extract_visible_text(HTML_DIR / page["html_path"])
+        if len(text) < MIN_CONTENT_CHARS:
+            thin_pages += 1
     if thin_pages == len(saved_pages):
         crawl_flags.append("all_pages_thin")
-    elif fleet_pages and all(
-        len(BeautifulSoup(
-            (HTML_DIR / p["html_path"]).read_text(encoding="utf-8", errors="replace"),
-            "html.parser",
-        ).get_text(strip=True)) < MIN_CONTENT_CHARS
-        for p in fleet_pages
-        if (HTML_DIR / p["html_path"]).exists()
-    ):
-        crawl_flags.append("fleet_pages_thin")
+
+    # Also flag if fleet pages specifically are thin, even if other pages aren't
+    if fleet_pages:
+        fleet_thin = all(
+            len(_extract_visible_text(HTML_DIR / p["html_path"])) < MIN_CONTENT_CHARS
+            for p in fleet_pages
+        )
+        if fleet_thin:
+            crawl_flags.append("fleet_pages_thin")
 
     return {
         "school_name": school.get("name", ""),
