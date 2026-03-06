@@ -5,7 +5,7 @@ on their flight line (by make/model/type), their activity rates, and their conta
 information — using publicly available ADS-B telemetry, FAA registration data, and
 targeted web scraping?
 
-**Status:** Directory data collected (FAA Part 141 + AOPA + web scrapers); fleet mapping in progress
+**Status:** Fleet mapping complete for 2,593 schools; 1,314 with identified aircraft (7,457 total, 3,974 with N-numbers)
 
 ---
 
@@ -73,21 +73,52 @@ Source: [FAA NASR 28-day data](https://www.faa.gov/air_traffic/flight_info/aeron
   - Flag clusters of training-type aircraft under the same operator → likely flight school
 - Cross-reference with known flight school databases and web presence
 
-### Phase 4: Flight School Enrichment (Web Scraping)
+### Phase 4: Fleet Page Scraping — HTTP Crawl (09a + 09b)
 
-For each candidate flight school entity identified in Phases 1–3:
+For each of the ~3,965 flight schools with known websites:
 
-1. **Web search** — search for "{school name} {airport code} flight school"
-2. **Website scrape** — extract from school websites:
-   - Physical/mailing address
-   - Phone number, email, contact form URL
-   - Fleet page (aircraft listed on their site)
-   - Ratings offered (PPL, IR, CPL, CFI, etc.)
-3. **Cross-validate** — compare website fleet list against our ADS-B/FAA-derived fleet
-4. **Directory sources** — scrape/query:
-   - AOPA flight school finder
-   - Flight School Association of North America (FSANA) directory
-   - Google Maps / Yelp business listings for airport addresses
+1. **Async HTTP crawl** (`09a_fleet_crawl.py`) — aiohttp-based crawler with three-level
+   link discovery:
+   - Level 1: Homepage links matching fleet/aircraft/rental keywords
+   - Level 2: Parent path discovery from fleet page URLs
+   - Level 3: Internal links from fleet pages with path-prefix filtering
+   - Saves cleaned HTML to `output/fleet_html/`; outputs `fleet_crawl_index.json`
+   - Flags JS-rendered sites returning thin content for browser re-crawl
+
+2. **LLM extraction** (`09b_fleet_extract.py`) — Anthropic Message Batches API
+   (Sonnet 4.6) for structured extraction from cached HTML:
+   - Extracts N-numbers, aircraft make/model, rates, equipment, contact info
+   - Per-aircraft source URLs pointing to best detail page
+   - Results: 2,790 schools processed, 938 with fleet data, 5,290 aircraft
+
+### Phase 4b: Fleet Page Scraping — Browser Crawl (10)
+
+For the ~1,985 schools that returned thin/empty content via HTTP (JS-rendered
+sites like Squarespace, Wix, React apps):
+
+1. **Playwright browser crawl** (`10_fleet_browser_crawl.py`) — headless Chromium
+   renders each site, extracts text from the fully-rendered DOM:
+   - 50 parallel browser processes (one per worker, not shared context)
+   - Heuristic link discovery from rendered page for fleet/rental/aircraft pages
+   - PDF rate sheet detection and text extraction via pdfplumber
+   - Rendered text cached to `output/fleet_browser_text/` for re-extraction
+   - Live progress dashboard at `output/dashboard.html`
+
+2. **LLM extraction** — same Sonnet 4.6 batch extraction, now with `school_type`
+   classification to filter chaff:
+   - `flight_school_with_rentals` (844), `flying_club` (45),
+     `university_program` (113), `fbo` (64), `defunct` (96), etc.
+   - Results: 1,190 additional schools extracted, 680 with fleet data
+
+### Phase 5: FAA Registry Enrichment
+
+Cross-reference extracted N-numbers against FAA ReleasableAircraft database:
+
+- 97.4% of extracted N-numbers match valid FAA registrations
+- Each aircraft enriched with: serial number, FAA manufacturer/model, year
+  manufactured, registrant name/address, Mode S hex code, airworthiness dates,
+  engine/aircraft type codes
+- Mode S hex codes enable ADS-B cross-referencing
 
 ## Output Schema
 
@@ -171,7 +202,9 @@ flight_schools:
 | `scripts/07_assemble_dataset.py` | Combine all sources into final output dataset |
 | `scripts/08_directory_scraper.py` | Scrape bestaviation.net and faaflightschools.com directories |
 | `scripts/08b_aopa_directory.py` | Fetch AOPA flight school directory via Coveo API (2,255 schools) |
-| `scripts/09_fleet_scraper.py` | Scrape fleet info from school websites |
+| `scripts/09a_fleet_crawl.py` | Async HTTP crawl of flight school websites for fleet pages |
+| `scripts/09b_fleet_extract.py` | Sonnet 4.6 batch extraction of fleet data from cached HTML |
+| `scripts/10_fleet_browser_crawl.py` | Playwright browser crawl + Sonnet extraction for JS-rendered sites |
 | `scripts/10_adsb_scheduled.py` | Scheduled ADS-B data collection |
 | `scripts/11_school_aircraft_merge.py` | Merge school directory with fleet/ADS-B data |
 | `scripts/12_night_flying.py` | Night flying analysis: solar position calc, day/night classification, per-school night ops |
@@ -290,10 +323,29 @@ Each snapshot is saved as `data/adsb/snapshots/snapshot_YYYYMMDD_HHMMSS[_night].
 ## Prerequisites
 
 ```bash
-pip install requests beautifulsoup4 pandas geopy tqdm
+cd scripts
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+playwright install chromium  # for browser-based crawl (10_)
 ```
 
-Optional for ADS-B Exchange API access:
+API keys (in `../../.env` or environment):
 ```bash
-export ADSBX_API_KEY="your-api-key-here"
+ANTHROPIC_API_KEY="sk-..."   # for Sonnet extraction (09b, 10)
+ADSBX_API_KEY="..."          # for ADS-B Exchange API
 ```
+
+## Current Results (as of March 2026)
+
+| Metric | Count |
+|--------|------:|
+| Schools in dataset | 2,593 |
+| Schools with identified fleet | 1,314 |
+| Total aircraft found | 7,457 |
+| Aircraft with N-numbers | 3,974 |
+| Aircraft with rental rates | 3,414 |
+| Schools with phone contact | 1,655 |
+| N-numbers validated against FAA registry | 97.4% |
+| Schools classified as flight school w/ rentals | 844 |
+| Schools classified as flying clubs | 45 |
+| Defunct/irrelevant entities filtered | 96+ |

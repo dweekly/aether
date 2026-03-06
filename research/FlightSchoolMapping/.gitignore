@@ -12,4 +12,7 @@ output/faa_master.csv
 output/faa_acftref.csv
 output/faa_school_candidates.csv
 output/fleet_html/
+output/fleet_browser_text/
+output/fleet_browser_progress.json
 output/fleet_crawl_index_jax.json
+output/jato_rate_sheet_*.png
