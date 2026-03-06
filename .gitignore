@@ -13,5 +13,6 @@ local.properties
 
 # Flight School Mapping — large data files
 research/FlightSchoolMapping/data/
+!research/FlightSchoolMapping/data/adsb/snapshots/
 research/FlightSchoolMapping/output/faa_ga_registry.csv
 .env
