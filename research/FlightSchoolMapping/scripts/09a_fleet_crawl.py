@@ -302,6 +302,8 @@ def clean_html(raw_html: str) -> str:
         re.IGNORECASE,
     )
     for tag in soup.find_all(True):
+        if tag.attrs is None:
+            continue
         classes = " ".join(tag.get("class", []))
         tag_id = tag.get("id", "")
         if boilerplate_patterns.search(classes) or boilerplate_patterns.search(tag_id):
@@ -309,6 +311,8 @@ def clean_html(raw_html: str) -> str:
 
     # Strip all attributes except href (needed for link context)
     for tag in soup.find_all(True):
+        if tag.attrs is None:
+            continue
         attrs = dict(tag.attrs)
         for attr in attrs:
             if attr != "href":
