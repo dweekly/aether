@@ -177,6 +177,105 @@ flight_schools:
 | `scripts/12_night_flying.py` | Night flying analysis: solar position calc, day/night classification, per-school night ops |
 | `scripts/run_pipeline.py` | Orchestrate full pipeline end-to-end |
 
+## Taking an ADS-B Snapshot
+
+ADS-B snapshots capture a point-in-time view of all US-registered aircraft broadcasting
+their position via the OpenSky Network. Each snapshot records ~3,000–5,000 aircraft with
+their ICAO hex, position, altitude, ground status, and callsign.
+
+### Quick start: single snapshot
+
+```bash
+cd research/FlightSchoolMapping
+python scripts/10_adsb_scheduled.py --snapshot
+```
+
+This fetches all US airspace from OpenSky, filters to US-registered aircraft (ICAO hex
+starting with `A`), and saves a timestamped JSON to `data/adsb/snapshots/`.
+
+### Daytime collection (14-day scheduled)
+
+```bash
+python scripts/10_adsb_scheduled.py --start
+```
+
+Captures at 10 AM, noon, and 2 PM local time daily for 14 days. Runs as a foreground
+process — use `tmux`, `screen`, or `nohup` to keep it alive.
+
+### Night capture
+
+```bash
+python scripts/12_night_flying.py --capture
+```
+
+Captures at 7 PM, 9 PM, 11 PM, and 1 AM local time for 14 days. Each snapshot is saved
+with a `_night` label.
+
+### Processing snapshots after collection
+
+```bash
+# Aggregate daytime snapshots into per-aircraft activity summaries
+python scripts/10_adsb_scheduled.py --aggregate
+
+# Classify all snapshots (day and night) by solar position, cross-reference with schools
+python scripts/12_night_flying.py --analyze
+
+# Print a human-readable night flying report
+python scripts/12_night_flying.py --report
+```
+
+### Checking status
+
+```bash
+python scripts/10_adsb_scheduled.py --status
+```
+
+Shows snapshot count, date range, and completion percentage against the 14-day plan.
+
+### Environment variables
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `OPENSKY_USER` | No | OpenSky Network username (higher rate limits) |
+| `OPENSKY_PASS` | No | OpenSky Network password |
+| `ADSBX_API_KEY` | No | ADS-B Exchange RapidAPI key (alternative source) |
+| `TZ` | No | Timezone for capture scheduling (default: `America/New_York` for daytime, `America/Los_Angeles` for night) |
+
+### Snapshot file format
+
+Each snapshot is saved as `data/adsb/snapshots/snapshot_YYYYMMDD_HHMMSS[_night].json`:
+
+```json
+{
+  "capture_utc": "2026-03-05T04:59:21+00:00",
+  "total_aircraft": 3412,
+  "on_ground": 991,
+  "aircraft": [
+    {
+      "icao_hex": "A12345",
+      "callsign": "N12345",
+      "latitude": 37.46,
+      "longitude": -122.12,
+      "altitude_m": 457.2,
+      "on_ground": false,
+      "velocity_ms": 51.3,
+      "heading": 270.0,
+      "timestamp": 1741150761
+    }
+  ]
+}
+```
+
+### Tips
+
+- **Anonymous access** works but is rate-limited (~5 req/min). Add OpenSky credentials for
+  higher throughput.
+- **One snapshot ≈ one API call.** The OpenSky `/states/all` endpoint returns all aircraft in
+  the US bounding box in a single response.
+- **Night determination** is computed per-aircraft from its lat/lon using solar position math
+  (civil twilight at -6°, matching FAR § 1.1 "night" definition). No external API needed.
+- **Snapshot size** is typically 1–3 MB of JSON per capture.
+
 ## Legal & Ethical Notes
 
 - **FAA data** is public domain (government data, no copyright)
