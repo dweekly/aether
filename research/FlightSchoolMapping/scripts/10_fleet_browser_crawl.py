@@ -671,7 +671,13 @@ async def main():
             return
         with open(BROWSER_INDEX) as f:
             browser_data = json.load(f)
-        school_by_id = {f"browser_{i:04d}": entry for i, entry in enumerate(browser_data)}
+        # Build lookup by both URL-hash and legacy index-based IDs
+        school_by_id = {}
+        for i, entry in enumerate(browser_data):
+            school_by_id[f"browser_{i:04d}"] = entry
+            url = entry.get('school_website', '')
+            url_hash = hashlib.md5(url.encode()).hexdigest()[:8]
+            school_by_id[f"b_{url_hash}"] = entry
 
         existing_fl = {}
         if FLIGHT_LINE.exists():
@@ -688,6 +694,9 @@ async def main():
             except Exception:
                 continue
             school_data = school_by_id.get(r.custom_id, {})
+            if not school_data:
+                print(f"  Warning: no school found for custom_id={r.custom_id}")
+                continue
             merged = merge_extraction(school_data, extraction, school_data)
             if merged.get('fleet') or merged.get('contact', {}).get('phone') or merged.get('school_type'):
                 existing_fl[merged['school_website']] = merged
@@ -738,7 +747,9 @@ async def main():
             batch_requests = []
             for i, cr in enumerate(browser_data):
                 pc = build_pages_content(cr)
-                req = build_batch_request(cr, pc, f"browser_{i:04d}")
+                url = cr.get('school_website', '')
+                url_hash = hashlib.md5(url.encode()).hexdigest()[:8]
+                req = build_batch_request(cr, pc, f"b_{url_hash}")
                 if req:
                     batch_requests.append(req)
             print(f"Submitting {len(batch_requests)} batch requests...")
