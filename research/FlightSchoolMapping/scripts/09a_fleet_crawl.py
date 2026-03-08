@@ -702,7 +702,11 @@ async def _crawl_school_inner(
 
 # ── Main ─────────────────────────────────────────────────────────
 
-async def run_async(limit: int | None = None, concurrency: int = DEFAULT_CONCURRENCY):
+async def run_async(
+    limit: int | None = None,
+    concurrency: int = DEFAULT_CONCURRENCY,
+    source_filter: str | None = None,
+):
     print("=" * 60)
     print("Phase 9a: Fleet Page Crawl")
     print(f"  Concurrency: {concurrency} schools at once")
@@ -718,6 +722,10 @@ async def run_async(limit: int | None = None, concurrency: int = DEFAULT_CONCURR
     print(f"  Directory schools: {len(schools):,}")
     schools = merge_aopa_schools(schools)
     print(f"  Total schools: {len(schools):,}")
+
+    if source_filter:
+        schools = [s for s in schools if s.get("source") == source_filter]
+        print(f"  Filtered to source={source_filter}: {len(schools):,}")
 
     if limit:
         schools = schools[:limit]
@@ -783,10 +791,21 @@ async def run_async(limit: int | None = None, concurrency: int = DEFAULT_CONCURR
 
     elapsed = time.time() - t0
 
-    # Save crawl index
+    # Save crawl index (merge if filtering by source)
     index_path = OUTPUT_DIR / "fleet_crawl_index.json"
+    if source_filter and index_path.exists():
+        with open(index_path) as f:
+            existing = json.load(f)
+        # Build set of websites being updated
+        new_websites = {s["school_website"] for s in crawl_index if s.get("school_website")}
+        merged = [s for s in existing if s.get("school_website") not in new_websites]
+        merged.extend(crawl_index)
+        crawl_index_out = merged
+        print(f"\n  Merged {len(crawl_index)} new + {len(merged) - len(crawl_index)} existing = {len(merged)} total")
+    else:
+        crawl_index_out = crawl_index
     with open(index_path, "w") as f:
-        json.dump(crawl_index, f, indent=2)
+        json.dump(crawl_index_out, f, indent=2)
 
     schools_with_fleet = sum(
         1 for s in crawl_index
@@ -818,8 +837,9 @@ def main():
     parser = argparse.ArgumentParser(description="Phase 9a: Crawl flight school fleet pages")
     parser.add_argument("--limit", type=int, help="Max schools to crawl (for testing)")
     parser.add_argument("--concurrency", type=int, default=DEFAULT_CONCURRENCY)
+    parser.add_argument("--source", type=str, help="Filter by source field (e.g. cirrus_training_network)")
     args = parser.parse_args()
-    asyncio.run(run_async(limit=args.limit, concurrency=args.concurrency))
+    asyncio.run(run_async(limit=args.limit, concurrency=args.concurrency, source_filter=args.source))
 
 
 if __name__ == "__main__":

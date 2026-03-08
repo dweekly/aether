@@ -475,6 +475,8 @@ def main():
     parser.add_argument("--limit", type=int, help="Max schools to process")
     parser.add_argument("--poll", type=str, help="Poll an existing batch ID instead of submitting")
     parser.add_argument("--sync", action="store_true", help="Use sync API instead of batch (testing)")
+    parser.add_argument("--source", type=str, help="Filter crawl index to schools from this source")
+    parser.add_argument("--merge", action="store_true", help="Merge into existing flight_line.json instead of overwriting")
     args = parser.parse_args()
 
     print("=" * 60)
@@ -490,6 +492,24 @@ def main():
         crawl_index = json.load(f)
 
     print(f"  Schools in crawl index: {len(crawl_index):,}")
+
+    if args.source:
+        # Filter to schools whose website matches the source in enriched data
+        enriched_path = OUTPUT_DIR / "flight_schools_enriched.json"
+        if enriched_path.exists():
+            with open(enriched_path) as f:
+                enriched = json.load(f)
+            source_websites = set()
+            for s in enriched:
+                if s.get("source") == args.source:
+                    web = (s.get("website") or "").rstrip("/")
+                    if web:
+                        source_websites.add(web)
+            crawl_index = [
+                s for s in crawl_index
+                if (s.get("school_website") or "").rstrip("/") in source_websites
+            ]
+            print(f"  Filtered to source={args.source}: {len(crawl_index):,}")
 
     if args.limit:
         crawl_index = crawl_index[:args.limit]
@@ -531,12 +551,22 @@ def main():
     # Process results
     flight_line = process_results(crawl_index, results, requests)
 
-    # Save
+    # Save (merge if requested)
     out_path = OUTPUT_DIR / "flight_line.json"
+    if args.merge and out_path.exists():
+        with open(out_path) as f:
+            existing = json.load(f)
+        new_websites = {s["school_website"] for s in flight_line if s.get("school_website")}
+        merged = [s for s in existing if s.get("school_website") not in new_websites]
+        merged.extend(flight_line)
+        flight_line_out = merged
+        print(f"\n  Merged {len(flight_line)} new + {len(merged) - len(flight_line)} existing = {len(merged)} total")
+    else:
+        flight_line_out = flight_line
     with open(out_path, "w") as f:
-        json.dump(flight_line, f, indent=2)
+        json.dump(flight_line_out, f, indent=2)
 
-    # Summary stats
+    # Summary stats (report on newly extracted, not full merged set)
     total_aircraft = sum(len(s["fleet"]) for s in flight_line)
     flagged_aircraft = sum(
         1 for s in flight_line for a in s["fleet"] if a.get("_flags")
