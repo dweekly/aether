@@ -203,16 +203,21 @@ def aggregate_snapshots():
         apt_index = AirportIndex(airport_coords)
         print(f"  Airport KD-tree built: {len(airport_coords)} airports")
 
-    # Process all snapshots
+    # Process all snapshots — track per-aircraft, per-day last sighting
     from collections import Counter, defaultdict
 
     aircraft_sightings: dict[str, int] = Counter()
     aircraft_ground: dict[str, int] = Counter()
     aircraft_airports: dict[str, Counter] = defaultdict(Counter)
 
+    # For overnight logic: track last sighting of each aircraft each day
+    # Key: (hex, date_str) -> (timestamp, nearest_airport_or_None)
+    last_sighting_by_day: dict[tuple[str, str], tuple[int, str]] = {}
+
     for snap_path in snapshot_files:
         with open(snap_path) as f:
             snap = json.load(f)
+        capture_ts = snap.get("capture_utc", "")
         for ac in snap.get("aircraft", []):
             hex_code = ac.get("icao_hex", "")
             if not hex_code:
@@ -220,23 +225,72 @@ def aggregate_snapshots():
             aircraft_sightings[hex_code] += 1
             if ac.get("on_ground"):
                 aircraft_ground[hex_code] += 1
-                lat = ac.get("latitude")
-                lon = ac.get("longitude")
-                if lat and lon and apt_index is not None:
-                    nearest = apt_index.nearest(float(lat), float(lon))
-                    if nearest:
-                        aircraft_airports[hex_code][nearest] += 1
+
+            # Find nearest airport for every sighting
+            lat = ac.get("latitude")
+            lon = ac.get("longitude")
+            nearest = ""
+            if lat and lon and apt_index is not None:
+                nearest = apt_index.nearest(float(lat), float(lon))
+            if nearest:
+                aircraft_airports[hex_code][nearest] += 1
+
+            # Track last sighting per day for overnight assignment
+            ts = ac.get("timestamp") or 0
+            date_str = capture_ts[:10] if capture_ts else ""
+            if not date_str and ts:
+                date_str = datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y-%m-%d")
+            if date_str:
+                key = (hex_code, date_str)
+                prev = last_sighting_by_day.get(key)
+                if prev is None or ts >= prev[0]:
+                    last_sighting_by_day[key] = (ts, nearest)
+
+    # Compute overnight airport tally per aircraft.
+    # For each aircraft, sort days observed. The last sighting of each day
+    # determines where it overnighted. If no observation on a day but we
+    # saw it on a prior day, carry forward (presume still at last airport).
+    aircraft_overnights: dict[str, Counter] = defaultdict(Counter)
+
+    # Group by aircraft
+    hex_days: dict[str, dict[str, str]] = defaultdict(dict)
+    for (hex_code, date_str), (ts, airport) in last_sighting_by_day.items():
+        hex_days[hex_code][date_str] = airport
+
+    # Get the full date range
+    all_dates = sorted(set(d for days in hex_days.values() for d in days))
+
+    for hex_code, days in hex_days.items():
+        last_known_airport = ""
+        for date in all_dates:
+            if date in days:
+                ap = days[date]
+                if ap:
+                    last_known_airport = ap
+            # Overnight at last known airport (carry forward if not seen)
+            if last_known_airport:
+                aircraft_overnights[hex_code][last_known_airport] += 1
 
     # Build summary
     print(f"\n  Unique aircraft seen: {len(aircraft_sightings)}")
+    with_overnight = sum(1 for h in aircraft_overnights if aircraft_overnights[h])
+    print(f"  With overnight airport: {with_overnight}")
 
     summary_records = []
     for hex_code in sorted(aircraft_sightings, key=aircraft_sightings.get, reverse=True):
         total = aircraft_sightings[hex_code]
         ground = aircraft_ground.get(hex_code, 0)
         airport_counts = aircraft_airports.get(hex_code, Counter())
-        home_airport = airport_counts.most_common(1)[0][0] if airport_counts else ""
-        home_count = airport_counts.most_common(1)[0][1] if airport_counts else 0
+        overnight_counts = aircraft_overnights.get(hex_code, Counter())
+
+        # Home airport = plurality of overnights
+        if overnight_counts:
+            home_airport = overnight_counts.most_common(1)[0][0]
+            home_nights = overnight_counts.most_common(1)[0][1]
+        else:
+            # Fallback to most-frequent proximity sighting
+            home_airport = airport_counts.most_common(1)[0][0] if airport_counts else ""
+            home_nights = 0
 
         summary_records.append({
             "icao_hex": hex_code,
@@ -244,8 +298,9 @@ def aggregate_snapshots():
             "on_ground_count": ground,
             "on_ground_pct": round(ground / total, 3) if total else 0,
             "home_airport": home_airport,
-            "home_airport_sightings": home_count,
+            "home_airport_nights": home_nights,
             "airports_seen": dict(airport_counts),
+            "overnight_airports": dict(overnight_counts),
             "n_snapshots": len(snapshot_files),
         })
 

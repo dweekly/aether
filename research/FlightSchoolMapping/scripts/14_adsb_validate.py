@@ -127,6 +127,7 @@ def validate_fleet(flight_line, hex_activity, airports):
             if act:
                 rec["seen"] = True
                 rec["sightings"] = act.get("total_sightings", 0)
+                rec["home_nights"] = act.get("home_airport_nights", 0)
                 rec["home_airport"] = act.get("home_airport", "")
 
                 # Check home airport match (with/without K prefix)
