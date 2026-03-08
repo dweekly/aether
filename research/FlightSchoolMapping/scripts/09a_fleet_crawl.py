@@ -238,8 +238,15 @@ def merge_aopa_schools(enriched: list[dict]) -> list[dict]:
 
 # ── Async HTTP helpers ───────────────────────────────────────────
 
-async def fetch_html(session: aiohttp.ClientSession, url: str) -> str | None:
-    """Fetch raw HTML with retries. Returns HTML string or None."""
+async def fetch_html(
+    session: aiohttp.ClientSession, url: str, *, capture_meta: bool = False,
+) -> str | dict | None:
+    """Fetch raw HTML with retries.
+
+    If capture_meta=False (default), returns HTML string or None.
+    If capture_meta=True, returns {"html": str, "final_url": str, "status": int}
+    or None on total failure.
+    """
     for attempt in range(MAX_RETRIES):
         try:
             async with session.get(
@@ -248,7 +255,16 @@ async def fetch_html(session: aiohttp.ClientSession, url: str) -> str | None:
                 allow_redirects=True,
             ) as resp:
                 if resp.status == 200:
-                    return await resp.text(errors="replace")
+                    html = await resp.text(errors="replace")
+                    if capture_meta:
+                        return {
+                            "html": html,
+                            "final_url": str(resp.url),
+                            "status": resp.status,
+                        }
+                    return html
+                if capture_meta and resp.status in (403, 503):
+                    return {"html": "", "final_url": str(resp.url), "status": resp.status}
                 if resp.status == 429:
                     await asyncio.sleep(5 * (attempt + 1))
         except (aiohttp.ClientError, asyncio.TimeoutError, RuntimeError):
@@ -458,12 +474,48 @@ async def _crawl_school_inner(
     if not website.startswith("http"):
         website = "https://" + website
 
-    # Fetch home page
-    home_html = await fetch_html(session, website)
-    if not home_html:
+    # Fetch home page (with metadata to capture redirects and status)
+    home_result = await fetch_html(session, website, capture_meta=True)
+    if not home_result:
         return None
 
+    home_html = home_result["html"]
+    final_url = home_result["final_url"]
+    http_status = home_result["status"]
+
+    if not home_html:
+        # Got a status code but no content (403, 503, etc.)
+        blocked = {
+            "school_name": school.get("name", ""),
+            "school_website": website,
+            "known_airport": school.get("airport_code", ""),
+            "city": school.get("city", ""),
+            "state": school.get("state_name", school.get("state", "")),
+            "pages": [],
+            "crawl_flags": [f"http_{http_status}"],
+            "crawl_ts": datetime.now(timezone.utc).isoformat(),
+        }
+        # Still track if we were redirected before being blocked
+        from_domain = urlparse(website).netloc.replace("www.", "")
+        to_domain = urlparse(final_url).netloc.replace("www.", "")
+        if from_domain != to_domain:
+            blocked["redirect_domain"] = to_domain
+        return blocked
+
     home_soup = BeautifulSoup(home_html, "html.parser")
+
+    # Extract canonical URL from <link rel="canonical">
+    canonical_url = ""
+    canon_tag = home_soup.find("link", rel="canonical")
+    if canon_tag and canon_tag.get("href"):
+        canonical_url = canon_tag["href"].strip()
+
+    # Track if we were redirected to a different domain
+    redirect_domain = ""
+    from_domain = urlparse(website).netloc.replace("www.", "")
+    to_domain = urlparse(final_url).netloc.replace("www.", "")
+    if from_domain != to_domain:
+        redirect_domain = to_domain
 
     # ── Fleet page discovery (3 levels, same as original) ────────
     # Level 1: fleet links from home page
@@ -573,8 +625,25 @@ async def _crawl_school_inner(
         _save_html(rel_path, clean_html(html))
         saved_pages.append({"url": url, "html_path": rel_path, "type": "location"})
 
+    # ── Captcha / challenge detection (200 responses with no real content) ──
+    CAPTCHA_SIGNATURES = [
+        "sg-captcha", "cf-challenge", "challenge-form", "challenge-platform",
+        "just a moment", "checking your browser", "verify you are human",
+        "please wait while we verify", "ddos protection by",
+        "attention required", "access denied", "sucuri website firewall",
+        "incapsula incident", "pardon our interruption",
+    ]
+
+    def _looks_like_captcha(html_text: str) -> bool:
+        lower = html_text.lower()
+        return any(sig in lower for sig in CAPTCHA_SIGNATURES)
+
     # ── Crawl quality assessment ────────────────────────────────
     crawl_flags: list[str] = []
+
+    # Check if home page is actually a captcha/challenge page
+    if _looks_like_captcha(home_html):
+        crawl_flags.append("captcha_challenge")
 
     # Check if we found any fleet pages at all
     fleet_pages = [p for p in saved_pages if p["type"] == "fleet"]
@@ -614,7 +683,7 @@ async def _crawl_school_inner(
         if fleet_thin:
             crawl_flags.append("fleet_pages_thin")
 
-    return {
+    result = {
         "school_name": school.get("name", ""),
         "school_website": website,
         "known_airport": school.get("airport_code", ""),
@@ -624,6 +693,11 @@ async def _crawl_school_inner(
         "crawl_flags": crawl_flags,
         "crawl_ts": datetime.now(timezone.utc).isoformat(),
     }
+    if canonical_url:
+        result["canonical_url"] = canonical_url
+    if redirect_domain:
+        result["redirect_domain"] = redirect_domain
+    return result
 
 
 # ── Main ─────────────────────────────────────────────────────────

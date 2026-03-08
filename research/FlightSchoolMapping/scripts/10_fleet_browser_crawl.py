@@ -383,7 +383,37 @@ async def crawl_school_browser(context: BrowserContext, school: dict) -> dict:
                 result['crawl_flags'].append('homepage_failed')
                 return result
 
+        # Capture final URL after redirects and canonical URL
+        final_url = page.url
+        from_domain = urlparse(website).netloc.replace("www.", "")
+        to_domain = urlparse(final_url).netloc.replace("www.", "")
+        if from_domain != to_domain:
+            result['redirect_domain'] = to_domain
+
+        # Extract canonical URL from rendered DOM
+        try:
+            canonical = await page.evaluate(
+                '(() => { const el = document.querySelector("link[rel=canonical]"); return el ? el.href : ""; })()'
+            )
+            if canonical:
+                result['canonical_url'] = canonical.strip()
+        except Exception:
+            pass
+
         home_text = await get_page_text(page)
+
+        # Captcha/challenge detection
+        CAPTCHA_SIGNATURES = [
+            "sg-captcha", "cf-challenge", "challenge-form", "challenge-platform",
+            "just a moment", "checking your browser", "verify you are human",
+            "please wait while we verify", "ddos protection by",
+            "attention required", "access denied", "sucuri website firewall",
+            "incapsula incident", "pardon our interruption",
+        ]
+        home_lower = home_text.lower()
+        if any(sig in home_lower for sig in CAPTCHA_SIGNATURES):
+            result['crawl_flags'].append('captcha_challenge')
+
         text_path = save_page_text(website, website, home_text)
         home_links = await extract_links(page, website)
         result['pages'].append({
