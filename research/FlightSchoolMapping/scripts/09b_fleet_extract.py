@@ -272,8 +272,31 @@ def _parse_llm_response(text: str) -> dict | None:
     return None
 
 
+def _try_fix_n_number(nn: str, faa_numbers: set[str]) -> str | None:
+    """Try to auto-correct an invalid N-number. Returns corrected or None."""
+    import re
+    # Too many characters — try stripping leading digit(s) after N
+    # e.g. N16186T (from URL slug) -> N6186T
+    if len(nn) > 7:  # N + max 6 chars
+        for trim in range(1, len(nn) - 5):
+            candidate = "N" + nn[1 + trim:]
+            if re.match(r"^N\d{1,5}[A-Z]{0,2}$", candidate) and candidate in faa_numbers:
+                return candidate
+
+    # Common OCR-style substitutions: O↔0, I↔1, S↔5
+    subs = {"O": "0", "0": "O", "I": "1", "1": "I", "S": "5", "5": "S"}
+    for i, ch in enumerate(nn[1:], 1):
+        if ch in subs:
+            candidate = nn[:i] + subs[ch] + nn[i + 1:]
+            if re.match(r"^N\d{1,5}[A-Z]{0,2}$", candidate) and candidate in faa_numbers:
+                return candidate
+
+    return None
+
+
 def _validate_and_flag(school_entry: dict, school_meta: dict) -> dict:
     """Validate extracted data and flag suspicious entries."""
+    import re
     valid_airports = _load_valid_airports()
     faa_numbers = _load_faa_n_numbers()
 
@@ -288,12 +311,21 @@ def _validate_and_flag(school_entry: dict, school_meta: dict) -> dict:
         flags: list[str] = []
         nn = (ac.get("n_number") or "").upper()
         if nn:
-            # Check format: N + 1-5 digits + 0-2 letters
-            import re
-            if not re.match(r"^N\d{1,5}[A-Z]{0,2}$", nn):
-                flags.append("invalid_n_number_format")
-            elif faa_numbers and nn not in faa_numbers:
-                flags.append("n_number_not_in_faa_registry")
+            valid_format = bool(re.match(r"^N\d{1,5}[A-Z]{0,2}$", nn))
+            in_registry = faa_numbers and nn in faa_numbers
+
+            if not valid_format or (faa_numbers and not in_registry):
+                # Try auto-correction
+                fixed = _try_fix_n_number(nn, faa_numbers) if faa_numbers else None
+                if fixed:
+                    ac["n_number"] = fixed
+                    ac.setdefault("_corrections", []).append(
+                        f"n_number: {nn} -> {fixed}"
+                    )
+                elif not valid_format:
+                    flags.append("invalid_n_number_format")
+                else:
+                    flags.append("n_number_not_in_faa_registry")
 
         airport = (ac.get("airport_id") or "").upper()
         if airport and airport not in valid_airports:
