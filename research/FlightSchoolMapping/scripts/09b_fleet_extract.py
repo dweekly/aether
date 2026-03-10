@@ -389,6 +389,13 @@ def process_results(
                 fleet_page_url = page["url"]
                 break
 
+        # Tag each aircraft with extraction provenance
+        for aircraft in parsed.get("fleet", []):
+            if "_extraction_method" not in aircraft:
+                aircraft["_extraction_method"] = "sonnet_text"
+            if "_extracted_at" not in aircraft:
+                aircraft["_extracted_at"] = school_meta.get("crawl_ts", "")
+
         entry = {
             "school_name": school_meta["school_name"],
             "school_website": school_meta["school_website"],

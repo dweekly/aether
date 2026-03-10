@@ -769,6 +769,14 @@ def merge_extraction(school: dict, extraction: dict, crawl_result: dict) -> dict
             fleet_page_url = pg['url']
             break
 
+    # Tag each aircraft with extraction provenance
+    ts = datetime.now(timezone.utc).isoformat()
+    for aircraft in extraction.get("fleet", []):
+        if "_extraction_method" not in aircraft:
+            aircraft["_extraction_method"] = "sonnet_text"
+        if "_extracted_at" not in aircraft:
+            aircraft["_extracted_at"] = ts
+
     return {
         "school_name": school.get("school_name", ""),
         "school_website": school.get("school_website", ""),
@@ -778,7 +786,7 @@ def merge_extraction(school: dict, extraction: dict, crawl_result: dict) -> dict
         "contact": extraction.get("contact", {"phone": "", "email": "", "address": ""}),
         "locations": extraction.get("locations", []),
         "fleet": extraction.get("fleet", []),
-        "scrape_ts": datetime.now(timezone.utc).isoformat(),
+        "scrape_ts": ts,
         "source": "browser_crawl",
     }
 

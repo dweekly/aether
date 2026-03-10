@@ -5,7 +5,7 @@ on their flight line (by make/model/type), their activity rates, and their conta
 information — using publicly available ADS-B telemetry, FAA registration data, and
 targeted web scraping?
 
-**Status:** Corpus substantially complete — 2,586 schools, 8,932 aircraft, 4,862 unique N-numbers, 678 schools with rental rates. ADS-B cross-validation ongoing (246+ snapshots, CONUS + Hawaii + Alaska coverage).
+**Status:** Corpus substantially complete — 2,302 schools (deduped), 7,661 aircraft, 4,654 unique N-numbers, 2,934 with rates. ADS-B cross-validation ongoing (246+ snapshots, CONUS + Hawaii + Alaska coverage).
 
 ---
 
@@ -193,6 +193,8 @@ The canonical dataset. Each entry is a flight school with its fleet, locations, 
       "equipment": ["Garmin G1000", "IFR certified"],  // avionics/equipment list
       "airport_id": "",                          // specific airport if multi-location school
       "source_url": "https://...",               // page this aircraft was extracted from
+      "_extraction_method": "sonnet_text",       // see "Aircraft Provenance Model" below
+      "_extracted_at": "2026-03-10T...",         // ISO 8601 timestamp of extraction
       "_source": "",                             // "faa_address_match" if from FAA address matching, else ""
       "_owner_similarity": 0.85,                 // FAA address match confidence (0-1), only if _source="faa_address_match"
       "_flags": [],                              // extraction flags, e.g. ["n_number_corrected"]
@@ -621,35 +623,134 @@ All data is from public sources. 15 of 17 sources are free; only the Anthropic A
 |--------|-----|-------|--------|-------|
 | **OpenStreetMap Nominatim** | `nominatim.openstreetmap.org/search` (via geopy) | Address → lat/lon for FAA 141 schools | `00_faa141_ingest.py`, `04_home_base.py` | Free, rate-limited (~1 req/18s). User-agent: `aether-research`. |
 
-## Pipeline Scripts
+## Build Sequence
+
+The pipeline has a strict ordering. Steps must be run in this order; each
+depends on outputs from prior steps. The canonical output is
+`output/flight_line.json`.
+
+```
+STAGE 1 — Reference Data (run once, refresh monthly)
+  00_faa141_ingest.py          → faa141_schools.csv
+  01_faa_registry.py           → faa_master.csv, ACFTREF.txt
+  02_airport_reference.py      → airports.csv
+
+STAGE 2 — School Directory Assembly (run once, refresh quarterly)
+  08_directory_scraper.py      → flight_schools_directory.json
+  08b_aopa_directory.py        → aopa_flight_schools.json
+  08c_aopa_enrich.py           → aopa_flight_schools.json (enriched in-place)
+  07_assemble_dataset.py       → flight_schools_enriched.json (deduped union)
+
+STAGE 3 — Fleet Discovery (run in order; each merges into flight_line.json)
+  09a_fleet_crawl.py           → fleet_crawl_index.json, fleet_html/, fleet_html_raw/
+  09b_fleet_extract.py         → flight_line.json (from HTTP crawl HTML)
+  10_fleet_browser_crawl.py    → flight_line.json (from JS-rendered sites)
+  11_image_nn_extract.py       → flight_line.json (free, from image metadata)
+  12_vlm_nn_extract.py         → flight_line.json (from aircraft photos, per-image API cost)
+
+STAGE 4 — Enrichment & Validation (run after Stage 3)
+  16_faa_address_match.py      → flight_line.json (aircraft at school's address)
+  17_faa_enrich_fleet.py       → flight_line.json (FAA registry details per aircraft)
+  15_cirrus_ctc_ingest.py      → flight_line.json (Cirrus CTC tags)
+
+STAGE 5 — ADS-B Observation (continuous, independent of Stages 3-4)
+  13_adsb_cron.py              → data/adsb/snapshots/ (runs on cron)
+  14_adsb_validate.py          → validation report (reads flight_line.json + snapshots)
+```
+
+**Merge rules for `flight_line.json`:**
+- Primary key: `school_website` (normalized: strip protocol, www., trailing slash)
+- Canonical URL resolution: `canonical_url` and `redirect_domain` from crawl index
+  collapse URL variants (e.g. `alphaoneairservice.com` → `alphaoneflighttraining.com`)
+- New extractions for a given school REPLACE the entire school entry
+- Schools not in the current extraction are PRESERVED unchanged
+- Exception: `17_faa_enrich_fleet.py` and `16_faa_address_match.py` modify in-place
+
+**Git checkpoint discipline:** Commit `flight_line.json` before every Stage 3/4
+step that modifies it. This provides rollback if an extraction produces worse
+results than what we had.
+
+### Script Variants (Not Part of Standard Build)
+
+| Script | Purpose | When to use |
+|--------|---------|-------------|
+| `09a_fleet_crawl_targeted.py` | HTTP crawl a specific JSON target list | Re-crawl subset of schools |
+| `09b_fleet_extract_parallel.py` | Async parallel extraction (sync API) | When batch API is stuck/slow |
+| `09b_fleet_extract_chunked.py` | Chunk-based batch submission | Alternative to parallel |
+| `09_fleet_scraper.py` | Deprecated: single-phase crawl+extract | Do not use |
+| `09_fleet_scraper_parallel.py` | Deprecated: parallel single-phase | Do not use |
+| `11_rate_sheet_extract.py` | PDF rate sheet extraction | Targeted rate recovery |
+| `11_school_aircraft_merge.py` | FAA registrant name matching | Supplementary linkage |
+| `crawl_progress_monitor.py` | Real-time progress JSON for dashboards | During crawl runs |
+
+### All Scripts
 
 | Script | Purpose |
 |--------|---------|
-| `scripts/00_faa141_ingest.py` | Ingest FAA Part 141 certified schools, match to airports |
-| `scripts/01_faa_registry.py` | Download and parse FAA aircraft registration database |
-| `scripts/02_airport_reference.py` | Build airport reference table from FAA NASR + OurAirports |
-| `scripts/03_adsb_activity.py` | Query ADS-B Exchange for aircraft positions and activity |
-| `scripts/04_home_base.py` | Determine home airport for each tail number |
-| `scripts/05_school_identifier.py` | Identify likely flight schools from fleet clusters |
-| `scripts/06_web_enrichment.py` | Scrape flight school websites for contact info and fleet |
-| `scripts/07_assemble_dataset.py` | Combine all sources into final output dataset |
-| `scripts/08_directory_scraper.py` | Scrape bestaviation.net and faaflightschools.com directories |
-| `scripts/08b_aopa_directory.py` | Fetch AOPA flight school directory via Coveo API (2,255 schools) |
-| `scripts/08c_aopa_enrich.py` | Enrich AOPA schools via Airports REST API (website, email, contacts) |
-| `scripts/09a_fleet_crawl.py` | Async HTTP crawl of flight school websites for fleet pages |
-| `scripts/09a_fleet_crawl_targeted.py` | Wrapper for 09a that accepts custom JSON target list |
-| `scripts/09b_fleet_extract.py` | Sonnet 4.6 batch extraction of fleet data from cached HTML |
-| `scripts/10_fleet_browser_crawl.py` | Playwright browser crawl + Sonnet extraction for JS-rendered sites |
-| `scripts/10_adsb_scheduled.py` | Scheduled ADS-B data collection |
-| `scripts/11_rate_sheet_extract.py` | Download rate sheet PDFs/pages, extract fleet data with Sonnet |
-| `scripts/11_school_aircraft_merge.py` | Merge school directory with fleet/ADS-B data |
-| `scripts/12_night_flying.py` | Night flying analysis: solar position calc, day/night classification, per-school night ops |
-| `scripts/13_adsb_cron.py` | Continuous ADS-B snapshot collection (OpenSky + adsb.lol) |
-| `scripts/14_adsb_validate.py` | Cross-validate fleet against ADS-B observations |
-| `scripts/15_cirrus_ctc_ingest.py` | Ingest Cirrus Training Network API, tag/add CTC schools |
-| `scripts/16_faa_address_match.py` | Discover fleet via FAA registry address matching |
-| `scripts/17_faa_enrich_fleet.py` | Enrich fleet with FAA registry data (Mode S hex, manufacturer, etc.) |
-| `scripts/run_pipeline.py` | Orchestrate full pipeline end-to-end |
+| `00_faa141_ingest.py` | Ingest FAA Part 141 certified schools, match to airports |
+| `01_faa_registry.py` | Download and parse FAA aircraft registration database |
+| `02_airport_reference.py` | Build airport reference table from FAA NASR + OurAirports |
+| `03_adsb_activity.py` | Query ADS-B Exchange for aircraft positions and activity |
+| `04_home_base.py` | Determine home airport for each tail number |
+| `05_school_identifier.py` | Identify likely flight schools from fleet clusters |
+| `06_web_enrichment.py` | Scrape flight school websites for contact info and fleet |
+| `07_assemble_dataset.py` | Combine all sources into final output dataset |
+| `08_directory_scraper.py` | Scrape bestaviation.net and faaflightschools.com directories |
+| `08b_aopa_directory.py` | Fetch AOPA flight school directory via Coveo API (2,255 schools) |
+| `08c_aopa_enrich.py` | Enrich AOPA schools via Airports REST API (website, email, contacts) |
+| `09a_fleet_crawl.py` | Async HTTP crawl of flight school websites for fleet pages |
+| `09b_fleet_extract.py` | Sonnet extraction of fleet data from cached HTML |
+| `10_fleet_browser_crawl.py` | Playwright browser crawl + extraction for JS-rendered sites |
+| `10_adsb_scheduled.py` | Scheduled ADS-B data collection |
+| `11_image_nn_extract.py` | Extract N-numbers from image metadata (free, no API) |
+| `12_vlm_nn_extract.py` | Vision model N-number extraction from aircraft photos |
+| `12_night_flying.py` | Night flying analysis from ADS-B data |
+| `13_adsb_cron.py` | Continuous ADS-B snapshot collection (OpenSky + adsb.lol) |
+| `14_adsb_validate.py` | Cross-validate fleet against ADS-B observations |
+| `15_cirrus_ctc_ingest.py` | Ingest Cirrus Training Network API, tag/add CTC schools |
+| `16_faa_address_match.py` | Discover fleet via FAA registry address matching |
+| `17_faa_enrich_fleet.py` | Enrich fleet with FAA registry data (Mode S hex, etc.) |
+
+## Aircraft Provenance Model
+
+Every aircraft in `flight_line.json` should carry enough metadata to answer:
+**"Why do we believe this aircraft belongs to this school?"**
+
+### Evidence Sources (ranked by confidence)
+
+| Source | Field | Confidence | Description |
+|--------|-------|------------|-------------|
+| **Website fleet page** | `_extraction_method: "sonnet_text"` | High | School's own fleet/rental page lists the aircraft by N-number, make/model, and rate. Sonnet extracted from crawled HTML. `source_url` points to the specific page. |
+| **Website image metadata** | `_extraction_method: "image_metadata"` | Medium-High | N-number found in image filename, alt text, or caption on the school's website. Free extraction, no LLM. FAA-confirmed. |
+| **Vision model (photo)** | `_extraction_method: "vlm_photo"` | Medium | N-number read from aircraft photo on the school's website by vision model. May have OCR correction via FAA fuzzy match. |
+| **FAA address match** | `_extraction_method: "faa_address"` | Medium | Aircraft registered at the same physical address as the school. `_owner_similarity` score indicates registrant name similarity. |
+| **Rate sheet PDF** | `_extraction_method: "rate_sheet"` | High | Aircraft listed in a PDF rate sheet linked from the school's website. |
+| **Cirrus CTC API** | `_extraction_method: "cirrus_ctc"` | Medium | Aircraft listed in the Cirrus Training Center locator API. |
+
+### Corroboration Signals
+
+Each aircraft may have additional signals that strengthen or weaken the linkage:
+
+| Signal | Where | Meaning |
+|--------|-------|---------|
+| `faa.registrant_name` matches school name | `faa` dict | Strong: school owns the aircraft outright |
+| `faa.registrant_city/state` matches school location | `faa` dict | Moderate: aircraft is local |
+| ADS-B home base matches school airport | `14_adsb_validate.py` | Strong: aircraft is regularly observed at the school's airport |
+| N-number on a fleet page with a rate | `wet_rate_hr` not null | Strong: school is actively renting it |
+| N-number only in an image filename | `extraction_method: "image_metadata"` | Weak alone: could be a stock photo or old aircraft |
+
+### Current Provenance Gaps
+
+The `_extraction_method` field is **not yet populated** on all aircraft. As of
+the current build, only image-metadata aircraft (771) and FAA address-match
+aircraft (374) carry it. The extraction scripts (09b, 10) have been updated
+to tag new extractions with `_extraction_method: "sonnet_text"` and
+`_extracted_at` timestamps, but existing records need a backfill pass.
+
+**TODO:** Backfill `_extraction_method: "sonnet_text"` on all existing
+Sonnet-extracted aircraft that lack the field. This is a one-time data
+migration on `flight_line.json` — aircraft without `_extraction_method`
+and without `_source` are implicitly Sonnet text extractions.
 
 ## Taking an ADS-B Snapshot
 
@@ -776,31 +877,20 @@ ANTHROPIC_API_KEY="sk-..."   # for Sonnet extraction (09b, 10)
 ADSBX_API_KEY="..."          # for ADS-B Exchange API
 ```
 
-## Current Results (as of March 9, 2026)
+## Current Results (as of March 10, 2026)
 
 | Metric | Count |
 |--------|------:|
-| Schools in dataset (deduplicated) | 2,586 |
-| Schools with fleet data | 1,552 |
-| Total aircraft entries | 8,932 |
-| Unique N-numbers | 4,862 |
-| Schools with rental rates | 678 |
-| Cirrus Training Centers tagged | 52 |
+| Schools in dataset (deduplicated) | 2,302 |
+| Total aircraft entries | 7,661 |
+| Unique N-numbers | 4,654 |
+| Aircraft with rental rates | 2,934 |
+| Aircraft with FAA enrichment | 3,702 |
 
-### School Type Classification
-
-| Type | Count |
-|------|------:|
-| Flight school with rentals | 1,254 |
-| Flight school (no rentals) | 367 |
-| Defunct / unreachable | 228 |
-| Not yet classified | 203 |
-| Other | 171 |
-| University/college program | 170 |
-| Flying club | 75 |
-| FBO | 81 |
-| Maintenance shop | 20 |
-| Charter operator | 17 |
+Note: school count dropped from ~3,500 to 2,302 after URL deduplication
+(normalizing http/https, www/bare, trailing slashes, and canonical URL
+resolution). No data was lost — fleet records from duplicate entries were
+merged into the canonical entry.
 
 ### ADS-B Cross-Validation
 
