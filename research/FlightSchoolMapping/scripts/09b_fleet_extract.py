@@ -508,6 +508,7 @@ def main():
     parser.add_argument("--poll", type=str, help="Poll an existing batch ID instead of submitting")
     parser.add_argument("--sync", action="store_true", help="Use sync API instead of batch (testing)")
     parser.add_argument("--source", type=str, help="Filter crawl index to schools from this source")
+    parser.add_argument("--index", type=str, help="Path to crawl index JSON (default: fleet_crawl_index.json)")
     parser.add_argument("--merge", action="store_true", help="Merge into existing flight_line.json instead of overwriting")
     args = parser.parse_args()
 
@@ -516,9 +517,9 @@ def main():
     print("=" * 60)
 
     # Load crawl index
-    index_path = OUTPUT_DIR / "fleet_crawl_index.json"
+    index_path = Path(args.index) if args.index else OUTPUT_DIR / "fleet_crawl_index.json"
     if not index_path.exists():
-        print("  Error: Run 09a_fleet_crawl.py first.")
+        print(f"  Error: {index_path} not found.")
         return
     with open(index_path) as f:
         crawl_index = json.load(f)

@@ -60,6 +60,7 @@ OUTPUT_DIR = SCRIPT_DIR.parent / "output"
 CRAWL_INDEX = OUTPUT_DIR / "fleet_crawl_index.json"
 BROWSER_INDEX = OUTPUT_DIR / "fleet_browser_index.json"
 BROWSER_TEXT_DIR = OUTPUT_DIR / "fleet_browser_text"
+BROWSER_RAW_HTML_DIR = OUTPUT_DIR / "fleet_browser_html_raw"
 FLIGHT_LINE = OUTPUT_DIR / "flight_line.json"
 
 # ── Config ───────────────────────────────────────────────────────
@@ -73,6 +74,21 @@ MAX_FLEET_PAGES = 5          # max fleet pages to visit per school
 MAX_DETAIL_PAGES = 3         # max aircraft detail pages per school
 MAX_PDFS = 3                 # max PDFs to download per school
 SAVE_EVERY = 25              # save index every N schools
+
+# ── Stealth config ──────────────────────────────────────────────
+
+STEALTH_JS = """\
+Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+window.chrome = {runtime: {}};
+Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
+Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
+"""
+
+CHROME_UA = (
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
+    'AppleWebKit/537.36 (KHTML, like Gecko) '
+    'Chrome/131.0.0.0 Safari/537.36'
+)
 
 # ── Link discovery patterns ──────────────────────────────────────
 
@@ -247,6 +263,82 @@ def save_pdf_text(school_url: str, pdf_url: str, text: str) -> str:
     return f"{domain}/{fname}"
 
 
+def save_raw_html(school_url: str, page_url: str, html: str) -> str:
+    """Save raw rendered HTML to disk. Returns relative path."""
+    domain = _domain_dir(school_url)
+    d = BROWSER_RAW_HTML_DIR / domain
+    d.mkdir(parents=True, exist_ok=True)
+    fname = _page_filename(page_url).replace('.txt', '.html')
+    path = d / fname
+    path.write_text(html, encoding='utf-8')
+    return f"{domain}/{fname}"
+
+
+async def extract_page_images(page: Page) -> list[dict]:
+    """Extract image metadata from the rendered DOM via Playwright."""
+    return await page.evaluate("""() => {
+        const results = [];
+        const seen = new Set();
+
+        // <img> tags
+        for (const img of document.querySelectorAll('img')) {
+            const src = img.src || img.dataset.src || '';
+            if (!src || seen.has(src)) continue;
+            seen.add(src);
+            const rec = {src: src};
+            if (img.srcset) rec.srcset = img.srcset;
+            if (img.alt) rec.alt = img.alt.trim();
+            if (img.title) rec.title = img.title.trim();
+            // Check data-* attributes
+            for (const [k, v] of Object.entries(img.dataset)) {
+                if (v && v.trim()) rec['data-' + k] = v.trim();
+            }
+            // Check for parent <figure> with <figcaption>
+            const figure = img.closest('figure');
+            if (figure) {
+                const cap = figure.querySelector('figcaption');
+                if (cap) rec.caption = cap.textContent.trim();
+            }
+            results.push(rec);
+        }
+
+        // <picture> > <source> tags
+        for (const pic of document.querySelectorAll('picture')) {
+            for (const source of pic.querySelectorAll('source')) {
+                const srcset = source.srcset || '';
+                if (!srcset) continue;
+                const firstSrc = srcset.split(',')[0].trim().split(' ')[0];
+                if (seen.has(firstSrc)) continue;
+                seen.add(firstSrc);
+                const rec = {src: firstSrc, srcset: srcset};
+                if (source.media) rec.media = source.media;
+                results.push(rec);
+            }
+        }
+
+        return results;
+    }""")
+
+
+async def extract_json_ld(page: Page) -> list:
+    """Extract JSON-LD structured data from the rendered DOM."""
+    return await page.evaluate("""() => {
+        const results = [];
+        for (const script of document.querySelectorAll('script[type="application/ld+json"]')) {
+            try {
+                const data = JSON.parse(script.textContent);
+                results.push(data);
+            } catch (e) {}
+        }
+        return results;
+    }""")
+
+
+async def get_raw_html(page: Page) -> str:
+    """Get the full rendered HTML from the page."""
+    return await page.evaluate('() => document.documentElement.outerHTML')
+
+
 # ── Page text extraction ─────────────────────────────────────────
 
 async def get_page_text(page: Page) -> str:
@@ -383,6 +475,41 @@ async def crawl_school_browser(context: BrowserContext, school: dict) -> dict:
                 result['crawl_flags'].append('homepage_failed')
                 return result
 
+        # --- Captcha/challenge detection and auto-resolve ---
+        CAPTCHA_SIGNATURES = [
+            "sg-captcha", "sgcaptcha", "cf-challenge", "challenge-form",
+            "challenge-platform", "just a moment", "checking your browser",
+            "checking the site connection security",
+            "verify you are human", "please wait while we verify",
+            "ddos protection by", "attention required", "access denied",
+            "sucuri website firewall", "incapsula incident",
+            "pardon our interruption",
+        ]
+
+        # Check if we hit a challenge page
+        first_text = await get_page_text(page)
+        first_lower = first_text.lower()
+        is_challenge = (
+            any(sig in first_lower for sig in CAPTCHA_SIGNATURES)
+            or 'sgcaptcha' in page.url
+            or len(first_text) < 300 and ('403' in first_text or 'forbidden' in first_lower)
+        )
+
+        if is_challenge:
+            # Wait for auto-resolve (SiteGround sets _I_ cookie)
+            await page.wait_for_timeout(5000)
+            # Reload to pick up the cookie
+            try:
+                await page.reload(wait_until='domcontentloaded', timeout=PAGE_TIMEOUT)
+                await page.wait_for_timeout(2000)
+            except Exception:
+                pass
+            # Check again
+            recheck_text = await get_page_text(page)
+            recheck_lower = recheck_text.lower()
+            if any(sig in recheck_lower for sig in CAPTCHA_SIGNATURES) or len(recheck_text) < 300:
+                result['crawl_flags'].append('captcha_challenge')
+
         # Capture final URL after redirects and canonical URL
         final_url = page.url
         from_domain = urlparse(website).netloc.replace("www.", "")
@@ -402,26 +529,25 @@ async def crawl_school_browser(context: BrowserContext, school: dict) -> dict:
 
         home_text = await get_page_text(page)
 
-        # Captcha/challenge detection
-        CAPTCHA_SIGNATURES = [
-            "sg-captcha", "cf-challenge", "challenge-form", "challenge-platform",
-            "just a moment", "checking your browser", "verify you are human",
-            "please wait while we verify", "ddos protection by",
-            "attention required", "access denied", "sucuri website firewall",
-            "incapsula incident", "pardon our interruption",
-        ]
-        home_lower = home_text.lower()
-        if any(sig in home_lower for sig in CAPTCHA_SIGNATURES):
-            result['crawl_flags'].append('captcha_challenge')
-
+        # Save raw HTML and extract metadata
+        raw_html = await get_raw_html(page)
+        raw_path = save_raw_html(website, website, raw_html)
         text_path = save_page_text(website, website, home_text)
         home_links = await extract_links(page, website)
-        result['pages'].append({
+        home_page_rec = {
             'url': website,
             'type': 'home',
             'text_path': text_path,
+            'raw_html_path': raw_path,
             'char_count': len(home_text),
-        })
+        }
+        imgs = await extract_page_images(page)
+        if imgs:
+            home_page_rec['images'] = imgs
+        ld = await extract_json_ld(page)
+        if ld:
+            home_page_rec['json_ld'] = ld
+        result['pages'].append(home_page_rec)
 
         fleet_urls, pdfs = classify_links(home_links)
         all_pdfs = list(pdfs)
@@ -447,15 +573,30 @@ async def crawl_school_browser(context: BrowserContext, school: dict) -> dict:
                 except Exception:
                     continue
 
+            # Scroll to trigger lazy-loaded content
+            for _ in range(5):
+                await page.evaluate('window.scrollBy(0, 800)')
+                await page.wait_for_timeout(300)
+
             page_text = await get_page_text(page)
+            raw_html = await get_raw_html(page)
+            rp = save_raw_html(website, url, raw_html)
             tp = save_page_text(website, url, page_text)
             page_links = await extract_links(page, website)
-            result['pages'].append({
+            page_rec = {
                 'url': url,
                 'type': 'fleet',
                 'text_path': tp,
+                'raw_html_path': rp,
                 'char_count': len(page_text),
-            })
+            }
+            imgs = await extract_page_images(page)
+            if imgs:
+                page_rec['images'] = imgs
+            ld = await extract_json_ld(page)
+            if ld:
+                page_rec['json_ld'] = ld
+            result['pages'].append(page_rec)
 
             sub_fleet, sub_pdfs = classify_links(page_links)
             deeper_fleet_urls.extend(sub_fleet)
@@ -480,14 +621,24 @@ async def crawl_school_browser(context: BrowserContext, school: dict) -> dict:
                     continue
 
             page_text = await get_page_text(page)
+            raw_html = await get_raw_html(page)
+            rp = save_raw_html(website, url, raw_html)
             tp = save_page_text(website, url, page_text)
             page_links = await extract_links(page, website)
-            result['pages'].append({
+            page_rec = {
                 'url': url,
                 'type': 'detail',
                 'text_path': tp,
+                'raw_html_path': rp,
                 'char_count': len(page_text),
-            })
+            }
+            imgs = await extract_page_images(page)
+            if imgs:
+                page_rec['images'] = imgs
+            ld = await extract_json_ld(page)
+            if ld:
+                page_rec['json_ld'] = ld
+            result['pages'].append(page_rec)
 
             _, sub_pdfs = classify_links(page_links)
             all_pdfs.extend(sub_pdfs)
@@ -689,6 +840,8 @@ async def main():
     parser.add_argument('--extract-only', action='store_true', help='Extract from cache')
     parser.add_argument('--concurrency', type=int, default=1,
                         help='Parallel browser tabs (default 1)')
+    parser.add_argument('--targets', type=str, default='',
+                        help='JSON file with custom target list (overrides default)')
     args = parser.parse_args()
 
     client = anthropic.Anthropic()
@@ -738,14 +891,19 @@ async def main():
         return
 
     # --- Load targets ---
-    with open(CRAWL_INDEX) as f:
-        all_schools = json.load(f)
-
-    if args.school:
-        targets = [s for s in all_schools
-                    if args.school.lower() in s['school_name'].lower()]
+    if args.targets:
+        with open(args.targets) as f:
+            all_schools = json.load(f)
+        targets = all_schools
     else:
-        targets = [s for s in all_schools if s.get('crawl_flags')]
+        with open(CRAWL_INDEX) as f:
+            all_schools = json.load(f)
+
+        if args.school:
+            targets = [s for s in all_schools
+                        if args.school.lower() in s['school_name'].lower()]
+        else:
+            targets = [s for s in all_schools if s.get('crawl_flags')]
 
     # Resume support: skip schools already in browser index
     existing_browser = {}
@@ -812,6 +970,7 @@ async def main():
 
     # --- Browser crawl ---
     BROWSER_TEXT_DIR.mkdir(parents=True, exist_ok=True)
+    BROWSER_RAW_HTML_DIR.mkdir(parents=True, exist_ok=True)
     browser_results = list(existing_browser.values())
     concurrency = max(1, args.concurrency)
 
@@ -834,15 +993,19 @@ async def main():
     async def browser_worker(worker_id: int, schools: list[dict]):
         """Each worker gets its own browser process."""
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=True)
-            context = await browser.new_context(
-                user_agent=(
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
-                    'AppleWebKit/537.36 (KHTML, like Gecko) '
-                    'Chrome/120.0.0.0 Safari/537.36'
-                ),
-                viewport={'width': 1280, 'height': 720},
+            browser = await p.chromium.launch(
+                headless=True,
+                args=[
+                    '--headless=new',
+                    '--disable-blink-features=AutomationControlled',
+                ],
             )
+            context = await browser.new_context(
+                user_agent=CHROME_UA,
+                viewport={'width': 1920, 'height': 1080},
+                locale='en-US',
+            )
+            await context.add_init_script(STEALTH_JS)
             for school in schools:
                 name = school['school_name']
                 url = school['school_website']

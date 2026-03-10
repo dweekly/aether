@@ -37,6 +37,7 @@ from tqdm.asyncio import tqdm as atqdm
 
 OUTPUT_DIR = Path(__file__).parent.parent / "output"
 HTML_DIR = OUTPUT_DIR / "fleet_html"
+RAW_HTML_DIR = OUTPUT_DIR / "fleet_html_raw"
 
 # ── Tuning knobs ─────────────────────────────────────────────────
 DEFAULT_CONCURRENCY = 50
@@ -288,6 +289,89 @@ async def probe_url(session: aiohttp.ClientSession, url: str) -> str | None:
     return None
 
 
+# ── Pre-clean extraction (run on raw HTML before cleaning) ──────
+
+def extract_images(soup: BeautifulSoup, page_url: str) -> list[dict]:
+    """Extract image metadata from raw HTML before cleaning strips it.
+
+    Captures <img>, <figure>, <picture>, and <source> elements with their
+    URLs, alt text, captions, and surrounding context.
+    """
+    from urllib.parse import urljoin as _urljoin
+    images = []
+    seen_srcs = set()
+
+    # <img> tags
+    for img in soup.find_all("img"):
+        src = (img.get("src") or "").strip()
+        srcset = (img.get("srcset") or "").strip()
+        if not src and not srcset:
+            continue
+        full_src = _urljoin(page_url, src) if src else ""
+        if full_src in seen_srcs:
+            continue
+        seen_srcs.add(full_src)
+
+        rec = {"src": full_src}
+        if srcset:
+            rec["srcset"] = srcset
+        alt = (img.get("alt") or "").strip()
+        if alt:
+            rec["alt"] = alt
+        title = (img.get("title") or "").strip()
+        if title:
+            rec["title"] = title
+        # data-* attributes that might contain useful info
+        for attr, val in (img.attrs or {}).items():
+            if attr.startswith("data-") and isinstance(val, str) and val.strip():
+                rec[attr] = val.strip()
+
+        # Check if inside a <figure> with a <figcaption>
+        figure = img.find_parent("figure")
+        if figure:
+            caption = figure.find("figcaption")
+            if caption:
+                rec["caption"] = caption.get_text(strip=True)
+
+        images.append(rec)
+
+    # <picture> > <source> tags (for responsive images)
+    for picture in soup.find_all("picture"):
+        for source in picture.find_all("source"):
+            srcset = (source.get("srcset") or "").strip()
+            if not srcset:
+                continue
+            # Get the first URL from srcset
+            first_src = srcset.split(",")[0].strip().split()[0]
+            full_src = _urljoin(page_url, first_src)
+            if full_src in seen_srcs:
+                continue
+            seen_srcs.add(full_src)
+            rec = {"src": full_src, "srcset": srcset}
+            media = (source.get("media") or "").strip()
+            if media:
+                rec["media"] = media
+            images.append(rec)
+
+    # Standalone <source> outside <picture> (e.g. in <video>) — skip those
+    return images
+
+
+def extract_json_ld(soup: BeautifulSoup) -> list[dict]:
+    """Extract JSON-LD structured data from <script type='application/ld+json'>."""
+    results = []
+    for script in soup.find_all("script", type="application/ld+json"):
+        text = script.string or script.get_text()
+        if not text or not text.strip():
+            continue
+        try:
+            data = json.loads(text)
+            results.append(data)
+        except (json.JSONDecodeError, ValueError):
+            pass
+    return results
+
+
 # ── HTML cleaning ────────────────────────────────────────────────
 
 def clean_html(raw_html: str) -> str:
@@ -425,6 +509,14 @@ def _url_to_path(url: str) -> str:
     path_slug = parsed.path.strip("/").replace("/", "_")[:60] or "index"
     path_slug = re.sub(r"[^a-zA-Z0-9_-]", "", path_slug)
     return f"{domain}/{path_slug}_{h}.html"
+
+
+def _save_raw_html(relative_path: str, html: str) -> Path:
+    """Save raw unaltered HTML to fleet_html_raw/."""
+    full_path = RAW_HTML_DIR / relative_path
+    full_path.parent.mkdir(parents=True, exist_ok=True)
+    full_path.write_text(html, encoding="utf-8")
+    return full_path
 
 
 def _save_html(relative_path: str, html: str) -> Path:
@@ -605,25 +697,35 @@ async def _crawl_school_inner(
             if isinstance(r, str):
                 loc_htmls[url] = r
 
-    # ── Save cleaned HTML ────────────────────────────────────────
+    # ── Save raw + cleaned HTML, extract metadata ────────────────
     saved_pages: list[dict] = []
 
+    def _process_page(url: str, raw_html: str, page_type: str) -> dict:
+        """Save raw + cleaned HTML, extract images and JSON-LD."""
+        rel_path = _url_to_path(url)
+        _save_raw_html(rel_path, raw_html)
+        _save_html(rel_path, clean_html(raw_html))
+        page_rec = {"url": url, "html_path": rel_path, "type": page_type}
+
+        raw_soup = BeautifulSoup(raw_html, "html.parser")
+        imgs = extract_images(raw_soup, url)
+        if imgs:
+            page_rec["images"] = imgs
+        ld = extract_json_ld(raw_soup)
+        if ld:
+            page_rec["json_ld"] = ld
+        return page_rec
+
     # Save home page
-    home_path = _url_to_path(website)
-    _save_html(home_path, clean_html(home_html))
-    saved_pages.append({"url": website, "html_path": home_path, "type": "home"})
+    saved_pages.append(_process_page(website, home_html, "home"))
 
     # Save fleet pages
     for url, html in fleet_htmls.items():
-        rel_path = _url_to_path(url)
-        _save_html(rel_path, clean_html(html))
-        saved_pages.append({"url": url, "html_path": rel_path, "type": "fleet"})
+        saved_pages.append(_process_page(url, html, "fleet"))
 
     # Save location pages
     for url, html in loc_htmls.items():
-        rel_path = _url_to_path(url)
-        _save_html(rel_path, clean_html(html))
-        saved_pages.append({"url": url, "html_path": rel_path, "type": "location"})
+        saved_pages.append(_process_page(url, html, "location"))
 
     # ── Captcha / challenge detection (200 responses with no real content) ──
     CAPTCHA_SIGNATURES = [
@@ -742,6 +844,7 @@ async def run_async(
     }
 
     HTML_DIR.mkdir(parents=True, exist_ok=True)
+    RAW_HTML_DIR.mkdir(parents=True, exist_ok=True)
     t0 = time.time()
 
     async with aiohttp.ClientSession(connector=connector, timeout=timeout, headers=headers) as session:

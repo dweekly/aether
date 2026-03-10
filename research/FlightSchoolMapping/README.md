@@ -5,7 +5,7 @@ on their flight line (by make/model/type), their activity rates, and their conta
 information — using publicly available ADS-B telemetry, FAA registration data, and
 targeted web scraping?
 
-**Status:** Fleet mapping complete for 2,150 deduplicated schools; 1,040 with fleet data (3,459 unique N-numbers, 3,369 FAA-validated)
+**Status:** Corpus substantially complete — 2,586 schools, 8,932 aircraft, 4,862 unique N-numbers, 678 schools with rental rates. ADS-B cross-validation ongoing (246+ snapshots, CONUS + Hawaii + Alaska coverage).
 
 ---
 
@@ -110,112 +110,516 @@ sites like Squarespace, Wix, React apps):
      `university_program` (113), `fbo` (64), `defunct` (96), etc.
    - Results: 1,190 additional schools extracted, 680 with fleet data
 
-### Phase 5: FAA Registry Enrichment
+### Phase 5: FAA Registry Enrichment (`17_faa_enrich_fleet.py`)
 
 Cross-reference extracted N-numbers against FAA ReleasableAircraft database:
 
-- 97.6% of extracted N-numbers match valid, active FAA registrations
+- 98.3% of extracted N-numbers match valid, active FAA registrations
 - Each aircraft enriched with: serial number, FAA manufacturer/model, year
   manufactured, registrant name/address, Mode S hex code, airworthiness dates,
   engine/aircraft type codes
-- Mode S hex codes enable ADS-B cross-referencing
+- Mode S hex codes enable ADS-B cross-referencing (3,890 aircraft with hex codes)
+- N-number auto-correction catches URL-slug extraction errors and OCR substitutions
+  (O/0, I/1, S/5), cross-validated against FAA registry
 
-### Phase 6: FAA Registrant Name Matching
+### Phase 5b: FAA Address Matching (`16_faa_address_match.py`)
 
-For the ~2,930 aircraft identified by make/model but lacking N-numbers, attempt
-reverse-lookup against the FAA registry by matching the flight school's business
-name to FAA registrant names:
+Cross-reference school contact addresses against FAA aircraft registry to find
+aircraft registered at the same physical address:
 
-- Normalize both names (strip LLC/Inc/Corp suffixes, punctuation)
-- **Strict matching only**: exact normalized name match (no substring/fuzzy)
-- Filter to same state as the school's airport
-- Match aircraft type (model family) between website listing and FAA registration
-- Confidence scoring: "high" when fleet size roughly matches registrant's aircraft
-  count in state; "medium" otherwise
+- Normalizes addresses (strips suite/unit numbers, collapses whitespace)
+- Owner-name similarity scoring via SequenceMatcher (threshold ≥0.4)
+- Catches aircraft owned by LLCs at the school's address (common for liability)
+- Results: 375 high-confidence aircraft added across 210 schools
 
-Results: 448 N-numbers recovered across 178 schools (250 high confidence,
-198 medium confidence). Spot-checked against FAA registry to verify registrant
-names, cities, and states align.
+### Phase 6: Supplementary Data Sources
 
-### Phase 6b: Rate Sheet PDF Extraction
+**Cirrus Training Network** (`15_cirrus_ctc_ingest.py`) — Fetches Cirrus locator
+API (`/api/v1/ctc`), cross-references 141 CTC entries against corpus. Tagged 51
+existing schools as Cirrus Training Centers, added 37 new schools.
 
-For 139 schools with `rate_sheet_url` but no fleet data, download and extract
-text from PDF rate sheets and pricing pages:
+**FAA Registrant Name Matching** (`11_school_aircraft_merge.py`) — Strict exact
+normalized name match + same state + model type. No substring/fuzzy matching.
 
-- PDF text extraction via pdfplumber (up to 20 pages)
-- HTML rate pages parsed with BeautifulSoup
-- Sonnet 4.6 extraction of aircraft make/model, rental rates, equipment
-- Most rate sheets list aircraft types and hourly rates but not tail numbers
-  (only ~3% of rate sheets include N-numbers)
-- Results: 157 additional aircraft from 37 schools, with school_type classification
+**Rate Sheet PDF Extraction** (`11_rate_sheet_extract.py`) — PDF text extraction
+via pdfplumber, HTML rate pages parsed with BeautifulSoup, Sonnet 4.6 extraction.
 
-## Output Schema
+## Output Schemas
 
-The final dataset maps each flight school to its fleet:
+### `output/flight_line.json` — Primary Output (2,586 schools)
 
+The canonical dataset. Each entry is a flight school with its fleet, locations, and contact info, as extracted by Sonnet 4.6 from crawled web content.
+
+```jsonc
+{
+  "school_name": "Wisconsin Aviation-Madison",
+  "school_website": "https://www.wisconsinaviation.com/",
+  "school_type": "flight_school_with_rentals",  // see enum below
+  "source": "browser_crawl",                    // "browser_crawl" or "" (HTTP crawl)
+  "scrape_ts": "2026-03-09T...",                // extraction timestamp
+
+  // Best fleet/rate page found during crawl
+  "fleet_page_url": "https://www.wisconsinaviation.com/flight-school-rentals/flight-training",
+  "rate_sheet_url": "",                          // PDF or HTML rate sheet URL
+  "rate_sheet_extracted": false,                 // true if rate sheet was processed
+
+  "contact": {
+    "phone": "608-268-5024",
+    "email": "FlightSchool@WisAv.com",
+    "address": "Dane County Regional Airport, Madison, WI"
+  },
+
+  "locations": [                                 // one or more airport locations
+    {
+      "airport_id": "KMSN",                     // ICAO or FAA identifier
+      "airport_name": "Dane County Regional Airport",
+      "label": "Madison",                        // human label: "Main base", "Satellite", etc.
+      "address": "",                             // optional street address
+      "_flag": ""                                // optional: "unverified_airport_id"
+    }
+  ],
+
+  // Cirrus Training Center fields (present only when applicable)
+  "cirrus_training_center": true,
+  "cirrus_relationship": "Cirrus Training Center",
+
+  "fleet": [
+    {
+      "n_number": "N49288",                     // FAA registration, e.g. "N12345" or "" if unknown
+      "display_name": "Cessna 152",             // make/model as displayed on website
+      "description": "",                         // free-text description from website
+      "wet_rate_hr": 165.0,                      // $/hr wet rental rate, null if unknown
+      "dry_rate_hr": null,                       // $/hr dry rental rate, null if unknown
+      "equipment": ["Garmin G1000", "IFR certified"],  // avionics/equipment list
+      "airport_id": "",                          // specific airport if multi-location school
+      "source_url": "https://...",               // page this aircraft was extracted from
+      "_source": "",                             // "faa_address_match" if from FAA address matching, else ""
+      "_owner_similarity": 0.85,                 // FAA address match confidence (0-1), only if _source="faa_address_match"
+      "_flags": [],                              // extraction flags, e.g. ["n_number_corrected"]
+      "_extraction_note": "",                    // LLM note about extraction confidence
+
+      "faa": {                                   // FAA registry enrichment (from 17_faa_enrich_fleet.py)
+        "serial_number": "15281226",
+        "faa_mfr": "CESSNA",                    // official FAA manufacturer name
+        "faa_model": "152",                      // official FAA model designation
+        "mfr_mdl_code": "2072403",               // FAA manufacturer/model code
+        "year_mfr": "1977",
+        "registrant_name": "WISCONSIN AVIATION INC",
+        "registrant_city": "WATERTOWN",
+        "registrant_state": "WI",
+        "airworthiness_date": "19780119",        // YYYYMMDD
+        "cert_issue_date": "19851101",
+        "expiration_date": "20281031",
+        "mode_s_hex": "A61B17",                  // ICAO hex for ADS-B tracking
+        "type_aircraft": "4",                    // FAA type code (4=fixed wing single-engine)
+        "type_engine": "8",                      // FAA engine code
+        "status_code": "V"                       // "V"=valid, "N"=non-citizen corp, etc.
+      }
+    }
+  ]
+}
 ```
-flight_schools:
-  - name: "Example Aviation Academy"
-    airport_id: "KPAO"
-    airport_name: "Palo Alto Airport"
-    city: "Palo Alto"
-    state: "CA"
-    mailing_address: "1901 Embarcadero Rd, Palo Alto, CA 94303"
-    phone: "(650) 555-0123"
-    email: "info@exampleaviation.com"
-    website: "https://www.exampleaviation.com"
-    fleet:
-      - n_number: "N12345"
-        make: "Cessna"
-        model: "172S Skyhawk SP"
-        type: "Fixed Wing Single-Engine"
-        engine: "Lycoming IO-360-L2A"
-        year: 2005
-        activity_rate: 4.2  # flights/day trailing 90d
-        pattern_work_ratio: 0.72
-        last_seen: "2026-02-28"
-      - n_number: "N67890"
-        make: "Piper"
-        model: "PA-28-181 Archer III"
-        ...
-    fleet_summary:
-      total_aircraft: 12
-      by_type:
-        "Cessna 172": 6
-        "Piper PA-28": 3
-        "Cessna 152": 2
-        "Beechcraft Bonanza": 1
-      avg_daily_flights: 18.4
-      most_active_tail: "N12345"
+
+**`school_type` enum values:**
+
+| Value | Count | Description |
+|-------|------:|-------------|
+| `flight_school_with_rentals` | 1,254 | School with aircraft available for rent |
+| `flight_school_no_rentals` | 367 | Instruction only, no rental fleet |
+| `defunct` | 228 | Closed, unreachable, or no longer operating |
+| *(empty)* | 203 | Not yet classified (HTTP crawl, pre-browser) |
+| `other` | 171 | Doesn't fit other categories |
+| `university_program` | 170 | Collegiate aviation program |
+| `fbo` | 81 | Fixed-base operator with some training |
+| `flying_club` | 75 | Member-owned club |
+| `maintenance_shop` | 20 | Primarily maintenance, some training |
+| `charter_operator` | 17 | Charter with incidental training |
+
+---
+
+### `output/aopa_flight_schools.json` — AOPA Directory (2,255 schools)
+
+Merged from Coveo search API (`08b_aopa_directory.py`) + Airports REST API enrichment (`08c_aopa_enrich.py`). This is an intermediate file used as input to crawl targeting.
+
+```jsonc
+{
+  // From Coveo search API (08b)
+  "name": "East Bay Flight",
+  "city": "Oakland",
+  "state": "CA",
+  "state_name": "California",
+  "airport_id": "OAK",                          // FAA identifier (no K prefix)
+  "airport_name": "Oakland San Francisco Bay Airport",
+  "latitude": 37.721261,
+  "longitude": -122.22115,
+  "description": "...",                          // marketing blurb from Coveo
+  "aopa_award": "No",                           // "Yes"/"No" — AOPA Distinguished Flight School
+  "va_approved": "No",                           // "Yes"/"No" — VA GI Bill approved
+  "classifications": "Part 61",                  // "Part 61", "Part 141", or "Part 61; Part 141"
+  "certifications": "Commercial; Flight Instructor CFI; ...",   // semicolon-separated
+  "ratings": "Instrument",                       // rating offerings
+  "services": "Annual Recurrent Training; Biennial Flight Review; ...",
+  "advanced_training": "Cirrus; Glass Cockpit Transition; ...",
+  "aircraft_rental": "Single Engine",            // rental categories
+  "simulator_rental": "",
+  "flying_club_members": "",
+  "aopa_url": "https://www.aopa.org/destinations/business/40806",  // AOPA detail page
+  "source": "aopa",
+
+  // From Airports REST API enrichment (08c)
+  "website": "http://www.eastbayflight.com",     // NOT in Coveo — only from Airports API
+  "email": "info@eastbayflight.com",
+  "phone": "5106863512",
+  "fax": "",
+  "hours": "",                                   // free-text hours string
+  "address1": "8344 Earhart Rd. Suite 1",
+  "address2": "",
+  "zip": "94621",
+  "airport_icao": "KOAK",                        // ICAO identifier from Airports API
+  "additional_airports": [],                     // additional ICAO identifiers if multi-airport
+  "dba": "",                                     // "doing business as" name
+  "description_api": "...",                      // description from Airports API (may differ from Coveo)
+  "fte_award_year": "2026",                      // most recent FTE award year
+  "instructors_full_time": 5,                    // null if not reported
+  "instructors_part_time": 3,
+  "contacts": [                                  // published contacts (only okToPublish=true)
+    {
+      "name": "Patrick Carpenter",
+      "title": "Business Manager",
+      "phone": "7076530249",
+      "email": "info@eastbayflight.com"
+    }
+  ],
+  "structured_hours": [                          // machine-readable business hours
+    {
+      "days": "Monday-Friday",
+      "from": "08:00",
+      "to": "17:00"
+    }
+  ]
+}
 ```
 
-## Data Sources Summary
+**AOPA API authentication** (public SPA credentials):
+```
+POST https://authapi.aopa.org/identity/connect/token
+  grant_type=client_credentials
+  client_id=AOPAAirports
+  client_secret=AOPA_PUBLIC_TOKEN_REDACTED
+  scope=AirportsAPI
 
-### School directories (collected)
+GET https://webapp.aopa.org/AirportsAPI/businesses/{business_id}
+  Authorization: Bearer {token}
+```
+Business ID is extracted from `aopa_url` field: `/business/{id}`. Token valid ~8 hours.
 
-| Source | Records | Script | Notes |
-|--------|---------|--------|-------|
-| **FAA Part 141 Registry** | ~630 locations | `00_faa141_ingest.py` | Official FAA certificated pilot schools (UTF-16 TSV). Matched to airports via city+state with geocoding fallback. |
-| **AOPA Flight School Finder** | 2,255 schools | `08b_aopa_directory.py` | Coveo search API. 100% have airport IDs, lat/lon, certifications, ratings, services, aircraft rental types. Most comprehensive single source. |
-| **bestaviation.net** | ~500 | `08_directory_scraper.py` | Web scrape by state. |
-| **faaflightschools.com** | ~500 | `08_directory_scraper.py` | Web scrape by state. Largely overlaps with bestaviation. |
+---
 
-### Aircraft & ADS-B
+### `output/fleet_crawl_index.json` — HTTP Crawl Index (3,169 entries)
 
-| Source | Type | Access | Cost |
-|--------|------|--------|------|
-| FAA Aircraft Registry | Bulk CSV | Free download | Free |
-| FAA NASR Airport Data | Bulk CSV | Free download | Free |
-| OurAirports | CSV | Free download | Free |
-| ADS-B Exchange | API | API key required | ~$10/mo hobbyist, enterprise pricing varies |
-| ADS-B Exchange Historical | Bulk feeds | Requires agreement | Varies |
+One entry per school website crawled by `09a_fleet_crawl.py`. Maps school to discovered pages. Cleaned HTML in `output/fleet_html/`, raw unaltered HTML in `output/fleet_html_raw/`.
 
-### Other enrichment
+```jsonc
+{
+  "school_name": "ACES Aviation",
+  "school_website": "https://www.acesbvi.com",
+  "known_airport": "AGC",                       // airport code from directory, if known
+  "city": "Beaver Falls",
+  "state": "Pennsylvania",
+  "crawl_ts": "2026-03-09T...",                  // crawl timestamp
+  "canonical_url": "",                           // rel=canonical URL if different from school_website
+  "redirect_domain": "",                         // final domain if redirected
+  "crawl_flags": [],                             // see flags list below
+  "pages": [
+    {
+      "url": "https://www.acesbvi.com",
+      "html_path": "acesbvi.com/index_2a5354e064de.html",  // relative to output/fleet_html/
+      "type": "home",                            // "home", "fleet", "about", "contact", "location"
+      "images": [                                // extracted from raw HTML before cleaning (optional)
+        {
+          "src": "https://cdn.example.com/N12345.jpg",
+          "alt": "Cessna 172 N12345",
+          "title": "",
+          "caption": "Our Cessna 172",           // from <figcaption> if in <figure>
+          "srcset": "...",                        // responsive image srcset
+          "data-src": "..."                       // lazy-load data attributes
+        }
+      ],
+      "json_ld": [                               // JSON-LD structured data (optional)
+        {
+          "@context": "http://schema.org",
+          "@type": "LocalBusiness",
+          "name": "ACES Aviation",
+          "address": "...",
+          "telephone": "..."
+        }
+      ]
+    },
+    {
+      "url": "https://www.acesbvi.com/our-fleet-rental",
+      "html_path": "acesbvi.com/our-fleet-rental_60a090587c5e.html",
+      "type": "fleet"
+    }
+  ]
+}
+```
 
-| Source | Type | Access | Cost |
-|--------|------|--------|------|
-| Google Maps API | API | API key | Free tier then pay-per-use |
-| Flight school websites | Web scrape | Public | Free (rate-limited) |
+---
+
+### `output/fleet_browser_index.json` — Browser Crawl Index (1,510 entries)
+
+Same structure as `fleet_crawl_index.json` but from Playwright headless Chromium (`10_fleet_browser_crawl.py`). Rendered text in `output/fleet_browser_text/`, raw rendered HTML in `output/fleet_browser_html_raw/`.
+
+```jsonc
+{
+  "school_name": "Alpha One Air Service",
+  "school_website": "https://www.alphaoneairservice.com/",
+  "known_airport": "KAFP",
+  "city": "",
+  "state": "North Carolina",
+  "canonical_url": "https://alphaoneflighttraining.com/",
+  "redirect_domain": "alphaoneflighttraining.com",
+  "crawl_flags": ["no_fleet_pages"],
+  "pages": [
+    {
+      "url": "https://www.alphaoneairservice.com/",
+      "type": "home",
+      "text_path": "alphaoneairservice.com/index_837cd13b.txt",  // relative to output/fleet_browser_text/
+      "raw_html_path": "alphaoneairservice.com/index_837cd13b.html",  // raw rendered HTML
+      "char_count": 9177,                        // rendered text length (useful for thin-content detection)
+      "images": [...],                           // same image metadata format as fleet_crawl_index
+      "json_ld": [...]                           // same JSON-LD format as fleet_crawl_index
+    }
+  ],
+  "pdfs": []                                     // list of PDF URLs found and extracted
+}
+```
+
+**Crawl flags** (both indexes):
+
+| Flag | Meaning |
+|------|---------|
+| `homepage_failed` | Could not load the homepage (DNS, timeout, 4xx/5xx) |
+| `no_fleet_pages` | Homepage loaded but no fleet/aircraft/rental links found |
+| `all_pages_thin` | All pages returned <500 chars (likely JS-rendered shell) |
+| `js_rendered` | Detected JS framework, content may be incomplete (HTTP crawl only) |
+| `rate_limited` | Got 429 or Cloudflare challenge |
+| `redirect_loop` | Redirect chain exceeded limit |
+
+---
+
+### `output/flight_schools_enriched.json` — Deduplicated Directory (2,894 schools)
+
+Merged and deduplicated school records from all directory sources. Used as input to crawl targeting. This is the "school universe" before fleet extraction.
+
+```jsonc
+{
+  "name": "Example Aviation",
+  "city": "Palo Alto",
+  "state": "CA",
+  "state_name": "California",
+  "airport_code": "KPAO",
+  "airport_name": "Palo Alto Airport",
+  "latitude": 37.461,
+  "longitude": -122.115,
+  "website": "https://www.exampleaviation.com",
+  "phone": "(650) 555-0123",
+  "email": "info@exampleaviation.com",
+  "address": "1901 Embarcadero Rd, Palo Alto, CA 94303",
+  "zip": "94303",
+  "zip_code": "94303",                           // duplicate of zip (from different sources)
+  "ratings_offered": "Private, Instrument, Commercial",
+  "detail_url": "https://www.aopa.org/...",
+  "source": "aopa",                              // primary source
+  "sources": ["aopa", "faa141"],                 // all sources that listed this school
+  "n_sources": 2,                                // number of directory sources
+  "distance_mi": 0.0,                            // dedup distance to nearest match
+  "cirrus_training_center": false,
+  "cirrus_relationship": ""
+}
+```
+
+---
+
+### `output/adsb_activity_summary.json` — ADS-B Fleet Observations (52,071 aircraft)
+
+Per-aircraft aggregation across all ADS-B snapshots. Used by `14_adsb_validate.py` for cross-validation.
+
+```jsonc
+{
+  "icao_hex": "A61B17",                          // ICAO Mode S hex code
+  "total_sightings": 42,                         // total position reports across all snapshots
+  "on_ground_count": 12,                         // sightings where aircraft was on ground
+  "on_ground_pct": 0.286,                        // fraction on ground
+  "home_airport": "KMSN",                        // most frequently observed ground airport
+  "home_airport_nights": 3,                      // overnight stays at home airport
+  "n_snapshots": 246,                            // total snapshots in dataset
+  "overnight_airports": ["KMSN", "KORD"],        // airports with overnight stays
+  "airports_seen": {                             // airport -> sighting count
+    "KMSN": 18,
+    "KORD": 5,
+    "KDPA": 3
+  }
+}
+```
+
+---
+
+### `data/adsb/snapshots/snapshot_YYYYMMDD_HHMMSS.json` — ADS-B Snapshots
+
+Point-in-time capture from OpenSky Network + adsb.lol, taken every 15 minutes by cron (`13_adsb_cron.py`).
+
+```jsonc
+{
+  "capture_utc": "2026-03-09T22:30:00+00:00",
+  "total_aircraft": 7399,
+  "on_ground": 751,
+  "sources": {
+    "opensky": 6496,                             // aircraft from OpenSky Network
+    "adsblol": 5200,                             // total from adsb.lol (before dedup)
+    "adsblol_unique": 903                        // adsb.lol-only (not in OpenSky)
+  },
+  "aircraft": [
+    {
+      "icao_hex": "A61B17",                      // ICAO Mode S address (US = A00001-AFFFFF)
+      "callsign": "N49288",                      // ADS-B callsign (usually N-number)
+      "latitude": 43.14,
+      "longitude": -89.34,
+      "altitude_m": 457.2,                       // barometric altitude in meters
+      "geo_altitude_m": 460.0,                   // geometric altitude (GPS-derived)
+      "on_ground": false,
+      "velocity_ms": 51.3,                       // ground speed in m/s
+      "heading": 270.0,                          // track angle in degrees
+      "vertical_rate": -1.5,                     // vertical rate in m/s
+      "squawk": "1200",                          // transponder squawk code
+      "timestamp": 1741560600,                   // Unix epoch
+      "source": "opensky",                       // "opensky" or "adsblol"
+
+      // OpenSky-only fields (null/absent from adsb.lol):
+      "origin_country": "United States",
+      "time_position": 1741560598,
+      "last_contact": 1741560600,
+      "sensors": null,
+      "spi": false,                              // special position indicator
+      "category": 0,                             // ADS-B emitter category
+
+      // adsb.lol-only fields (absent from OpenSky):
+      "registration": "N49288",                  // decoded registration
+      "aircraft_type": "C152"                    // ICAO type designator
+    }
+  ]
+}
+```
+
+---
+
+### `output/fleet_browser_progress.json` — Live Crawl Progress
+
+Written by `10_fleet_browser_crawl.py` during a crawl run. Read by `browser_crawl_dashboard.html` for real-time display.
+
+```jsonc
+{
+  "updated_at": "2026-03-09T22:32:17+00:00",
+  "total": 703,                                  // total schools in this crawl run
+  "done": 450,                                   // schools completed
+  "schools": [                                   // most recent completions (ring buffer)
+    {
+      "school": "Tennessee Colleges Of Applied Technology-Memphis",
+      "url": "https://tcatmemphis.edu/",
+      "status": "done",                          // "done", "flagged", "crawling"
+      "ts": "2026-03-09T22:32:17+00:00",
+      "pages": 6,                                // pages discovered
+      "chars": 28530,                            // total rendered text characters
+      "pdfs": 3,                                 // PDFs found and extracted
+      "flags": [],                               // crawl flags (see table above)
+      "page_links": [{"url": "..."}],            // discovered page URLs
+      "pdf_links": [{"url": "..."}]              // discovered PDF URLs
+    }
+  ]
+}
+```
+
+---
+
+### `output/night_flying_by_school.json` / `night_flying_by_airport.json`
+
+Night flying analysis output from `12_night_flying.py`. Per-school and per-airport aggregation of night ADS-B activity. Sun position computed per-aircraft from lat/lon at civil twilight (-6°, matching FAR § 1.1).
+
+### `output/cirrus_training_network.json` — Cirrus API Raw Data (141 entries)
+
+Raw response from `locator.cirrusaircraft.com/api/v1/ctc`, ingested by `15_cirrus_ctc_ingest.py`.
+
+### `output/school_aircraft_map.json` — FAA Registrant Name Match
+
+Legacy output from `11_school_aircraft_merge.py`. Strict exact-normalized-name match between school names and FAA registrant names + same state.
+
+### Temporary/working files (prefixed with `_`)
+
+| File | Purpose |
+|------|---------|
+| `_aopa_crawl_targets.json` | Schools from AOPA enrichment needing HTTP crawl |
+| `_aopa_browser_targets.json` | AOPA schools needing browser crawl |
+| `_browser_targets.json` | Priority browser crawl target list |
+| `_browser_targets_full.json` | Full browser crawl target list (1,510) |
+| `_aopa_extract_index.json` | Subset of crawl index for AOPA-sourced extraction |
+| `_rate_sheet_targets.json` | Schools with PDF rate sheets to process |
+| `_recrawl_targets.json` | Failed crawls to retry |
+
+## Data Sources
+
+All data is from public sources. 15 of 17 sources are free; only the Anthropic API (~$15 total) and ADS-B Exchange (~$10/mo, optional) are paid.
+
+### Flight school directories
+
+| Source | URL | Records | Script | Notes |
+|--------|-----|---------|--------|-------|
+| **AOPA Flight School Finder** | `aopa9nc4vnbc.org.coveo.com/rest/search/v2` | 2,255 | `08b_aopa_directory.py` | Coveo search API. 100% have airport IDs, lat/lon, certifications. Most comprehensive single source. Does NOT include website/email (use Airports API). |
+| **AOPA Airports REST API** | `webapp.aopa.org/AirportsAPI/businesses/{id}` | 2,255 | `08c_aopa_enrich.py` | Supplements Coveo with website, email, phone, fax, address, contacts, hours, instructor counts, FTE award. Auth: client_credentials with public SPA keys. |
+| **FAA Part 141 Registry** | FAA Safety & Flight Standards data (TSV download) | ~630 | `00_faa141_ingest.py` | Official FAA certificated pilot schools. UTF-16 TSV. Matched to airports via city+state with geocoding fallback. |
+| **bestaviation.net** | `bestaviation.net/flight_school/{state}/{city}/` | ~500 | `08_directory_scraper.py` | Web scrape by state/city. |
+| **faaflightschools.com** | `faaflightschools.com/{state}/` | ~500 | `08_directory_scraper.py` | Web scrape by state. Largely overlaps with bestaviation. |
+| **flightschoollist.com** | `flightschoollist.com/airports/usa/{state}/` | ~400 | `08_directory_scraper.py` | Structured by airport code. |
+| **Cirrus Training Network** | `locator.cirrusaircraft.com/api/v1/ctc` | 141 | `15_cirrus_ctc_ingest.py` | Locator API. 52 matched existing schools, 37 new. |
+
+### FAA aircraft data
+
+| Source | URL | Records | Script | Notes |
+|--------|-----|---------|--------|-------|
+| **FAA Releasable Aircraft Database** | `registry.faa.gov/database/ReleasableAircraft.zip` | 310,353 | `01_faa_registry.py`, `17_faa_enrich_fleet.py` | Bulk ZIP: MASTER.txt (registrations), ACFTREF.txt (type codes), ENGINE.txt. N-numbers, manufacturer, model, year, registrant, Mode S code. Public domain. |
+| **FAA registrant address matching** | Same database, cross-referenced | 375 aircraft | `16_faa_address_match.py` | School address → FAA registrant address. Owner-name similarity via SequenceMatcher (threshold ≥0.4). |
+
+### ADS-B telemetry
+
+| Source | URL | Coverage | Script | Auth | Cost |
+|--------|-----|----------|--------|------|------|
+| **OpenSky Network** | `opensky-network.org/api/states/all` | CONUS + Hawaii + Alaska | `13_adsb_cron.py`, `10_adsb_scheduled.py` | Optional (higher rate limits with credentials) | Free |
+| **adsb.lol** | `api.adsb.lol/v2/lat/{lat}/lon/{lon}/dist/250` | CONUS (32 tiles) + Hawaii (1) + Alaska (2) | `13_adsb_cron.py` | None | Free |
+| **ADS-B Exchange** | `adsbexchange-com1.p.rapidapi.com/v2` | US-wide, per-hex lookup | `03_adsb_activity.py` | RapidAPI key | ~$10/mo hobbyist |
+
+### Airport reference
+
+| Source | URL | Records | Script | Notes |
+|--------|-----|---------|--------|-------|
+| **OurAirports** | `davidmegginson.github.io/ourairports-data/airports.csv` | 16,210 | `02_airport_reference.py` | Community-maintained. Identifiers, coordinates, type, city, state, elevation. |
+
+### Fleet content extraction
+
+| Source | URL | Volume | Script | Notes |
+|--------|-----|--------|--------|-------|
+| **Flight school websites** | ~2,200 school domains | 24,728 pages | `09a_fleet_crawl.py`, `10_fleet_browser_crawl.py` | Async HTTP (aiohttp, 50 concurrent) + Playwright headless Chromium with stealth mode for JS-rendered and bot-protected sites. Rate-limited, respectful headers, robots.txt compliance. |
+| **PDF rate sheets** | Linked from school websites | ~200 PDFs | `10_fleet_browser_crawl.py`, `11_rate_sheet_extract.py` | Text extraction via pdfplumber. Max 3 PDFs per school. |
+
+### AI/LLM services
+
+| Source | URL | Usage | Script | Auth | Cost |
+|--------|-----|-------|--------|------|------|
+| **Anthropic Claude API** | `api.anthropic.com/v1/messages/batches` (Sonnet 4.6) | ~3,000 batch requests | `09b_fleet_extract.py`, `10_fleet_browser_crawl.py`, `11_rate_sheet_extract.py` | API key | ~$15 total (batch pricing: $1.50/M input, $7.50/M output) |
+
+### Geocoding
+
+| Source | URL | Usage | Script | Notes |
+|--------|-----|-------|--------|-------|
+| **OpenStreetMap Nominatim** | `nominatim.openstreetmap.org/search` (via geopy) | Address → lat/lon for FAA 141 schools | `00_faa141_ingest.py`, `04_home_base.py` | Free, rate-limited (~1 req/18s). User-agent: `aether-research`. |
 
 ## Pipeline Scripts
 
@@ -231,13 +635,20 @@ flight_schools:
 | `scripts/07_assemble_dataset.py` | Combine all sources into final output dataset |
 | `scripts/08_directory_scraper.py` | Scrape bestaviation.net and faaflightschools.com directories |
 | `scripts/08b_aopa_directory.py` | Fetch AOPA flight school directory via Coveo API (2,255 schools) |
+| `scripts/08c_aopa_enrich.py` | Enrich AOPA schools via Airports REST API (website, email, contacts) |
 | `scripts/09a_fleet_crawl.py` | Async HTTP crawl of flight school websites for fleet pages |
+| `scripts/09a_fleet_crawl_targeted.py` | Wrapper for 09a that accepts custom JSON target list |
 | `scripts/09b_fleet_extract.py` | Sonnet 4.6 batch extraction of fleet data from cached HTML |
 | `scripts/10_fleet_browser_crawl.py` | Playwright browser crawl + Sonnet extraction for JS-rendered sites |
 | `scripts/10_adsb_scheduled.py` | Scheduled ADS-B data collection |
 | `scripts/11_rate_sheet_extract.py` | Download rate sheet PDFs/pages, extract fleet data with Sonnet |
 | `scripts/11_school_aircraft_merge.py` | Merge school directory with fleet/ADS-B data |
 | `scripts/12_night_flying.py` | Night flying analysis: solar position calc, day/night classification, per-school night ops |
+| `scripts/13_adsb_cron.py` | Continuous ADS-B snapshot collection (OpenSky + adsb.lol) |
+| `scripts/14_adsb_validate.py` | Cross-validate fleet against ADS-B observations |
+| `scripts/15_cirrus_ctc_ingest.py` | Ingest Cirrus Training Network API, tag/add CTC schools |
+| `scripts/16_faa_address_match.py` | Discover fleet via FAA registry address matching |
+| `scripts/17_faa_enrich_fleet.py` | Enrich fleet with FAA registry data (Mode S hex, manufacturer, etc.) |
 | `scripts/run_pipeline.py` | Orchestrate full pipeline end-to-end |
 
 ## Taking an ADS-B Snapshot
@@ -365,43 +776,45 @@ ANTHROPIC_API_KEY="sk-..."   # for Sonnet extraction (09b, 10)
 ADSBX_API_KEY="..."          # for ADS-B Exchange API
 ```
 
-## Current Results (as of March 2026)
+## Current Results (as of March 9, 2026)
 
 | Metric | Count |
 |--------|------:|
-| Schools in dataset (deduplicated) | 2,150 |
-| Schools with fleet data | 1,040 |
-| Total aircraft entries | 5,873 |
-| Unique N-numbers | 3,459 |
-| — FAA-validated (active registration) | 3,369 |
-| Aircraft identified by make/model only | 2,414 |
-| Aircraft with rental rates | 2,727 |
-| Schools with phone contact | 1,367 |
-| Duplicate N-numbers across schools | 0 |
-| N-number FAA validation rate | 97.4% |
+| Schools in dataset (deduplicated) | 2,586 |
+| Schools with fleet data | 1,552 |
+| Total aircraft entries | 8,932 |
+| Unique N-numbers | 4,862 |
+| Schools with rental rates | 678 |
+| Cirrus Training Centers tagged | 52 |
 
 ### School Type Classification
 
 | Type | Count |
 |------|------:|
-| Flight school with rentals | ~843 |
-| University/college program | ~114 |
-| Defunct/irrelevant | ~96 |
-| FBO (no training) | ~63 |
-| Flight school (no rentals) | ~63 |
-| Flying club | ~45 |
-| Other | ~194 |
-| Unclassified (from HTTP crawl) | ~730 |
+| Flight school with rentals | 1,254 |
+| Flight school (no rentals) | 367 |
+| Defunct / unreachable | 228 |
+| Not yet classified | 203 |
+| Other | 171 |
+| University/college program | 170 |
+| Flying club | 75 |
+| FBO | 81 |
+| Maintenance shop | 20 |
+| Charter operator | 17 |
 
 ### ADS-B Cross-Validation
 
-Of 3,391 fleet aircraft with Mode S hex codes, 213 (6.3%) were observed in 7 ADS-B
-snapshots. Of those observations:
+246 snapshots from OpenSky Network + adsb.lol, every 15 min since Mar 5. CONUS + Hawaii + Alaska coverage (Hawaii/Alaska added Mar 9).
 
-- **75.4%** were within 30nm of the assigned airport (expected for training ops)
-- **41.7%** were within 10nm (pattern work / local flights)
-- **11.7%** were >100nm away (cross-country training, ferry flights)
+| Metric | Value |
+|--------|------:|
+| Fleet with Mode S hex | 3,938 |
+| Observed in ADS-B | 1,891 (48.0%) |
+| Within 30nm of home airport | 83.7% |
+| Avg sightings per aircraft | 13.2 (median 10, max 72) |
+| Class B airspace coverage | 43/44 (97.7%) |
+| Class C airspace coverage | 58/75 (77.3%) |
 
-The low hit rate reflects limited snapshot coverage (7 captures over 2 days), not
-data quality — continuous ADS-B collection over weeks would validate a much larger
-fraction of the fleet.
+ADS-B collection is ongoing via cron. Continuous collection over weeks will
+validate a larger fraction of the fleet. Only Bravo miss is HNL (no Honolulu
+flight school in corpus; Kona and Maui covered).
