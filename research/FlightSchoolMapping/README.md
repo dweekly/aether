@@ -5,7 +5,7 @@ on their flight line (by make/model/type), their activity rates, and their conta
 information — using publicly available ADS-B telemetry, FAA registration data, and
 targeted web scraping?
 
-**Status:** Corpus substantially complete — 2,302 schools (deduped), 7,661 aircraft, 4,654 unique N-numbers, 2,934 with rates. ADS-B cross-validation ongoing (246+ snapshots, CONUS + Hawaii + Alaska coverage).
+**Status:** Clean rebuild complete — 2,497 schools, 9,243 aircraft, 5,490 unique N-numbers, 3,708 with rates. Every aircraft has provenance (`_extraction_method`). Built deterministically by `20_rebuild_flight_line.py` from extraction artifacts. ADS-B cross-validation ongoing (246+ snapshots, CONUS + Hawaii + Alaska coverage).
 
 ---
 
@@ -625,9 +625,10 @@ All data is from public sources. 15 of 17 sources are free; only the Anthropic A
 
 ## Build Sequence
 
-The pipeline has a strict ordering. Steps must be run in this order; each
-depends on outputs from prior steps. The canonical output is
-`output/flight_line.json`.
+The pipeline produces intermediate artifacts at each stage. The final
+`output/flight_line.json` is assembled deterministically by
+`20_rebuild_flight_line.py` from these artifacts — it never needs to be
+modified in-place.
 
 ```
 STAGE 1 — Reference Data (run once, refresh monthly)
@@ -641,34 +642,38 @@ STAGE 2 — School Directory Assembly (run once, refresh quarterly)
   08c_aopa_enrich.py           → aopa_flight_schools.json (enriched in-place)
   07_assemble_dataset.py       → flight_schools_enriched.json (deduped union)
 
-STAGE 3 — Fleet Discovery (run in order; each merges into flight_line.json)
+STAGE 3a — HTTP Fleet Crawl & Extraction
   09a_fleet_crawl.py           → fleet_crawl_index.json, fleet_html/, fleet_html_raw/
-  09b_fleet_extract.py         → flight_line.json (from HTTP crawl HTML)
-  10_fleet_browser_crawl.py    → flight_line.json (from JS-rendered sites)
-  11_image_nn_extract.py       → flight_line.json (free, from image metadata)
-  12_vlm_nn_extract.py         → flight_line.json (from aircraft photos, per-image API cost)
+  09b_fleet_extract.py         → fleet_extract_results.jsonl (Sonnet batch)
 
-STAGE 4 — Enrichment & Validation (run after Stage 3)
-  16_faa_address_match.py      → flight_line.json (aircraft at school's address)
-  17_faa_enrich_fleet.py       → flight_line.json (FAA registry details per aircraft)
-  15_cirrus_ctc_ingest.py      → flight_line.json (Cirrus CTC tags)
+STAGE 3b — Browser Fleet Crawl & Extraction
+  10_fleet_browser_crawl.py    → fleet_browser_text/, fleet_browser_html_raw/
+  09c_browser_extract.py       → fleet_browser_extract_results.jsonl (Sonnet batch)
+                                 fleet_browser_extract_index.json
 
-STAGE 5 — ADS-B Observation (continuous, independent of Stages 3-4)
+STAGE 4 — Assembly (deterministic, no API calls)
+  20_rebuild_flight_line.py    → flight_line.json
+    Reads: fleet_extract_results.jsonl      (HTTP crawl extractions)
+           fleet_browser_extract_results.jsonl (browser crawl extractions)
+           fleet_crawl_index.json           (school metadata / directory names)
+           fleet_browser_extract_index.json (browser school metadata)
+           fleet_html_raw/, fleet_browser_html_raw/ (image metadata NN scan)
+           faa_master.csv, ACFTREF.txt      (FAA enrichment + NN validation)
+
+STAGE 5 — ADS-B Observation (continuous, independent)
   13_adsb_cron.py              → data/adsb/snapshots/ (runs on cron)
   14_adsb_validate.py          → validation report (reads flight_line.json + snapshots)
 ```
 
-**Merge rules for `flight_line.json`:**
-- Primary key: `school_website` (normalized: strip protocol, www., trailing slash)
-- Canonical URL resolution: `canonical_url` and `redirect_domain` from crawl index
-  collapse URL variants (e.g. `alphaoneairservice.com` → `alphaoneflighttraining.com`)
-- New extractions for a given school REPLACE the entire school entry
-- Schools not in the current extraction are PRESERVED unchanged
-- Exception: `17_faa_enrich_fleet.py` and `16_faa_address_match.py` modify in-place
-
-**Git checkpoint discipline:** Commit `flight_line.json` before every Stage 3/4
-step that modifies it. This provides rollback if an extraction produces worse
-results than what we had.
+**Key design rules for `flight_line.json`:**
+- Primary key: normalized domain (strip protocol, www., trailing slash)
+- One entry per domain — no cross-domain merging
+- School names come from the AOPA directory, NOT from Sonnet extraction
+- Each aircraft's `source_url` must match its school's domain (foreign URLs rejected)
+- No union-find, no shared-NN merging, no transitive closure
+- Image metadata N-numbers are only included if FAA-confirmed
+- Platform domains (facebook.com, wixsite.com, etc.) are excluded from domain keying
+- The rebuild is idempotent: same inputs always produce the same output
 
 ### Script Variants (Not Part of Standard Build)
 
@@ -680,7 +685,12 @@ results than what we had.
 | `09_fleet_scraper.py` | Deprecated: single-phase crawl+extract | Do not use |
 | `09_fleet_scraper_parallel.py` | Deprecated: parallel single-phase | Do not use |
 | `11_rate_sheet_extract.py` | PDF rate sheet extraction | Targeted rate recovery |
+| `11_image_nn_extract.py` | Image metadata NN extraction | Now built into 20_rebuild |
 | `11_school_aircraft_merge.py` | FAA registrant name matching | Supplementary linkage |
+| `12_vlm_nn_extract.py` | VLM photo NN extraction | Per-image API cost, targeted |
+| `16_faa_address_match.py` | FAA address matching | Now built into 20_rebuild |
+| `17_faa_enrich_fleet.py` | FAA enrichment | Now built into 20_rebuild |
+| `15_cirrus_ctc_ingest.py` | Cirrus CTC tags | Future: integrate into 20_rebuild |
 | `crawl_progress_monitor.py` | Real-time progress JSON for dashboards | During crawl runs |
 
 ### All Scripts
@@ -699,8 +709,9 @@ results than what we had.
 | `08b_aopa_directory.py` | Fetch AOPA flight school directory via Coveo API (2,255 schools) |
 | `08c_aopa_enrich.py` | Enrich AOPA schools via Airports REST API (website, email, contacts) |
 | `09a_fleet_crawl.py` | Async HTTP crawl of flight school websites for fleet pages |
-| `09b_fleet_extract.py` | Sonnet extraction of fleet data from cached HTML |
-| `10_fleet_browser_crawl.py` | Playwright browser crawl + extraction for JS-rendered sites |
+| `09b_fleet_extract.py` | Sonnet batch extraction from HTTP crawl HTML → fleet_extract_results.jsonl |
+| `09c_browser_extract.py` | Sonnet batch extraction from browser text → fleet_browser_extract_results.jsonl |
+| `10_fleet_browser_crawl.py` | Playwright browser crawl for JS-rendered sites → fleet_browser_text/ |
 | `10_adsb_scheduled.py` | Scheduled ADS-B data collection |
 | `11_image_nn_extract.py` | Extract N-numbers from image metadata (free, no API) |
 | `12_vlm_nn_extract.py` | Vision model N-number extraction from aircraft photos |
@@ -710,6 +721,7 @@ results than what we had.
 | `15_cirrus_ctc_ingest.py` | Ingest Cirrus Training Network API, tag/add CTC schools |
 | `16_faa_address_match.py` | Discover fleet via FAA registry address matching |
 | `17_faa_enrich_fleet.py` | Enrich fleet with FAA registry data (Mode S hex, etc.) |
+| `20_rebuild_flight_line.py` | **Deterministic assembly** of flight_line.json from all extraction artifacts |
 
 ## Aircraft Provenance Model
 
@@ -739,13 +751,16 @@ Each aircraft may have additional signals that strengthen or weaken the linkage:
 | N-number on a fleet page with a rate | `wet_rate_hr` not null | Strong: school is actively renting it |
 | N-number only in an image filename | `extraction_method: "image_metadata"` | Weak alone: could be a stock photo or old aircraft |
 
-### Current Provenance Gaps
+### Provenance Integrity
 
-The `_extraction_method` field is **not yet populated** on all aircraft. As of
-the current build, only image-metadata aircraft (771) and FAA address-match
-aircraft (374) carry it. The extraction scripts (09b, 10) have been updated
-to tag new extractions with `_extraction_method: "sonnet_text"` and
-`_extracted_at` timestamps, but existing records need a backfill pass.
+As of the `20_rebuild_flight_line.py` rebuild, **every aircraft** carries
+`_extraction_method` and `_extracted_at` provenance fields. The rebuild script
+tags all aircraft at assembly time based on their source:
+- `sonnet_text` — extracted by Sonnet from HTTP or browser crawl text
+- `image_metadata` — N-number found in image filename/alt/caption (FAA-confirmed)
+
+Additionally, every aircraft's `source_url` is validated against its school's
+domain — aircraft with foreign source URLs (from incorrect merges) are rejected.
 
 **TODO:** Backfill `_extraction_method: "sonnet_text"` on all existing
 Sonnet-extracted aircraft that lack the field. This is a one-time data

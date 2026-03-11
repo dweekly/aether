@@ -32,7 +32,7 @@ OUTPUT_DIR = Path(__file__).parent.parent / "output"
 HTML_DIR = OUTPUT_DIR / "fleet_html"
 
 MODEL = "claude-sonnet-4-6"
-MAX_TOKENS = 4096
+MAX_TOKENS = 16384
 
 # ── Valid airport set for post-processing ────────────────────────
 
