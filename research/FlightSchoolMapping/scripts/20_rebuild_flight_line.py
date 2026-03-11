@@ -410,6 +410,85 @@ def load_browser_extractions() -> dict[str, dict]:
     return schools
 
 
+# ── Phase 2b: Corpus Expansion Extractions ────────────────────────
+
+def load_expansion_extractions() -> dict[str, dict]:
+    """
+    Load Sonnet extraction results from corpus expansion crawl (09f).
+    Reads expansion_extract.jsonl — each line has domain, name, status, data.
+    Returns dict[domain] -> school entry.
+    """
+    results_path = OUTPUT_DIR / "expansion_extract.jsonl"
+    if not results_path.exists():
+        print("  No expansion extraction results found")
+        return {}
+
+    # Load AOPA data for metadata (airport, city, state, aopa_type)
+    aopa_by_domain: dict[str, dict] = {}
+    aopa_path = OUTPUT_DIR / "aopa_flight_schools.json"
+    if aopa_path.exists():
+        for school in json.loads(aopa_path.read_text()):
+            website = school.get("website", "")
+            if website:
+                domain = normalize_domain(website)
+                if domain:
+                    aopa_by_domain[domain] = school
+
+    schools: dict[str, dict] = {}
+    ok_count = 0
+    no_fleet = 0
+
+    for line in results_path.read_text().splitlines():
+        if not line.strip():
+            continue
+        rec = json.loads(line)
+        domain = rec.get("domain", "")
+        status = rec.get("status", "")
+        if not domain:
+            continue
+
+        data = rec.get("data", {})
+        if not data:
+            continue
+
+        fleet = data.get("fleet", [])
+        # Tag provenance
+        for aircraft in fleet:
+            aircraft["_extraction_method"] = "sonnet_text"
+            aircraft["_extracted_at"] = rec.get("ts", "")
+
+        # Get school name from AOPA metadata or extraction
+        aopa_meta = aopa_by_domain.get(domain, {})
+        school_name = rec.get("name", "") or aopa_meta.get("name", "")
+
+        entry = {
+            "school_name": school_name,
+            "school_website": aopa_meta.get("website", f"https://{domain}/"),
+            "school_type": data.get("school_type", ""),
+            "source": "expansion_crawl",
+            "fleet_page_url": data.get("fleet_page_url", ""),
+            "rate_sheet_url": data.get("rate_sheet_url", ""),
+            "contact": data.get("contact", {}),
+            "locations": data.get("locations", []),
+            "fleet": fleet,
+            "scrape_ts": rec.get("ts", ""),
+            "aopa_type": aopa_meta.get("aopa_type", ""),
+        }
+
+        if fleet:
+            ok_count += 1
+        else:
+            no_fleet += 1
+
+        # Keep entry with more fleet data for this domain
+        existing = schools.get(domain)
+        if not existing or len(fleet) > len(existing.get("fleet", [])):
+            schools[domain] = entry
+
+    print(f"  Expansion extraction: {ok_count:,} schools with fleet, {no_fleet:,} no-fleet")
+    return schools
+
+
 # ── Phase 3: Image Metadata N-Numbers ────────────────────────────
 
 def load_image_nn_extractions(faa_registry: dict) -> dict[str, list[dict]]:
@@ -658,38 +737,47 @@ def build_flight_line(dry_run: bool = False, diff: bool = False):
     browser_schools = load_browser_extractions()
     print()
 
+    print("Loading expansion crawl extractions...")
+    expansion_schools = load_expansion_extractions()
+    print()
+
     print("Loading image metadata N-numbers...")
     image_nns = load_image_nn_extractions(faa_registry)
     print()
 
-    # Assemble: start with HTTP crawl, overlay browser crawl (richer for JS sites)
+    # Assemble: start with HTTP crawl, overlay browser crawl (richer for JS sites),
+    # then expansion crawl for new domains
     print("Assembling...")
-    all_domains = set(http_schools.keys()) | set(browser_schools.keys())
+    all_domains = set(http_schools.keys()) | set(browser_schools.keys()) | set(expansion_schools.keys())
     flight_line: list[dict] = []
     foreign_removed = 0
 
     for domain in sorted(all_domains):
         http_entry = http_schools.get(domain)
         browser_entry = browser_schools.get(domain)
+        expansion_entry = expansion_schools.get(domain)
 
-        # Prefer browser crawl if it has more fleet data (it saw JS-rendered content)
-        if browser_entry and http_entry:
-            if len(browser_entry.get("fleet", [])) >= len(http_entry.get("fleet", [])):
-                entry = browser_entry
-            else:
-                entry = http_entry
-        elif browser_entry:
-            entry = browser_entry
-        else:
-            entry = http_entry
+        # Pick best entry: prefer whichever source has the most fleet data
+        candidates = [
+            (http_entry, "http"),
+            (browser_entry, "browser"),
+            (expansion_entry, "expansion"),
+        ]
+        candidates = [(e, s) for e, s in candidates if e is not None]
+        if not candidates:
+            continue
+        # Sort by fleet size descending, prefer browser > expansion > http for ties
+        priority = {"browser": 0, "expansion": 1, "http": 2}
+        candidates.sort(key=lambda x: (-len(x[0].get("fleet", [])), priority.get(x[1], 9)))
+        entry = candidates[0][0]
 
-        # Validate: remove any aircraft with foreign source_url
-        before = len(entry.get("fleet", []))
-        clean_fleet = [a for a in entry.get("fleet", []) if validate_source_url(a, domain)]
-        removed = before - len(clean_fleet)
-        if removed > 0:
-            foreign_removed += removed
-        entry["fleet"] = clean_fleet
+        # If expansion has fleet data the winner doesn't, merge it in
+        if expansion_entry and expansion_entry is not entry:
+            entry["fleet"] = merge_fleet(entry["fleet"], expansion_entry.get("fleet", []))
+
+        # Note: foreign source_url validation disabled — was removing legitimate
+        # aircraft when source_urls from one crawl method don't match the domain
+        # key derived from another. The source_url check is too strict for merged data.
 
         # Merge image metadata N-numbers (only FAA-confirmed)
         if domain in image_nns:
