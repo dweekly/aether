@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
 """
-Scrape the AOPA Flight School Finder via their Coveo search API.
+Scrape the AOPA directory via their Coveo search API.
 
 The AOPA directory (aopa.org/training-and-safety/learn-to-fly/flight-schools)
-is powered by a Coveo search index. This script pages through all Flight School
-results and writes a normalized CSV + JSON.
+is powered by a Coveo search index. This script pages through all results
+for Flight Schools, Flying Clubs, and College/University programs, then
+writes a normalized CSV + JSON.
 
 Output: output/aopa_flight_schools.csv, output/aopa_flight_schools.json
 
-Total schools: ~2,255 as of March 2025.  The API returns up to 200 results per
-page, so we need ~12 requests — fast and lightweight.
+Available aopauftype values in Coveo index (as of March 2026):
+  Airport          19,673    (not relevant)
+  FBO               2,862    (not relevant — no training fleet)
+  Flight School     2,258
+  Business          1,649    (not relevant)
+  Flying Club       1,139
+  College/University  270
+
+We query: Flight School + Flying Club + College/University ≈ 3,667 entries.
 """
 
 import csv
@@ -53,7 +61,10 @@ FIELD_MAP = {
 }
 
 
-def fetch_page(first_result: int) -> dict:
+AOPA_TYPES = ["Flight School", "Flying Club", "College/University"]
+
+
+def fetch_page(first_result: int, aopa_type: str) -> dict:
     """Fetch one page of results from the Coveo API."""
     resp = requests.post(
         COVEO_ENDPOINT,
@@ -63,7 +74,7 @@ def fetch_page(first_result: int) -> dict:
         },
         json={
             "q": "",
-            "aq": '@aopauftype=="Flight School"',
+            "aq": f'@aopauftype=="{aopa_type}"',
             "firstResult": first_result,
             "numberOfResults": PAGE_SIZE,
         },
@@ -86,31 +97,31 @@ def extract_school(result: dict) -> dict:
 
     # AOPA detail page
     school["aopa_url"] = raw.get("clickableuri", raw.get("sysuri", ""))
+    school["aopa_type"] = raw.get("aopauftype", "")
     school["source"] = "aopa"
     return school
 
 
 def run():
-    """Fetch all AOPA flight schools."""
+    """Fetch all AOPA flight schools, flying clubs, and college programs."""
     print("=" * 60)
-    print("AOPA Flight School Directory Scraper")
+    print("AOPA Directory Scraper (Schools + Clubs + Universities)")
     print("=" * 60)
 
-    # First request to get total count
-    print("\n[1/3] Querying AOPA Coveo API...")
-    data = fetch_page(0)
-    total = data["totalCountFiltered"]
-    print(f"  Total schools: {total:,}")
+    schools = []
+    for aopa_type in AOPA_TYPES:
+        print(f"\n--- Fetching: {aopa_type} ---")
+        data = fetch_page(0, aopa_type)
+        total = data["totalCountFiltered"]
+        print(f"  Total: {total:,}")
 
-    schools = [extract_school(r) for r in data["results"]]
-    pages = (total + PAGE_SIZE - 1) // PAGE_SIZE
-
-    # Remaining pages
-    print(f"\n[2/3] Fetching {pages} pages of {PAGE_SIZE}...")
-    for page in tqdm(range(1, pages), desc="  Pages"):
-        time.sleep(DELAY_BETWEEN_REQUESTS)
-        data = fetch_page(page * PAGE_SIZE)
         schools.extend(extract_school(r) for r in data["results"])
+        pages = (total + PAGE_SIZE - 1) // PAGE_SIZE
+
+        for page in tqdm(range(1, pages), desc=f"  {aopa_type}"):
+            time.sleep(DELAY_BETWEEN_REQUESTS)
+            data = fetch_page(page * PAGE_SIZE, aopa_type)
+            schools.extend(extract_school(r) for r in data["results"])
 
     print(f"  Fetched {len(schools):,} school records")
 
@@ -125,7 +136,7 @@ def run():
         "classifications", "certifications", "ratings", "services",
         "advanced_training", "aircraft_rental", "simulator_rental",
         "aopa_award", "va_approved", "flying_club_members",
-        "description", "aopa_url", "source",
+        "description", "aopa_url", "aopa_type", "source",
     ]
 
     csv_path = OUTPUT_DIR / "aopa_flight_schools.csv"
@@ -142,6 +153,11 @@ def run():
 
     # Stats
     from collections import Counter
+    types = Counter(s.get("aopa_type", "?") for s in schools)
+    print(f"\n  By AOPA type:")
+    for t, c in types.most_common():
+        print(f"    {t}: {c:,}")
+
     states = Counter(s["state"] for s in schools if s["state"])
     print(f"\n  States represented: {len(states)}")
     print(f"  Top 10 states:")
