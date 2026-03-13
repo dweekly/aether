@@ -757,7 +757,10 @@ def build_flight_line(dry_run: bool = False, diff: bool = False):
         browser_entry = browser_schools.get(domain)
         expansion_entry = expansion_schools.get(domain)
 
-        # Pick best entry: prefer whichever source has the most fleet data
+        # Pick best entry: prefer whichever source has the most N-numbers,
+        # then most fleet, then browser > http > expansion for ties.
+        # N-number count is the best quality signal — a fleet list with
+        # tail numbers is strictly more useful than one without.
         candidates = [
             (http_entry, "http"),
             (browser_entry, "browser"),
@@ -766,14 +769,21 @@ def build_flight_line(dry_run: bool = False, diff: bool = False):
         candidates = [(e, s) for e, s in candidates if e is not None]
         if not candidates:
             continue
-        # Sort by fleet size descending, prefer browser > expansion > http for ties
-        priority = {"browser": 0, "expansion": 1, "http": 2}
-        candidates.sort(key=lambda x: (-len(x[0].get("fleet", [])), priority.get(x[1], 9)))
+
+        def _score(entry_source):
+            e, s = entry_source
+            fleet = e.get("fleet", [])
+            nn_count = sum(1 for a in fleet if a.get("n_number"))
+            priority = {"browser": 0, "http": 1, "expansion": 2}
+            return (-nn_count, -len(fleet), priority.get(s, 9))
+
+        candidates.sort(key=_score)
         entry = candidates[0][0]
 
-        # If expansion has fleet data the winner doesn't, merge it in
-        if expansion_entry and expansion_entry is not entry:
-            entry["fleet"] = merge_fleet(entry["fleet"], expansion_entry.get("fleet", []))
+        # Merge fleet from other sources (adds aircraft not in the winner)
+        for other, _ in candidates[1:]:
+            if other.get("fleet"):
+                entry["fleet"] = merge_fleet(entry["fleet"], other["fleet"])
 
         # Note: foreign source_url validation disabled — was removing legitimate
         # aircraft when source_urls from one crawl method don't match the domain
