@@ -5,7 +5,7 @@ on their flight line (by make/model/type), their activity rates, and their conta
 information — using publicly available ADS-B telemetry, FAA registration data, and
 targeted web scraping?
 
-**Status:** Clean rebuild complete — 2,497 schools, 9,243 aircraft, 5,490 unique N-numbers, 3,708 with rates. Every aircraft has provenance (`_extraction_method`). Built deterministically by `20_rebuild_flight_line.py` from extraction artifacts. ADS-B cross-validation ongoing (246+ snapshots, CONUS + Hawaii + Alaska coverage).
+**Status (Mar 13, 2026):** 4,825 schools/clubs, 16,881 aircraft, 11,749 unique N-numbers, 6,764 ADS-B active, 4,387 with rental rates. Built by `21_build_flight_line.py` + `22_pdf_rate_sheets.py`. ADS-B via 626 dual-source snapshots (OpenSky + adsb.lol, cron every 15 min).
 
 ---
 
@@ -146,7 +146,7 @@ via pdfplumber, HTML rate pages parsed with BeautifulSoup, Sonnet 4.6 extraction
 
 ## Output Schemas
 
-### `output/flight_line.json` — Primary Output (2,586 schools)
+### `output/flight_line.json` — Primary Output (4,825 schools)
 
 The canonical dataset. Each entry is a flight school with its fleet, locations, and contact info, as extracted by Sonnet 4.6 from crawled web content.
 
@@ -623,12 +623,35 @@ All data is from public sources. 15 of 17 sources are free; only the Anthropic A
 |--------|-----|-------|--------|-------|
 | **OpenStreetMap Nominatim** | `nominatim.openstreetmap.org/search` (via geopy) | Address → lat/lon for FAA 141 schools | `00_faa141_ingest.py`, `04_home_base.py` | Free, rate-limited (~1 req/18s). User-agent: `aether-research`. |
 
+## Quick Reference: Common Operations
+
+```bash
+cd research/FlightSchoolMapping/scripts
+source .venv/bin/activate
+
+# Full rebuild of flight_line.json (deterministic, no API calls, ~60s)
+python 21_build_flight_line.py
+
+# Apply PDF rate sheet extraction on top (patches flight_line.json)
+python 22_pdf_rate_sheets.py
+
+# Aggregate ADS-B snapshots → adsb_activity.csv (then rebuild to fold in)
+python 11_adsb_dual_source.py --aggregate
+python 21_build_flight_line.py
+python 22_pdf_rate_sheets.py
+
+# Take a single ADS-B snapshot (for testing)
+python 11_adsb_dual_source.py --snapshot
+
+# Expand corpus with new AOPA domains (crawl + Sonnet extraction)
+python 09f_corpus_expansion.py
+```
+
 ## Build Sequence
 
-The pipeline produces intermediate artifacts at each stage. The final
-`output/flight_line.json` is assembled deterministically by
-`20_rebuild_flight_line.py` from these artifacts — it never needs to be
-modified in-place.
+The pipeline produces intermediate artifacts at each stage. `21_build_flight_line.py`
+assembles everything from scratch (deterministic, no API calls). `22_pdf_rate_sheets.py`
+patches the result with PDF-extracted N-numbers.
 
 ```
 STAGE 1 — Reference Data (run once, refresh monthly)
@@ -637,10 +660,8 @@ STAGE 1 — Reference Data (run once, refresh monthly)
   02_airport_reference.py      → airports.csv
 
 STAGE 2 — School Directory Assembly (run once, refresh quarterly)
-  08_directory_scraper.py      → flight_schools_directory.json
-  08b_aopa_directory.py        → aopa_flight_schools.json
-  08c_aopa_enrich.py           → aopa_flight_schools.json (enriched in-place)
-  07_assemble_dataset.py       → flight_schools_enriched.json (deduped union)
+  08b_aopa_directory.py        → aopa_flight_schools.json (3,667 schools+clubs)
+  08c_aopa_enrich.py           → aopa_flight_schools.json (enriched: websites, emails)
 
 STAGE 3a — HTTP Fleet Crawl & Extraction
   09a_fleet_crawl.py           → fleet_crawl_index.json, fleet_html/, fleet_html_raw/
@@ -648,21 +669,27 @@ STAGE 3a — HTTP Fleet Crawl & Extraction
 
 STAGE 3b — Browser Fleet Crawl & Extraction
   10_fleet_browser_crawl.py    → fleet_browser_text/, fleet_browser_html_raw/
-  09c_browser_extract.py       → fleet_browser_extract_results.jsonl (Sonnet batch)
-                                 fleet_browser_extract_index.json
+  09c_browser_extract.py       → fleet_browser_extract_results.jsonl + index
 
-STAGE 4 — Assembly (deterministic, no API calls)
-  20_rebuild_flight_line.py    → flight_line.json
-    Reads: fleet_extract_results.jsonl      (HTTP crawl extractions)
-           fleet_browser_extract_results.jsonl (browser crawl extractions)
-           fleet_crawl_index.json           (school metadata / directory names)
-           fleet_browser_extract_index.json (browser school metadata)
-           fleet_html_raw/, fleet_browser_html_raw/ (image metadata NN scan)
-           faa_master.csv, ACFTREF.txt      (FAA enrichment + NN validation)
+STAGE 3c — Corpus Expansion (new domains from AOPA clubs + universities)
+  09f_corpus_expansion.py      → expansion_extract.jsonl (crawl + extract, domain embedded)
 
-STAGE 5 — ADS-B Observation (continuous, independent)
-  13_adsb_cron.py              → data/adsb/snapshots/ (runs on cron)
-  14_adsb_validate.py          → validation report (reads flight_line.json + snapshots)
+STAGE 4 — Assembly (deterministic rebuild, no API calls, ~60s)
+  21_build_flight_line.py      → flight_line.json, build_diagnostics.json
+    Reads: expansion_extract.jsonl, fleet_browser_extract_results.jsonl,
+           fleet_extract_results.jsonl, aopa_flight_schools.json,
+           faa_discovered_schools.json, faa_master.csv, ACFTREF.txt,
+           adsb_activity.csv
+
+STAGE 4b — PDF Rate Sheet Overlay (patches flight_line.json in-place)
+  22_pdf_rate_sheets.py        → flight_line.json (updated), pdf_extraction_diagnostics.json
+    Downloads PDFs, extracts N-numbers via regex + FAA validation.
+    Resume-friendly (skips already-downloaded files).
+
+STAGE 5 — ADS-B Observation (continuous via cron, every 15 min)
+  13_adsb_cron.py              → data/adsb/snapshots/ (cron job)
+  11_adsb_dual_source.py --aggregate → adsb_activity.csv, adsb_activity_summary.json
+  14_adsb_validate.py          → validation report
 ```
 
 **Key design rules for `flight_line.json`:**
@@ -684,7 +711,7 @@ STAGE 5 — ADS-B Observation (continuous, independent)
 | `09b_fleet_extract_chunked.py` | Chunk-based batch submission | Alternative to parallel |
 | `09_fleet_scraper.py` | Deprecated: single-phase crawl+extract | Do not use |
 | `09_fleet_scraper_parallel.py` | Deprecated: parallel single-phase | Do not use |
-| `11_rate_sheet_extract.py` | PDF rate sheet extraction | Targeted rate recovery |
+| `11_rate_sheet_extract.py` | PDF rate sheet extraction (old) | Superseded by 22_pdf_rate_sheets.py |
 | `11_image_nn_extract.py` | Image metadata NN extraction | Now built into 20_rebuild |
 | `11_school_aircraft_merge.py` | FAA registrant name matching | Supplementary linkage |
 | `12_vlm_nn_extract.py` | VLM photo NN extraction | Per-image API cost, targeted |
@@ -721,7 +748,10 @@ STAGE 5 — ADS-B Observation (continuous, independent)
 | `15_cirrus_ctc_ingest.py` | Ingest Cirrus Training Network API, tag/add CTC schools |
 | `16_faa_address_match.py` | Discover fleet via FAA registry address matching |
 | `17_faa_enrich_fleet.py` | Enrich fleet with FAA registry data (Mode S hex, etc.) |
-| `20_rebuild_flight_line.py` | **Deterministic assembly** of flight_line.json from all extraction artifacts |
+| `20_rebuild_flight_line.py` | Predecessor to 21 — HTTP-only rebuild (deprecated) |
+| `21_build_flight_line.py` | **Deterministic assembly** of flight_line.json from all extraction artifacts |
+| `22_pdf_rate_sheets.py` | Download PDF rate sheets, extract N-numbers via regex + Sonnet batch |
+| `09f_corpus_expansion.py` | Crawl + extract new AOPA domains (clubs, universities) |
 
 ## Aircraft Provenance Model
 
@@ -892,30 +922,22 @@ ANTHROPIC_API_KEY="sk-..."   # for Sonnet extraction (09b, 10)
 ADSBX_API_KEY="..."          # for ADS-B Exchange API
 ```
 
-## Current Results (as of March 10, 2026)
+## Current Results (as of March 13, 2026)
 
 | Metric | Count |
 |--------|------:|
-| Schools in dataset (deduplicated) | 2,302 |
-| Total aircraft entries | 7,661 |
-| Unique N-numbers | 4,654 |
-| Aircraft with rental rates | 2,934 |
-| Aircraft with FAA enrichment | 3,702 |
+| Schools/clubs in dataset | 4,825 |
+| With fleet data | 3,323 |
+| Total aircraft entries | 16,881 |
+| Unique N-numbers | 11,749 |
+| ADS-B active aircraft | 6,764 |
+| Aircraft with rental rates | 4,387 |
 
-Note: school count dropped from ~3,500 to 2,302 after URL deduplication
-(normalizing http/https, www/bare, trailing slashes, and canonical URL
-resolution). No data was lost — fleet records from duplicate entries were
-merged into the canonical entry.
+Sources: 1,743 flight schools, 653 flying clubs, 248 college/university programs (from AOPA), plus 2,181 FAA-discovered entities.
 
-### ADS-B Cross-Validation
+### ADS-B Coverage
 
-246 snapshots from OpenSky Network + adsb.lol, every 15 min since Mar 5. CONUS + Hawaii + Alaska coverage (Hawaii/Alaska added Mar 9).
-
-| Metric | Value |
-|--------|------:|
-| Fleet with Mode S hex | 3,938 |
-| Observed in ADS-B | 1,891 (48.0%) |
-| Within 30nm of home airport | 83.7% |
+626 dual-source snapshots (OpenSky + adsb.lol), every 15 min via cron since Mar 5. CONUS + Hawaii + Alaska coverage. 69,576 unique transponders observed.
 | Avg sightings per aircraft | 13.2 (median 10, max 72) |
 | Class B airspace coverage | 43/44 (97.7%) |
 | Class C airspace coverage | 58/75 (77.3%) |
