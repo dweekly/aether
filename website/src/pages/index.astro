@@ -1,0 +1,336 @@
+---
+const title = "Aether Flight";
+const description = "Aether Flight — next-generation aviation data products and services building on modern AI. A project of Primatech Paper Co LLC.";
+const url = "https://aether-flight.com";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title} | Ether Flight</title>
+		<meta name="description" content={description} />
+		<meta name="keywords" content="aether flight, ether flight, aether, aviation data, flight data, AI aviation, next-generation aviation, Primatech Paper Co" />
+		<link rel="canonical" href={url} />
+
+		<!-- Open Graph -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={url} />
+		<meta property="og:site_name" content="Aether Flight" />
+
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+
+		<!-- Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300&family=Azeret+Mono:wght@300;400&display=swap" rel="stylesheet" />
+
+		<!-- Schema.org -->
+		<script type="application/ld+json" set:html={JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "Organization",
+			"name": "Aether Flight",
+			"alternateName": ["Ether Flight", "AetherFlight"],
+			"url": url,
+			"email": "team@aether-flight.com",
+			"parentOrganization": {
+				"@type": "Organization",
+				"name": "Primatech Paper Co LLC"
+			}
+		})} />
+	</head>
+	<body>
+		<div class="atmosphere"></div>
+		<div class="grain"></div>
+
+		<main>
+			<div class="mark">
+				<span class="mark-line mark-line--1" aria-hidden="true"></span>
+				<h1>
+					<span class="letter-group" style="--i:0">A</span><span class="letter-group" style="--i:1">e</span><span class="letter-group" style="--i:2">t</span><span class="letter-group" style="--i:3">h</span><span class="letter-group" style="--i:4">e</span><span class="letter-group" style="--i:5">r</span><span class="spacer"> </span><span class="letter-group" style="--i:6">F</span><span class="letter-group" style="--i:7">l</span><span class="letter-group" style="--i:8">i</span><span class="letter-group" style="--i:9">g</span><span class="letter-group" style="--i:10">h</span><span class="letter-group" style="--i:11">t</span>
+				</h1>
+				<span class="mark-line mark-line--2" aria-hidden="true"></span>
+			</div>
+
+			<p class="tagline">Next-generation aviation data products and services building on modern AI.</p>
+
+			<div class="contact">
+				<a href="mailto:team@aether-flight.com">team@aether-flight.com</a>
+			</div>
+		</main>
+
+		<footer>
+			<p class="entity">A project of Primatech Paper Co LLC</p>
+			<p class="copyright">&copy; 2026 Primatech Paper Co LLC. All rights reserved.</p>
+		</footer>
+
+		<!-- SEO: hidden semantic content for search crawlers -->
+		<div class="sr-only" aria-hidden="true">
+			<p>Aether Flight, also known as Ether Flight or AetherFlight, offers next-generation aviation data products and services building on modern AI. Whether you searched for aether flight, ether flight, or aether-flight, you've found us.</p>
+		</div>
+	</body>
+</html>
+
+<style>
+	:root {
+		--bg: #08090c;
+		--bg-subtle: #0e1017;
+		--text: #c8cad0;
+		--text-dim: #5a5d66;
+		--text-bright: #e8eaef;
+		--accent: #7b8a9e;
+		--line: #1e2028;
+		--glow: rgba(120, 140, 175, 0.06);
+
+		--font-display: 'Cormorant', 'Georgia', serif;
+		--font-mono: 'Azeret Mono', 'Menlo', monospace;
+	}
+
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	html {
+		height: 100%;
+	}
+
+	body {
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		background: var(--bg);
+		color: var(--text);
+		font-family: var(--font-mono);
+		overflow-x: hidden;
+		position: relative;
+	}
+
+	/* Atmospheric gradient background */
+	.atmosphere {
+		position: fixed;
+		inset: 0;
+		pointer-events: none;
+		z-index: 0;
+		background:
+			radial-gradient(ellipse 80% 50% at 50% 40%, rgba(45, 55, 80, 0.15) 0%, transparent 70%),
+			radial-gradient(ellipse 60% 40% at 30% 60%, rgba(30, 40, 65, 0.08) 0%, transparent 60%),
+			radial-gradient(ellipse 50% 50% at 75% 30%, rgba(50, 60, 85, 0.06) 0%, transparent 55%);
+		animation: breathe 12s ease-in-out infinite alternate;
+	}
+
+	@keyframes breathe {
+		0% { opacity: 0.6; }
+		100% { opacity: 1; }
+	}
+
+	/* Film grain overlay */
+	.grain {
+		position: fixed;
+		inset: -50%;
+		width: 200%;
+		height: 200%;
+		pointer-events: none;
+		z-index: 100;
+		opacity: 0.025;
+		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+		background-size: 128px 128px;
+	}
+
+	main {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 4rem;
+		padding: 2rem;
+		flex: 1;
+		justify-content: center;
+	}
+
+	/* Wordmark */
+	.mark {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0;
+	}
+
+	h1 {
+		font-family: var(--font-display);
+		font-weight: 300;
+		font-size: clamp(2.8rem, 8vw, 5.5rem);
+		letter-spacing: 0.25em;
+		text-transform: uppercase;
+		color: var(--text-bright);
+		text-align: center;
+		line-height: 1;
+		padding: 1.2rem 0;
+	}
+
+	.letter-group {
+		display: inline-block;
+		animation: fadeIn 0.8s ease both;
+		animation-delay: calc(0.6s + var(--i) * 0.06s);
+	}
+
+	.spacer {
+		display: inline-block;
+		width: 0.3em;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(6px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* Decorative lines */
+	.mark-line {
+		display: block;
+		height: 1px;
+		background: linear-gradient(90deg, transparent, var(--line) 20%, var(--accent) 50%, var(--line) 80%, transparent);
+		opacity: 0;
+	}
+
+	.mark-line--1 {
+		width: min(70vw, 500px);
+		animation: lineReveal 1.2s ease 0.3s both;
+	}
+
+	.mark-line--2 {
+		width: min(50vw, 360px);
+		animation: lineReveal 1.2s ease 1.5s both;
+	}
+
+	@keyframes lineReveal {
+		from {
+			opacity: 0;
+			width: 0;
+		}
+		to {
+			opacity: 0.4;
+		}
+	}
+
+	/* Tagline */
+	.tagline {
+		font-family: var(--font-display);
+		font-size: clamp(0.95rem, 2vw, 1.15rem);
+		font-weight: 300;
+		font-style: italic;
+		color: var(--text-dim);
+		letter-spacing: 0.04em;
+		text-align: center;
+		max-width: 32ch;
+		line-height: 1.6;
+		animation: fadeIn 0.8s ease 1.8s both;
+	}
+
+	/* Contact */
+	.contact {
+		animation: fadeIn 0.8s ease 2.2s both;
+	}
+
+	.contact a {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		font-weight: 300;
+		letter-spacing: 0.12em;
+		color: var(--text-dim);
+		text-decoration: none;
+		transition: color 0.5s ease;
+		position: relative;
+	}
+
+	.contact a::after {
+		content: '';
+		position: absolute;
+		bottom: -4px;
+		left: 0;
+		right: 0;
+		height: 1px;
+		background: var(--accent);
+		transform: scaleX(0);
+		transition: transform 0.4s ease;
+	}
+
+	.contact a:hover {
+		color: var(--text-bright);
+	}
+
+	.contact a:hover::after {
+		transform: scaleX(1);
+	}
+
+	/* Footer */
+	footer {
+		position: relative;
+		z-index: 1;
+		padding: 3rem 2rem;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		animation: fadeIn 0.8s ease 2.6s both;
+	}
+
+	.entity {
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		font-weight: 300;
+		letter-spacing: 0.15em;
+		text-transform: uppercase;
+		color: var(--text-dim);
+	}
+
+	.copyright {
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		font-weight: 300;
+		letter-spacing: 0.08em;
+		color: var(--text-dim);
+		opacity: 0.6;
+	}
+
+	/* Screen reader only */
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	/* Responsive */
+	@media (max-width: 480px) {
+		h1 {
+			letter-spacing: 0.15em;
+		}
+
+		.contact a {
+			font-size: 0.7rem;
+		}
+	}
+</style>
