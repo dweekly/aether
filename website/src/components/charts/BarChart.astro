@@ -31,13 +31,16 @@ const { dataPath, title, caption } = Astro.props;
 			function render() {
 				const width = container.clientWidth;
 				if (width < 100) return;
-				const height = Math.max(320, data.length * 40 + 60);
+				const height = Math.max(380, data.length * 48 + 80);
+
+				// Fixed right edge for n= labels so they align in a column
+				const maxRate = Math.max(...data.map((d: any) => d.max));
 
 				const chart = Plot.plot({
 					width,
 					height,
-					marginLeft: 120,
-					marginRight: 60,
+					marginLeft: 130,
+					marginRight: 80,
 					marginTop: 20,
 					marginBottom: 40,
 					style: {
@@ -54,8 +57,10 @@ const { dataPath, title, caption } = Astro.props;
 					y: {
 						label: null,
 						domain: data.map((d: any) => d.type),
+						padding: 0.35,
 					},
 					marks: [
+						// Whisker line
 						Plot.ruleX(data, {
 							x1: 'min',
 							x2: 'max',
@@ -63,33 +68,39 @@ const { dataPath, title, caption } = Astro.props;
 							stroke: '#5a5d66',
 							strokeWidth: 1,
 						}),
+						// IQR box
 						Plot.barX(data, {
 							x1: 'p25',
 							x2: 'p75',
 							y: 'type',
 							fill: '#7b8a9e',
-							fillOpacity: 0.5,
+							fillOpacity: 0.7,
 						}),
+						// Median tick
 						Plot.tickX(data, {
 							x: 'median',
 							y: 'type',
-							stroke: '#b8c4d4',
-							strokeWidth: 2,
+							stroke: '#f0f1f4',
+							strokeWidth: 2.5,
 						}),
+						// Median label — right of the box, not on top
 						Plot.text(data, {
-							x: 'median',
+							x: 'p75',
 							y: 'type',
 							text: (d: any) => `$${d.median}`,
-							dy: -14,
-							fill: '#b8c4d4',
+							dx: 8,
+							fill: '#f0f1f4',
 							fontSize: 10,
+							fontWeight: 'bold',
+							textAnchor: 'start',
 						}),
+						// n= labels in a fixed right column
 						Plot.text(data, {
-							x: 'max',
+							x: maxRate,
 							y: 'type',
 							text: (d: any) => `n=${d.count}`,
-							dx: 8,
-							fill: '#5a5d66',
+							dx: 16,
+							fill: '#7a7d86',
 							fontSize: 9,
 							textAnchor: 'start',
 						}),

@@ -34,14 +34,15 @@ const { dataPath, groupKey, title, caption } = Astro.props;
 			function render() {
 				const width = container.clientWidth;
 				if (width < 100) return;
-				const height = Math.max(320, data.length * 32 + 60);
+				const height = Math.max(360, data.length * 42 + 70);
 				const labelKey = groupKey === 'regions' ? 'region' : 'state';
+				const maxRate = Math.max(...data.map((d: any) => d.max));
 
 				const chart = Plot.plot({
 					width,
 					height,
-					marginLeft: 130,
-					marginRight: 20,
+					marginLeft: 150,
+					marginRight: 80,
 					marginTop: 20,
 					marginBottom: 40,
 					style: {
@@ -58,6 +59,7 @@ const { dataPath, groupKey, title, caption } = Astro.props;
 					y: {
 						label: null,
 						domain: data.map((d: any) => d[labelKey]),
+						padding: 0.35,
 					},
 					marks: [
 						Plot.ruleX(data, {
@@ -72,20 +74,32 @@ const { dataPath, groupKey, title, caption } = Astro.props;
 							x2: 'p75',
 							y: labelKey,
 							fill: '#7b8a9e',
-							fillOpacity: 0.5,
+							fillOpacity: 0.7,
 						}),
 						Plot.tickX(data, {
 							x: 'median',
 							y: labelKey,
-							stroke: '#b8c4d4',
-							strokeWidth: 2,
+							stroke: '#f0f1f4',
+							strokeWidth: 2.5,
 						}),
+						// Median label to the right of the box
 						Plot.text(data, {
-							x: 'max',
+							x: 'p75',
+							y: labelKey,
+							text: (d: any) => `$${d.median}`,
+							dx: 8,
+							fill: '#f0f1f4',
+							fontSize: 10,
+							fontWeight: 'bold',
+							textAnchor: 'start',
+						}),
+						// n= in fixed right column
+						Plot.text(data, {
+							x: maxRate,
 							y: labelKey,
 							text: (d: any) => `n=${d.count}`,
-							dx: 8,
-							fill: '#5a5d66',
+							dx: 16,
+							fill: '#7a7d86',
 							fontSize: 9,
 							textAnchor: 'start',
 						}),
