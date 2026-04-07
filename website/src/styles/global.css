@@ -1,0 +1,106 @@
+:root {
+	--bg: #08090c;
+	--bg-subtle: #0e1017;
+	--bg-card: #0c0d12;
+	--text: #d8dae0;
+	--text-dim: #7a7d86;
+	--text-bright: #f0f1f4;
+	--accent: #7b8a9e;
+	--accent-warm: #9e8a7b;
+	--line: #1e2028;
+	--glow: rgba(120, 140, 175, 0.06);
+
+	/* Chart palette — muted, works on dark bg */
+	--chart-1: #7b8a9e;
+	--chart-2: #9e8a7b;
+	--chart-3: #7b9e8a;
+	--chart-4: #9e7b8a;
+	--chart-5: #8a7b9e;
+	--chart-highlight: #b8c4d4;
+
+	--font-display: 'Cormorant', 'Georgia', serif;
+	--font-mono: 'Azeret Mono', 'Menlo', monospace;
+
+	--prose-width: 65ch;
+	--breakout-width: 90ch;
+	--full-width: 100%;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	height: 100%;
+	scroll-behavior: smooth;
+}
+
+body {
+	min-height: 100vh;
+	background: var(--bg);
+	color: var(--text);
+	font-family: var(--font-mono);
+	font-size: 14px;
+	font-weight: 300;
+	line-height: 1.7;
+	overflow-x: hidden;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Atmospheric gradient background */
+.atmosphere {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 0;
+	background:
+		radial-gradient(ellipse 80% 50% at 50% 40%, rgba(45, 55, 80, 0.15) 0%, transparent 70%),
+		radial-gradient(ellipse 60% 40% at 30% 60%, rgba(30, 40, 65, 0.08) 0%, transparent 60%),
+		radial-gradient(ellipse 50% 50% at 75% 30%, rgba(50, 60, 85, 0.06) 0%, transparent 55%);
+	animation: breathe 12s ease-in-out infinite alternate;
+}
+
+@keyframes breathe {
+	0% { opacity: 0.6; }
+	100% { opacity: 1; }
+}
+
+/* Film grain overlay */
+.grain {
+	position: fixed;
+	inset: -50%;
+	width: 200%;
+	height: 200%;
+	pointer-events: none;
+	z-index: 100;
+	opacity: 0.025;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+	background-size: 128px 128px;
+}
+
+/* Screen reader only */
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* Fade-in animation for scroll reveals */
+.reveal {
+	opacity: 0;
+	transform: translateY(12px);
+	transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+	opacity: 1;
+	transform: translateY(0);
+}

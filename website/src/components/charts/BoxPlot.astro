@@ -1,0 +1,142 @@
+---
+interface Props {
+	dataPath: string;
+	groupKey: string;
+	title?: string;
+	caption?: string;
+}
+
+const { dataPath, groupKey, title, caption } = Astro.props;
+---
+
+<figure class="chart-figure reveal">
+	{title && <figcaption class="chart-title">{title}</figcaption>}
+	<div class="chart-container" data-chart="boxplot" data-path={dataPath} data-group={groupKey}></div>
+	{caption && <p class="chart-caption">{caption}</p>}
+</figure>
+
+<script>
+	import * as Plot from '@observablehq/plot';
+
+	function renderBoxPlots() {
+		document.querySelectorAll('[data-chart="boxplot"]').forEach(async (container) => {
+			const path = container.getAttribute('data-path');
+			const groupKey = container.getAttribute('data-group') || 'regions';
+			if (!path || container.hasAttribute('data-rendered')) return;
+			container.setAttribute('data-rendered', 'true');
+
+			const resp = await fetch(path);
+			const allData = await resp.json();
+			const data = allData[groupKey];
+
+			data.sort((a: any, b: any) => a.median - b.median);
+
+			function render() {
+				const width = container.clientWidth;
+				if (width < 100) return;
+				const height = Math.max(320, data.length * 32 + 60);
+				const labelKey = groupKey === 'regions' ? 'region' : 'state';
+
+				const chart = Plot.plot({
+					width,
+					height,
+					marginLeft: 130,
+					marginRight: 20,
+					marginTop: 20,
+					marginBottom: 40,
+					style: {
+						background: 'transparent',
+						color: '#d8dae0',
+						fontFamily: "'Azeret Mono', monospace",
+						fontSize: '11px',
+					},
+					x: {
+						label: '$/hr',
+						tickFormat: (d: number) => `$${d}`,
+						grid: true,
+					},
+					y: {
+						label: null,
+						domain: data.map((d: any) => d[labelKey]),
+					},
+					marks: [
+						Plot.ruleX(data, {
+							x1: 'min',
+							x2: 'max',
+							y: labelKey,
+							stroke: '#5a5d66',
+							strokeWidth: 1,
+						}),
+						Plot.barX(data, {
+							x1: 'p25',
+							x2: 'p75',
+							y: labelKey,
+							fill: '#7b8a9e',
+							fillOpacity: 0.5,
+						}),
+						Plot.tickX(data, {
+							x: 'median',
+							y: labelKey,
+							stroke: '#b8c4d4',
+							strokeWidth: 2,
+						}),
+						Plot.text(data, {
+							x: 'max',
+							y: labelKey,
+							text: (d: any) => `n=${d.count}`,
+							dx: 8,
+							fill: '#5a5d66',
+							fontSize: 9,
+							textAnchor: 'start',
+						}),
+					],
+				});
+
+				container.replaceChildren(chart);
+			}
+
+			render();
+			const ro = new ResizeObserver(() => render());
+			ro.observe(container);
+		});
+	}
+
+	renderBoxPlots();
+	document.addEventListener('astro:page-load', renderBoxPlots);
+</script>
+
+<style>
+	.chart-figure {
+		margin: 2rem 0;
+	}
+
+	.chart-title {
+		font-family: var(--font-display);
+		font-size: 1.1rem;
+		font-weight: 400;
+		color: var(--text-bright);
+		margin-bottom: 0.75rem;
+	}
+
+	.chart-container {
+		width: 100%;
+		min-height: 320px;
+	}
+
+	.chart-container :global(svg) {
+		overflow: visible;
+	}
+
+	.chart-container :global([aria-label="x-grid"] line) {
+		stroke: #1e2028;
+	}
+
+	.chart-caption {
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		font-weight: 300;
+		color: var(--text-dim);
+		margin-top: 0.5rem;
+		line-height: 1.5;
+	}
+</style>

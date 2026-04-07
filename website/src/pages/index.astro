@@ -1,154 +1,62 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+
 const title = "Aether Flight";
-const description = "Aether Flight — next-generation aviation data products and services building on modern AI. A project of Primatech Paper Co LLC.";
-const url = "https://aether-flight.com";
+const description = "Aether Flight — data-driven stories about general aviation in America. A project of Primatech Paper Co LLC.";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>{title} | Ether Flight</title>
-		<meta name="description" content={description} />
-		<meta name="keywords" content="aether flight, ether flight, aether, aviation data, flight data, AI aviation, next-generation aviation, Primatech Paper Co" />
-		<link rel="canonical" href={url} />
-
-		<!-- Open Graph -->
-		<meta property="og:type" content="website" />
-		<meta property="og:title" content={title} />
-		<meta property="og:description" content={description} />
-		<meta property="og:url" content={url} />
-		<meta property="og:site_name" content="Aether Flight" />
-
-		<!-- Twitter -->
-		<meta name="twitter:card" content="summary" />
-		<meta name="twitter:title" content={title} />
-		<meta name="twitter:description" content={description} />
-
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-
-		<!-- Fonts -->
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300&family=Azeret+Mono:wght@300;400&display=swap" rel="stylesheet" />
-
+<BaseLayout title={`${title} | Ether Flight`} description={description}>
+	<Fragment slot="head">
 		<!-- Schema.org -->
 		<script type="application/ld+json" set:html={JSON.stringify({
 			"@context": "https://schema.org",
 			"@type": "Organization",
 			"name": "Aether Flight",
 			"alternateName": ["Ether Flight", "AetherFlight"],
-			"url": url,
+			"url": "https://aether-flight.com",
 			"email": "team@aether-flight.com",
 			"parentOrganization": {
 				"@type": "Organization",
 				"name": "Primatech Paper Co LLC"
 			}
 		})} />
-	</head>
-	<body>
-		<div class="atmosphere"></div>
-		<div class="grain"></div>
+	</Fragment>
 
-		<main>
-			<div class="mark">
-				<span class="mark-line mark-line--1" aria-hidden="true"></span>
-				<h1>
-					<span class="letter-group" style="--i:0">A</span><span class="letter-group" style="--i:1">e</span><span class="letter-group" style="--i:2">t</span><span class="letter-group" style="--i:3">h</span><span class="letter-group" style="--i:4">e</span><span class="letter-group" style="--i:5">r</span><span class="spacer"> </span><span class="letter-group" style="--i:6">F</span><span class="letter-group" style="--i:7">l</span><span class="letter-group" style="--i:8">i</span><span class="letter-group" style="--i:9">g</span><span class="letter-group" style="--i:10">h</span><span class="letter-group" style="--i:11">t</span>
-				</h1>
-				<span class="mark-line mark-line--2" aria-hidden="true"></span>
-			</div>
-
-			<p class="tagline">Next-generation aviation data products and services building on modern AI.</p>
-
-			<div class="contact">
-				<a href="mailto:team@aether-flight.com">team@aether-flight.com</a>
-			</div>
-		</main>
-
-		<footer>
-			<p class="entity">A project of Primatech Paper Co LLC</p>
-			<p class="copyright">&copy; 2026 Primatech Paper Co LLC. All rights reserved.</p>
-		</footer>
-
-		<!-- SEO: hidden semantic content for search crawlers -->
-		<div class="sr-only" aria-hidden="true">
-			<p>Aether Flight, also known as Ether Flight or AetherFlight, offers next-generation aviation data products and services building on modern AI. Whether you searched for aether flight, ether flight, or aether-flight, you've found us.</p>
+	<main class="landing">
+		<div class="mark">
+			<span class="mark-line mark-line--1" aria-hidden="true"></span>
+			<h1>
+				<span class="letter-group" style="--i:0">A</span><span class="letter-group" style="--i:1">e</span><span class="letter-group" style="--i:2">t</span><span class="letter-group" style="--i:3">h</span><span class="letter-group" style="--i:4">e</span><span class="letter-group" style="--i:5">r</span><span class="spacer"> </span><span class="letter-group" style="--i:6">F</span><span class="letter-group" style="--i:7">l</span><span class="letter-group" style="--i:8">i</span><span class="letter-group" style="--i:9">g</span><span class="letter-group" style="--i:10">h</span><span class="letter-group" style="--i:11">t</span>
+			</h1>
+			<span class="mark-line mark-line--2" aria-hidden="true"></span>
 		</div>
-	</body>
-</html>
+
+		<p class="tagline">Data-driven stories about general aviation in America.</p>
+
+		<section class="stories-preview">
+			<a href="/stories/cessna-172-rental-cost" class="story-card">
+				<span class="story-label">Latest</span>
+				<h2>What Does It Cost to Rent a Cessna 172?</h2>
+				<p>We analyzed rental rates from thousands of flight schools to map the true cost of flying across America.</p>
+			</a>
+		</section>
+
+		<div class="contact">
+			<a href="mailto:team@aether-flight.com">team@aether-flight.com</a>
+		</div>
+	</main>
+
+	<Footer />
+
+	<!-- SEO: hidden semantic content -->
+	<div class="sr-only" aria-hidden="true">
+		<p>Aether Flight, also known as Ether Flight or AetherFlight, publishes data-driven stories about general aviation using comprehensive datasets on flight schools, rental rates, and training aircraft across America.</p>
+	</div>
+</BaseLayout>
 
 <style>
-	:root {
-		--bg: #08090c;
-		--bg-subtle: #0e1017;
-		--text: #c8cad0;
-		--text-dim: #5a5d66;
-		--text-bright: #e8eaef;
-		--accent: #7b8a9e;
-		--line: #1e2028;
-		--glow: rgba(120, 140, 175, 0.06);
-
-		--font-display: 'Cormorant', 'Georgia', serif;
-		--font-mono: 'Azeret Mono', 'Menlo', monospace;
-	}
-
-	* {
-		margin: 0;
-		padding: 0;
-		box-sizing: border-box;
-	}
-
-	html {
-		height: 100%;
-	}
-
-	body {
-		min-height: 100vh;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		background: var(--bg);
-		color: var(--text);
-		font-family: var(--font-mono);
-		overflow-x: hidden;
-		position: relative;
-	}
-
-	/* Atmospheric gradient background */
-	.atmosphere {
-		position: fixed;
-		inset: 0;
-		pointer-events: none;
-		z-index: 0;
-		background:
-			radial-gradient(ellipse 80% 50% at 50% 40%, rgba(45, 55, 80, 0.15) 0%, transparent 70%),
-			radial-gradient(ellipse 60% 40% at 30% 60%, rgba(30, 40, 65, 0.08) 0%, transparent 60%),
-			radial-gradient(ellipse 50% 50% at 75% 30%, rgba(50, 60, 85, 0.06) 0%, transparent 55%);
-		animation: breathe 12s ease-in-out infinite alternate;
-	}
-
-	@keyframes breathe {
-		0% { opacity: 0.6; }
-		100% { opacity: 1; }
-	}
-
-	/* Film grain overlay */
-	.grain {
-		position: fixed;
-		inset: -50%;
-		width: 200%;
-		height: 200%;
-		pointer-events: none;
-		z-index: 100;
-		opacity: 0.025;
-		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-		background-size: 128px 128px;
-	}
-
-	main {
+	.landing {
 		position: relative;
 		z-index: 1;
 		display: flex;
@@ -156,7 +64,7 @@ const url = "https://aether-flight.com";
 		align-items: center;
 		gap: 4rem;
 		padding: 2rem;
-		flex: 1;
+		min-height: 100vh;
 		justify-content: center;
 	}
 
@@ -244,6 +152,53 @@ const url = "https://aether-flight.com";
 		animation: fadeIn 0.8s ease 1.8s both;
 	}
 
+	/* Stories preview */
+	.stories-preview {
+		animation: fadeIn 0.8s ease 2.0s both;
+		max-width: 40ch;
+		width: 100%;
+	}
+
+	.story-card {
+		display: block;
+		padding: 1.5rem;
+		border: 1px solid var(--line);
+		border-radius: 2px;
+		text-decoration: none;
+		transition: border-color 0.4s ease, background 0.4s ease;
+	}
+
+	.story-card:hover {
+		border-color: var(--accent);
+		background: var(--glow);
+	}
+
+	.story-label {
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		font-weight: 400;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--accent);
+	}
+
+	.story-card h2 {
+		font-family: var(--font-display);
+		font-weight: 400;
+		font-size: 1.2rem;
+		color: var(--text-bright);
+		line-height: 1.35;
+		margin: 0.5rem 0;
+	}
+
+	.story-card p {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		font-weight: 300;
+		color: var(--text-dim);
+		line-height: 1.6;
+	}
+
 	/* Contact */
 	.contact {
 		animation: fadeIn 0.8s ease 2.2s both;
@@ -280,50 +235,6 @@ const url = "https://aether-flight.com";
 		transform: scaleX(1);
 	}
 
-	/* Footer */
-	footer {
-		position: relative;
-		z-index: 1;
-		padding: 3rem 2rem;
-		text-align: center;
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		animation: fadeIn 0.8s ease 2.6s both;
-	}
-
-	.entity {
-		font-family: var(--font-mono);
-		font-size: 0.65rem;
-		font-weight: 300;
-		letter-spacing: 0.15em;
-		text-transform: uppercase;
-		color: var(--text-dim);
-	}
-
-	.copyright {
-		font-family: var(--font-mono);
-		font-size: 0.6rem;
-		font-weight: 300;
-		letter-spacing: 0.08em;
-		color: var(--text-dim);
-		opacity: 0.6;
-	}
-
-	/* Screen reader only */
-	.sr-only {
-		position: absolute;
-		width: 1px;
-		height: 1px;
-		padding: 0;
-		margin: -1px;
-		overflow: hidden;
-		clip: rect(0, 0, 0, 0);
-		white-space: nowrap;
-		border: 0;
-	}
-
-	/* Responsive */
 	@media (max-width: 480px) {
 		h1 {
 			letter-spacing: 0.15em;

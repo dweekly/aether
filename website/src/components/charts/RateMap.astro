@@ -1,0 +1,191 @@
+---
+interface Props {
+	dataPath: string;
+	title?: string;
+	caption?: string;
+}
+
+const { dataPath, title, caption } = Astro.props;
+---
+
+<figure class="chart-figure reveal">
+	{title && <figcaption class="chart-title">{title}</figcaption>}
+	<div class="map-container" data-chart="ratemap" data-path={dataPath}></div>
+	{caption && <p class="chart-caption">{caption}</p>}
+</figure>
+
+<script>
+	async function renderMaps() {
+		const containers = document.querySelectorAll('[data-chart="ratemap"]');
+		if (!containers.length) return;
+
+		const maplibregl = await import('maplibre-gl');
+
+		containers.forEach(async (container) => {
+			const path = container.getAttribute('data-path');
+			if (!path || container.hasAttribute('data-rendered')) return;
+			container.setAttribute('data-rendered', 'true');
+
+			const resp = await fetch(path);
+			const points = await resp.json();
+
+			const map = new maplibregl.Map({
+				container: container as HTMLElement,
+				// Dark basemap from CartoDB
+				style: {
+					version: 8,
+					sources: {
+						'carto-dark': {
+							type: 'raster',
+							tiles: [
+								'https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}@2x.png',
+								'https://b.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}@2x.png',
+							],
+							tileSize: 256,
+							attribution: '&copy; <a href="https://carto.com">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+						},
+					},
+					layers: [{
+						id: 'carto-dark',
+						type: 'raster',
+						source: 'carto-dark',
+						minzoom: 0,
+						maxzoom: 19,
+					}],
+				},
+				center: [-98.5, 39.5],
+				zoom: 3.5,
+				maxZoom: 12,
+				minZoom: 2,
+			});
+
+			map.on('load', () => {
+				// Add data source
+				map.addSource('schools', {
+					type: 'geojson',
+					data: {
+						type: 'FeatureCollection',
+						features: points.map(p => ({
+							type: 'Feature',
+							geometry: { type: 'Point', coordinates: [p.lng, p.lat] },
+							properties: {
+								rate: p.rate,
+								school: p.school,
+								airport: p.airport,
+								state: p.state,
+								count: p.count,
+							},
+						})),
+					},
+				});
+
+				// Color scale: cheap (teal) -> mid (blue) -> expensive (warm)
+				map.addLayer({
+					id: 'school-circles',
+					type: 'circle',
+					source: 'schools',
+					paint: {
+						'circle-radius': [
+							'interpolate', ['linear'], ['zoom'],
+							3, 4,
+							8, 7,
+							12, 10,
+						],
+						'circle-color': [
+							'interpolate', ['linear'], ['get', 'rate'],
+							100, '#4a9e7b',   // cheap: green-teal
+							150, '#7b8a9e',   // below median: cool blue
+							175, '#7b8a9e',   // median area
+							200, '#9e8a7b',   // above median: warm
+							250, '#9e6b5b',   // expensive: warm-red
+							350, '#c45a3a',   // very expensive: red
+						],
+						'circle-opacity': 0.7,
+						'circle-stroke-width': 1,
+						'circle-stroke-color': '#08090c',
+						'circle-stroke-opacity': 0.5,
+					},
+				});
+
+				// Popup on click
+				map.on('click', 'school-circles', (e) => {
+					const f = e.features?.[0];
+					if (!f) return;
+					const p = f.properties;
+					const popup = new maplibregl.Popup({ offset: 10 })
+						.setLngLat(e.lngLat)
+						.setHTML(`
+							<div style="font-family: 'Azeret Mono', monospace; font-size: 11px; color: #08090c; line-height: 1.5;">
+								<strong>${p.school}</strong><br/>
+								${p.airport} &middot; ${p.state}<br/>
+								<span style="font-size: 14px; font-weight: bold;">$${p.rate}/hr</span>
+								${p.count > 1 ? `<br/><span style="color: #666;">${p.count} C172s, avg rate</span>` : ''}
+							</div>
+						`)
+						.addTo(map);
+				});
+
+				map.on('mouseenter', 'school-circles', () => {
+					map.getCanvas().style.cursor = 'pointer';
+				});
+				map.on('mouseleave', 'school-circles', () => {
+					map.getCanvas().style.cursor = '';
+				});
+			});
+		});
+	}
+
+	// Lazy-load: only render when map is visible
+	const observer = new IntersectionObserver(
+		(entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					renderMaps();
+					observer.disconnect();
+				}
+			});
+		},
+		{ rootMargin: '200px' }
+	);
+
+	document.querySelectorAll('[data-chart="ratemap"]').forEach(el => observer.observe(el));
+	document.addEventListener('astro:page-load', () => {
+		document.querySelectorAll('[data-chart="ratemap"]').forEach(el => observer.observe(el));
+	});
+</script>
+
+<style>
+	.chart-figure {
+		margin: 2rem 0;
+	}
+
+	.chart-title {
+		font-family: var(--font-display);
+		font-size: 1.1rem;
+		font-weight: 400;
+		color: var(--text-bright);
+		margin-bottom: 0.75rem;
+	}
+
+	.map-container {
+		width: 100%;
+		height: 500px;
+		border: 1px solid var(--line);
+		border-radius: 2px;
+	}
+
+	.chart-caption {
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		font-weight: 300;
+		color: var(--text-dim);
+		margin-top: 0.5rem;
+		line-height: 1.5;
+	}
+
+	@media (max-width: 768px) {
+		.map-container {
+			height: 350px;
+		}
+	}
+</style>

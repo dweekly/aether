@@ -1,0 +1,27 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description: string;
+	ogImage?: string;
+	ogType?: string;
+	canonicalUrl?: string;
+	articleDate?: string;
+}
+
+const props = Astro.props;
+---
+
+<html lang="en">
+	<head>
+		<BaseHead {...props} />
+		<slot name="head" />
+	</head>
+	<body>
+		<div class="atmosphere"></div>
+		<div class="grain"></div>
+		<slot />
+	</body>
+</html>
