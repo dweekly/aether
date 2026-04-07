@@ -11,6 +11,11 @@ const { dataPath, title, caption } = Astro.props;
 <figure class="chart-figure reveal">
 	{title && <figcaption class="chart-title">{title}</figcaption>}
 	<div class="map-container" data-chart="ratemap" data-path={dataPath}></div>
+	<div class="map-legend">
+		<span class="legend-label">$100/hr</span>
+		<div class="legend-bar"></div>
+		<span class="legend-label">$250+/hr</span>
+	</div>
 	{caption && <p class="chart-caption">{caption}</p>}
 </figure>
 
@@ -31,7 +36,6 @@ const { dataPath, title, caption } = Astro.props;
 
 			const map = new maplibregl.Map({
 				container: container as HTMLElement,
-				// Dark basemap from CartoDB
 				style: {
 					version: 8,
 					sources: {
@@ -42,7 +46,7 @@ const { dataPath, title, caption } = Astro.props;
 								'https://b.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}@2x.png',
 							],
 							tileSize: 256,
-							attribution: '&copy; <a href="https://carto.com">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+							attribution: '',
 						},
 					},
 					layers: [{
@@ -57,10 +61,10 @@ const { dataPath, title, caption } = Astro.props;
 				zoom: 3.5,
 				maxZoom: 12,
 				minZoom: 2,
+				attributionControl: false,
 			});
 
 			map.on('load', () => {
-				// Add data source
 				map.addSource('schools', {
 					type: 'geojson',
 					data: {
@@ -79,7 +83,7 @@ const { dataPath, title, caption } = Astro.props;
 					},
 				});
 
-				// Color scale: cheap (teal) -> mid (blue) -> expensive (warm)
+				// Bold diverging color scale: green (cheap) → yellow (mid) → red (expensive)
 				map.addLayer({
 					id: 'school-circles',
 					type: 'circle',
@@ -87,41 +91,70 @@ const { dataPath, title, caption } = Astro.props;
 					paint: {
 						'circle-radius': [
 							'interpolate', ['linear'], ['zoom'],
-							3, 4,
-							8, 7,
-							12, 10,
+							3, 7,
+							6, 10,
+							8, 14,
+							12, 18,
 						],
 						'circle-color': [
 							'interpolate', ['linear'], ['get', 'rate'],
-							100, '#4a9e7b',   // cheap: green-teal
-							150, '#7b8a9e',   // below median: cool blue
-							175, '#7b8a9e',   // median area
-							200, '#9e8a7b',   // above median: warm
-							250, '#9e6b5b',   // expensive: warm-red
-							350, '#c45a3a',   // very expensive: red
+							100, '#22b573',    // cheap: vivid green
+							140, '#5ec962',    // green-yellow
+							165, '#c4e54a',    // yellow-green
+							180, '#fde725',    // median: bright yellow
+							200, '#f89540',    // above median: orange
+							230, '#e45a31',    // expensive: red-orange
+							280, '#c42a22',    // very expensive: deep red
 						],
-						'circle-opacity': 0.7,
-						'circle-stroke-width': 1,
+						'circle-opacity': 0.85,
+						'circle-stroke-width': 1.5,
 						'circle-stroke-color': '#08090c',
-						'circle-stroke-opacity': 0.5,
+						'circle-stroke-opacity': 0.8,
 					},
 				});
 
-				// Popup on click
+				// Popup on click — anchor to feature geometry, not click position
 				map.on('click', 'school-circles', (e) => {
 					const f = e.features?.[0];
-					if (!f) return;
+					if (!f || !f.geometry || f.geometry.type !== 'Point') return;
+					const coords = (f.geometry as GeoJSON.Point).coordinates.slice() as [number, number];
 					const p = f.properties;
-					const popup = new maplibregl.Popup({ offset: 10 })
-						.setLngLat(e.lngLat)
-						.setHTML(`
-							<div style="font-family: 'Azeret Mono', monospace; font-size: 11px; color: #08090c; line-height: 1.5;">
-								<strong>${p.school}</strong><br/>
-								${p.airport} &middot; ${p.state}<br/>
-								<span style="font-size: 14px; font-weight: bold;">$${p.rate}/hr</span>
-								${p.count > 1 ? `<br/><span style="color: #666;">${p.count} C172s, avg rate</span>` : ''}
-							</div>
-						`)
+
+					// Handle world-wrap: ensure popup is near the click
+					while (Math.abs(e.lngLat.lng - coords[0]) > 180) {
+						coords[0] += e.lngLat.lng > coords[0] ? 360 : -360;
+					}
+
+					const el = document.createElement('div');
+					el.style.cssText = "font-family: 'Azeret Mono', monospace; font-size: 11px; color: #08090c; line-height: 1.5;";
+
+					const name = document.createElement('strong');
+					name.textContent = p.school;
+					el.appendChild(name);
+
+					el.appendChild(document.createElement('br'));
+
+					const info = document.createTextNode(`${p.airport} · ${p.state}`);
+					el.appendChild(info);
+
+					el.appendChild(document.createElement('br'));
+
+					const rate = document.createElement('span');
+					rate.style.cssText = 'font-size: 14px; font-weight: bold;';
+					rate.textContent = `$${p.rate}/hr`;
+					el.appendChild(rate);
+
+					if (p.count > 1) {
+						el.appendChild(document.createElement('br'));
+						const note = document.createElement('span');
+						note.style.color = '#666';
+						note.textContent = `${p.count} C172s, avg rate`;
+						el.appendChild(note);
+					}
+
+					new maplibregl.Popup({ offset: 12, maxWidth: '260px' })
+						.setLngLat(coords)
+						.setDOMContent(el)
 						.addTo(map);
 				});
 
@@ -169,23 +202,51 @@ const { dataPath, title, caption } = Astro.props;
 
 	.map-container {
 		width: 100%;
-		height: 500px;
+		height: 550px;
 		border: 1px solid var(--line);
 		border-radius: 2px;
 	}
 
-	.chart-caption {
+	.map-legend {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-top: 0.5rem;
+	}
+
+	.legend-label {
 		font-family: var(--font-mono);
 		font-size: 0.6rem;
-		font-weight: 300;
-		color: var(--text-dim);
+		font-weight: 400;
+		color: var(--text);
+		letter-spacing: 0.05em;
+	}
+
+	.legend-bar {
+		flex: 1;
+		max-width: 200px;
+		height: 8px;
+		border-radius: 2px;
+		background: linear-gradient(to right, #22b573, #5ec962, #c4e54a, #fde725, #f89540, #e45a31, #c42a22);
+	}
+
+	.chart-caption {
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		font-weight: 400;
+		color: var(--text);
 		margin-top: 0.5rem;
-		line-height: 1.5;
+		line-height: 1.6;
+	}
+
+	/* Hide MapLibre default attribution (credited in caption) */
+	.map-container :global(.maplibregl-ctrl-attrib) {
+		display: none;
 	}
 
 	@media (max-width: 768px) {
 		.map-container {
-			height: 350px;
+			height: 400px;
 		}
 	}
 </style>

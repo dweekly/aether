@@ -54,6 +54,23 @@ const { dataPath, title, caption } = Astro.props;
 						grid: true,
 					},
 					marks: [
+						// Production gap annotation: 1986–1996
+						Plot.rectX([{ x1: 1986, x2: 1997 }], {
+							x1: 'x1',
+							x2: 'x2',
+							fill: '#fde725',
+							fillOpacity: 0.06,
+						}),
+						Plot.text([{ x: 1991.5, label: 'No production\n1986–1996' }], {
+							x: 'x',
+							text: 'label',
+							fill: '#fde725',
+							fillOpacity: 0.5,
+							fontSize: 10,
+							frameAnchor: 'top',
+							dy: 15,
+							lineAnchor: 'top',
+						}),
 						Plot.dot(withYear, {
 							x: 'year',
 							y: 'rate',
