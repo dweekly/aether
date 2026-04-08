@@ -1,0 +1,129 @@
+---
+interface Props {
+	dataPath: string;
+	title?: string;
+	caption?: string;
+}
+
+const { dataPath, title, caption } = Astro.props;
+---
+
+<figure class="chart-figure reveal">
+	{title && <figcaption class="chart-title">{title}</figcaption>}
+	<div class="chart-container" data-chart="histogram" data-path={dataPath}></div>
+	{caption && <p class="chart-caption">{caption}</p>}
+</figure>
+
+<script>
+	import * as Plot from '@observablehq/plot';
+
+	function renderHistograms() {
+		document.querySelectorAll('[data-chart="histogram"]').forEach(async (container) => {
+			const path = container.getAttribute('data-path');
+			if (!path || container.hasAttribute('data-rendered')) return;
+			container.setAttribute('data-rendered', 'true');
+
+			const resp = await fetch(path);
+			const data = await resp.json();
+			const { bins, stats } = data;
+
+			function render() {
+				const width = container.clientWidth;
+				if (width < 100) return; // skip if container not yet laid out
+
+				const chart = Plot.plot({
+					width,
+					height: 320,
+					marginLeft: 50,
+					marginBottom: 40,
+					marginTop: 20,
+					style: {
+						background: 'transparent',
+						color: '#d8dae0',
+						fontFamily: "'Azeret Mono', monospace",
+						fontSize: '11px',
+					},
+					x: {
+						label: '$/hr',
+						tickFormat: (d: number) => `$${d}`,
+					},
+					y: {
+						label: 'Aircraft',
+						grid: true,
+					},
+					marks: [
+						Plot.rectY(bins, {
+							x1: 'lo',
+							x2: 'hi',
+							y: 'count',
+							fill: '#7b8a9e',
+							fillOpacity: 0.7,
+							tip: true,
+						}),
+						Plot.ruleX([stats.median], {
+							stroke: '#b8c4d4',
+							strokeWidth: 1.5,
+							strokeDasharray: '4,4',
+						}),
+						Plot.text([{ x: stats.median, label: `Median $${stats.median}` }], {
+							x: 'x',
+							text: 'label',
+							dy: -8,
+							fill: '#b8c4d4',
+							fontSize: 10,
+							frameAnchor: 'top',
+						}),
+						Plot.ruleY([0]),
+					],
+				});
+
+				container.replaceChildren(chart);
+			}
+
+			render();
+
+			const ro = new ResizeObserver(() => render());
+			ro.observe(container);
+		});
+	}
+
+	renderHistograms();
+	document.addEventListener('astro:page-load', renderHistograms);
+</script>
+
+<style>
+	.chart-figure {
+		margin: 2rem 0;
+	}
+
+	.chart-title {
+		font-family: var(--font-display);
+		font-size: 1.1rem;
+		font-weight: 400;
+		color: var(--text-bright);
+		margin-bottom: 0.75rem;
+	}
+
+	.chart-container {
+		width: 100%;
+		min-height: 320px;
+	}
+
+	.chart-container :global(svg) {
+		overflow: visible;
+	}
+
+	.chart-container :global([aria-label="y-axis tick"] line),
+	.chart-container :global([aria-label="y-grid"] line) {
+		stroke: #1e2028;
+	}
+
+	.chart-caption {
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		font-weight: 300;
+		color: var(--text-dim);
+		margin-top: 0.5rem;
+		line-height: 1.5;
+	}
+</style>

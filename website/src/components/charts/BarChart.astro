@@ -1,0 +1,157 @@
+---
+interface Props {
+	dataPath: string;
+	title?: string;
+	caption?: string;
+}
+
+const { dataPath, title, caption } = Astro.props;
+---
+
+<figure class="chart-figure reveal">
+	{title && <figcaption class="chart-title">{title}</figcaption>}
+	<div class="chart-container" data-chart="typebar" data-path={dataPath}></div>
+	{caption && <p class="chart-caption">{caption}</p>}
+</figure>
+
+<script>
+	import * as Plot from '@observablehq/plot';
+
+	function renderTypeBars() {
+		document.querySelectorAll('[data-chart="typebar"]').forEach(async (container) => {
+			const path = container.getAttribute('data-path');
+			if (!path || container.hasAttribute('data-rendered')) return;
+			container.setAttribute('data-rendered', 'true');
+
+			const resp = await fetch(path);
+			const data = await resp.json();
+
+			data.sort((a: any, b: any) => a.median - b.median);
+
+			function render() {
+				const width = container.clientWidth;
+				if (width < 100) return;
+				const height = Math.max(380, data.length * 48 + 80);
+
+				// Fixed right edge for n= labels so they align in a column
+				const maxRate = Math.max(...data.map((d: any) => d.max));
+
+				const chart = Plot.plot({
+					width,
+					height,
+					marginLeft: 130,
+					marginRight: 80,
+					marginTop: 20,
+					marginBottom: 40,
+					style: {
+						background: 'transparent',
+						color: '#d8dae0',
+						fontFamily: "'Azeret Mono', monospace",
+						fontSize: '11px',
+					},
+					x: {
+						label: '$/hr',
+						tickFormat: (d: number) => `$${d}`,
+						grid: true,
+					},
+					y: {
+						label: null,
+						domain: data.map((d: any) => d.type),
+						padding: 0.35,
+					},
+					marks: [
+						// Whisker line
+						Plot.ruleX(data, {
+							x1: 'min',
+							x2: 'max',
+							y: 'type',
+							stroke: '#5a5d66',
+							strokeWidth: 1,
+						}),
+						// IQR box
+						Plot.barX(data, {
+							x1: 'p25',
+							x2: 'p75',
+							y: 'type',
+							fill: '#7b8a9e',
+							fillOpacity: 0.7,
+						}),
+						// Median tick
+						Plot.tickX(data, {
+							x: 'median',
+							y: 'type',
+							stroke: '#f0f1f4',
+							strokeWidth: 2.5,
+						}),
+						// Median label — right of the box, not on top
+						Plot.text(data, {
+							x: 'p75',
+							y: 'type',
+							text: (d: any) => `$${d.median}`,
+							dx: 8,
+							fill: '#f0f1f4',
+							fontSize: 10,
+							fontWeight: 'bold',
+							textAnchor: 'start',
+						}),
+						// n= labels in a fixed right column
+						Plot.text(data, {
+							x: maxRate,
+							y: 'type',
+							text: (d: any) => `n=${d.count}`,
+							dx: 16,
+							fill: '#7a7d86',
+							fontSize: 9,
+							textAnchor: 'start',
+						}),
+					],
+				});
+
+				container.replaceChildren(chart);
+			}
+
+			render();
+			const ro = new ResizeObserver(() => render());
+			ro.observe(container);
+		});
+	}
+
+	renderTypeBars();
+	document.addEventListener('astro:page-load', renderTypeBars);
+</script>
+
+<style>
+	.chart-figure {
+		margin: 2rem 0;
+	}
+
+	.chart-title {
+		font-family: var(--font-display);
+		font-size: 1.1rem;
+		font-weight: 400;
+		color: var(--text-bright);
+		margin-bottom: 0.75rem;
+	}
+
+	.chart-container {
+		width: 100%;
+		min-height: 320px;
+	}
+
+	.chart-container :global(svg) {
+		overflow: visible;
+	}
+
+	.chart-container :global([aria-label="x-grid"] line) {
+		stroke: #1e2028;
+	}
+
+	.chart-caption {
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		font-weight: 300;
+		color: var(--text-dim);
+		margin-top: 0.5rem;
+		line-height: 1.5;
+	}
+</style>

@@ -1,0 +1,254 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	publishDate: string;
+	ogImage?: string;
+}
+
+// Support both direct props and MDX frontmatter layout pattern
+const fm = Astro.props.frontmatter || Astro.props;
+const { title, description, publishDate, ogImage } = fm;
+const formattedDate = new Date(publishDate).toLocaleDateString('en-US', {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+});
+---
+
+<BaseLayout
+	title={`${title} — Aether Flight`}
+	description={description}
+	ogImage={ogImage}
+	ogType="article"
+	articleDate={publishDate}
+>
+	<Fragment slot="head">
+		<script type="application/ld+json" set:html={JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "Article",
+			"headline": title,
+			"description": description,
+			"datePublished": publishDate,
+			"publisher": {
+				"@type": "Organization",
+				"name": "Aether Flight",
+				"url": "https://aether-flight.com"
+			},
+			"mainEntityOfPage": {
+				"@type": "WebPage",
+				"@id": `https://aether-flight.com${Astro.url.pathname}`
+			}
+		})} />
+		<style>
+			/* MapLibre CSS — only loaded on story pages */
+			@import 'maplibre-gl/dist/maplibre-gl.css';
+		</style>
+	</Fragment>
+
+	<Header />
+
+	<article class="story">
+		<header class="story-header">
+			<p class="story-date">{formattedDate}</p>
+			<h1>{title}</h1>
+			<p class="story-description">{description}</p>
+		</header>
+
+		<div class="story-body">
+			<slot />
+		</div>
+	</article>
+
+	<Footer />
+</BaseLayout>
+
+<style>
+	.story {
+		position: relative;
+		z-index: 1;
+		max-width: var(--breakout-width);
+		margin: 0 auto;
+		padding: 0 2rem;
+	}
+
+	.story-header {
+		max-width: var(--prose-width);
+		margin: 4rem auto 3rem;
+	}
+
+	.story-date {
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		font-weight: 400;
+		letter-spacing: 0.15em;
+		text-transform: uppercase;
+		color: var(--accent);
+		margin-bottom: 1rem;
+	}
+
+	.story-header h1 {
+		font-family: var(--font-display);
+		font-weight: 400;
+		font-size: clamp(1.8rem, 5vw, 2.8rem);
+		color: var(--text-bright);
+		line-height: 1.2;
+		letter-spacing: 0.02em;
+		margin-bottom: 1rem;
+	}
+
+	.story-description {
+		font-family: var(--font-display);
+		font-size: 1.1rem;
+		font-weight: 400;
+		font-style: italic;
+		color: var(--text);
+		line-height: 1.5;
+	}
+
+	.story-body {
+		max-width: var(--prose-width);
+		margin: 0 auto;
+	}
+
+	/* Prose styling for MDX content */
+	.story-body :global(p) {
+		font-family: var(--font-display);
+		font-size: 1.15rem;
+		font-weight: 400;
+		color: var(--text-bright);
+		line-height: 1.8;
+		margin-bottom: 1.5rem;
+	}
+
+	.story-body :global(h2) {
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: 1.6rem;
+		color: var(--text-bright);
+		margin: 3rem 0 1rem;
+		letter-spacing: 0.02em;
+	}
+
+	.story-body :global(h3) {
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: 1.2rem;
+		color: var(--text-bright);
+		margin: 2rem 0 0.75rem;
+	}
+
+	.story-body :global(strong) {
+		color: #fff;
+		font-weight: 600;
+	}
+
+	.story-body :global(em) {
+		font-style: italic;
+		color: var(--text-bright);
+	}
+
+	/* Breakout container for charts that need more width */
+	.story-body :global(.breakout) {
+		max-width: var(--breakout-width);
+		margin-left: calc((var(--prose-width) - var(--breakout-width)) / 2);
+		margin-right: calc((var(--prose-width) - var(--breakout-width)) / 2);
+		margin-top: 2rem;
+		margin-bottom: 2rem;
+	}
+
+	/* Full-width container for maps */
+	.story-body :global(.full-width) {
+		max-width: var(--full-width);
+		margin-left: calc((var(--prose-width) - 100vw) / 2);
+		margin-right: calc((var(--prose-width) - 100vw) / 2);
+		margin-top: 2rem;
+		margin-bottom: 2rem;
+	}
+
+	/* CTA box */
+	.story-body :global(.cta-box) {
+		margin: 3rem 0 2rem;
+		padding: 2rem;
+		border: 1px solid var(--accent);
+		border-radius: 2px;
+		background: rgba(123, 138, 158, 0.06);
+	}
+
+	.story-body :global(.cta-box h3) {
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: 1.3rem;
+		color: var(--text-bright);
+		margin: 0 0 0.75rem;
+	}
+
+	.story-body :global(.cta-box p) {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--text);
+		line-height: 1.7;
+		margin-bottom: 1.25rem;
+	}
+
+	.story-body :global(.cta-box a) {
+		display: inline-block;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		font-weight: 400;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--text-bright);
+		text-decoration: none;
+		padding: 0.6rem 1.5rem;
+		border: 1px solid var(--accent);
+		border-radius: 2px;
+		transition: background 0.3s ease, border-color 0.3s ease;
+	}
+
+	.story-body :global(.cta-box a:hover) {
+		background: rgba(123, 138, 158, 0.15);
+		border-color: var(--text-bright);
+	}
+
+	/* Links in story body */
+	.story-body :global(a) {
+		color: var(--accent);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+		transition: color 0.3s ease;
+	}
+
+	.story-body :global(a:hover) {
+		color: var(--text-bright);
+	}
+
+	@media (max-width: 768px) {
+		.story-body :global(.breakout),
+		.story-body :global(.full-width) {
+			margin-left: -2rem;
+			margin-right: -2rem;
+		}
+	}
+</style>
+
+<script>
+	// Scroll reveal for .reveal elements
+	const observer = new IntersectionObserver(
+		(entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					entry.target.classList.add('visible');
+					observer.unobserve(entry.target);
+				}
+			});
+		},
+		{ threshold: 0.1 }
+	);
+
+	document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+</script>

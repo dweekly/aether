@@ -1,0 +1,109 @@
+---
+layout: ../../layouts/StoryLayout.astro
+title: "What Does It Cost to Rent a Cessna 172?"
+description: "We analyzed 1,586 rental rates from flight schools across America to map the true cost of renting the world's most popular training aircraft."
+publishDate: "2026-04-06"
+tags: ["rental rates", "cessna 172", "flight training", "cost analysis"]
+---
+
+import Stat from '../../components/Stat.astro';
+import Histogram from '../../components/charts/Histogram.astro';
+import BoxPlot from '../../components/charts/BoxPlot.astro';
+import ScatterPlot from '../../components/charts/ScatterPlot.astro';
+import BarChart from '../../components/charts/BarChart.astro';
+import RateMap from '../../components/charts/RateMap.astro';
+
+The Cessna 172 Skyhawk is the most produced aircraft in history, the backbone of flight training in America, and almost certainly the first airplane you'll fly if you're learning today. But what does it actually cost?
+
+Aether Flight tracks over 16,800 training aircraft across 4,800+ flight schools in the United States. For 4,387 of those aircraft, we've collected published rental rates — including 1,586 Cessna 172s at schools from Anchorage to Key West. That's enough data to answer this question with statistics instead of anecdotes.
+
+<Stat value="$176/hr" label="median wet rental rate" note="across 1,586 Cessna 172s nationwide" />
+
+The median wet rental rate for a Cessna 172 in America is **$176 per hour**. But that single number hides enormous variation.
+
+## The distribution
+
+Most 172s rent in a tight band between $150 and $210 per hour. But the tails are long: you can still find a 172 for under $120/hr in parts of the Southeast, while glass-cockpit models at Bay Area flight schools push well past $250.
+
+<Histogram
+	dataPath="/data/stories/cessna-172-rental-cost/rate_histogram.json"
+	title="Cessna 172 wet rental rates across America"
+	caption="Source: Aether Flight analysis of 1,586 listed rental rates from U.S. flight schools. Rates are wet (fuel included). Dashed line shows median."
+/>
+
+The distribution is right-skewed — pulled upward by a minority of expensive aircraft. The typical renter is paying somewhere in the $150–$200 range, but a significant number of schools charge $220 or more.
+
+## Where it's cheap, where it's not
+
+Rates aren't random. Geography is the single biggest predictor of what you'll pay.
+
+<div class="breakout">
+<RateMap
+	dataPath="/data/stories/cessna-172-rental-cost/school_map.json"
+	title="Cessna 172 rental rates by location"
+	caption="Each dot is a flight school with at least one Cessna 172. Color indicates average wet rate: green ($100–$150) through blue ($150–$200) to warm ($200+). Click a dot for details."
+/>
+</div>
+
+The pattern is striking. The Southeast and parts of the Midwest consistently offer the lowest rates, while the coasts — especially California, the Northeast corridor, and Hawaii — command a premium.
+
+<BoxPlot
+	dataPath="/data/stories/cessna-172-rental-cost/regional_summary.json"
+	groupKey="regions"
+	title="Rental rates by FAA region"
+	caption="Box shows interquartile range (25th–75th percentile). Line is median. Whiskers extend to min/max. Only regions with 3+ schools shown."
+/>
+
+The Southern region has the lowest median rates, while Western-Pacific (dominated by California) and New England are the most expensive. The spread within each region is also telling: some regions are tightly clustered while others show wide variation, suggesting local factors matter as much as regional ones.
+
+## Does age matter?
+
+A 1975 Cessna 172M and a 2020 172SP with a G1000 glass cockpit are both "a Cessna 172" — but they're very different airplanes. Does the market price that difference?
+
+<ScatterPlot
+	dataPath="/data/stories/cessna-172-rental-cost/rates_individual.json"
+	title="Rental rate vs. manufacture year"
+	caption="Each dot is one Cessna 172 listing. Dashed line shows linear trend. Only aircraft with known manufacture year shown."
+/>
+
+The first thing that jumps out is the gap. There are almost no Cessna 172s manufactured between 1986 and 1996 — because Cessna didn't make any. A wave of product liability lawsuits nearly destroyed the general aviation industry in the 1980s, and Cessna halted all piston single production in 1986. It took an act of Congress — the General Aviation Revitalization Act of 1994 — to cap manufacturer liability and bring production back. Cessna resumed 172 production in 1997. That empty decade is one of the most dramatic stories in GA history, and it shows up plainly in the rental fleet today.
+
+On either side of the gap, there's a clear upward trend — newer aircraft cost more — but the slope is modest. A 2010 aircraft rents for roughly $20–30/hr more than a 1980 model, all else equal. The real premium comes from avionics: the G1000 glass cockpit upgrade, common in post-2005 models, adds a visible price bump.
+
+The scatter also shows that older aircraft have more rate variance. A 1978 model might rent for $120 at one school and $200 at another, depending on condition, avionics upgrades, and local market.
+
+## How the 172 compares
+
+The Cessna 172 isn't the only trainer out there. Here's how it stacks up against the alternatives — from the budget Cessna 152 to the premium Cirrus SR22.
+
+<div class="breakout">
+<BarChart
+	dataPath="/data/stories/cessna-172-rental-cost/type_comparison.json"
+	title="Rental rates by aircraft type"
+	caption="Box shows interquartile range. Line is median. Sorted by median rate. Only types with 5+ listed rates shown."
+/>
+</div>
+
+The hierarchy is roughly what you'd expect: the Cessna 150/152 is cheapest, the 172 sits in the middle of the Piper/Cessna training fleet, and the modern composites (Diamond, Cirrus) command a significant premium. A Cirrus SR22 typically rents for 2–3x the price of a basic 172.
+
+What's notable is how tightly clustered the 172 rates are compared to other types. The Piper Archer and Diamond DA40 show much wider spread, suggesting less price consensus in the market for those aircraft.
+
+## What this means for student pilots
+
+If you're shopping for flight training, geography matters more than almost anything else. Moving one state over could save you $30–50/hr — which adds up fast over 60+ hours of flight training for a private pilot certificate.
+
+The Cessna 172 remains the value sweet spot: modern enough to be relevant, common enough to be competitively priced, and available everywhere. If you're cost-sensitive and flexible on location, the Southeast and Central states offer the best deals.
+
+---
+
+*This analysis is based on publicly listed rental rates collected from flight school websites across the United States. Rates are wet (fuel included) unless otherwise noted. Data collected and analyzed by [Aether Flight](https://aether-flight.com).*
+
+<div class="cta-box">
+
+### Want the full dataset?
+
+This story draws on Aether Flight's comprehensive database of 4,800+ flight schools, 16,800+ aircraft, and thousands of rental rates across the United States. We offer data licensing for aviation businesses, researchers, and media.
+
+[Get in touch](mailto:team@aether-flight.com)
+
+</div>

@@ -1,0 +1,52 @@
+---
+interface Props {
+	title: string;
+	description: string;
+	ogImage?: string;
+	ogType?: string;
+	canonicalUrl?: string;
+	articleDate?: string;
+}
+
+const {
+	title,
+	description,
+	ogImage,
+	ogType = 'website',
+	canonicalUrl,
+	articleDate,
+} = Astro.props;
+
+const siteUrl = 'https://aether-flight.com';
+const canonical = canonicalUrl || new URL(Astro.url.pathname, siteUrl).href;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="keywords" content="aether flight, aviation data, flight school, rental rates, general aviation, flight training, cessna, piper" />
+<link rel="canonical" href={canonical} />
+
+<!-- Open Graph -->
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:site_name" content="Aether Flight" />
+{ogImage && <meta property="og:image" content={new URL(ogImage, siteUrl).href} />}
+{articleDate && <meta property="article:published_time" content={articleDate} />}
+
+<!-- Twitter -->
+<meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={new URL(ogImage, siteUrl).href} />}
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" href="/favicon.ico" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300&family=Azeret+Mono:wght@300;400&display=swap" rel="stylesheet" />
