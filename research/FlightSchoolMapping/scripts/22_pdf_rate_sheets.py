@@ -13,6 +13,11 @@ the actual tail numbers. This script:
 4. For complex PDFs where regex fails, uses Sonnet batch API
 5. Merges new N-numbers + rates into flight_line.json
 
+Reads output/flight_line_base.json (built by 21_build_flight_line.py) and
+writes output/flight_line.json — the canonical artifact everything downstream
+consumes. Input and output are deliberately different files so that rerunning
+is non-destructive and `make` can model this as an ordinary build edge.
+
 Usage:
     python 22_pdf_rate_sheets.py                    # full pipeline
     python 22_pdf_rate_sheets.py --phase targets    # phase 1 only: build target list
@@ -21,6 +26,7 @@ Usage:
     python 22_pdf_rate_sheets.py --phase batch      # phases 1-4: + Sonnet batch
     python 22_pdf_rate_sheets.py --phase merge      # phases 1-5: + merge into flight_line
     python 22_pdf_rate_sheets.py --dry-run          # show stats only, no downloads
+    python 22_pdf_rate_sheets.py --offline          # no network, no API: reuse caches only
 """
 
 import argparse
@@ -564,7 +570,7 @@ def build_targets(flight_line: list[dict], dry_run: bool = False) -> list[dict]:
 # ── Phase 2: Download PDFs ───────────────────────────────────────
 
 
-def download_targets(targets: list[dict], dry_run: bool = False) -> dict:
+def download_targets(targets: list[dict], dry_run: bool = False, offline: bool = False) -> dict:
     """Phase 2: Download PDFs and HTML pages. Returns progress dict."""
     print("\n═══ Phase 2: Downloading targets ═══")
 
@@ -578,6 +584,12 @@ def download_targets(targets: list[dict], dry_run: bool = False) -> dict:
             progress = json.load(open(progress_path))
         except Exception:
             progress = {}
+
+    if offline:
+        have = sum(1 for t in targets if progress.get(t["url"], {}).get("status") == "ok")
+        print(f"  OFFLINE — using {have} previously downloaded of {len(targets)} targets")
+        print(f"  ({len(targets) - have} not cached; run without --offline to fetch them)")
+        return progress
 
     if dry_run:
         already = sum(1 for t in targets if t["url"] in progress)
@@ -833,7 +845,10 @@ def extract_text_and_numbers(
 
 
 def run_sonnet_batch(
-    extraction_results: dict[str, dict], faa_registry: dict, dry_run: bool = False
+    extraction_results: dict[str, dict],
+    faa_registry: dict,
+    dry_run: bool = False,
+    offline: bool = False,
 ) -> dict[str, list[str]]:
     """Phase 4: Use Sonnet batch API for PDFs where regex found 0 N-numbers.
 
@@ -843,6 +858,9 @@ def run_sonnet_batch(
 
     # Check for cached batch results
     batch_cache_path = OUTPUT_DIR / "pdf_batch_results.json"
+    if offline and not batch_cache_path.exists():
+        print("  OFFLINE — no cached batch results; skipping Sonnet extraction")
+        return {}
     if batch_cache_path.exists() and not dry_run:
         print("  Loading cached batch results...")
         cached = json.load(open(batch_cache_path))
@@ -859,6 +877,11 @@ def run_sonnet_batch(
         total_cached = sum(len(nns) for nns in new_nn_by_domain.values())
         print(f"  Cached: {total_cached} N-numbers across {len(new_nn_by_domain)} domains")
         return new_nn_by_domain
+
+    if offline:
+        # Reachable only with --offline --dry-run; never submit a batch offline.
+        print("  OFFLINE — skipping Sonnet extraction")
+        return {}
 
     # Aircraft-related terms that suggest the text might contain fleet info
     AIRCRAFT_TERMS = re.compile(
@@ -1023,6 +1046,16 @@ def run_sonnet_batch(
 # ── Phase 5: Merge into flight_line.json ─────────────────────────
 
 
+def write_json_atomic(path, obj):
+    """Write JSON via a temp file + rename, so an interrupted run never leaves
+    a truncated flight_line.json behind."""
+    path = Path(path)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    with open(tmp, "w") as f:
+        json.dump(obj, f, indent=2)
+    tmp.replace(path)
+
+
 def merge_into_flight_line(
     flight_line: list[dict],
     extraction_results: dict[str, dict],
@@ -1030,6 +1063,7 @@ def merge_into_flight_line(
     acftref: dict,
     adsb: dict,
     dry_run: bool = False,
+    out_path: Path = None,
 ) -> dict:
     """Phase 5: Merge new N-numbers into flight_line.json entries.
 
@@ -1127,12 +1161,12 @@ def merge_into_flight_line(
     print(f"  Updated {updated} schools with {total_new_nn} new N-numbers")
     print(f"  New ADS-B active aircraft: {total_new_adsb}")
 
-    # Save updated flight_line.json
-    if updated > 0:
-        fl_path = OUTPUT_DIR / "flight_line.json"
-        with open(fl_path, "w") as f:
-            json.dump(flight_line, f, indent=2)
-        print(f"  Saved: output/flight_line.json")
+    # Always write the output — it is this stage's build artifact, so it has to
+    # exist (and be newer than its input) even on a run that added nothing.
+    fl_path = Path(out_path) if out_path else OUTPUT_DIR / "flight_line.json"
+    if not dry_run:
+        write_json_atomic(fl_path, flight_line)
+        print(f"  Saved: {fl_path}")
 
     # Compute total stats
     total_schools = len(flight_line)
@@ -1164,9 +1198,9 @@ def merge_into_flight_line(
     }
 
     diag_path = OUTPUT_DIR / "pdf_extraction_diagnostics.json"
-    with open(diag_path, "w") as f:
-        json.dump(diagnostics, f, indent=2)
-    print(f"  Saved: output/pdf_extraction_diagnostics.json")
+    if not dry_run:
+        write_json_atomic(diag_path, diagnostics)
+        print(f"  Saved: output/pdf_extraction_diagnostics.json")
 
     return diagnostics
 
@@ -1190,17 +1224,33 @@ def main():
         action="store_true",
         help="Show stats only, no downloads or modifications",
     )
+    parser.add_argument(
+        "--offline",
+        action="store_true",
+        help="No network and no API calls: reuse downloaded PDFs and cached batch results only",
+    )
+    parser.add_argument(
+        "--in",
+        dest="in_path",
+        default=None,
+        help="Input path (default: output/flight_line_base.json)",
+    )
+    parser.add_argument(
+        "--out",
+        default=None,
+        help="Output path (default: output/flight_line.json)",
+    )
     args = parser.parse_args()
 
     phase_idx = PHASES.index(args.phase)
 
-    # Load flight_line.json
-    fl_path = OUTPUT_DIR / "flight_line.json"
+    # Load the base build produced by 21_build_flight_line.py
+    fl_path = Path(args.in_path) if args.in_path else OUTPUT_DIR / "flight_line_base.json"
     if not fl_path.exists():
-        print("ERROR: output/flight_line.json not found")
+        print(f"ERROR: {fl_path} not found — run 21_build_flight_line.py first")
         sys.exit(1)
     flight_line = json.load(open(fl_path))
-    print(f"Loaded flight_line.json: {len(flight_line)} schools")
+    print(f"Loaded {fl_path.name}: {len(flight_line)} schools")
 
     # Phase 1: Build targets
     targets = build_targets(flight_line, dry_run=args.dry_run)
@@ -1208,7 +1258,9 @@ def main():
         return
 
     # Phase 2: Download
-    download_progress = download_targets(targets, dry_run=args.dry_run)
+    download_progress = download_targets(
+        targets, dry_run=args.dry_run, offline=args.offline
+    )
     if phase_idx == 1:
         return
 
@@ -1222,7 +1274,9 @@ def main():
         return
 
     # Phase 4: Sonnet batch for complex PDFs
-    run_sonnet_batch(extraction_results, faa_registry, dry_run=args.dry_run)
+    run_sonnet_batch(
+        extraction_results, faa_registry, dry_run=args.dry_run, offline=args.offline
+    )
     if phase_idx == 3:
         return
 
@@ -1230,7 +1284,13 @@ def main():
     acftref = load_acftref()
     adsb = load_adsb_activity()
     diagnostics = merge_into_flight_line(
-        flight_line, extraction_results, faa_registry, acftref, adsb, dry_run=args.dry_run
+        flight_line,
+        extraction_results,
+        faa_registry,
+        acftref,
+        adsb,
+        dry_run=args.dry_run,
+        out_path=args.out,
     )
 
     # Summary

@@ -20,15 +20,21 @@ Data sources:
   - output/adsb_activity.csv                 (ADS-B surveillance activity)
 
 Output:
-  - output/flight_line.json                  (canonical fleet data)
+  - output/flight_line_base.json             (fleet data, before PDF overlay)
   - output/build_diagnostics.json            (recovery stats, merge info)
   - output/html_cache_index.json             (domain → cached HTML mapping)
   - output/unrecovered_extractions.json      (HTTP results we couldn't map)
 
+This writes flight_line_base.json, NOT the canonical flight_line.json.
+22_pdf_rate_sheets.py reads the base and writes flight_line.json on top of it.
+Keeping the two separate means neither script mutates a file it also reads,
+which is what lets `make` model the pipeline as a dependency graph.
+
 Usage:
     python 21_build_flight_line.py              # full rebuild
     python 21_build_flight_line.py --dry-run    # show stats only
-    python 21_build_flight_line.py --diff       # compare to existing flight_line.json
+    python 21_build_flight_line.py --diff       # compare to previous build
+    python 21_build_flight_line.py --out PATH   # write somewhere else
 """
 
 import argparse
@@ -711,7 +717,16 @@ def build_html_cache_index():
 
 # ── Phase 7: Assemble & Output ───────────────────────────────────
 
-def build_flight_line(dry_run=False, diff=False):
+def write_json_atomic(path, obj):
+    """Write JSON via a temp file + rename, so an interrupted build never
+    leaves a truncated artifact behind for the next stage to read."""
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    with open(tmp, "w") as f:
+        json.dump(obj, f, indent=2)
+    tmp.replace(path)
+
+
+def build_flight_line(dry_run=False, diff=False, out_path=None):
     ts = datetime.now(timezone.utc).isoformat()
     print(f"=== Build flight_line.json — {ts} ===\n")
 
@@ -939,9 +954,11 @@ def build_flight_line(dry_run=False, diff=False):
     for src, c in sorted(source_counts.items(), key=lambda x: -x[1]):
         print(f"    {src}: {c:,}")
 
-    # Diff
+    out_path = Path(out_path) if out_path else OUTPUT_DIR / "flight_line_base.json"
+
+    # Diff — compare against the previous build of *this* artifact
     if diff:
-        existing_path = OUTPUT_DIR / "flight_line.json"
+        existing_path = out_path
         if existing_path.exists():
             existing = json.loads(existing_path.read_text())
             old_count = len(existing)
@@ -951,7 +968,7 @@ def build_flight_line(dry_run=False, diff=False):
                     nn = a.get("n_number", "")
                     if nn:
                         old_nns.add(nn)
-            print(f"\n  Comparison to existing flight_line.json:")
+            print(f"\n  Comparison to existing {existing_path.name}:")
             print(f"    Schools: {old_count:,} -> {total_schools:,} ({total_schools - old_count:+,})")
             print(f"    N-numbers: {len(old_nns):,} -> {len(unique_nns):,} ({len(unique_nns) - len(old_nns):+,})")
             lost = old_nns - unique_nns
@@ -982,32 +999,32 @@ def build_flight_line(dry_run=False, diff=False):
             "source_breakdown": dict(source_counts),
         }
 
-        out_path = OUTPUT_DIR / "flight_line.json"
-        with open(out_path, "w") as f:
-            json.dump(flight_line, f, indent=2)
+        write_json_atomic(out_path, flight_line)
         print(f"\n  Written: {out_path}")
 
         diag_path = OUTPUT_DIR / "build_diagnostics.json"
-        with open(diag_path, "w") as f:
-            json.dump(diagnostics, f, indent=2)
+        write_json_atomic(diag_path, diagnostics)
         print(f"  Written: {diag_path}")
 
         cache_path = OUTPUT_DIR / "html_cache_index.json"
-        with open(cache_path, "w") as f:
-            json.dump(html_cache, f, indent=2)
+        write_json_atomic(cache_path, html_cache)
         print(f"  Written: {cache_path}")
 
         unrec_path = OUTPUT_DIR / "unrecovered_extractions.json"
-        with open(unrec_path, "w") as f:
-            json.dump(unrecovered, f, indent=2)
+        write_json_atomic(unrec_path, unrecovered)
         print(f"  Written: {unrec_path}")
     else:
         print(f"\n  DRY RUN — no files written")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Clean-slate rebuild of flight_line.json")
+    parser = argparse.ArgumentParser(description="Clean-slate rebuild of flight_line_base.json")
     parser.add_argument("--dry-run", action="store_true", help="Show stats without writing")
-    parser.add_argument("--diff", action="store_true", help="Compare to existing flight_line.json")
+    parser.add_argument("--diff", action="store_true", help="Compare to the previous build")
+    parser.add_argument(
+        "--out",
+        default=None,
+        help="Output path (default: output/flight_line_base.json)",
+    )
     args = parser.parse_args()
-    build_flight_line(dry_run=args.dry_run, diff=args.diff)
+    build_flight_line(dry_run=args.dry_run, diff=args.diff, out_path=args.out)

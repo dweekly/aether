@@ -1,3 +1,9 @@
+# Build digests (Makefile staleness tracking) — machine-local, never shared
+.build/
+
+# Dead macOS venv kept for reference after the Linux migration
+scripts/.venv.macos-dead/
+
 # Exclude raw ADS-B data dumps (large, reproducible via scripts)
 data/adsb/opensky_us_*.json
 
@@ -18,3 +24,7 @@ output/fleet_crawl_index_jax.json
 output/jato_rate_sheet_*.png
 output/rate_sheet_pdf/
 output/rate_sheet_text/
+
+# Build intermediate — regenerate with `make`. flight_line.json is the
+# committed artifact; this is just 21's output before the PDF overlay.
+output/flight_line_base.json
