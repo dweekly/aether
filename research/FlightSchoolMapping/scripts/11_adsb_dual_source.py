@@ -26,6 +26,7 @@ Usage:
     python 11_adsb_dual_source.py --compare
 """
 
+import gzip
 import json
 import math
 import os
@@ -361,8 +362,144 @@ class AirportIndex:
         return ""
 
 
-def aggregate_snapshots():
-    """Aggregate all dual-source snapshots into activity summaries."""
+AGG_STATE_VERSION = 2
+AGG_STATE_PATH = OUTPUT_DIR / "adsb_aggregate_state.json.gz"
+
+
+def _canonical_snapshot_files() -> list[Path]:
+    """All snapshots in the canonical fold order.
+
+    Legacy dual_* first, then snapshot_*, each sorted. Filenames are
+    timestamped, so within a group lexicographic order is chronological.
+    New snapshots therefore always append to the end, which is what lets the
+    incremental fold reproduce a from-scratch build exactly.
+    """
+    return sorted(SNAPSHOTS_DIR.glob("dual_*.json")) + sorted(
+        SNAPSHOTS_DIR.glob("snapshot_*.json")
+    )
+
+
+def _blank_accumulator() -> dict:
+    return {
+        "sightings": Counter(),
+        "ground_count": Counter(),
+        "airport_counts": defaultdict(Counter),
+        "registrations": {},
+        "aircraft_types": {},
+        "sources_seen": defaultdict(set),
+        "processed": [],
+    }
+
+
+def _load_accumulator() -> dict | None:
+    """Load the incremental checkpoint, or None if it is unusable."""
+    if not AGG_STATE_PATH.exists():
+        return None
+    try:
+        with gzip.open(AGG_STATE_PATH, "rt", encoding="utf-8") as f:
+            state = json.load(f)
+    except Exception as e:
+        print(f"  Checkpoint unreadable ({e}) — falling back to full rebuild")
+        return None
+    if state.get("version") != AGG_STATE_VERSION:
+        print(
+            f"  Checkpoint is v{state.get('version')}, need v{AGG_STATE_VERSION}"
+            " — falling back to full rebuild"
+        )
+        return None
+
+    acc = _blank_accumulator()
+    acc["processed"] = state.get("processed", [])
+    for hex_code, rec in state.get("aircraft", {}).items():
+        acc["sightings"][hex_code] = rec["n"]
+        if rec.get("g"):
+            acc["ground_count"][hex_code] = rec["g"]
+        apt = rec.get("apt")
+        if apt:
+            acc["airport_counts"][hex_code] = Counter(apt)
+        if rec.get("reg"):
+            acc["registrations"][hex_code] = rec["reg"]
+        if rec.get("typ"):
+            acc["aircraft_types"][hex_code] = rec["typ"]
+        if rec.get("src"):
+            acc["sources_seen"][hex_code] = set(rec["src"])
+    return acc
+
+
+def _save_accumulator(acc: dict) -> None:
+    """Write the checkpoint atomically, so a kill mid-write cannot corrupt it."""
+    aircraft = {}
+    for hex_code, total in acc["sightings"].items():
+        rec = {"n": total}
+        ground = acc["ground_count"].get(hex_code, 0)
+        if ground:
+            rec["g"] = ground
+        apt = acc["airport_counts"].get(hex_code)
+        if apt:
+            rec["apt"] = dict(apt)
+        if acc["registrations"].get(hex_code):
+            rec["reg"] = acc["registrations"][hex_code]
+        if acc["aircraft_types"].get(hex_code):
+            rec["typ"] = acc["aircraft_types"][hex_code]
+        src = acc["sources_seen"].get(hex_code)
+        if src:
+            rec["src"] = sorted(src)
+        aircraft[hex_code] = rec
+
+    state = {
+        "version": AGG_STATE_VERSION,
+        "processed": acc["processed"],
+        "aircraft": aircraft,
+    }
+    tmp = AGG_STATE_PATH.with_suffix(AGG_STATE_PATH.suffix + ".tmp")
+    with gzip.open(tmp, "wt", encoding="utf-8") as f:
+        json.dump(state, f, separators=(",", ":"))
+    tmp.replace(AGG_STATE_PATH)
+
+
+def _fold_snapshot(acc: dict, snap_path: Path, apt_index) -> None:
+    """Fold one snapshot into the accumulator. Every operation here is
+    additive or last-write-wins, which is what makes the fold resumable."""
+    with open(snap_path) as f:
+        snap = json.load(f)
+
+    for ac in snap.get("aircraft", []):
+        hex_code = (ac.get("icao_hex") or ac.get("hex", "")).upper()
+        if not hex_code:
+            continue
+
+        acc["sightings"][hex_code] += 1
+        acc["sources_seen"][hex_code].add(ac.get("source", "unknown"))
+
+        reg = ac.get("registration", "")
+        if reg:
+            acc["registrations"][hex_code] = reg
+        atype = ac.get("aircraft_type", "")
+        if atype:
+            acc["aircraft_types"][hex_code] = atype
+
+        if ac.get("on_ground", False):
+            acc["ground_count"][hex_code] += 1
+            lat = ac.get("latitude")
+            lon = ac.get("longitude")
+            if lat and lon and apt_index:
+                nearest = apt_index.nearest(float(lat), float(lon))
+                if nearest:
+                    acc["airport_counts"][hex_code][nearest] += 1
+
+
+def aggregate_snapshots(rebuild: bool = False):
+    """Aggregate dual-source snapshots into activity summaries.
+
+    Incremental by default: only snapshots not already in the checkpoint are
+    read. With ~6,400 snapshots (11 GB) a from-scratch fold takes minutes, but
+    the cron only adds one every 15 minutes, so the common case is a couple of
+    files and a few seconds.
+
+    Falls back to a full rebuild automatically when the checkpoint is missing,
+    stale, or no longer consistent with what is on disk. Pass rebuild=True to
+    force one.
+    """
     print("=" * 60)
     print("Aggregating Dual-Source ADS-B Snapshots")
     print("=" * 60)
@@ -371,73 +508,87 @@ def aggregate_snapshots():
         print("  No snapshots directory found.")
         return None
 
-    # Include both old single-source and new dual-source snapshots
-    snap_files = sorted(
-        list(SNAPSHOTS_DIR.glob("dual_*.json"))
-        + list(SNAPSHOTS_DIR.glob("snapshot_*.json"))
-    )
+    snap_files = _canonical_snapshot_files()
     print(f"  Snapshot files: {len(snap_files)}")
     if not snap_files:
         return None
 
-    # Load airport index
-    airports_path = OUTPUT_DIR / "airports.csv"
+    # Decide incremental vs full
+    acc = None if rebuild else _load_accumulator()
+    if rebuild:
+        print("  --rebuild requested — reading every snapshot")
+
+    pending = snap_files
+    if acc is not None:
+        on_disk = {p.name for p in snap_files}
+        already = set(acc["processed"])
+
+        missing = already - on_disk
+        if missing:
+            print(
+                f"  {len(missing)} previously folded snapshot(s) no longer on disk"
+                " — falling back to full rebuild"
+            )
+            acc = None
+        else:
+            pending = [p for p in snap_files if p.name not in already]
+            # A new legacy dual_* file would sort *before* already-folded
+            # snapshot_* files, so appending it would not reproduce a
+            # from-scratch fold. Vanishingly rare; just rebuild if it happens.
+            if any(p.name.startswith("dual_") for p in pending):
+                print("  New legacy dual_* snapshot found — falling back to full rebuild")
+                acc = None
+                pending = snap_files
+
+    if acc is None:
+        acc = _blank_accumulator()
+        pending = snap_files
+
+    # Airport index (needed only when there is something to fold)
     apt_index = None
-    if airports_path.exists():
-        airports = pd.read_csv(airports_path, keep_default_na=False)
-        valid = airports[airports["latitude"].notna() & airports["longitude"].notna()].copy()
-        valid["latitude"] = valid["latitude"].astype(float)
-        valid["longitude"] = valid["longitude"].astype(float)
-        apt_index = AirportIndex(valid[["airport_id", "faa_id", "latitude", "longitude"]])
-        print(f"  Airport index: {len(valid)} airports")
+    if pending:
+        airports_path = OUTPUT_DIR / "airports.csv"
+        if airports_path.exists():
+            airports = pd.read_csv(airports_path, keep_default_na=False)
+            valid = airports[
+                airports["latitude"].notna() & airports["longitude"].notna()
+            ].copy()
+            valid["latitude"] = valid["latitude"].astype(float)
+            valid["longitude"] = valid["longitude"].astype(float)
+            apt_index = AirportIndex(
+                valid[["airport_id", "faa_id", "latitude", "longitude"]]
+            )
+            print(f"  Airport index: {len(valid)} airports")
 
-    # Process snapshots
-    sightings: Counter = Counter()
-    ground_count: Counter = Counter()
-    airport_counts: dict[str, Counter] = defaultdict(Counter)
-    registrations: dict[str, str] = {}   # hex -> N-number
-    aircraft_types: dict[str, str] = {}  # hex -> type code
-    sources_seen: dict[str, set] = defaultdict(set)
+    if pending:
+        print(f"  Folding {len(pending)} new snapshot(s)...")
+        for snap_path in pending:
+            _fold_snapshot(acc, snap_path, apt_index)
+            acc["processed"].append(snap_path.name)
+        _save_accumulator(acc)
+    else:
+        print("  No new snapshots — reusing checkpoint")
 
-    for snap_path in snap_files:
-        with open(snap_path) as f:
-            snap = json.load(f)
-        for ac in snap.get("aircraft", []):
-            hex_code = (ac.get("icao_hex") or ac.get("hex", "")).upper()
-            if not hex_code:
-                continue
-
-            sightings[hex_code] += 1
-            source = ac.get("source", "unknown")
-            sources_seen[hex_code].add(source)
-
-            # Track registration and type from adsb.lol
-            reg = ac.get("registration", "")
-            if reg:
-                registrations[hex_code] = reg
-            atype = ac.get("aircraft_type", "")
-            if atype:
-                aircraft_types[hex_code] = atype
-
-            on_ground = ac.get("on_ground", False)
-            if on_ground:
-                ground_count[hex_code] += 1
-                lat = ac.get("latitude")
-                lon = ac.get("longitude")
-                if lat and lon and apt_index:
-                    nearest = apt_index.nearest(float(lat), float(lon))
-                    if nearest:
-                        airport_counts[hex_code][nearest] += 1
+    sightings = acc["sightings"]
+    ground_count = acc["ground_count"]
+    airport_counts = acc["airport_counts"]
+    registrations = acc["registrations"]
+    aircraft_types = acc["aircraft_types"]
+    sources_seen = acc["sources_seen"]
 
     print(f"\n  Unique aircraft: {len(sightings)}")
 
-    # Build summary
+    # Build summary. Every ordering below is fully determined by the data, not
+    # by insertion order, so an incremental fold and a full rebuild agree byte
+    # for byte.
     records = []
-    for hex_code in sorted(sightings, key=sightings.get, reverse=True):
+    for hex_code in sorted(sightings, key=lambda h: (-sightings[h], h)):
         total = sightings[hex_code]
         ground = ground_count.get(hex_code, 0)
         apt = airport_counts.get(hex_code, Counter())
-        home = apt.most_common(1)[0] if apt else ("", 0)
+        home = ("", 0)
+        if apt:
+            home = sorted(apt.items(), key=lambda kv: (-kv[1], kv[0]))[0]
 
         records.append({
             "icao_hex": hex_code,
@@ -448,24 +599,28 @@ def aggregate_snapshots():
             "on_ground_pct": round(ground / total, 3) if total else 0,
             "home_airport": home[0],
             "home_airport_sightings": home[1],
-            "airports_seen": dict(apt),
+            "airports_seen": dict(sorted(apt.items(), key=lambda kv: (-kv[1], kv[0]))),
             "n_snapshots": len(snap_files),
-            "sources": list(sources_seen.get(hex_code, set())),
+            "sources": sorted(sources_seen.get(hex_code, set())),
         })
 
     # Save
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     summary_path = OUTPUT_DIR / "adsb_activity_summary.json"
-    with open(summary_path, "w") as f:
+    tmp = summary_path.with_suffix(summary_path.suffix + ".tmp")
+    with open(tmp, "w") as f:
         json.dump(records, f, indent=2)
+    tmp.replace(summary_path)
 
     csv_records = [
         {k: v for k, v in r.items() if k not in ("airports_seen", "sources")}
         for r in records
     ]
     csv_path = OUTPUT_DIR / "adsb_activity.csv"
-    pd.DataFrame(csv_records).to_csv(csv_path, index=False)
+    csv_tmp = csv_path.with_suffix(csv_path.suffix + ".tmp")
+    pd.DataFrame(csv_records).to_csv(csv_tmp, index=False)
+    csv_tmp.replace(csv_path)
 
     # Fleet cross-reference
     n_numbers_path = OUTPUT_DIR / "n_numbers_seen.txt"
@@ -537,11 +692,20 @@ if __name__ == "__main__":
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--snapshot", action="store_true", help="Take one dual-source snapshot")
     group.add_argument("--start", action="store_true", help="Start continuous capture")
-    group.add_argument("--aggregate", action="store_true", help="Aggregate all snapshots")
+    group.add_argument(
+        "--aggregate",
+        action="store_true",
+        help="Aggregate snapshots (incremental: only folds in new ones)",
+    )
     group.add_argument("--status", action="store_true", help="Show capture status")
     group.add_argument("--compare", action="store_true", help="Compare source coverage")
     parser.add_argument("--days", type=int, default=30, help="Days to capture (default: 30)")
     parser.add_argument("--interval", type=int, default=15, help="Minutes between snapshots (default: 15)")
+    parser.add_argument(
+        "--rebuild",
+        action="store_true",
+        help="With --aggregate: discard the checkpoint and re-read every snapshot",
+    )
 
     args = parser.parse_args()
 
@@ -550,7 +714,7 @@ if __name__ == "__main__":
     elif args.start:
         run_continuous(days=args.days, interval_min=args.interval)
     elif args.aggregate:
-        aggregate_snapshots()
+        aggregate_snapshots(rebuild=args.rebuild)
     elif args.status:
         show_status()
     elif args.compare:

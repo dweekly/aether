@@ -37,6 +37,18 @@ ADS-B cron touching files does not trigger a spurious rebuild. Digests live in
   graph acyclic. Do not "simplify" this back into an in-place patch.
 - `22` runs with `--offline` in the default build: reuses downloaded PDFs and
   the cached Sonnet batch, so `make` is free and deterministic.
+- **`22` caches its two expensive phases** (together they were 6m45s of the old
+  10-minute build). Phase 1's target list is keyed on `pdf_targets.key` — a
+  digest of the 0-NN domain set plus the crawl-cache listings, deliberately
+  *not* `flight_line_base.json`, which churns on every ADS-B fold while the
+  0-NN set almost never moves. Phase 3 reuses `rate_sheet_text/{domain}.txt`
+  when it is newer than every source it derives from. Both fresh and cached
+  paths go through `_summarize_extraction()` so they cannot drift.
+- **Extraction artifacts live only in R2** for some files. `make` runs
+  `restore-inputs` first (`scripts/r2_sync.sh restore-extract`). This matters
+  because `21` treats a missing input as "no data" and silently builds a
+  smaller dataset instead of failing — see the 08e incident below for what that
+  looks like.
 - **`08e_faa_registry_discovery.py` is NOT an automatic target.** It reads
   `flight_line.json` to decide what is "not already in the corpus", which makes
   it cyclic with the build. Rerunning it without then crawling what it found
@@ -45,7 +57,20 @@ ADS-B cron touching files does not trigger a spurious rebuild. Digests live in
 - Anything else that reads `flight_line.json` (`14`, `15`, `16`, `17`) is a
   consumer, not a build input. Keep it that way.
 - Never add a stage's own output directory to its `*_INPUTS` list — that makes
-  it permanently stale. `rate_sheet_text/` is the one that bit us.
+  it permanently stale. `rate_sheet_text/` is the one that bit us, and
+  `adsb_aggregate_state.json.gz` is the same hazard.
+- **ADS-B aggregation is incremental.** `11_adsb_dual_source.py --aggregate`
+  keeps per-aircraft counters in `output/adsb_aggregate_state.json.gz` (2.9 MB)
+  and folds in only unseen snapshots: ~3 s instead of ~2 min. It falls back to a
+  full rebuild automatically when the checkpoint is missing, version-stale,
+  unreadable, references snapshots no longer on disk, or when a new legacy
+  `dual_*` file appears (which would sort before already-folded files and break
+  fold-order equivalence). `--rebuild` / `make rebuild-adsb` forces one.
+  All accumulators are additive or last-write-wins, and every output ordering is
+  sorted by value not insertion order, so an incremental fold is byte-identical
+  to a from-scratch rebuild. **If you add a field to the summary, make its
+  ordering data-determined or you break that guarantee** — and bump
+  `AGG_STATE_VERSION` if the checkpoint shape changes.
 
 ## Maintenance
 

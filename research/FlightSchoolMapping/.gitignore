@@ -28,3 +28,8 @@ output/rate_sheet_text/
 # Build intermediate — regenerate with `make`. flight_line.json is the
 # committed artifact; this is just 21's output before the PDF overlay.
 output/flight_line_base.json
+
+# ADS-B aggregation checkpoint. Derived from the snapshots and rewritten on
+# every aggregate run, so it would churn the repo; `make rebuild-adsb`
+# reconstructs it in ~2 min.
+output/adsb_aggregate_state.json.gz

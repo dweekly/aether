@@ -20,6 +20,15 @@
 #   make status      what is stale, and why
 #   make clean       remove digests only — never deletes pipeline output
 #
+# Offsite data (Cloudflare R2, via scripts/r2_sync.sh):
+#
+#   make backup      push snapshots + crawl caches + extraction results
+#   make r2-status   what is currently stored offsite
+#
+# The extraction artifacts (*.jsonl and the crawl indexes) are build inputs
+# kept only in R2, so every build first runs `restore-inputs`, which pulls
+# anything missing locally. That no-ops in seconds when nothing is absent.
+#
 # Every stage writes via temp-file + atomic rename, and no stage reads a file
 # it also writes, so any target can be rerun any number of times safely.
 #
@@ -168,11 +177,19 @@ extract-expansion:
 	$(require_spend)
 	$(PY) $(SCRIPTS)/09f_corpus_expansion.py --extract-only
 
-# ── Stage 4: ADS-B aggregation (local, free, ~4 min) ─────────────────────────
+# ── Stage 4: ADS-B aggregation (local, free, seconds) ────────────────────────
 #
 # The snapshot directory is hashed by listing (name + size), not by reading
 # 11 GB of JSON. Cron appending a snapshot changes the listing, which is
 # exactly the signal we want.
+#
+# The aggregate itself is incremental: it keeps per-aircraft counters in
+# output/adsb_aggregate_state.json.gz and folds in only snapshots it has not
+# seen. Cron adds one every 15 min, so the usual case is a couple of files and
+# a few seconds instead of re-reading the whole 11 GB tree.
+#
+# The checkpoint is an OUTPUT of this stage, so it must never appear in
+# adsb_INPUTS — that would make the stage permanently stale.
 
 adsb_INPUTS = $(SNAPSHOTS) $(OUT)/airports.csv $(SCRIPTS)/11_adsb_dual_source.py
 
@@ -183,6 +200,15 @@ $(BUILD)/adsb.inputs: | $(OUT)/airports.csv
 
 .PHONY: adsb
 adsb: $(OUT)/adsb_activity.csv
+
+# Discard the incremental checkpoint and re-read every snapshot (~2 min).
+# Only needed if the checkpoint is suspected wrong; the aggregate already
+# falls back to a full rebuild on its own when the checkpoint is stale,
+# unreadable, or inconsistent with what is on disk.
+.PHONY: rebuild-adsb
+rebuild-adsb:
+	$(PY) $(SCRIPTS)/11_adsb_dual_source.py --aggregate --rebuild
+	@$(MAKE) --no-print-directory build
 
 # ── Stage 5: assembly (local, free, ~60 s) ───────────────────────────────────
 
@@ -203,7 +229,17 @@ base_INPUTS = \
 $(OUT)/flight_line_base.json: $(BUILD)/base.inputs
 	$(PY) $(SCRIPTS)/21_build_flight_line.py
 
-$(BUILD)/base.inputs: | $(OUT)/adsb_activity.csv $(OUT)/faa_master.csv $(OUT)/ACFTREF.txt
+$(BUILD)/base.inputs: | restore-inputs $(OUT)/adsb_activity.csv $(OUT)/faa_master.csv $(OUT)/ACFTREF.txt
+
+# The extraction artifacts are build inputs whose only offsite copy is R2.
+# 21_build_flight_line.py tolerates a missing input by quietly producing a
+# SMALLER dataset rather than failing, so a silent absence here is worse than
+# an error — pull anything missing before the digest is taken.
+#
+# No-ops in seconds when everything is present, so it is safe on every build.
+.PHONY: restore-inputs
+restore-inputs:
+	@$(SCRIPTS)/r2_sync.sh restore-extract
 
 # ── Stage 5b: PDF rate sheet overlay ─────────────────────────────────────────
 #
@@ -288,6 +324,27 @@ status:
 	@echo "  ADS-B snapshots: $$(ls $(SNAPSHOTS) 2>/dev/null | wc -l)"
 	@echo "  Note: 'make -n' over-reports — it cannot know a digest is unchanged."
 	@echo ""
+
+# ── Offsite backup (Cloudflare R2) ───────────────────────────────────────────
+
+.PHONY: backup backup-adsb backup-cache backup-extract r2-status restore-adsb
+backup:
+	@$(SCRIPTS)/r2_sync.sh backup-all
+
+backup-adsb:
+	@$(SCRIPTS)/r2_sync.sh backup-adsb
+
+backup-cache:
+	@$(SCRIPTS)/r2_sync.sh backup-cache
+
+backup-extract:
+	@$(SCRIPTS)/r2_sync.sh backup-extract
+
+restore-adsb:
+	@$(SCRIPTS)/r2_sync.sh restore-adsb
+
+r2-status:
+	@$(SCRIPTS)/r2_sync.sh status
 
 .PHONY: clean
 clean:

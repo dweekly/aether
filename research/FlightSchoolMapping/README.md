@@ -607,10 +607,14 @@ safe to rerun any number of times. Run it from `research/FlightSchoolMapping/`.
 
 ```bash
 make                              # ADS-B aggregate → build → PDF overlay
-                                  #   free, local, deterministic (~7 min cold, ~1s warm)
+                                  #   free, local, deterministic (~90s cold, ~1s warm)
 make status                       # what is stale and why (~1s)
 make refresh                      # re-download FAA registry + airports, then rebuild
 make validate                     # build, then cross-validate fleet against ADS-B
+make rebuild-adsb                 # force a from-scratch ADS-B aggregation
+
+make backup                       # push snapshots + caches + extracts to R2
+make r2-status                    # what is stored offsite
 
 make crawl      ALLOW_CRAWL=1     # HTTP + browser + expansion crawl (hours, free)
 make extract    ALLOW_SPEND=1     # Sonnet batch extraction (~$25)
@@ -635,6 +639,35 @@ rather than by reading their contents.
 
 Caveat: `make -n` and `make -q` over-report, because a dry run cannot know a
 digest will come out unchanged. Use `make status`.
+
+Stages cache their own expensive work on top of that, so a full rebuild is
+~90 s rather than the ~10 min it used to be:
+
+| Stage | Was | Now | How |
+|-------|-----|-----|-----|
+| ADS-B aggregate | ~2–4 min | ~5 s | checkpointed counters; only new snapshots read |
+| 21 assembly | ~80 s | ~80 s | genuine work — parses the 190 MB FAA registry |
+| 22 PDF overlay | ~6 min 45 s | ~3 s | target list keyed on crawl-cache digest; extracted PDF text reused when newer than its sources |
+
+### Offsite data (Cloudflare R2)
+
+`scripts/r2_sync.sh` mirrors data to R2 under `aether-research/`, on cron
+(snapshots + extracts nightly, crawl caches weekly):
+
+| Prefix | Contents | Why |
+|--------|----------|-----|
+| `adsb-snapshots/` | 10.8 GB | Irreplaceable — observations cannot be re-fetched |
+| `crawl-cache/` | ~10 GB | Re-crawlable in principle, but the web has moved on |
+| `extract/` | 27 MB | ~$25 of Sonnet; **R2 is the only copy of some of these** |
+
+Because parts of `extract/` live only in R2, every build first runs
+`restore-inputs`, which pulls anything missing. Without it, `21` would quietly
+emit a *smaller* dataset rather than fail. `make restore-adsb` pulls the full
+snapshot history back.
+
+Note: rclone v1.60 on this box logs spurious `501 NotImplemented` on the first
+PUT of each object and succeeds on retry, so `r2_sync.sh` verifies by checksum
+rather than trusting exit codes.
 
 ### Individual scripts
 
@@ -701,6 +734,12 @@ STAGE 5 — ADS-B Observation (collection via cron, every 15 min)
   14_adsb_validate.py          → validation report                                    [make validate]
 
   Collection is automated by cron; aggregation is NOT — it runs when you `make`.
+
+  Aggregation is incremental: per-aircraft counters live in
+  output/adsb_aggregate_state.json.gz and only unseen snapshots are read
+  (~3 s vs ~2 min for all 6,400). It falls back to a full rebuild by itself
+  whenever the checkpoint cannot be trusted; `make rebuild-adsb` forces one.
+  An incremental fold is byte-identical to a from-scratch rebuild.
 ```
 
 **Not in the automatic graph:** `08e_faa_registry_discovery.py` reads
