@@ -15,11 +15,14 @@ Classification is observational only (Codex plan review, 2026-10-23):
 Registration status, type, engine and year stay separate attributes; nothing
 here claims *why* an aircraft was not observed.
 
+A day counts as flown when any airborne point was received (n_airborne > 0);
+airborne hours stay the conservative qualified-interval sum.
+
 Home base (fixed before looking at results): each observed day gets a "night
-airport": the airport of the last ground position, or if the day ended without
-a ground point (receivers often lose low aircraft on landing), the arrival
-airport of the day's last leg that ended low near an airport. Home is the most
-frequent night airport, provided it has >= 3 days and >= 50% of them.
+airport": whichever came last, the airport of the last ground position or the
+arrival airport of a later leg that ended low near an airport (receivers often
+lose low aircraft on landing). Home is the most frequent night airport,
+provided that airport itself has >= 3 days and >= 50% of all night airports.
 Otherwise null (abstain).
 
 Usage: 34_fleet_summary.py [--registry 2026-10-23] [--release v0.1-20261023]
@@ -68,18 +71,22 @@ def main():
 
     c.execute(f"""
         CREATE TABLE ad AS
-        SELECT day, hex, reg, "type", "desc", pia, ladd, airborne_min, n_legs, n_points,
-               last_ground_airport, last_ts, ({adsb_pred}) AS has_adsb
+        SELECT day, hex, reg, "type", "desc", pia, ladd, airborne_min, n_airborne, n_legs, n_points,
+               last_ground_airport, last_ground_ts, last_ts, ({adsb_pred}) AS has_adsb
         FROM read_parquet('{days_glob}')
         WHERE day <= current_date - 1
     """)
     window = c.execute("SELECT min(day), max(day), count(DISTINCT day) FROM ad").fetchone()
+    # The exact days frozen into this release. Later stages filter on this list, not on
+    # the bounds, so a day backfilled mid-build cannot slip into the downloads.
+    included = [str(r[0]) for r in c.execute("SELECT DISTINCT day FROM ad ORDER BY 1").fetchall()]
 
     c.execute(f"""
         CREATE TABLE obs AS
         SELECT hex,
                count(*)                                   AS days_observed,
-               count(*) FILTER (WHERE airborne_min > 0)   AS days_airborne,
+               count(*) FILTER (WHERE n_airborne > 0)     AS days_airborne,
+               max(day) FILTER (WHERE n_airborne > 0)     AS last_flew,
                min(day)                                   AS first_seen,
                max(day)                                   AS last_seen,
                sum(airborne_min)                          AS airborne_min_total,
@@ -95,11 +102,14 @@ def main():
     c.execute(f"""
         CREATE TABLE night AS
         WITH last_arr AS (
-            SELECT hex, day, max_by(arr, end_ts) AS arr
+            SELECT hex, day, max_by(arr, end_ts) AS arr, max(end_ts) AS arr_ts
             FROM read_parquet('{legs_glob}') WHERE arr IS NOT NULL AND end_observed_low
             GROUP BY 1, 2
         )
-        SELECT ad.hex, ad.day, coalesce(ad.last_ground_airport, la.arr) AS apt
+        -- Whichever evidence came last that day: a ground fix, or a later low arrival.
+        SELECT ad.hex, ad.day,
+               CASE WHEN la.arr IS NOT NULL AND (ad.last_ground_ts IS NULL OR la.arr_ts > ad.last_ground_ts)
+                    THEN la.arr ELSE ad.last_ground_airport END AS apt
         FROM ad LEFT JOIN last_arr la USING (hex, day)
     """)
     c.execute(f"""
@@ -112,7 +122,7 @@ def main():
                      row_number() OVER (PARTITION BY g.hex ORDER BY g.n DESC, g.apt) AS rk
               FROM g JOIN t USING (hex))
         SELECT hex,
-               CASE WHEN total >= {HOME_MIN_DAYS} AND n::DOUBLE / total >= {HOME_MIN_SHARE}
+               CASE WHEN n >= {HOME_MIN_DAYS} AND n::DOUBLE / total >= {HOME_MIN_SHARE}
                     THEN apt END            AS home_airport,
                n                            AS home_days,
                total                        AS ground_days,
@@ -132,7 +142,7 @@ def main():
                     WHEN o.any_adsb THEN 'adsb' ELSE 'other_only' END AS observed_class,
                coalesce(o.days_observed, 0) AS days_observed,
                coalesce(o.days_airborne, 0) AS days_airborne,
-               o.first_seen, o.last_seen,
+               o.first_seen, o.last_seen, o.last_flew,
                round(coalesce(o.airborne_min_total, 0) / 60.0, 1) AS airborne_hours,
                coalesce(o.legs_total, 0) AS legs,
                coalesce(o.any_pia, false) AS pia_seen, coalesce(o.any_ladd, false) AS ladd_flag,
@@ -161,7 +171,8 @@ def main():
         "generated_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "cohort": f"N-numbers in the FAA Releasable Aircraft Registry snapshot of {reg_date}",
         "registry_date": reg_date,
-        "window": {"first_day": str(window[0]), "last_day": str(window[1]), "days": window[2]},
+        "window": {"first_day": str(window[0]), "last_day": str(window[1]), "days": window[2],
+                   "included_days": included},
         "source": "adsb.lol globe_history (ODbL 1.0), prod-0 releases",
         "definitions": {
             "adsb": "observed at least once via the aircraft's own ADS-B (adsb_icao, adsb_icao_nt, adsr_icao)",

@@ -28,13 +28,18 @@ Usage: 38_schools.py --release dev
 
 import argparse
 import html
+import sys
 import json
 import re
 from collections import Counter, defaultdict
 from pathlib import Path
-from urllib.parse import urlparse
+from statistics import median
+from urllib.parse import urljoin, urlparse
 
 import duckdb
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from release_window import day_view, included_days  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "output"
@@ -47,6 +52,21 @@ GENERIC = {"home", "welcome", "index", "about", "about us", "fleet", "our fleet"
 OPERATOR_WORDS = re.compile(r"\b(FLIGHT|FLYING|FLYERS?|AVIATION|AERO|AIR|AIRWAYS|ACADEMY|SCHOOL|CLUB|COLLEGE|"
                             r"UNIVERSITY|PILOTS?|TRAINING|SOARING|GLIDING|HELICOPTERS?|WINGS|SKY|JET|AIRCRAFT)\b")
 SEP = re.compile(r"\s*[|–—:·•]\s*|\s+-\s+")
+
+
+def resolve_url(src, domain):
+    """Make a crawled source_url absolute: relative paths ("aircraft.html") resolve
+    against the school's site; scheme-less hosts ("example.com/fleet") get https."""
+    if not src:
+        return None
+    if re.match(r"^[a-z][a-z0-9+.-]*://", src, re.I):
+        return src
+    if src.startswith("//"):
+        return "https:" + src
+    head = src.split("/", 1)[0]
+    if "." in head and not head.endswith((".html", ".htm", ".php", ".pdf", ".aspx")):
+        return "https://" + src
+    return urljoin(f"https://{domain}/", src) if domain else None
 
 
 def norm_domain(url):
@@ -85,7 +105,7 @@ def main():
     c = duckdb.connect()
     aircraft = {r[0]: r for r in c.execute(f"""
         SELECT n_number, hex, mfr, model, year_mfr, observed_class, days_airborne, airborne_hours,
-               legs, last_seen, home_airport, status_valid, registrant
+               legs, last_seen, home_airport, status_valid, registrant, last_flew
         FROM read_parquet('{rel / 'aircraft.parquet'}')""").fetchall()}
     airports = {r[0]: r[1:] for r in c.execute(f"""
         SELECT coalesce(nullif(gps_code, ''), nullif(local_code, ''), ident), name, municipality, iso_region
@@ -99,11 +119,12 @@ def main():
         for f in s.get("fleet") or []:
             n = (f.get("n_number") or "").upper()
             src = f.get("source_url") or ""
+            src = resolve_url(src, domain)
             on_site = bool(src and domain and norm_domain(src).endswith(domain))
             if not re.fullmatch(r"N[0-9][0-9A-Z]{0,4}", n):
                 if f.get("display_name"):
                     listings.append({"listed_as": f.get("display_name"), "wet": f.get("wet_rate_hr"),
-                                     "dry": f.get("dry_rate_hr"), "source_url": src or None})
+                                     "dry": f.get("dry_rate_hr"), "source_url": resolve_url(src, domain)})
                 continue
             ac = aircraft.get(n)
             fleet.append({
@@ -117,6 +138,7 @@ def main():
                 "year": ac[4] if ac else None, "cls": ac[5] if ac else None,
                 "days": ac[6] if ac else 0, "hrs": ac[7] if ac else 0, "legs": ac[8] if ac else 0,
                 "last": str(ac[9]) if ac and ac[9] else None, "home": ac[10] if ac else None,
+                "last_flew": str(ac[13]) if ac and ac[13] else None,
                 "registrant": ac[12] if ac else None,
             })
         if not fleet and not listings:
@@ -166,17 +188,19 @@ def main():
             "fleet_on_registry": sum(f["on_registry"] for f in fleet),
             "fleet_flew": sum(1 for f in fleet if f["days"]),
             "fleet_hours": round(sum(f["hrs"] or 0 for f in fleet), 1),
-            "wet_rate_median": rated[len(rated) // 2] if rated else None,
-            "evidence": "website" if any(f["evidence"] == "website" for f in fleet) or r["domain"] else "registry",
+            "wet_rate_median": median(rated) if rated else None,
+            # From the individual rows: all tails from the site, some, or none (registry only).
+            # A school with only tail-less listings has its listings from its own site.
+            "evidence": ("website" if all(f["evidence"] == "website" for f in fleet) else
+                         "mixed" if any(f["evidence"] == "website" for f in fleet) else "registry")
+                        if fleet else ("website" if r["domain"] else "registry"),
             "fleet": sorted(fleet, key=lambda f: (-(f["hrs"] or 0), f["n"])),
             "listings": listings,
         })
 
     # Daily fleet hours per school, for the activity chart.
-    win = json.loads((rel / "results.json").read_text())["window"]
-    c.execute(f"""CREATE VIEW ad AS SELECT * FROM read_parquet('{HISTORY / "aircraft_day" / "*" / "*" / "*.parquet"}')
-                  WHERE day BETWEEN DATE '{win["first_day"]}' AND DATE '{win["last_day"]}'""")
-    days = [str(r[0]) for r in c.execute("SELECT DISTINCT day FROM ad ORDER BY 1").fetchall()]
+    days = included_days(rel)  # frozen by 34; see release_window.py
+    day_view(c, "ad", HISTORY / "aircraft_day" / "*" / "*" / "*.parquet", days)
     idx = {d: i for i, d in enumerate(days)}
     daily = defaultdict(lambda: defaultdict(float))
     c.execute("CREATE TEMP TABLE h(hex VARCHAR)")

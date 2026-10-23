@@ -22,11 +22,15 @@ Usage: 41_privacy.py --release dev
 
 import argparse
 import json
+import sys
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
 
 import duckdb
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from release_window import day_view, included_days  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 HISTORY = ROOT / "data" / "history"
@@ -47,8 +51,7 @@ def main():
     rel = RELEASES / a.release
     win = json.loads((rel / "results.json").read_text())["window"]
     c = duckdb.connect()
-    c.execute(f"""CREATE VIEW ad AS SELECT * FROM read_parquet('{HISTORY / "aircraft_day" / "*" / "*" / "*.parquet"}')
-                  WHERE day BETWEEN DATE '{win["first_day"]}' AND DATE '{win["last_day"]}'""")
+    day_view(c, "ad", HISTORY / "aircraft_day" / "*" / "*" / "*.parquet", included_days(rel))
     aircraft = f"read_parquet('{rel / 'aircraft.parquet'}')"
 
     flew, with_home = c.execute(f"SELECT count(*) FILTER (WHERE days_airborne > 0), "
@@ -72,7 +75,7 @@ def main():
     mid = d0 + (d1 - d0) / 2
     all_days = [r[0] for r in c.execute("SELECT DISTINCT day FROM ad ORDER BY 1").fetchall()]
     flying = defaultdict(set)
-    for hexid, day in c.execute("SELECT hex, day FROM ad WHERE airborne_min > 0").fetchall():
+    for hexid, day in c.execute("SELECT hex, day FROM ad WHERE n_airborne > 0").fetchall():
         flying[hexid].add(day)
     train_days = [d for d in all_days if d <= mid]
     test_days = [d for d in all_days if d > mid]
