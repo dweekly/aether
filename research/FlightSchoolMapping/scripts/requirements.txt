@@ -8,3 +8,7 @@ playwright>=1.40.0
 python-dotenv>=1.0.0
 requests>=2.31.0
 tqdm>=4.66.0
+pyarrow>=26.0
+duckdb>=2.0
+pytest>=9.0
+scipy>=1.18
