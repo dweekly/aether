@@ -30,6 +30,19 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
 - "Flying clubs vs. Part 141 vs. Part 61" — fleet size, rates, aircraft mix by school type
 - "Where are the Cirrus trainers?" — geographic distribution of modern vs. legacy fleets
 
+## From the Hackers 2026 plan review (Codex, 2026-10-23)
+- `AirportIndex` in `11_adsb_dual_source.py` projects longitude with each point's own
+  latitude and then compares in Euclidean space; in a synthetic check it picked the wrong
+  nearest airport 18 times in 250. `02_airport_reference.py` also drops heliports and
+  seaplane bases. Existing `home_airport` values inherit both.
+- `01_faa_registry.py` labels FAA engine code 5 as turboshaft (FAA: 3 = turboshaft,
+  5 = turbofan), and `21` stores the FAA model code in a field named `type_designator`.
+- Causal ghost attribution (per-aircraft equipage, storage, coverage modelling), full
+  historical address-assignment intervals, 2023 and pre-2023 depth (ADS-B Exchange sample
+  days, OpenSky Monday state vectors, Trino if granted), generalized PIA linkage.
+- `flight_line.json` mixes OpenSky-derived activity with AOPA-sourced fields; neither can be
+  redistributed, so it must never be published wholesale.
+
 ## Tech Debt
 - `output/adsb_activity_summary.json` (55 MB) and `adsb_activity.csv` are committed and
   rewritten on every ADS-B fold, so each rebuild commit adds tens of MB to history. They

@@ -1,7 +1,8 @@
 # Hackers 2026: registry ghosts and ADS-B privacy
 
 Stage: MVP (public users for the first time; crude inside is fine if listed in the ROADMAP).
-Written 2026-10-23. Panel assumed ~2026-11-06 (date not on the calendar yet; see Open questions).
+Written 2026-10-23; revised the same day after one Codex review (gpt-6.1-sol, high).
+Panel assumed ~2026-11-06 (not on the calendar yet; see Open questions).
 
 ## Why
 
@@ -9,120 +10,185 @@ David leads an aviation panel at Hackers. The goal is to hand the room a QR code
 something they can play with on their phones (data, code and an explorer) while David
 presents a story built on it. Two threads, chosen 2026-10-23:
 
-1. **Registry ghosts.** About 315K aircraft are on the FAA registry. Only 44% of them showed
-   up on ADS-B in March–August 2026 snapshots: 42% of single-engine pistons, 10% of
-   1940s-built ones, 81% of 2020s-built ones. Some of the gap is retired paper, some is
-   no-transponder airframes legally flying outside rule airspace, some is coverage, and some
-   is privacy addresses. Separating those is the finding.
-2. **ADS-B privacy.** Anyone can reconstruct where a GA aircraft lives and when it flies from
-   free, openly licensed feeds. The point is what LADD and PIA do and do not hide, shown with
-   real numbers.
+1. **Registry ghosts.** In our March–August 2026 snapshots, 44% of FAA-registered aircraft
+   were observed on ADS-B: 42% of single-engine pistons, 10% of 1940s-built pistons, 81% of
+   2020s-built ones. These are preliminary figures and get recomputed from the archive below.
+   The finding is how much of the gap each documented factor accounts for (registration
+   status, aircraft category, the FAA's own count of 173,663 ADS-B-equipped US aircraft, and
+   coverage), with the rest reported as unexplained, not guessed at.
+2. **ADS-B privacy.** How much of where a GA aircraft lives and when it flies can be
+   reconstructed from free, openly licensed feeds, and what LADD and PIA do and do not hide.
+   This is measured, with accuracy reported alongside coverage.
 
-Naming: everything is public data and the release is fully specific (David, 2026-10-23).
+Naming: the data is public and the release is specific to the tail number (David,
+2026-10-23). The one boundary is linking a PIA address back to a tail, which is published
+only for a consenting aircraft (see Open questions).
 
 A different solution also serves the intent if it gives the room something live and
-reproducible, and if the story's numbers survive a skeptical audience.
+reproducible, and if the story's numbers survive a skeptical audience. The biggest risk
+(Codex) is publishing confident explanations the data cannot establish, so every claim is
+phrased as "observed / not observed by this network in this window".
 
-## What changed in the approach (2026-10-23)
+## Sources and licenses
 
-- **Source data moves to adsb.lol's daily archive** (`github.com/adsblol/globe_history_2023…2026`,
-  ODbL 1.0, about 4 GB/day, full per-aircraft traces). Spike on 2026-10-22: 51 s to download,
-  4 s to extract, 38,139 US-block aircraft. Same day, our 96 snapshots saw 33,736, and 98.6%
-  of those are in the archive, which adds 4,880 aircraft the snapshots never caught. The
-  archive also fills the 85-day snapshot hole and goes back to 2023.
-- **OpenSky data stays out of the release.** Its terms forbid redistribution even for
-  non-commercial use ("You will not distribute, disclose, transfer or otherwise make
-  available the data set(s)"). They also require a written agreement for "operational REST
-  API use … even for non-profit or governmental entities", which arguably covers our
-  15-minute cron.
-- **ODbL obligations** (read from the license text, opendatacommons.org/licenses/odbl/1-0/).
-  It explicitly allows commercial use (§3.1), so the trigger is public use, not money.
-  - Charts, the story, the slides and explorer views are Produced Works. Each needs the
-    attribution notice "Contains information from adsb.lol, which is made available here
-    under the Open Database License (ODbL)" (§4.3) and stays under whatever license we like
-    (§4.5b).
-  - The released aircraft-day tables are a Derivative Database in public use. They must be
-    released under ODbL (§4.4), with the data or the method that made it offered free
-    (§4.6). The public repo's code satisfies the method requirement.
-  - The FAA registry (public domain) and our school/fleet extraction ship beside it as
-    separate databases in a Collective Database, so share-alike does not reach them (§4.5a).
-    We still publish them openly.
-  - Code is MIT.
+| Source | Use | License / terms | In the public release? |
+|---|---|---|---|
+| adsb.lol daily archive (`adsblol/globe_history_2023…2026`) | Every trace, 2023 → now | ODbL 1.0 | Yes. Derived tables are ODbL (§4.4) |
+| FAA Releasable Aircraft Registry | Cohort, type, year, status | US government, public domain | Yes, as its own table |
+| Daily registry git history (`simonw/scrape-faa-releasable-aircraft`, since 2023-08) | Dated registry snapshots: when tails appear, transfer or vanish | FAA data; repo has no license file | Yes, our derived snapshots |
+| Mictronics aircraft-database | Hex → registration and type cross-check | ODC Attribution | Yes, with attribution |
+| FAA ADS-B equipage levels; GA & Part 135 Activity Survey | Official denominators (equipped count, hours flown, active share) | US government | Cited figures |
+| ADS-B Exchange first-of-month sample days (2016 →) | Independent network, 10-year depth | JETNET terms: derivatives stay inside your organization | No. Internal aggregates only |
+| OpenSky scientific datasets (Monday state vectors 2017–22, March 2026 Trino snapshot) | Pre-2023 depth | Non-profit research only, no redistribution, cite and notify | No. Aggregates with citation |
+| OpenSky Trino (`flights_data4` since 2016, `state_vectors_data4` since 2013) | Per-flight history: "has this tail flown since 2016?" | Application only: "university-affiliated researchers, governmental organisations, and aviation authorities"; private entities need a license. 100 GB scan cap per query; no bulk extraction | No. Aggregates with citation, if access is granted |
+| OpenSky live API (our 15-min cron) | — | Automated use needs a written agreement | Disabled now (see Work item 0) |
+| AOPA directory | — | "You may not … copy, distribute … publish … any information" | No. School fields come from schools' own pages |
+| Michel & Strohmeier, "Flying in Private Mode" (doi 10.2514/1.I010938) | Prior art on PIA re-identification | Paper | Cited |
+
+ODbL obligations, from the license text: charts, the story, slides and explorer views are
+Produced Works and need only the notice "Contains information from adsb.lol, which is made
+available here under the Open Database License (ODbL)" (§4.3). Released derived tables are
+ODbL, and the complete tables are published, which satisfies §4.6. Commercial use is
+explicitly allowed (§3.1), so the trigger is publishing, not money. Each released table gets
+a row in `LICENSES.md`: source, license, derivation. Code is MIT.
+
+Spike, 2026-10-22: the day's archive took 51 s to download and 4 s to extract, and holds
+38,139 US-block aircraft. It contains 98.6% of the 33,736 US aircraft our 96 snapshots saw
+that day, plus 4,880 the snapshots never caught.
 
 ## Work, in order
 
-1. **History ingest (trogdor).** `scripts/30_adsblol_history.py DAY` downloads one day's
-   prod-0 release (staging-0 when prod is short), keeps US-block hexes (`a00000`–`afffff`)
-   plus any hex whose registration resolves to N-, and reduces each trace to one row per
-   aircraft-day: first/last seen, airborne minutes, points by source (adsb/mlat/tisb), max
-   altitude, inferred departure/arrival airports, callsigns. Output goes to
-   `data/history/YYYY/MM/DD.parquet`. The raw archive is deleted after reduction (it stays on
-   GitHub). Backfill 2024-01-01 → today first (~1,030 days, ~4 TB through the pipe, ~1 day
-   of download), then 2023 if time allows. A daily cron keeps it current, and its status
-   checker alerts on a missing day or an aircraft count more than 30% below the trailing
-   median.
-2. **Registry join and ghost taxonomy.** Join aircraft-days to the FAA MASTER and DEREG
-   tables on Mode S hex. For each registered aircraft: last seen, days active, home airport.
-   Every unseen aircraft gets one class, by rule: expired/invalid registration (MASTER
-   expiration and status fields), not expected to transmit (glider, balloon, no electrical
-   system, pre-1960 type with no ADS-B STC), seen only on MLAT or TIS-B, or unexplained.
-   Separately, US-block hexes with no registry match estimate PIA/temporary-address use.
-3. **Privacy analysis.** From the same tables: share of aircraft whose home base and weekly
-   pattern can be inferred from 30 days of data, the LADD question (adsb.lol does not filter
-   LADD), and how many PIA-looking hexes link back to a tail by continuity (same airport,
-   same schedule, callsign). Shown in aggregate, plus one worked example on a consenting
-   aircraft (see Open questions).
-4. **Public data release + code.** A new public repo: ingest, reduce, join and analysis
-   code, and a `make sample` that runs on a laptop in minutes. Data goes on a public R2
-   bucket (zero egress) as monthly parquet: aircraft-days, registry snapshot, ghost
-   classes, schools and fleets with source URLs. Each file carries a DATA_LICENSE (ODbL) and
-   attribution (adsb.lol, FAA). `dweekly/aether` stays private: it holds email drafts, the
-   PRD and the IP strategy.
-5. **Explorer** at aether-flight.com/explore. Static, phone-first, DuckDB-WASM querying the
-   R2 parquet: search by N-number, airport or school; activity timeline; map of home bases;
-   a ghosts view by type and decade.
-6. **Story + talk.** One data story on aether-flight.com ("Registry ghosts"), 6–10 slides
-   built from the same charts, and a QR code to the explorer and the repo.
-7. **Retire the 15-minute poller** once item 1 passes its gates. That stops both the
-   adsb.lol API load and the unlicensed OpenSky use. Existing snapshots stay in R2 as an
-   internal cross-check.
+0. **Today: stop the OpenSky fetch** in `13_adsb_cron.js`, keeping the poller adsb.lol-only
+   until item 1 graduates, then retire the poller.
+1. **One day, end to end, deployed first.** This is a thin slice, so delivery problems
+   surface early.
+   - Ingest one archive day.
+   - Reduce it, then join it.
+   - Compute the headline numbers.
+   - Publish versioned files to a public R2 bucket with a custom domain, CORS and cache
+     headers.
+   - Ship an explorer page and a credential-free `make sample` in the public repo.
+   - Check it all from a phone on a cold cache.
+2. **Ingest** (`30_adsblol_history.py DAY`, on trogdor).
+   - **Download:** discover every asset of the release (`.aa`/`.ab`/`.ac`…, prod vs staging,
+     plus the separate `mlatonly` release), download resumably, validate, and record release
+     ID, sizes, hashes and counts.
+   - **Two tables per day:**
+     - *aircraft-day*: observed points by original source type, and observed airborne
+       minutes (only qualified intervals, with a maximum gap, split at midnight).
+     - *legs and ground stops*: timestamps, airport candidates with a distance and an
+       ambiguity flag, callsign intervals, confidence. Endpoints are marked unknown when
+       coverage starts or ends in flight.
+   - **Airport matching** uses a spherical nearest-neighbor index, not the existing
+     `AirportIndex`, which Codex showed picks the wrong airport. Heliports and seaplane bases
+     are included.
+   - **Cleanup:** delete the raw archive only after validation.
+3. **Windows.** Ingest in this order: the most recent 60 days (the privacy window), then
+   2026-03-05 → now (so the preliminary figures can be recomputed), then 2024–2025 in the
+   background. 2023 and the pre-2023 depth sources are roadmap.
+4. **Ghost classification.** It is observational first: *ADS-B observed*, *observed only by
+   other surveillance (MLAT/TIS-B)*, *not observed*. Registration status, category, unknown
+   year, and documented equipage are separate attributes. The cohort is "aircraft in the
+   registry snapshot of DATE whose assigned Mode S address was observed between A and B".
+   Ambiguous address histories are flagged, not merged. Every headline comes from one
+   frozen results manifest: registry date, observation dates, included days, filters,
+   denominator, release ID.
+5. **Privacy measures.**
+   - **Home base:** evidence thresholds and abstention are fixed in advance, and accuracy is
+     reported next to coverage. Validation is against a small consenting sample (David's
+     flights, and JATO if April agrees), never against the registry address or a school's
+     listed airport.
+   - **Weekly pattern:** predicted on held-out days and compared with a naive baseline.
+   - **Addresses:** reported as "observed addresses unmatched to the registry", explicitly
+     *not* an estimate of PIA use. PIA candidates come only from documented address
+     classification.
+   - **LADD:** discussed from documented facts. The note that SWIM subscribers must filter
+     LADD while open feeds don't is itself a finding.
+6. **Release.**
+   - A new public repo holds the canonical processing code, with the private pipeline
+     calling a pinned version of it.
+   - Data goes out through an explicit field/source allowlist, with telemetry fields
+     regenerated from the archive. Nothing is copied wholesale from `flight_line.json`.
+   - School fleet membership is labelled separately by evidence: the school's own website
+     vs inferred from the registry.
+   - `make sample` runs reduction, join and analysis on small licensed fixtures and checks
+     an expected result.
+7. **Explorer** at aether-flight.com/explore, behind a stable landing page (explorer,
+   story, repo, downloads, methodology, release date, short URL under the QR).
+   - Searches hit a small search index plus precomputed airport, school and ghost
+     summaries. Timeline partitions are fetched on demand.
+   - DuckDB-WASM where it helps. A static JSON fallback is acceptable if WASM threatens
+     the date.
+8. **Story and talk.** A "Registry ghosts" story and 6–10 slides, all reading one frozen
+   results artifact, so a daily refresh cannot change the talk's numbers. The C172 story's
+   "license this data" CTA becomes a free-download link plus "custom analysis".
 
 ## Graduation gates (commands that pass or fail)
 
-- `make history DAY=2026-10-22 && python scripts/check_history_vs_snapshots.py 2026-10-22`:
-  the archive covers ≥98% of snapshot-seen US hexes for that day (measured today: 98.6%).
-  The negative control is a day from the 85-day hole, where the check must report "no
-  snapshots" and not pass vacuously.
-- `make history-status` exits 0: every day in the window is ingested or listed in
-  `data/history/GAPS.md` with a reason.
-- `make ghosts` writes `output/ghosts.json`, and `pytest tests/test_ghosts.py` passes: a
-  known-active training aircraft is "seen", a known-deregistered tail is absent from MASTER,
-  and the class counts sum to the registry total.
-- In the public repo, a fresh clone plus `make sample` finishes in under 5 minutes against
-  the published R2 URLs.
-- A Playwright smoke test at phone viewport, throttled to 4G: the explorer loads, and an
-  N-number search returns in under 3 s.
-- One day before the panel, the QR code resolves and the site serves from Cloudflare cache.
+- `python scripts/check_history_vs_snapshots.py` over a fixed set of dates (one quiet, one
+  busy, one weekend, 2026-10-22) passes only if each date covers ≥98% of snapshot-seen US
+  hexes. It reports misses by region and source. A date from the 85-day hole returns
+  NO-REFERENCE, which counts as a failure, not a pass.
+- `make history-status` exits 0 only if every day in the privacy window is ingested, with
+  timestamps spanning the day. Older windows may list gaps in `data/history/GAPS.md`.
+- `pytest tests/` fixtures cover:
+  - each classification branch;
+  - a source switch mid-trace;
+  - ground-only observation;
+  - a coverage gap;
+  - a midnight crossing;
+  - an ambiguous address history;
+  - the airport matcher against brute-force haversine.
+- Fresh clone of the public repo: install plus `make sample` finishes under 5 minutes and
+  prints the expected result.
+- Explorer cold load and cold N-number search under 3 s at phone viewport on a fixed 4G
+  profile, in iOS Safari and Android Chrome. The byte budget is recorded.
+- The collector's status checker fires when a failure is forced.
+- Release freeze two days before the panel: the QR resolves, data is served from the custom
+  domain with cache hits, and the previous release is still reachable.
 
-## Out of scope
+## Out of scope (ROADMAP)
 
-Rate-coverage expansion and new school crawls, CVR/GA-CVR work, any OpenSky redistribution,
-commercial data licensing, accounts or anything with a backend.
+Causal ghost attribution beyond documented attributes, full historical identity resolution,
+2023 and pre-2023 depth, generalized PIA linkage research, rate-coverage and school
+expansion, CVR work, commercial licensing, any backend.
 
 ## Open questions (defaults in force until answered)
 
-- **Panel date.** Assumed 2026-11-06, with code freeze two days earlier.
+- **Panel date.** Assumed 2026-11-06, with code freeze 2026-11-04.
 - **Public repo name.** Default `dweekly/ga-registry-ghosts`.
-- **The site's "license this data" CTA** conflicts with a free release. Default: reword it
-  to "custom analysis" and keep it.
-- **Privacy worked example.** Default: aggregate numbers plus one aircraft whose owner has
-  agreed (one of David's own flights, or JATO with April's OK). Re-identifying a PIA user
-  without consent is public-data-legal, but it is the exact harm PIA exists to prevent, so
-  it should be a deliberate call, not a side effect of "fully specific".
-- **AOPA-sourced fields** (school names, contact details) in the release: check AOPA's terms
-  before publishing. Fallback: names and websites only, sourced from the schools' own sites.
+- **OpenSky Trino access.** Applying needs an eligible affiliation, or a direct request to
+  OpenSky as a private researcher. Default: don't apply for this panel. adsb.lol covers 2023
+  onward, and the Monday state vectors cover 2017–22.
+- **Consenting worked example.** Needed by 2026-10-30. Default: one of David's own flights.
+  If none is available, the privacy section ships aggregate-only.
+
+## Review record
+
+Folded in from Codex, all 18 blocking-class points:
+- observational taxonomy;
+- one results manifest;
+- dated cohort;
+- unmatched-address naming;
+- leg/stop table;
+- airborne-minutes definition;
+- the airport-matcher bug;
+- home-base validation;
+- LADD/PIA evidence;
+- allowlist release (AOPA terms confirmed restrictive);
+- OpenSky off now;
+- per-table license matrix;
+- asset discovery;
+- stronger gates;
+- portable `make sample`;
+- explorer indexes;
+- deploy early;
+- thin slice first.
+
+Its roadmap items went to `research/FlightSchoolMapping/ROADMAP.md`. Declined: none.
 
 ## Cost
 
-Downloads are free. R2 storage for the release is tens of GB, well under $1/month, and R2
-has no egress fees. No Sonnet spend is planned.
+Downloads are free. The R2 public bucket holds tens of GB, under $1/month in storage; reads
+are billed, egress is not. Requests per cold search and the size of the first month go on
+record after item 1. No Sonnet spend.
