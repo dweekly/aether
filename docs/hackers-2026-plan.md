@@ -39,7 +39,7 @@ phrased as "observed / not observed by this network in this window".
 | Mictronics aircraft-database | Hex → registration and type cross-check | ODC Attribution | Yes, with attribution |
 | FAA ADS-B equipage levels; GA & Part 135 Activity Survey | Official denominators (equipped count, hours flown, active share) | US government | Cited figures |
 | ADS-B Exchange first-of-month sample days (2016 →) | Independent network, 10-year depth | JETNET terms: derivatives stay inside your organization | No. Internal aggregates only |
-| OpenSky scientific datasets (Monday state vectors 2017–22, March 2026 Trino snapshot) | Pre-2023 depth | Non-profit research only, no redistribution, cite and notify | No. Aggregates with citation |
+| OpenSky scientific datasets (Monday state vectors 2017-06 → 2022-06-27, ~255 days, ~3.8 GB each; pre-mid-2020 dates sit under dot-prefixed `states/.YYYY-MM-DD/` keys) | "Last seen" depth for aircraft not observed since 2023 | Bundled LICENSE.txt: non-profit research only; no redistribution (§3(iii)); "anonymize or de-identify … aircraft identifiers" in any publication (§3(i)); cite and send OpenSky the publication; expunge after the research | No. Aggregate counts only, never per-tail facts in the explorer |
 | OpenSky Trino (`flights_data4` since 2016, `state_vectors_data4` since 2013) | Per-flight history: "has this tail flown since 2016?" | Application only: "university-affiliated researchers, governmental organisations, and aviation authorities"; private entities need a license. 100 GB scan cap per query; no bulk extraction | No. Aggregates with citation, if access is granted |
 | OpenSky live API (our 15-min cron) | — | Automated use needs a written agreement | Disabled now (see Work item 0) |
 | OpenSky REST API, authenticated (client `dweekly-api-client`, credentials in `~/.config/opensky/credentials.json` on monster4, never in a repo) | Ad-hoc research checks: `/flights/aircraft` against a sample of "not observed" tails, and the consenting home-base sample. Standard tier: 4,000 credits/day per endpoint bucket; one aircraft-day costs 4 | Same terms: research use, no redistribution, cite and notify | No. Validation counts only |
@@ -86,7 +86,15 @@ that day, plus 4,880 the snapshots never caught.
    - **Cleanup:** delete the raw archive only after validation.
 3. **Windows.** Ingest in this order: the most recent 60 days (the privacy window), then
    2026-03-05 → now (so the preliminary figures can be recomputed), then 2024–2025 in the
-   background. 2023 and the pre-2023 depth sources are roadmap.
+   background. In parallel, also in the background: stream all OpenSky Mondays and keep only
+   (date, hex, first/last time, airborne point count). That's a few MB, kept internally. It
+   splits the ghosts into "last seen 2017–22" and "not seen since 2017", reported as counts
+   only.
+   - Coverage caveat: single-engine pistons seen in the same 18Z hour went from 1,004
+     (2018-06-25) to 1,897 (2022-06-27). Receiver growth makes raw year-over-year
+     comparison invalid.
+   - Data gap: there is no source for 2022-07 → 2023-02-15.
+   2023 itself and ADS-B Exchange sample days are roadmap.
 4. **Ghost classification.** It is observational first: *ADS-B observed*, *observed only by
    other surveillance (MLAT/TIS-B)*, *not observed*. Registration status, category, unknown
    year, and documented equipage are separate attributes. The cohort is "aircraft in the
