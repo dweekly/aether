@@ -45,3 +45,28 @@ public IP that monster4 and trogdor share. From about 2026-10-17 adsb.lol's yiel
 by two-thirds, and any ad-hoc request from home got a 429 with `x-ratelimit-remaining: 0`.
 The README only says limits are "dynamic", so read the headers, not the docs. The poller
 was retired the same day; the daily ODbL archive (`adsblol/globe_history_*`) replaces it.
+
+## adsb.lol ships replicas of different sizes, and some days unsplit (found 2026-10-23)
+
+Each day is published by several readsb pods (`prod-0`, `staging-0`, plus an
+`mlatonly-0`). They are not equal: for 2026-03-24 prod is 1,961 MiB and staging
+2,948 MiB, and adsb.lol's own instructions say to ignore a replica that is
+significantly smaller. `30_adsblol_history.py --instance auto` (the default)
+takes the larger; `31_history_backfill.py --recheck` re-ingests days taken from
+an undersized one. Most days are split into `.tar.aa`, `.tar.ab`, ... but some
+(2025-01-01) ship one unsplit `.tar`. Archive members are `./`-prefixed.
+
+## `pkill -f` kills the ssh session that runs it (2026-10-23)
+
+`ssh trogdor 'pkill -f 39_opensky_mondays; ...'` matched its own `bash -c`
+command line and killed itself (exit 255). Use the bracket trick:
+`pkill -f "[3]9_opensky_mondays.py --parallel"`. Same trap as LESSONS.md's
+pgrep note. Background jobs started over ssh also need `setsid nohup ... < /dev/null`
+(and `ssh -n`) or the ssh call hangs until they exit.
+
+## OpenSky's Monday archive changes layout by date (2026-10-23)
+
+Days before mid-2020 live under dot-prefixed keys (`states/.2017-06-12/`), and
+an hour may be a `.csv.tar` holding a `.csv.gz` or a bare `.csv.gz`, with or
+without the dot in the filename. `39_opensky_mondays.py` lists each day's keys
+rather than constructing names.
