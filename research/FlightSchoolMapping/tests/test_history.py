@@ -141,3 +141,11 @@ def test_runway_airport_beats_nearby_heliport(airports):
     # Over Schaumburg's runway; Clarke Heliport (LL95) is 0.2 nm away and nearer to this point.
     m = airports.nearest(41.9866, -88.1006)
     assert m.ident == "06C" and m.type == "small_airport"
+
+
+def test_canonical_ids_prefer_us_and_strip_k_prefix():
+    from airport_index import canonical_ids
+    alias, meta = canonical_ids()
+    assert alias["K7S3"] == "7S3"                       # Twin Oaks: scraped K-form -> index id
+    a11 = alias["A11"]
+    assert meta[a11][2].startswith("US-")               # Campbell Lake, AK beats Pinjarra, AU

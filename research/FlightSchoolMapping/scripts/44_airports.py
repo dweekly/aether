@@ -20,6 +20,7 @@ from pathlib import Path
 import duckdb
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from airport_index import canonical_ids  # noqa: E402
 from release_window import day_view, included_days  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -37,9 +38,7 @@ def main():
     c = duckdb.connect()
     days = included_days(rel)
     day_view(c, "legs", HISTORY / "legs" / "*" / "*" / "*.parquet", days)
-    meta = {r[0]: r[1:] for r in c.execute(f"""
-        SELECT coalesce(nullif(gps_code, ''), nullif(local_code, ''), ident), name, municipality, iso_region, "type"
-        FROM read_csv_auto('{AIRPORTS}', all_varchar=true)""").fetchall()}
+    alias, meta = canonical_ids()
 
     based = defaultdict(list)
     for row in c.execute(f"""
@@ -62,7 +61,7 @@ def main():
     at_airport = defaultdict(list)
     for s in schools:
         if s["airport"]:
-            at_airport[s["airport"]].append({"key": s["key"], "name": s["name"], "fleet": s["fleet_listed"],
+            at_airport[alias.get(s["airport"].upper(), s["airport"])].append({"key": s["key"], "name": s["name"], "fleet": s["fleet_listed"],
                                              "flew": s["fleet_flew"]})
 
     airports = []

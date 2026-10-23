@@ -39,6 +39,7 @@ from urllib.parse import urljoin, urlparse
 import duckdb
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from airport_index import canonical_ids  # noqa: E402
 from release_window import day_view, included_days  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -109,9 +110,8 @@ def main():
         SELECT n_number, hex, mfr, model, year_mfr, observed_class, days_airborne, airborne_hours,
                legs, last_seen, home_airport, status_valid, registrant, last_flew
         FROM read_parquet('{rel / 'aircraft.parquet'}')""").fetchall()}
-    airports = {r[0]: r[1:] for r in c.execute(f"""
-        SELECT coalesce(nullif(gps_code, ''), nullif(local_code, ''), ident), name, municipality, iso_region
-        FROM read_csv_auto('{AIRPORTS}', all_varchar=true)""").fetchall()}
+    alias, airports = canonical_ids()
+    canon = lambda x: alias.get(x.upper(), x) if x else x  # noqa: E731
 
     fl = json.loads((OUT / "flight_line.json").read_text())
     raw = {}  # key -> {"name", "name_source", "domain", "fleet", "listings"}
@@ -132,7 +132,7 @@ def main():
             fleet.append({
                 "n": n, "listed_as": f.get("display_name"),
                 "wet": f.get("wet_rate_hr"), "dry": f.get("dry_rate_hr"),
-                "airport": f.get("airport_id"), "source_url": src or None,
+                "airport": canon(f.get("airport_id")), "source_url": src or None,
                 "evidence": "website" if on_site else "registry",
                 "on_registry": ac is not None,
                 "hex": ac[1] if ac else None,
@@ -178,7 +178,7 @@ def main():
                 hex_school[f["hex"]].add(key)
         homes = Counter(f["home"] for f in fleet if f["home"]) + Counter(f["airport"] for f in fleet if f["airport"])
         primary = homes.most_common(1)[0][0] if homes else None
-        apt = airports.get(primary) or airports.get(primary[1:] if primary and primary.startswith("K") else "")
+        apt = airports.get(primary)
         rated = sorted(f["wet"] for f in fleet + listings if f["wet"])
         schools.append({
             "key": key, "domain": r["domain"], "name": r["name"], "name_source": r["name_source"],

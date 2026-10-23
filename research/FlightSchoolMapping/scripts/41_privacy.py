@@ -30,6 +30,7 @@ from pathlib import Path
 import duckdb
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from airport_index import canonical_ids  # noqa: E402
 from release_window import day_view, included_days  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -37,24 +38,9 @@ HISTORY = ROOT / "data" / "history"
 RELEASES = ROOT / "data" / "release"
 
 
-AIRPORTS_CSV = ROOT / "data" / "ourairports_airports.csv"
-
-
-def airport_aliases(csv_path=AIRPORTS_CSV):
-    """Map every identifier form an airport goes by to its OurAirports ident:
-    ident, gps_code, local_code, and the K-prefixed local code that school sites
-    often write (KLHD for Lake Hood, whose GPS code is PALH)."""
-    import csv
-    alias = {}
-    with open(csv_path, newline="", encoding="utf-8") as f:
-        for r in csv.DictReader(f):
-            if r["type"] == "closed":
-                continue
-            for code in (r["ident"], r["gps_code"], r["local_code"],
-                         "K" + r["local_code"] if len(r["local_code"]) == 3 else ""):
-                if code:
-                    alias.setdefault(code.upper(), r["ident"])
-    return alias
+def airport_aliases():
+    """Identifier aliases from airport_index.canonical_ids (US records win collisions)."""
+    return canonical_ids()[0]
 
 
 def same_airport(a, b, alias):

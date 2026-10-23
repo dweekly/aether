@@ -63,6 +63,10 @@ import ExploreSearch from '../../components/ExploreSearch.astro';
 		});
 		// A shard missing from the index means no registered N-number starts this way; any
 		// other failure is a loading error, never evidence that the aircraft is unregistered.
+		// Only airports with a generated page (>= 5 based aircraft) get links.
+		const airportIds = new Set<string>(
+			await fetch('/x/airports.json').then((r) => (r.ok ? r.json() : [])).then((rows: any[]) => rows.map((x) => x[0])).catch(() => []));
+		const aptLink = (x: string | null) => !x ? null : airportIds.has(x) ? `<a href="/explore/airport/${esc(x)}/">${esc(x)}</a>` : esc(x);
 		let shard: Record<string, Rec> = {};
 		if (idx.shards.includes(key(n))) {
 			const resp = await fetch(`/x/t/${key(n)}.json`);
@@ -87,7 +91,7 @@ import ExploreSearch from '../../components/ExploreSearch.astro';
 			<div class="fps fps-tail ${cls}" role="group" aria-label="Flight strip for ${esc(r.n)}">
 				<div class="f-id"><span class="f-k">Registration</span><h1 class="f-v">${esc(r.n)}</h1><span class="f-sub">${esc(title)}</span></div>
 				<div><span class="f-k">Status</span><span class="f-v">${esc(label)}</span></div>
-				<div><span class="f-k">Home</span><span class="f-v">${r.home ? `<a href="/explore/airport/${esc(r.home)}/">${esc(r.home)}</a>` : '—'}</span><span class="f-sub">${r.home ? Math.round(r.homeShare * 100) + '% of nights' : 'too few nights'}</span></div>
+				<div><span class="f-k">Home</span><span class="f-v">${aptLink(r.home) || '—'}</span><span class="f-sub">${r.home ? Math.round(r.homeShare * 100) + '% of nights' : 'too few nights'}</span></div>
 				<div><span class="f-k">Parked</span><span class="f-v">${park}</span></div>
 				<div><span class="f-k">Airborne</span><span class="f-v">${fmt(r.airDays)} d · ${fmt(r.hrs)} h</span><span class="f-sub">of ${win.days} days</span></div>
 			</div>
@@ -99,7 +103,7 @@ import ExploreSearch from '../../components/ExploreSearch.astro';
 			${r.hist && r.hist.length ? `<section><h2>Minutes airborne per day</h2>${activityStrip(r.hist, days)}</section>` : ''}
 			${r.recent && r.recent.length ? `<section><h2>Recent flights</h2>
 				<ol class="legs">${r.recent.map(([i, dep, arr, m]: any[]) => {
-					const apt = (x: string | null) => x ? `<a href="/explore/airport/${esc(x)}/">${esc(x)}</a>` : '<span class="unk" title="not seen near an airport">?</span>';
+					const apt = (x: string | null) => aptLink(x) || '<span class="unk" title="not seen near an airport">?</span>';
 					return `<li><span class="d">${esc(days[i].slice(5))}</span><span class="r">${apt(dep)} → ${apt(arr)}</span><span class="m">${m ? m + ' min' : '—'}</span></li>`;
 				}).join('')}</ol>
 				<p class="dim small">"?" means the leg started or ended where no receiver saw the aircraft low near an airport.</p></section>` : ''}

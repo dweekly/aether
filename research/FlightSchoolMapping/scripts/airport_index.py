@@ -106,3 +106,29 @@ class AirportIndex:
             distance_nm=d,
             ambiguous=len(top) > 1,
         )
+
+
+def canonical_ids(csv_path=DEFAULT_CSV):
+    """Map every identifier form to the one AirportIndex reports, plus metadata.
+
+    Returns (alias, meta): alias maps ident / gps_code / local_code / "K"+local_code
+    (the form school websites often use, e.g. K7S3 for 7S3) to the index identifier;
+    meta maps that identifier to (name, municipality, iso_region, type). Local codes
+    collide across countries (A11 is both an Alaskan seaplane base and an Australian
+    strip), so US records win every collision.
+    """
+    alias, meta = {}, {}
+    rows = []
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if r["type"] in INCLUDED_TYPES:
+                rows.append(r)
+    rows.sort(key=lambda r: r["iso_country"] != "US")  # US first, so setdefault keeps US records
+    for r in rows:
+        canon = r["gps_code"] or r["local_code"] or r["ident"]
+        meta.setdefault(canon, (r["name"], r["municipality"], r["iso_region"], r["type"]))
+        for code in (canon, r["ident"], r["gps_code"], r["local_code"],
+                     "K" + r["local_code"] if len(r["local_code"]) == 3 else ""):
+            if code:
+                alias.setdefault(code.upper(), canon)
+    return alias, meta

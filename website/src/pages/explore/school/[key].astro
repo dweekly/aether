@@ -10,10 +10,12 @@ export function getStaticPaths() {
 	const p = path.join(process.cwd(), 'src', 'data', 'explore', 'schools_full.json');
 	if (!fs.existsSync(p)) return [];
 	const { days, schools } = JSON.parse(fs.readFileSync(p, 'utf8'));
-	return schools.map((s: any) => ({ params: { key: s.key }, props: { s, days } }));
+	const ap = path.join(process.cwd(), 'src', 'data', 'explore', 'airports_full.json');
+	const airportIds = fs.existsSync(ap) ? JSON.parse(fs.readFileSync(ap, 'utf8')).airports.map((a: any) => a.id) : [];
+	return schools.map((s: any) => ({ params: { key: s.key }, props: { s, days, hasAirportPage: airportIds.includes(s.airport) } }));
 }
 
-const { s, days } = Astro.props as any;
+const { s, days, hasAirportPage } = Astro.props as any;
 const fmt = (n: number) => (n ?? 0).toLocaleString('en-US');
 const money = (n: number | null) => (n ? `$${Math.round(n)}` : '—');
 const hexes = s.fleet.filter((f: any) => f.hex).map((f: any) => f.hex);
@@ -32,7 +34,7 @@ const desc = `${s.name}: ${s.fleet_listed} aircraft, ${s.fleet_flew} observed fl
 	<main class="school">
 		<p class="crumb"><a href="/explore/schools/">Flight schools</a></p>
 		<h1>{s.name}</h1>
-		<p class="place">{s.airport ? <a href={`/explore/airport/${s.airport}/`}>{place}</a> : place}</p>
+		<p class="place">{hasAirportPage ? <a href={`/explore/airport/${s.airport}/`}>{place}</a> : place}</p>
 		<p class="chips">
 			{s.evidence === 'website' && <span class="chip ok">Fleet from the school's own website</span>}
 			{s.evidence === 'mixed' && <span class="chip ok">Fleet partly from the school's website, partly matched in the FAA registry</span>}
