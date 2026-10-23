@@ -128,7 +128,9 @@ def gh_json(url):
 def find_release(day, instance):
     tag = f"v{day:%Y.%m.%d}-planes-readsb-{instance}"
     rel = gh_json(f"https://api.github.com/repos/adsblol/globe_history_{day.year}/releases/tags/{tag}")
-    parts = sorted((a for a in rel["assets"] if ".tar." in a["name"]), key=lambda a: a["name"])
+    # Most days are split (.tar.aa, .tar.ab, ...); some, e.g. 2025-01-01, ship one unsplit .tar.
+    parts = sorted((a for a in rel["assets"] if a["name"].endswith(".tar") or ".tar." in a["name"]),
+                   key=lambda a: a["name"])
     if not parts:
         raise RuntimeError(f"{tag}: no .tar.* assets")
     return tag, parts
