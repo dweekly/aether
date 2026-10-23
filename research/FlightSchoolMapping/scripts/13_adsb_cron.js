@@ -37,6 +37,10 @@ fs.mkdirSync(SNAPSHOTS_DIR, { recursive: true });
 const OPENSKY_URL = 'https://opensky-network.org/api/states/all';
 const OPENSKY_USER = process.env.OPENSKY_USER || '';
 const OPENSKY_PASS = process.env.OPENSKY_PASS || '';
+// Off by default: OpenSky's terms require a written agreement for automated
+// REST use and forbid redistribution. adsb.lol's daily ODbL archive replaces
+// this poller (docs/hackers-2026-plan.md). OPENSKY_ENABLED=1 restores it.
+const OPENSKY_ENABLED = process.env.OPENSKY_ENABLED === '1';
 const US_BBOX = { lamin: 24.0, lamax: 50.0, lomin: -125.0, lomax: -66.0 };
 
 const ADSBLOL_URL = (lat, lon) => `https://api.adsb.lol/v2/lat/${lat}/lon/${lon}/dist/250`;
@@ -167,7 +171,8 @@ async function takeSnapshot() {
   const iso = now.toISOString();
   console.log(`[${iso.slice(0, 19).replace('T', ' ')} UTC] Taking ADS-B snapshot...`);
 
-  const opensky = await fetchOpenSky();
+  const opensky = OPENSKY_ENABLED ? await fetchOpenSky() : {};
+  if (!OPENSKY_ENABLED) console.log('  OpenSky: disabled (OPENSKY_ENABLED!=1)');
   const adsblol = await fetchAdsbLol();
 
   const merged = { ...opensky };
