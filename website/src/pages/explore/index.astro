@@ -17,6 +17,8 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 const pct = (a: number, b: number) => (b ? Math.round((100 * a) / b) : 0);
 const day = (s: string) => new Date(s + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 const year = (s: string) => s.slice(0, 4);
+// A window inside one year reads "Mar 5 – Oct 22, 2026"; one that crosses a year carries both.
+const sameYear = (a: string, b: string) => year(a) === year(b);
 ---
 
 <BaseLayout title="Explore the US fleet | Aether Flight"
@@ -25,7 +27,9 @@ const year = (s: string) => s.slice(0, 4);
 	<main class="explore">
 		{r ? (
 			<h1 class="thesis">Of the <b>{fmt(registered)}</b> aircraft on the FAA registry, <b>{fmt(observed)}</b> were heard
-				by adsb.lol's open receiver network <span class="nw">{day(r.window.first_day)} – {day(r.window.last_day)}, {year(r.window.last_day)}</span>. The other <b>{fmt(registered - observed)}</b> were silent.</h1>
+				by adsb.lol's open receiver network {sameYear(r.window.first_day, r.window.last_day)
+					? <span class="nw">{day(r.window.first_day)} – {day(r.window.last_day)}, {year(r.window.last_day)}</span>
+					: <><span class="nw">{day(r.window.first_day)}, {year(r.window.first_day)} –</span> <span class="nw">{day(r.window.last_day)}, {year(r.window.last_day)}</span></>}. The other <b>{fmt(registered - observed)}</b> were silent.</h1>
 		) : <h1 class="thesis">Which US aircraft actually fly?</h1>}
 		<p class="lede">Look up any tail number: its registration, how often it flies, where it lives and where it was last parked.</p>
 		<ExploreSearch />
@@ -42,7 +46,7 @@ const year = (s: string) => s.slice(0, 4);
 								<td>{t.aircraft_type ?? 'Unknown'}</td>
 								<td>{fmt(t.registered)}</td>
 								<td>{fmt(t.observed)}</td>
-								<td class="bar"><span style={`width:${pct(t.observed, t.registered)}%`}></span><em>{pct(t.observed, t.registered)}%</em></td>
+								<td class="bar"><span style={`--p:${pct(t.observed, t.registered)}`}></span><em>{pct(t.observed, t.registered)}%</em></td>
 							</tr>
 						))}
 					</tbody>
@@ -61,7 +65,7 @@ const year = (s: string) => s.slice(0, 4);
 								<td>{d.decade === 'unknown' ? 'Year not on file' : `${d.decade}s`}</td>
 								<td>{fmt(d.registered)}</td>
 								<td>{fmt(d.observed)}</td>
-								<td class="bar"><span style={`width:${pct(d.observed, d.registered)}%`}></span><em>{pct(d.observed, d.registered)}%</em></td>
+								<td class="bar"><span style={`--p:${pct(d.observed, d.registered)}`}></span><em>{pct(d.observed, d.registered)}%</em></td>
 							</tr>
 						))}
 					</tbody>
@@ -98,7 +102,8 @@ const year = (s: string) => s.slice(0, 4);
 	@media (max-width: 560px) { table { font-size: .7rem; } td.bar { width: 28%; } th, td { padding: .4rem .3rem; } }
 	th { color: var(--text-dim); font-weight: 300; }
 	td.bar { width: 35%; position: relative; }
-	td.bar span { display: block; height: .55rem; background: var(--chart-1); }
+	/* Bars scale into the cell minus room for the label, so a full bar never runs under it. */
+	td.bar span { display: block; height: .55rem; width: calc((100% - 2.6rem) * var(--p) / 100); background: var(--chart-1); }
 	td.bar em { position: absolute; right: .5rem; top: .3rem; font-style: normal; color: var(--text-dim); font-size: .7rem; }
 	.note, .about p { color: var(--text-dim); font-size: .8rem; margin-top: 1rem; }
 	a { color: var(--chart-highlight); }
