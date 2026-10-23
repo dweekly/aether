@@ -125,3 +125,11 @@ def test_auto_replica_takes_the_larger(monkeypatch):
 def test_auto_replica_prefers_prod_on_tie(monkeypatch):
     monkeypatch.setattr(hist, "find_release", lambda day, inst: (inst, [{"name": "a", "size": 100}]))
     assert hist.choose_release(DAY, "auto")[0] == "prod-0"
+
+
+def test_unsplit_tar_release_is_accepted(monkeypatch):
+    monkeypatch.setattr(hist, "gh_json", lambda url: {"assets": [
+        {"name": "v2025.01.01-planes-readsb-prod-0.tar", "size": 10},
+        {"name": "README.md", "size": 1}]})
+    tag, parts = hist.find_release(date(2025, 1, 1), "prod-0")
+    assert [p["name"] for p in parts] == ["v2025.01.01-planes-readsb-prod-0.tar"]
