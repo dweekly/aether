@@ -41,13 +41,21 @@ phrased as "observed / not observed by this network in this window".
 
 **The school page is the hero view** (David, 2026-10-23). Look up a school and get one
 consistent, structured record:
-- **In the air now:** live positions for its fleet, fetched by the visitor's own browser
-  from adsb.lol's CORS-enabled `/v2/hex/{hex}`, only when tapped, never auto-polling. The
-  limit is per IP (`x-ratelimit-limit: 500, 4;w=1, 60;w=60, 500;w=86400`). A room of phones
-  behind one venue NAT shares 60 requests a minute and 500 a day, so the page degrades to
-  "as of yesterday" on a 429. A Cloudflare Worker relay is no fix: adsb.lol's own PR #63
-  notes shared Cloudflare egress gets 429'd. Whether one request can carry several hexes
-  is untested (our IP was capped when tried); check after the 00:00 UTC reset.
+- **In the air now:** embed adsb.lol's own tar1090 map, filtered to the school's fleet
+  (David's idea, 2026-10-23). We relay nothing, and the map loads from adsb.lol's viewer
+  data, not the rate-limited `/v2` API.
+  - The URL, per tar1090's README-query.md:
+    `https://adsb.lol/?icaoFilter=hex1,hex2,…&hideSideBar&hideButtons&zoom=…`
+  - The same parameters give the privacy demo: `filterDbFlag=pia,ladd` shows every
+    PIA- and LADD-flagged aircraft live.
+  - Framing is **unverified**. adsb.lol's docs site sends `X-Frame-Options: SAMEORIGIN`
+    (`adsblol/website/layouts/index.headers`), but that may not cover the map, and our IP
+    got 403 while over its cap. Test from a browser on another network. If framing is
+    blocked, the page shows an "Open live map" link with the same parameters.
+  - Not via `/v2/hex` from our page. That API caps each IP
+    (`x-ratelimit-limit: 500, 4;w=1, 60;w=60, 500;w=86400`), and a room of phones behind
+    one venue NAT would share it. A Worker relay is no fix either: adsb.lol PR #63 notes
+    shared Cloudflare egress gets 429'd.
 - **Where each plane was last parked:** last ground position and airport from the most
   recent archive day.
 - **Operating history:** flights per day and observed airborne hours per tail and month,
