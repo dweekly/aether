@@ -112,3 +112,16 @@ def test_us_selection():
     assert hist.is_us("c01234", "N123AB")      # N-registered on a non-US-block address
     assert not hist.is_us("c01234", "C-GABC")
     assert not hist.is_us("~a1234", None)      # non-ICAO TIS-B track ids
+
+
+def test_auto_replica_takes_the_larger(monkeypatch):
+    sizes = {"prod-0": [1_961, 0], "staging-0": [2_000, 948]}
+    monkeypatch.setattr(hist, "find_release",
+                        lambda day, inst: (f"tag-{inst}", [{"name": f"p{i}", "size": s} for i, s in enumerate(sizes[inst])]))
+    inst, tag, parts, seen = hist.choose_release(DAY, "auto")
+    assert inst == "staging-0" and seen == {"prod-0": 1_961, "staging-0": 2_948}
+
+
+def test_auto_replica_prefers_prod_on_tie(monkeypatch):
+    monkeypatch.setattr(hist, "find_release", lambda day, inst: (inst, [{"name": "a", "size": 100}]))
+    assert hist.choose_release(DAY, "auto")[0] == "prod-0"

@@ -23,7 +23,11 @@ Definitions (kept deliberately literal; see docs/hackers-2026-plan.md):
 Raw downloads are deleted after a successful write unless --keep-raw.
 
 Usage:
-  30_adsblol_history.py 2026-10-22 [--instance prod-0] [--keep-raw] [--workers 16]
+  30_adsblol_history.py 2026-10-22 [--instance auto|prod-0|staging-0] [--keep-raw] [--workers 16]
+
+--instance auto (the default) compares the prod-0 and staging-0 releases for the
+day and takes the larger. adsb.lol's own instructions say to ignore a replica
+that is significantly smaller (2026-03-24: prod 1,961 MiB vs staging 2,948 MiB).
 """
 
 import argparse
@@ -128,6 +132,24 @@ def find_release(day, instance):
     if not parts:
         raise RuntimeError(f"{tag}: no .tar.* assets")
     return tag, parts
+
+
+def choose_release(day, instance):
+    """Return (instance, tag, parts, sizes). 'auto' picks the larger replica."""
+    if instance != "auto":
+        tag, parts = find_release(day, instance)
+        return instance, tag, parts, {instance: sum(a["size"] for a in parts)}
+    found = {}
+    for inst in ("prod-0", "staging-0"):
+        try:
+            found[inst] = find_release(day, inst)
+        except Exception:  # noqa: BLE001 - a missing replica is normal; both missing raises below
+            pass
+    if not found:
+        raise RuntimeError(f"{day}: no prod-0 or staging-0 release")
+    sizes = {inst: sum(a["size"] for a in parts) for inst, (_, parts) in found.items()}
+    best = max(sizes, key=lambda i: (sizes[i], i == "prod-0"))
+    return best, found[best][0], found[best][1], sizes
 
 
 def download(parts, dest):
@@ -314,16 +336,16 @@ def write_parquet(rows, schema, path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("day")
-    ap.add_argument("--instance", default="prod-0")
+    ap.add_argument("--instance", default="auto")
     ap.add_argument("--keep-raw", action="store_true")
     ap.add_argument("--workers", type=int, default=16)
     a = ap.parse_args()
     day = date.fromisoformat(a.day)
     t0 = time.time()
 
-    tag, parts = find_release(day, a.instance)
-    raw = WORK / f"{day}-{a.instance}" / "raw"
-    ext = WORK / f"{day}-{a.instance}" / "x"
+    instance, tag, parts, replica_sizes = choose_release(day, a.instance)
+    raw = WORK / f"{day}-{instance}" / "raw"
+    ext = WORK / f"{day}-{instance}" / "x"
     download(parts, raw)
     digests = {p["name"]: sha256(raw / p["name"]) for p in parts}
     if ext.exists():
@@ -345,7 +367,8 @@ def main():
     write_parquet(legs, LEG_SCHEMA, HISTORY / "legs" / y / m / f"{d}.parquet")
 
     manifest = {
-        "day": str(day), "release": tag, "instance": a.instance, "parser_version": PARSER_VERSION,
+        "day": str(day), "release": tag, "instance": instance, "replica_sizes": replica_sizes,
+        "parser_version": PARSER_VERSION,
         "assets": [{"name": p["name"], "size": p["size"], "sha256": digests[p["name"]]} for p in parts],
         "trace_files": len(files), "unreadable_files": skipped,
         "us_aircraft": len(rows), "legs": len(legs),
@@ -359,7 +382,7 @@ def main():
     print(json.dumps(manifest))
 
     if not a.keep_raw:
-        shutil.rmtree(WORK / f"{day}-{a.instance}")
+        shutil.rmtree(WORK / f"{day}-{instance}")
 
 
 if __name__ == "__main__":
