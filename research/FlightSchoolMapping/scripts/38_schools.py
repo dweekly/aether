@@ -47,7 +47,9 @@ HISTORY = ROOT / "data" / "history"
 RELEASES = ROOT / "data" / "release"
 AIRPORTS = ROOT / "data" / "ourairports_airports.csv"
 GENERIC = {"home", "welcome", "index", "about", "about us", "fleet", "our fleet", "aircraft",
-           "rates", "rental", "contact", "untitled", "page not found", "404"}
+           "rates", "rental", "contact", "untitled", "page not found", "404", "redirect", "redirecting",
+           "moved", "301 moved permanently", "302 found", "just a moment...", "attention required!",
+           "access denied", "site not found", "coming soon", "under construction", "loading..."}
 # FAA-discovered entities must look like an operator, not a private owner.
 OPERATOR_WORDS = re.compile(r"\b(FLIGHT|FLYING|FLYERS?|AVIATION|AERO|AIR|AIRWAYS|ACADEMY|SCHOOL|CLUB|COLLEGE|"
                             r"UNIVERSITY|PILOTS?|TRAINING|SOARING|GLIDING|HELICOPTERS?|WINGS|SKY|JET|AIRCRAFT)\b")

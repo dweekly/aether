@@ -87,7 +87,7 @@ import ExploreSearch from '../../components/ExploreSearch.astro';
 			<div class="fps fps-tail ${cls}" role="group" aria-label="Flight strip for ${esc(r.n)}">
 				<div class="f-id"><span class="f-k">Registration</span><h1 class="f-v">${esc(r.n)}</h1><span class="f-sub">${esc(title)}</span></div>
 				<div><span class="f-k">Status</span><span class="f-v">${esc(label)}</span></div>
-				<div><span class="f-k">Home</span><span class="f-v">${esc(r.home || '—')}</span><span class="f-sub">${r.home ? Math.round(r.homeShare * 100) + '% of nights' : 'too few nights'}</span></div>
+				<div><span class="f-k">Home</span><span class="f-v">${r.home ? `<a href="/explore/airport/${esc(r.home)}/">${esc(r.home)}</a>` : '—'}</span><span class="f-sub">${r.home ? Math.round(r.homeShare * 100) + '% of nights' : 'too few nights'}</span></div>
 				<div><span class="f-k">Parked</span><span class="f-v">${park}</span></div>
 				<div><span class="f-k">Airborne</span><span class="f-v">${fmt(r.airDays)} d · ${fmt(r.hrs)} h</span><span class="f-sub">of ${win.days} days</span></div>
 			</div>

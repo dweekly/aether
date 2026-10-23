@@ -32,7 +32,7 @@ const desc = `${s.name}: ${s.fleet_listed} aircraft, ${s.fleet_flew} observed fl
 	<main class="school">
 		<p class="crumb"><a href="/explore/schools/">Flight schools</a></p>
 		<h1>{s.name}</h1>
-		<p class="place">{place}</p>
+		<p class="place">{s.airport ? <a href={`/explore/airport/${s.airport}/`}>{place}</a> : place}</p>
 		<p class="chips">
 			{s.evidence === 'website' && <span class="chip ok">Fleet from the school's own website</span>}
 			{s.evidence === 'mixed' && <span class="chip ok">Fleet partly from the school's website, partly matched in the FAA registry</span>}

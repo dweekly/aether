@@ -1,0 +1,114 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+
+export function getStaticPaths() {
+	const p = path.join(process.cwd(), 'src', 'data', 'explore', 'airports_full.json');
+	if (!fs.existsSync(p)) return [];
+	const { days, airports } = JSON.parse(fs.readFileSync(p, 'utf8'));
+	return airports.map((a: any) => ({ params: { id: a.id }, props: { a, days } }));
+}
+
+const { a, days } = Astro.props as any;
+const fmt = (n: number) => (n ?? 0).toLocaleString('en-US');
+const lastDay = days[days.length - 1];
+const recent = (d: string | null) => d && (Date.parse(lastDay) - Date.parse(d)) / 86400000 <= 7;
+const place = [a.city, a.state].filter(Boolean).join(', ');
+const shown = a.aircraft.slice(0, 300);
+---
+
+<BaseLayout title={`${a.id} ${a.name} | Aether Flight`}
+	description={`${fmt(a.based)} aircraft are based at ${a.name} (${a.id}), inferred from where they park at night in open ADS-B data.`}>
+	<Header />
+	<main class="airport">
+		<p class="crumb"><a href="/explore/airports/">Airports</a></p>
+		<h1>{a.id} <span>{a.name}</span></h1>
+		<p class="place">{place}</p>
+
+		<section class="grid">
+			<div><span class="k">Based here</span><span class="v">{fmt(a.based)}</span><span class="s">aircraft that park here most nights</span></div>
+			<div><span class="k">Flew in window</span><span class="v">{fmt(a.based_flew)}</span><span class="s">{days[0]} → {lastDay}</span></div>
+			<div><span class="k">Hours</span><span class="v">{fmt(Math.round(a.based_hours))}</span><span class="s">flown by based aircraft</span></div>
+			<div><span class="k">Movements</span><span class="v">{fmt(a.movements)}</span><span class="s">observed departures + arrivals</span></div>
+		</section>
+
+		{a.schools.length > 0 && (
+			<section>
+				<h2>Schools and clubs here</h2>
+				<ul class="schools-here">
+					{a.schools.map((s: any) => <li><a href={`/explore/school/${s.key}/`}>{s.name}</a><span>{s.flew}/{s.fleet} flying</span></li>)}
+				</ul>
+			</section>
+		)}
+
+		<section>
+			<h2>Strip board</h2>
+			<p class="legend"><span class="e active"></span>flew in the last week <span class="e seen"></span>flew earlier <span class="e ghost"></span>not airborne in the window</p>
+			<div class="fps-board" role="table" aria-label="Based aircraft">
+				<div class="fps-head" role="row">
+					<span role="columnheader">Tail</span><span role="columnheader">Aircraft</span><span role="columnheader" class="w">Owner</span>
+					<span role="columnheader">Days</span><span role="columnheader">Hours</span><span role="columnheader">Flew</span>
+				</div>
+				{shown.map((x: any) => {
+					const st = !x.last_flew ? 'ghost' : recent(x.last_flew) ? 'active' : 'seen';
+					return (
+						<div class={`fps fps-row ${st}`} role="row">
+							<div role="cell"><a href={`/explore/tail/?n=${x.n}`} class="f-v">{x.n}</a></div>
+							<div role="cell"><span class="f-a">{[x.year, x.model].filter(Boolean).join(' ')}</span></div>
+							<div role="cell" class="w"><span class="f-a">{x.owner}</span></div>
+							<div role="cell">{x.days || '—'}</div>
+							<div role="cell">{x.hrs ? x.hrs.toFixed(1) : '—'}</div>
+							<div role="cell">{x.last_flew ? x.last_flew.slice(5) : '—'}</div>
+						</div>
+					);
+				})}
+			</div>
+			{a.aircraft.length > shown.length && <p class="note">Showing the {shown.length} busiest of {fmt(a.aircraft.length)}. All are in the downloads.</p>}
+		</section>
+
+		<p class="note">"Based" is inferred from where each aircraft was last seen on the ground (or last landed) at the end of each
+			day it was observed, needing at least 3 such days and half of them here. It is a guess from open data, right about
+			75% of the time when checked against airports schools list for their own aircraft.</p>
+		<p class="attrib">Contains information from <a href="https://github.com/adsblol/globe_history_2026">adsb.lol</a>, made available
+			under the <a href="https://opendatacommons.org/licenses/odbl/1-0/">ODbL</a>. Registration data: FAA (public domain).</p>
+	</main>
+	<Footer />
+</BaseLayout>
+
+<style>
+	.airport { position: relative; z-index: 1; max-width: 80ch; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+	.crumb { font-size: .75rem; color: var(--text-dim); }
+	h1 { font-family: var(--font-mono); font-weight: 600; font-size: clamp(2rem, 7vw, 2.8rem); color: var(--strip-paper); line-height: 1.1; margin: .75rem 0 .4rem; }
+	h1 span { display: block; font-family: var(--font-display); font-weight: 400; font-size: .6em; color: var(--text-bright); }
+	h2 { font-family: var(--font-display); font-weight: 400; font-size: 1.3rem; color: var(--text-bright); margin: 2rem 0 .75rem; }
+	.place { color: var(--text); }
+	.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: .75rem; margin-top: 1.5rem; }
+	.grid div { border: 1px solid var(--line); background: var(--bg-card); padding: .8rem; display: flex; flex-direction: column; gap: .15rem; }
+	.k { color: var(--text-dim); font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; }
+	.v { font-family: var(--font-display); font-size: 1.8rem; color: var(--text-bright); line-height: 1.1; }
+	.s { color: var(--text-dim); font-size: .7rem; }
+	.schools-here { list-style: none; }
+	.schools-here li { display: flex; justify-content: space-between; gap: 1rem; padding: .4rem 0; border-bottom: 1px solid var(--line); font-size: .8rem; }
+	.schools-here span { color: var(--text-dim); white-space: nowrap; }
+	.legend { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .8rem; color: var(--text-dim); font-size: .68rem; margin-bottom: .6rem; }
+	.legend .e { display: inline-block; width: .55rem; height: .9rem; margin-right: .3rem; vertical-align: -0.15rem; }
+	.legend .e.active { background: var(--edge-active); } .legend .e.seen { background: var(--edge-seen); } .legend .e.ghost { background: var(--edge-ghost); }
+	.fps-board { display: grid; gap: 3px; }
+	.fps-head, .fps-row { grid-template-columns: 6.2rem minmax(0, 1fr) minmax(0, .9fr) 2.6rem 3.4rem 3.4rem; }
+	.fps-head { display: grid; padding-left: 10px; color: var(--text-dim); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; }
+	.fps-head span { padding: 0 .5rem .2rem; }
+	.fps-row > div { padding: .3rem .5rem; font-size: .72rem; font-weight: 600; border-bottom: 0; white-space: nowrap; }
+	.fps-row .f-v { font-size: .82rem; }
+	.fps-row .f-a { font-weight: 400; text-transform: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+	.fps-row.ghost { opacity: .78; }
+	.airport .fps a { color: var(--strip-ink); }
+	@media (max-width: 560px) {
+		.fps-head, .fps-row { grid-template-columns: 5.4rem minmax(0, 1fr) 2.2rem 3rem 3.3rem; }
+		.fps-head .w, .fps-row .w { display: none; }
+	}
+	.note, .attrib { color: var(--text-dim); font-size: .72rem; margin-top: 1.5rem; }
+	a { color: var(--chart-highlight); }
+</style>
