@@ -48,19 +48,30 @@ def reduce_day(prefix):
     con.execute("CREATE TABLE agg (hex VARCHAR, n_points BIGINT, n_airborne BIGINT, first_ts DOUBLE, last_ts DOUBLE)")
     hours = 0
     try:
-        for hh in range(24):
-            name = f"states_{day}-{hh:02d}.csv.tar"
-            url = f"{BASE}/states/{prefix}/{hh:02d}/{name}"
-            tar_path = work / name
-            r = subprocess.run(["curl", "-sSf", "--retry", "4", "-o", str(tar_path), url])
+        listing = urllib.request.urlopen(f"{BASE}?prefix=states/{prefix}/", timeout=60).read().decode()
+        keys = re.findall(r"<Key>([^<]+)</Key>", listing)
+        # Layouts vary by date: <hh>/states_<day>-<hh>.csv.tar (a tar holding .csv.gz),
+        # a bare .csv.gz, and some names keep the dot prefix. Use whatever CSV exists.
+        by_hour = {}
+        for k in keys:
+            m = re.search(r"/(\d{2})/[^/]*\.csv\.(tar|gz)$", k)
+            if m and (m.group(1) not in by_hour or k.endswith(".csv.gz")):
+                by_hour[m.group(1)] = k
+        for hh, key in sorted(by_hour.items()):
+            local = work / key.rsplit("/", 1)[1]
+            r = subprocess.run(["curl", "-sSf", "--retry", "4", "-o", str(local), f"{BASE}/{key}"])
             if r.returncode != 0:
-                continue  # some hours are missing upstream; counted below
-            with tarfile.open(tar_path) as tf:
-                member = next((m for m in tf.getmembers() if m.name.endswith(".csv.gz")), None)
-                if member is None:
-                    continue
-                tf.extract(member, work, filter="data")
-                csv_gz = work / member.name
+                continue
+            if local.suffix == ".tar":
+                with tarfile.open(local) as tf:
+                    member = next((m for m in tf.getmembers() if m.name.endswith(".csv.gz")), None)
+                    if member is None:
+                        continue
+                    tf.extract(member, work, filter="data")
+                    csv_gz = work / member.name
+                local.unlink(missing_ok=True)
+            else:
+                csv_gz = local
             con.execute(f"""
                 INSERT INTO agg
                 SELECT lower(icao24), count(*), count(*) FILTER (WHERE NOT onground),
@@ -69,7 +80,6 @@ def reduce_day(prefix):
                 GROUP BY 1
             """)
             hours += 1
-            tar_path.unlink(missing_ok=True)
             csv_gz.unlink(missing_ok=True)
         if hours == 0:
             return day, "no-data"
