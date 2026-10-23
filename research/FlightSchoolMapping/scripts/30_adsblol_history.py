@@ -40,6 +40,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import urllib.error
 import urllib.request
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
@@ -127,7 +128,15 @@ def gh_json(url):
 
 def find_release(day, instance):
     tag = f"v{day:%Y.%m.%d}-planes-readsb-{instance}"
-    rel = gh_json(f"https://api.github.com/repos/adsblol/globe_history_{day.year}/releases/tags/{tag}")
+    # A day is published in the repo for the year it was uploaded, so 2025-12-31 lives in
+    # globe_history_2026.
+    for year in (day.year, day.year + 1):
+        try:
+            rel = gh_json(f"https://api.github.com/repos/adsblol/globe_history_{year}/releases/tags/{tag}")
+            break
+        except urllib.error.HTTPError as e:
+            if e.code != 404 or year != day.year:
+                raise
     # Most days are split (.tar.aa, .tar.ab, ...); some, e.g. 2025-01-01, ship one unsplit .tar.
     parts = sorted((a for a in rel["assets"] if a["name"].endswith(".tar") or ".tar." in a["name"]),
                    key=lambda a: a["name"])
