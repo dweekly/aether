@@ -47,6 +47,25 @@ const year = (s: string) => s.slice(0, 4);
 						))}
 					</tbody>
 				</table>
+			</section>
+		)}
+
+		{r && r.single_piston_by_decade && (
+			<section class="table-wrap">
+				<h2>Single-engine pistons, by decade built</h2>
+				<table>
+					<thead><tr><th>Built</th><th>Registered</th><th>Heard</th><th class="bar-h">Share heard</th></tr></thead>
+					<tbody>
+						{r.single_piston_by_decade.filter((d: any) => d.decade === 'unknown' || Number(d.decade) >= 1930).map((d: any) => (
+							<tr>
+								<td>{d.decade === 'unknown' ? 'Year not on file' : `${d.decade}s`}</td>
+								<td>{fmt(d.registered)}</td>
+								<td>{fmt(d.observed)}</td>
+								<td class="bar"><span style={`width:${pct(d.observed, d.registered)}%`}></span><em>{pct(d.observed, d.registered)}%</em></td>
+							</tr>
+						))}
+					</tbody>
+				</table>
 				<p class="note">"Heard" means adsb.lol's network received at least one transmission from the aircraft's assigned
 					Mode S address in the window. Silent is not the same as not flying: an aircraft without ADS-B Out may fly
 					legally outside rule airspace, and coverage is thin in parts of the country.</p>
