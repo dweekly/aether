@@ -10,9 +10,9 @@
 #                    Re-crawlable in principle, but the web has moved on since
 #                    March 2026, so treat as semi-permanent. Sync weekly.
 #   extract/         output/*.jsonl  ~11 MB. ~$25 of Sonnet plus hours of
-#                    crawling. These are BUILD INPUTS and live ONLY in R2 —
-#                    they are gitignored, so a fresh clone must restore them
-#                    before `make` can produce flight_line.json.
+#                    crawling. These are BUILD INPUTS, committed to git and
+#                    mirrored here; restore-extract fills in any that a
+#                    checkout is missing before `make` builds flight_line.json.
 #
 # Deliberately NOT backed up: faa_master.csv, ACFTREF.txt, airports.csv.
 # `make refresh` re-downloads them for free.
@@ -78,7 +78,15 @@ export RCLONE_CONFIG_R2_ENDPOINT="$R2_ENDPOINT"
 # completing successfully. So: retry generously and, crucially, verify by
 # checksum afterwards rather than trusting the exit code. Upgrading rclone past
 # ~1.64 would likely quiet it.
-RCLONE_OPTS=(--s3-no-check-bucket --transfers 8 --checkers 16 --retries 5)
+# --s3-no-head: after a PUT, rclone re-HEADs the object using the versionId R2
+#   returns. R2 has no object versioning, so that HEAD 501s and rclone reports a
+#   SUCCESSFUL upload as failed. The bytes land; only the bookkeeping is wrong.
+#   Without this flag a single ADS-B run emitted 62,420 bogus ERROR lines, which
+#   is how a genuine failure would have been buried. Losing rclone's own
+#   post-upload check is fine here because verify() below runs a full
+#   `rclone check --checksum` against the source, which is strictly stronger.
+#   (Same reasoning, same flag, as ~/dev/nanoclaw-data/scripts/backup-r2.sh.)
+RCLONE_OPTS=(--s3-no-check-bucket --s3-no-head --transfers 8 --checkers 16 --retries 5)
 
 # Crawl caches, relative to output/.
 CACHE_DIRS=(
@@ -123,12 +131,27 @@ verify() {
   local src="$1" dst="$2"
   case " ${EXTRA[*]} " in *" --dry-run "*) return 0 ;; esac
   echo "  verifying $dst ..."
-  if rclone check "$src" "$dst" --s3-no-check-bucket --checksum \
-       --one-way "${@:3}" 2>&1 | grep -qE "ERROR|differences found: [1-9]"; then
+  # Capture first, THEN match. Piping rclone straight into `grep -q` under
+  # `set -o pipefail` inverts the result: grep exits on its first match, rclone
+  # takes SIGPIPE, the pipeline reports non-zero, and the `if` concludes "no
+  # problems" precisely BECAUSE problems were found. Every run since this script
+  # was written logged "verified OK" — including nights when the destination was
+  # empty. The old failure pattern was also unmatchable: rclone prints
+  # "N differences found", not "differences found: N".
+  local out rc=0
+  out=$(rclone check "$src" "$dst" --s3-no-check-bucket --checksum --one-way "${@:3}" 2>&1) || rc=$?
+  if [ "$rc" -ne 0 ] || printf '%s\n' "$out" | grep -qE 'ERROR|[1-9][0-9]* differences found'; then
     echo "  VERIFY FAILED for $dst — re-run this subcommand" >&2
+    printf '%s\n' "$out" | grep -vE '^\s*$' | tail -5 >&2
     return 1
   fi
-  echo "  verified OK"
+  # A check that compared nothing is not a passing check: demand the summary line.
+  if ! printf '%s\n' "$out" | grep -q '0 differences found'; then
+    echo "  VERIFY INCONCLUSIVE for $dst — rclone printed no comparison summary" >&2
+    printf '%s\n' "$out" | tail -3 >&2
+    return 1
+  fi
+  echo "  verified OK ($(printf '%s\n' "$out" | grep -oE '[0-9]+ matching files' | tail -1))"
 }
 
 backup_cache() {
@@ -143,7 +166,7 @@ backup_cache() {
 }
 
 backup_extract() {
-  echo "→ extraction results (build inputs — R2 is the only copy)"
+  echo "→ extraction results (build inputs — git + R2)"
   local present=()
   for f in "${EXTRACT_FILES[@]}"; do
     if [ -f "$OUT_DIR/$f" ]; then

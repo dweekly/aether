@@ -25,9 +25,9 @@
 #   make backup      push snapshots + crawl caches + extraction results
 #   make r2-status   what is currently stored offsite
 #
-# The extraction artifacts (*.jsonl and the crawl indexes) are build inputs
-# kept only in R2, so every build first runs `restore-inputs`, which pulls
-# anything missing locally. That no-ops in seconds when nothing is absent.
+# The extraction artifacts (*.jsonl and the crawl indexes) are build inputs,
+# committed to git and mirrored to R2. Every build first runs `restore-inputs`,
+# which pulls anything missing locally. That no-ops in seconds when nothing is absent.
 #
 # Every stage writes via temp-file + atomic rename, and no stage reads a file
 # it also writes, so any target can be rerun any number of times safely.
@@ -231,7 +231,7 @@ $(OUT)/flight_line_base.json: $(BUILD)/base.inputs
 
 $(BUILD)/base.inputs: | restore-inputs $(OUT)/adsb_activity.csv $(OUT)/faa_master.csv $(OUT)/ACFTREF.txt
 
-# The extraction artifacts are build inputs whose only offsite copy is R2.
+# The extraction artifacts are build inputs (committed to git, mirrored to R2).
 # 21_build_flight_line.py tolerates a missing input by quietly producing a
 # SMALLER dataset rather than failing, so a silent absence here is worse than
 # an error — pull anything missing before the digest is taken.

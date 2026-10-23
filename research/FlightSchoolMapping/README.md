@@ -658,10 +658,10 @@ Stages cache their own expensive work on top of that, so a full rebuild is
 |--------|----------|-----|
 | `adsb-snapshots/` | 10.8 GB | Irreplaceable — observations cannot be re-fetched |
 | `crawl-cache/` | ~10 GB | Re-crawlable in principle, but the web has moved on |
-| `extract/` | 27 MB | ~$25 of Sonnet; **R2 is the only copy of some of these** |
+| `extract/` | 27 MB | ~$25 of Sonnet; also committed to git, so R2 is the second copy |
 
-Because parts of `extract/` live only in R2, every build first runs
-`restore-inputs`, which pulls anything missing. Without it, `21` would quietly
+Every build first runs `restore-inputs`, which pulls any missing extract file
+from R2. Without it, `21` would quietly
 emit a *smaller* dataset rather than fail. `make restore-adsb` pulls the full
 snapshot history back.
 
