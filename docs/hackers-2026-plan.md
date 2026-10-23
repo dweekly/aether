@@ -29,6 +29,60 @@ reproducible, and if the story's numbers survive a skeptical audience. The bigge
 (Codex) is publishing confident explanations the data cannot establish, so every claim is
 phrased as "observed / not observed by this network in this window".
 
+## The product and the findings
+
+**One URL, three layers.** The QR code opens a landing page.
+- **Look up any tail.** Type an N-number: is it on the registry, has it been seen, when
+  last, where it lives, how often it flies. People will try their own plane, a friend's,
+  a celebrity's. That is the hook, and it is the privacy demo.
+- **Explore the fleet.** National and airport views: the registry vs what actually flies,
+  by type, decade and state; the busiest training aircraft and airports.
+- **Take it home.** ODbL downloads and the public repo with `make sample`.
+
+**Findings we are aiming for.** Each one is a measurement with a stated test, and gets
+replaced by "we couldn't tell" if the data won't support it.
+1. **The real size of the active US GA fleet.** Count the registered aircraft that flew at
+   least once in the last 12 months, and set it against the FAA's survey-based estimate
+   (GA & Part 135 Activity Survey) and its count of 173,663 ADS-B-equipped aircraft.
+   Checking a government number against direct observation is the opening slide.
+2. **Registry ghosts, with an age.** How many registered aircraft were never observed in
+   the window, broken down into documented attributes. The OpenSky Mondays split them into
+   "went quiet after 2017–22" and "not seen at all since 2017" (counts only).
+3. **Finding flight schools from the sky.** Training aircraft fly a signature: many short
+   legs from one airport, pattern circuits, practice-area maneuvering. We detect that from
+   the traces and score it against our 11,602 known school tails as labels, reporting
+   precision and recall. Then we report the schools the web never told us about.
+   Leaseback fleets registered to anonymous LLCs show up here, where registry-name
+   matching misses them.
+4. **How trackable you are.** For active GA aircraft: share with an inferable home base,
+   and its measured accuracy on the consenting sample; share with a predictable weekly
+   pattern. What LADD and PIA change and don't. Prior art: Michel & Strohmeier.
+5. **What it costs to learn to fly** (the existing C172 story), now joined to utilization:
+   the rate per hour against how many hours a day the aircraft actually flies.
+
+**Schools: no re-scrape for this panel.** The 4,825-school / 11,602-tail dataset is
+labelled training data for finding 3, not the product. Its gaps get filled by detecting
+schools from flight behavior, which also tells us which advertised fleets actually fly.
+Before release, school records are rebuilt from the schools' own cached pages (10,326 of
+the fleet rows already carry a `source_url`) so that no AOPA field ships. A web re-crawl
+for rates stays on the roadmap.
+
+## Workback (panel assumed Fri 2026-11-06)
+
+| Date | Done by then | David's part |
+|---|---|---|
+| Fri 10-23 | Plan, OpenSky off, archive spike | — |
+| Sun 10-25 | Thin slice live: one archive day → public bucket → explorer tail lookup on a phone → public repo `make sample` | Confirm panel date and repo name |
+| Tue 10-27 | 60-day privacy window and 2026-03-05 → now ingested; first numbers for findings 1–2; Monday depth running | **Pick the headline** from the first numbers (30 min) |
+| Thu 10-29 | Finding 3 (school detection) scored against labels; finding 4 with home-base accuracy | Consenting aircraft and flight dates in hand by **Fri 10-30** |
+| Sun 11-01 | Explorer complete (tail, airport, national, schools); downloads and LICENSES.md published | Click through it on your phone; send taste notes |
+| Mon 11-02 | Frozen results artifact v1; charts final; story outline and fact bullets | **Write the story and talk words** (Mon–Tue) |
+| Wed 11-04 | **Freeze**: release v1 tagged, QR printed, previous release reachable, cache warm | Dry run |
+| Thu 11-05 | Offline fallback: screenshots and a short screen recording in case the venue Wi-Fi fails | — |
+| Fri 11-06 | Panel | — |
+
+Anything not done by its row slips to the roadmap rather than pushing the freeze.
+
 ## Sources and licenses
 
 | Source | Use | License / terms | In the public release? |
