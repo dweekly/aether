@@ -77,3 +77,10 @@ Days before mid-2020 live under dot-prefixed keys (`states/.2017-06-12/`), and
 an hour may be a `.csv.tar` holding a `.csv.gz` or a bare `.csv.gz`, with or
 without the dot in the filename. `39_opensky_mondays.py` lists each day's keys
 rather than constructing names.
+
+## A day's release can sit in the next year's repo (2026-10-23)
+
+adsb.lol files each release under the year it was uploaded, not the day it covers:
+2025-12-31's three replicas are in `globe_history_2026`. The backfill looked only in
+`globe_history_2025` and logged the day as having no release. `30_adsblol_history.py`
+now tries the next year's repo on a 404.
