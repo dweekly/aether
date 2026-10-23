@@ -55,6 +55,12 @@ FEATURES = ["same_airport_share", "short_share", "low_share", "legs_per_day",
             "registrant_active_fleet", "model_school_share"]
 
 
+def known_operator_registrants(schools):
+    """Registrants holding any tail on any known fleet, scored or not (an inactive
+    listed aircraft still makes its owner a known operator)."""
+    return {f["registrant"] for s in schools for f in s["fleet"] if f.get("registrant")}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--release", required=True)
@@ -100,8 +106,7 @@ def main():
     for d in data:
         d["registrant_active_fleet"] = owner_n[d["registrant"]]
     any_school_tails = {f["n"] for s in schools for f in s["fleet"]}
-    # Registrants that already hold a tail on some known fleet are known operators.
-    known_registrants = {d["registrant"] for d in data if d["n"] in any_school_tails and d["registrant"]}
+    known_registrants = known_operator_registrants(schools)
     base = [f for f in FEATURES if f != "model_school_share"]
     Xb = np.nan_to_num(np.array([[d[f] for f in base] for d in data], dtype=float))
     y = np.array([d["n"] in website_tails for d in data], dtype=int)
@@ -166,7 +171,9 @@ def main():
     out = {
         "release": a.release, "window": win, "threshold": a.threshold,
         "population": {"aircraft_scored": len(data), "website_school_tails_in_population": int(y.sum())},
-        "metrics": {"average_precision_lower_bound": round(float(ap_score), 3),
+        # Average precision against incomplete labels is not a bound in either direction;
+        # only the fixed-threshold precision below is a lower bound.
+        "metrics": {"average_precision_vs_website_labels": round(float(ap_score), 3),
                     "base_rate": round(float(y.mean()), 3),
                     "recall_on_website_tails": round(recall, 3),
                     "precision_lower_bound": round(precision_lb, 3),

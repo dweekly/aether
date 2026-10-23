@@ -27,3 +27,25 @@ def test_relative_source_counts_as_website_evidence():
 
 def test_median_of_even_list():
     assert schools.median([120, 130, 160, 250, 350, 350]) == 205
+
+
+def _load(name, fname):
+    spec = importlib.util.spec_from_file_location(name, SCRIPTS / fname)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_known_operators_include_unscored_fleet_rows():
+    detect = _load("detect", "40_training_detect.py")
+    schools_data = [{"fleet": [{"n": "N1", "registrant": "ACME FLIGHT LLC", "days": 0},
+                               {"n": "N2", "registrant": None}]}]
+    assert detect.known_operator_registrants(schools_data) == {"ACME FLIGHT LLC"}
+
+
+def test_airport_aliases_match_local_and_gps_codes():
+    privacy = _load("privacy", "41_privacy.py")
+    alias = privacy.airport_aliases()
+    assert privacy.same_airport("PALH", "KLHD", alias)      # Lake Hood: GPS code vs K + local code
+    assert privacy.same_airport("KPAO", "PAO", alias)
+    assert not privacy.same_airport("KPAO", "KSQL", alias)
