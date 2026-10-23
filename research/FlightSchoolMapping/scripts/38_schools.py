@@ -85,7 +85,7 @@ def site_name(domain):
         for p in pages[:5]:
             text = p.read_text(errors="replace")[:200_000]
             m = re.search(r'<meta[^>]+property=["\']og:site_name["\'][^>]+content=["\']([^"\']{2,80})', text, re.I)
-            if m:
+            if m and " ".join(html.unescape(m.group(1)).split()).lower() not in GENERIC:
                 return " ".join(html.unescape(m.group(1)).split()), "og:site_name"
             m = re.search(r"<title[^>]*>(.*?)</title>", text, re.I | re.S)
             if m:
