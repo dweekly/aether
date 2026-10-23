@@ -49,8 +49,10 @@ def test_airport_index_matches_brute_force(airports):
         m = airports.nearest(lat, lon, max_nm=50)
         best = min(range(len(airports.idents)),
                    key=lambda j: haversine_nm(lat, lon, airports.lats[j], airports.lons[j]))
+        true_nm = haversine_nm(lat, lon, airports.lats[best], airports.lons[best])
         assert m is not None
-        assert abs(m.distance_nm - haversine_nm(lat, lon, airports.lats[best], airports.lons[best])) < 1e-3
+        # The pick is the true nearest, or a runway airport inside the 0.5 nm ambiguity window.
+        assert true_nm - 1e-3 <= m.distance_nm < true_nm + 0.5
 
 
 def test_ground_only_never_counts_as_flying(airports):
@@ -133,3 +135,9 @@ def test_unsplit_tar_release_is_accepted(monkeypatch):
         {"name": "README.md", "size": 1}]})
     tag, parts = hist.find_release(date(2025, 1, 1), "prod-0")
     assert [p["name"] for p in parts] == ["v2025.01.01-planes-readsb-prod-0.tar"]
+
+
+def test_runway_airport_beats_nearby_heliport(airports):
+    # Over Schaumburg's runway; Clarke Heliport (LL95) is 0.2 nm away and nearer to this point.
+    m = airports.nearest(41.9866, -88.1006)
+    assert m.ident == "K06C"
