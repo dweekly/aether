@@ -80,3 +80,13 @@ def test_classification_branches(tmp_path):
     assert results["window"] == {"first_day": "2026-10-01", "last_day": "2026-10-04", "days": 4,
                                  "included_days": ["2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04"]}
     assert sum(t["n"] for t in results["totals"]) == 9
+
+    # --from drops earlier archive days from every count, including the night-airport vote.
+    subprocess.run([sys.executable, str(SCRIPTS / "34_fleet_summary.py"), "--registry", "2026-10-23", "--release", "w",
+                    "--from", "2026-10-02"], env=env, check=True, capture_output=True)
+    out = {r["n_number"]: r for r in pq.read_table(tmp_path / "release" / "w" / "aircraft.parquet").to_pylist()}
+    assert out["N1"]["days_observed"] == 3
+    assert out["N7"]["observed_class"] == "not_observed"  # seen only on 10-01
+    assert out["N8"]["home_airport"] is None              # KPAO now 1 of 2 nights
+    results = json.loads((tmp_path / "release" / "w" / "results.json").read_text())
+    assert results["window"]["included_days"] == ["2026-10-02", "2026-10-03", "2026-10-04"]
