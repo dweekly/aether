@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
 """Run 30_adsblol_history.py over a date range, a few days at a time.
 
-Days that already have a manifest are skipped, so this is safe to rerun. A day
-whose prod-0 release is missing or fails is retried once from staging-0, then
-recorded in data/history/GAPS.md with the error.
+Days that already have a manifest are skipped, so this is safe to rerun. Each
+day takes the larger of the prod-0 and staging-0 replicas (30_... --instance
+auto). A day that fails is retried once, then recorded in data/history/GAPS.md.
+
+--recheck re-ingests manifested days that were taken from a replica more than
+10% smaller than the other one (manifests written before the auto choice have
+no replica_sizes and are compared against the live release listing).
 
 Usage:
-  31_history_backfill.py 2026-03-05 2026-10-21 [--parallel 3] [--newest-first]
+  31_history_backfill.py 2026-03-05 2026-10-21 [--parallel 3] [--newest-first] [--recheck]
 """
 
 import argparse
+import importlib.util
+import json
 import os
 import subprocess
 import sys
@@ -22,17 +28,30 @@ HISTORY = HERE.parent / "data" / "history"
 INGEST = [sys.executable, str(HERE / "30_adsblol_history.py")]
 
 
-def run_day(day):
+def undersized(day):
+    """True if the manifested day came from a replica >10% smaller than the other."""
+    m = json.loads((HISTORY / "manifest" / f"{day}.json").read_text())
+    sizes = m.get("replica_sizes")
+    if not sizes:
+        spec = importlib.util.spec_from_file_location("ingest", HERE / "30_adsblol_history.py")
+        ingest = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(ingest)
+        sizes = ingest.choose_release(day, "auto")[3]
+    used = sum(a["size"] for a in m["assets"])
+    return used < 0.9 * max(sizes.values())
+
+
+def run_day(day, recheck=False):
     if (HISTORY / "manifest" / f"{day}.json").exists():
-        return day, "skip", ""
+        if not (recheck and undersized(day)):
+            return day, "skip", ""
     last = ""
-    for instance in ("prod-0", "staging-0"):
-        p = subprocess.run([*INGEST, str(day), "--instance", instance, "--workers", "8"],
+    for _ in range(2):
+        p = subprocess.run([*INGEST, str(day), "--instance", "auto", "--workers", "8"],
                            capture_output=True, text=True)
         if p.returncode == 0:
-            return day, instance, ""
-        last = (p.stderr or p.stdout).strip().splitlines()[-1:] or ["unknown error"]
-        last = last[0]
+            return day, json.loads(p.stdout.strip().splitlines()[-1])["instance"], ""
+        last = ((p.stderr or p.stdout).strip().splitlines()[-1:] or ["unknown error"])[0]
     return day, "FAILED", last
 
 
@@ -42,6 +61,7 @@ def main():
     ap.add_argument("end")
     ap.add_argument("--parallel", type=int, default=3)
     ap.add_argument("--newest-first", action="store_true")
+    ap.add_argument("--recheck", action="store_true")
     a = ap.parse_args()
     d0, d1 = date.fromisoformat(a.start), date.fromisoformat(a.end)
     days = [d0 + timedelta(n) for n in range((d1 - d0).days + 1)]
@@ -49,7 +69,7 @@ def main():
         days.reverse()
     gaps = HISTORY / "GAPS.md"
     with ThreadPoolExecutor(max_workers=a.parallel) as pool:
-        for day, status, err in pool.map(run_day, days):
+        for day, status, err in pool.map(lambda d: run_day(d, a.recheck), days):
             print(f"{day} {status} {err}", flush=True)
             if status == "FAILED":
                 gaps.parent.mkdir(parents=True, exist_ok=True)
