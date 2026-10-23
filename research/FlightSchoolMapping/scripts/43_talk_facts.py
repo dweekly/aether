@@ -56,9 +56,10 @@ def main():
         "",
         "## 1. The registry vs the sky",
         "",
-        f"- {n(registered)} aircraft on the FAA registry; {n(heard)} ({pct(heard, registered)}) were heard on ADS-B at least once "
+        f"- {n(registered)} aircraft on the FAA registry; {n(heard)} ({pct(heard, registered)}) were heard at least once "
         f"in the window. {n(totals.get('not_observed', 0))} were silent.",
-        f"- {n(totals.get('other_only', 0))} were heard only via MLAT/TIS-B, never their own ADS-B.",
+        f"- Of those heard, {n(totals.get('adsb', 0))} broadcast their own ADS-B; {n(totals.get('other_only', 0))} were heard "
+        "only via MLAT or TIS-B.",
     ]
     if gyro:
         lines.append(f"- Gyroplanes: {n(gyro['registered'])} registered, {n(gyro['observed'])} heard.")
