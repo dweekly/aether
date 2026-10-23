@@ -37,11 +37,31 @@ HISTORY = ROOT / "data" / "history"
 RELEASES = ROOT / "data" / "release"
 
 
-def same_airport(a, b):
+AIRPORTS_CSV = ROOT / "data" / "ourairports_airports.csv"
+
+
+def airport_aliases(csv_path=AIRPORTS_CSV):
+    """Map every identifier form an airport goes by to its OurAirports ident:
+    ident, gps_code, local_code, and the K-prefixed local code that school sites
+    often write (KLHD for Lake Hood, whose GPS code is PALH)."""
+    import csv
+    alias = {}
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if r["type"] == "closed":
+                continue
+            for code in (r["ident"], r["gps_code"], r["local_code"],
+                         "K" + r["local_code"] if len(r["local_code"]) == 3 else ""):
+                if code:
+                    alias.setdefault(code.upper(), r["ident"])
+    return alias
+
+
+def same_airport(a, b, alias):
     if not a or not b:
         return False
-    a, b = a.upper(), b.upper()
-    return a == b or (len(a) == 4 and a[0] == "K" and a[1:] == b) or (len(b) == 4 and b[0] == "K" and b[1:] == a)
+    ca, cb = alias.get(a.upper(), a.upper()), alias.get(b.upper(), b.upper())
+    return ca == cb
 
 
 def main():
@@ -63,12 +83,13 @@ def main():
     # 2. Accuracy against school-listed airports.
     homes = dict(c.execute(f"SELECT n_number, home_airport FROM {aircraft} WHERE home_airport IS NOT NULL").fetchall())
     schools = json.loads((rel / "schools_full.json").read_text())["schools"]
+    alias = airport_aliases()
     labelled, correct = 0, 0
     for s in schools:
         for f in s["fleet"]:
             if f["evidence"] == "website" and f["airport"] and f["n"] in homes:
                 labelled += 1
-                correct += same_airport(homes[f["n"]], f["airport"])
+                correct += same_airport(homes[f["n"]], f["airport"], alias)
 
     # 3. Weekly pattern, first half -> second half.
     d0, d1 = date.fromisoformat(win["first_day"]), date.fromisoformat(win["last_day"])
