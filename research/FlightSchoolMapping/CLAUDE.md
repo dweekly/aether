@@ -44,7 +44,7 @@ ADS-B cron touching files does not trigger a spurious rebuild. Digests live in
   0-NN set almost never moves. Phase 3 reuses `rate_sheet_text/{domain}.txt`
   when it is newer than every source it derives from. Both fresh and cached
   paths go through `_summarize_extraction()` so they cannot drift.
-- **Extraction artifacts live only in R2** for some files. `make` runs
+- **Extraction artifacts are committed to git and mirrored to R2.** `make` runs
   `restore-inputs` first (`scripts/r2_sync.sh restore-extract`). This matters
   because `21` treats a missing input as "no data" and silently builds a
   smaller dataset instead of failing — see the 08e incident below for what that
