@@ -36,3 +36,12 @@ No snapshots exist for 2026-04-23 → 2026-07-16: the cron job did not run (zero
 log lines in the window; last run Apr 22 21:15 UTC, next Jul 17 05:00 UTC).
 ADS-B is point-in-time and cannot be backfilled. Present: 2026-03-05 → 04-22 and
 2026-07-17 → now, at a clean 96 files/day.
+
+## adsb.lol caps each IP at 500 requests a day (found 2026-10-23)
+
+The response headers say so: `x-ratelimit-limit: 500, 4;w=1, 60;w=60, 500;w=86400`.
+The 15-minute poller made 35 tile requests per run, about 3,360 a day, from the same
+public IP that monster4 and trogdor share. From about 2026-10-17 adsb.lol's yield fell
+by two-thirds, and any ad-hoc request from home got a 429 with `x-ratelimit-remaining: 0`.
+The README only says limits are "dynamic", so read the headers, not the docs. The poller
+was retired the same day; the daily ODbL archive (`adsblol/globe_history_*`) replaces it.

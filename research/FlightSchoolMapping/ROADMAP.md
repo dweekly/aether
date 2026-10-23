@@ -2,12 +2,12 @@
 
 ## Collection health (found 2026-10-23)
 
-- **adsb.lol yield fell ~2/3 from 2026-10-17.** Daily mean per snapshot went from ~4,000
-  to ~1,500 aircraft; most tiles now 429 or fail. OpenSky (~7,900/snapshot) is healthy, so
-  merged totals dropped far less. adsb.lol publishes no fixed limit ("dynamic based on the
-  environment load") and says API keys will come from feeding. Options, cheapest first:
-  spread the 35 tiles across the 15-minute window instead of 1/s; send a User-Agent with a
-  contact address; run a feeder; ask the maintainer.
+- ~~adsb.lol yield fell ~2/3 from 2026-10-17.~~ Cause: a 500 req/day per-IP cap
+  (`x-ratelimit-limit: 500, 4;w=1, 60;w=60, 500;w=86400`) against ~3,360/day from the
+  poller. Resolved 2026-10-23 by retiring the poller for the daily archive (see GOTCHAS).
+- **Ask adsb.lol for a feeder key or a panel-day allowance** so the school page's live
+  layer survives a room of phones behind one NAT. Feeding adsb.lol is the route they
+  name for keys.
 - **The ADS-B collector has no status checker.** monster4's copy of the cron failed every
   15 minutes from 2026-04-22 to 2026-10-23 (a Homebrew upgrade removed the venv's Python)
   and nothing noticed. trogdor's collector needs a daily reader that alerts on missing
@@ -42,6 +42,13 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
   days, OpenSky Monday state vectors, Trino if granted), generalized PIA linkage.
 - `flight_line.json` mixes OpenSky-derived activity with AOPA-sourced fields; neither can be
   redistributed, so it must never be published wholesale.
+
+## Later products
+- **Ask the fleet:** a chat interface, Claude skill or MCP server over the public parquet,
+  for questions like "how many operational gyrocopters are there in the US?" Registry plus
+  aircraft-day tables answer those. "How many heavy jets passed within 3 miles of my house
+  yesterday?" also needs a position index (e.g. H3 cell × hour × hex) built during
+  reduction, which the aircraft-day/leg tables do not keep.
 
 ## Tech Debt
 - `output/adsb_activity_summary.json` (55 MB) and `adsb_activity.csv` are committed and

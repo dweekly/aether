@@ -39,6 +39,26 @@ phrased as "observed / not observed by this network in this window".
   by type, decade and state; the busiest training aircraft and airports.
 - **Take it home.** ODbL downloads and the public repo with `make sample`.
 
+**The school page is the hero view** (David, 2026-10-23). Look up a school and get one
+consistent, structured record:
+- **In the air now:** live positions for its fleet, fetched by the visitor's own browser
+  from adsb.lol's CORS-enabled `/v2/hex/{hex}`, only when tapped, never auto-polling. The
+  limit is per IP (`x-ratelimit-limit: 500, 4;w=1, 60;w=60, 500;w=86400`). A room of phones
+  behind one venue NAT shares 60 requests a minute and 500 a day, so the page degrades to
+  "as of yesterday" on a 429. A Cloudflare Worker relay is no fix: adsb.lol's own PR #63
+  notes shared Cloudflare egress gets 429'd. Whether one request can carry several hexes
+  is untested (our IP was capped when tried); check after the 00:00 UTC reset.
+- **Where each plane was last parked:** last ground position and airport from the most
+  recent archive day.
+- **Operating history:** flights per day and observed airborne hours per tail and month,
+  2023-02 → now from the archive. Fleet additions and departures come from the dated
+  registry history (2023-08 →).
+- **Fleet size and composition:** type, year/age and engine from the FAA registry. The
+  school's own advertised fleet is shown beside what the registry and ADS-B show.
+- **Cost:** rates from the school's own pages, each with its source URL and capture date.
+- **Machine-readable:** every school is also `/schools/{domain}.json` in one schema, which
+  is what a later chat interface would query.
+
 **Findings we are aiming for.** Each one is a measurement with a stated test, and gets
 replaced by "we couldn't tell" if the data won't support it.
 1. **The real size of the active US GA fleet.** Count the registered aircraft that flew at
@@ -113,8 +133,12 @@ that day, plus 4,880 the snapshots never caught.
 
 ## Work, in order
 
-0. **Today: stop the OpenSky fetch** in `13_adsb_cron.js`, keeping the poller adsb.lol-only
-   until item 1 graduates, then retire the poller.
+0. **Done 2026-10-23: the 15-minute poller is retired.** The OpenSky fetch was switched off
+   first. Then the adsb.lol response headers showed a 500-request/day per-IP cap; the
+   poller made ~3,360 a day from the same home IP as monster4, so it was 429ing most of
+   every day and blocking our own lookups. The archive already outperforms it, so it went
+   ahead of item 1's gates rather than after. The snapshot series ends 2026-10-23 and stays
+   in R2.
 1. **One day, end to end, deployed first.** This is a thin slice, so delivery problems
    surface early.
    - Ingest one archive day.
