@@ -26,9 +26,9 @@ W, H = 1600, 900
 FONT = "'Azeret Mono', Menlo, Consolas, monospace"
 THEMES = {
     "dark": {"bg": "#08090c", "ink": "#f0f1f4", "dim": "#8d909a", "rule": "#262933",
-             "accent": "#c9a64a", "context": "#4a5263"},
+             "accent": "#c9a64a", "context": "#4a5263", "s1": "#b08a32", "s2": "#3987e5"},
     "light": {"bg": "#ffffff", "ink": "#1a1e27", "dim": "#5d6270", "rule": "#e3e5ea",
-              "accent": "#9a7420", "context": "#b9bfcb"},
+              "accent": "#9a7420", "context": "#b9bfcb", "s1": "#9a7420", "s2": "#2a78d6"},
 }
 
 
@@ -124,6 +124,34 @@ def heard_by_decade(s, r, release, window):
     footer(s, release, window)
 
 
+def heard_by_decade_cert(s, cert, release, window):
+    decades = list(cert)
+    series = [("standard", "Standard category", "s1"), ("experimental", "Experimental", "s2")]
+    x0, x1, base, top = 100, W - 80, 700, 190
+    s.line(x0, base, x1, base)
+    slot = (x1 - x0) / len(decades)
+    bw = slot * 0.34
+    for i, d in enumerate(decades):
+        cx = x0 + slot * (i + 0.5)
+        for j, (key, label, col) in enumerate(series):
+            v = cert[d].get(key)
+            if not v:
+                continue
+            share = v["observed"] / v["registered"]
+            bx = cx - bw - 1 + j * (bw + 2)
+            hgt = (base - top) * share
+            s.rect(bx, base - hgt, bw, hgt, col, f"{d}s {label}: {n(v['observed'])} of {n(v['registered'])}")
+            s.text(bx + bw / 2, base - hgt - 12, f"{100 * share:.0f}", 22, anchor="middle", weight=600)
+        s.text(cx, base + 44, f"{d}s", 28, anchor="middle")
+    s.text(x0, 70, "Share heard (%), single-engine pistons by decade built and airworthiness class", 30, "dim")
+    for j, (key, label, col) in enumerate(series):
+        lx = x0 + j * 600
+        s.rect(lx, 108, 28, 28, col, rx=4)
+        total = sum(cert[d].get(key, {}).get("registered", 0) for d in decades)
+        s.text(lx + 42, 132, f"{label} ({n(total)})", 26)
+    footer(s, release, window)
+
+
 def heard_by_type(s, r, release, window):
     rows = sorted((x for x in r["by_aircraft_type"] if x["registered"] >= 400),
                   key=lambda x: -x["observed"] / x["registered"])
@@ -180,13 +208,16 @@ def main():
     from importlib import import_module
     import sys
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    faa = import_module("43_talk_facts").FAA_EQUIPPED
+    facts = import_module("43_talk_facts")
+    faa = facts.FAA_EQUIPPED
+    cert = facts.piston_by_decade_cert(rel, r["registry_date"])
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     charts = {
         "registry-vs-sky": lambda s: registry_vs_sky(s, r, a.release, window),
         "faa-equipped": lambda s: faa_equipped(s, r, a.release, window, faa),
         "heard-by-decade": lambda s: heard_by_decade(s, r, a.release, window),
+        "heard-by-decade-cert": lambda s: heard_by_decade_cert(s, cert, a.release, window),
         "heard-by-type": lambda s: heard_by_type(s, r, a.release, window),
         "c172-rate-vs-hours": lambda s: c172_rate_vs_hours(s, schools, w["days"], a.release, window),
     }

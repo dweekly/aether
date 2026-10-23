@@ -34,6 +34,26 @@ def n(x):
     return f"{x:,}"
 
 
+def piston_by_decade_cert(rel, registry_date):
+    """Single-engine pistons heard, by decade built and airworthiness class (registry
+    `certification`, first character: 1 Standard, 4 Experimental, per ardata.pdf).
+    Same single-piston definition as 34's single_piston_by_decade."""
+    rows = duckdb.connect().execute(f"""
+        SELECT (a.year_mfr // 10 * 10)::VARCHAR AS decade,
+               CASE left(m.certification, 1) WHEN '1' THEN 'standard' WHEN '4' THEN 'experimental' ELSE 'other' END AS cls,
+               count(*) AS registered, count(*) FILTER (WHERE a.observed_class <> 'not_observed') AS observed
+        FROM read_parquet('{rel / "aircraft.parquet"}') a
+        JOIN read_parquet('{REGISTRY / registry_date / "master.parquet"}') m USING (n_number)
+        WHERE a.aircraft_type = 'Fixed wing single engine' AND a.engine_type IN ('Reciprocating', '4 Cycle', '2 Cycle')
+          AND a.year_mfr >= 1940
+        GROUP BY 1, 2 ORDER BY 1, 2
+    """).fetchall()
+    out = {}
+    for decade, cls, reg, obs in rows:
+        out.setdefault(decade, {})[cls] = {"registered": reg, "observed": obs}
+    return out
+
+
 def quartiles(xs):
     q1, med, q3 = statistics.quantiles(xs, n=4)
     return round(q1), round(med), round(q3)
@@ -92,6 +112,7 @@ def main():
         SELECT count(*) FILTER (WHERE adsr AND NOT direct AND NOT nt) FROM s JOIN reg USING (hex)
     """).fetchone()[0]
     faa = FAA_EQUIPPED
+    cert = piston_by_decade_cert(rel, r["registry_date"])
     util = rental_utilization(json.loads((rel / "schools_full.json").read_text())["schools"], w["days"])
 
     lines = [
@@ -120,6 +141,16 @@ def main():
         lines.append(f"- Single-engine pistons built in the 1940s: {pct(sep['1940']['observed'], sep['1940']['registered'])} heard "
                      f"({n(sep['1940']['registered'])} registered). Built in the 2020s: "
                      f"{pct(sep['2020']['observed'], sep['2020']['registered'])} ({n(sep['2020']['registered'])}).")
+    std = " → ".join(pct(v["standard"]["observed"], v["standard"]["registered"]) for v in cert.values() if "standard" in v)
+    exp = " → ".join(pct(v["experimental"]["observed"], v["experimental"]["registered"]) for v in cert.values() if "experimental" in v)
+    lines += [
+        f"- Split by airworthiness class, decade by decade from the {next(iter(cert))}s to the {list(cert)[-1]}s: standard-category "
+        f"single-engine pistons {std} heard; experimentals {exp}. The newer the certified plane, the likelier it is heard.",
+    ]
+    if "1990" in cert:
+        d = cert["1990"]
+        lines.append(f"- The 1990s dip in the blended chart is the experimentals: {n(d['experimental']['registered'])} of "
+                     f"{n(sum(v['registered'] for v in d.values()))} 1990s single pistons are experimental.")
     if "unknown" in sep:
         lines.append(f"- {n(sep['unknown']['registered'])} single-engine pistons have no year of manufacture on file.")
     lines += [

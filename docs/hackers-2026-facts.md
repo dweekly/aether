@@ -11,6 +11,8 @@ Window 2026-03-05 → 2026-10-22 (230 days of the adsb.lol archive). Registry sn
 - Of those heard, 163,876 broadcast their own ADS-B; 2,259 were heard only via MLAT or TIS-B.
 - Gyroplanes: 431 registered, 171 heard.
 - Single-engine pistons built in the 1940s: 16% heard (20,255 registered). Built in the 2020s: 87% (11,703).
+- Split by airworthiness class, decade by decade from the 1940s to the 2020s: standard-category single-engine pistons 16% → 41% → 58% → 70% → 78% → 81% → 87% → 93% → 97% heard; experimentals 22% → 33% → 17% → 16% → 22% → 28% → 42% → 53% → 71%. The newer the certified plane, the likelier it is heard.
+- The 1990s dip in the blended chart is the experimentals: 4,630 of 9,205 1990s single pistons are experimental.
 - 37,773 single-engine pistons have no year of manufacture on file.
 - Caveat to say out loud: silent is not the same as not flying. Aircraft without ADS-B Out may fly legally outside
   rule airspace, and coverage is thin in places. Every claim is "heard / not heard by this network in this window".
