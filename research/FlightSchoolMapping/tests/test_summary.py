@@ -77,5 +77,6 @@ def test_classification_branches(tmp_path):
     unmatched = pq.read_table(tmp_path / "release" / "t" / "unmatched.parquet").to_pylist()
     assert [u["hex"] for u in unmatched] == ["affff0"]
     results = json.loads((tmp_path / "release" / "t" / "results.json").read_text())
-    assert results["window"] == {"first_day": "2026-10-01", "last_day": "2026-10-04", "days": 4}
+    assert results["window"] == {"first_day": "2026-10-01", "last_day": "2026-10-04", "days": 4,
+                                 "included_days": ["2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04"]}
     assert sum(t["n"] for t in results["totals"]) == 9

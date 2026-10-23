@@ -77,6 +77,9 @@ def main():
         WHERE day <= current_date - 1
     """)
     window = c.execute("SELECT min(day), max(day), count(DISTINCT day) FROM ad").fetchone()
+    # The exact days frozen into this release. Later stages filter on this list, not on
+    # the bounds, so a day backfilled mid-build cannot slip into the downloads.
+    included = [str(r[0]) for r in c.execute("SELECT DISTINCT day FROM ad ORDER BY 1").fetchall()]
 
     c.execute(f"""
         CREATE TABLE obs AS
@@ -168,7 +171,8 @@ def main():
         "generated_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "cohort": f"N-numbers in the FAA Releasable Aircraft Registry snapshot of {reg_date}",
         "registry_date": reg_date,
-        "window": {"first_day": str(window[0]), "last_day": str(window[1]), "days": window[2]},
+        "window": {"first_day": str(window[0]), "last_day": str(window[1]), "days": window[2],
+                   "included_days": included},
         "source": "adsb.lol globe_history (ODbL 1.0), prod-0 releases",
         "definitions": {
             "adsb": "observed at least once via the aircraft's own ADS-B (adsb_icao, adsb_icao_nt, adsr_icao)",
