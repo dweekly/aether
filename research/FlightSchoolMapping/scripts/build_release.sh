@@ -6,6 +6,8 @@
 set -euo pipefail
 rel="${1:?usage: build_release.sh <release> [first-day]}"
 cd "$(dirname "$0")"
+# A 12-month window opens ~365 aircraft_day plus ~365 legs files at once; the default 1024 is not enough.
+ulimit -n 65536
 rm -rf "../data/release/$rel"
 .venv/bin/python 32_reassign_airports.py   # bring any day matched with an older airport index up to date
 .venv/bin/python 34_fleet_summary.py --release "$rel" ${2:+--from "$2"}
