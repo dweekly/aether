@@ -64,6 +64,13 @@ command line and killed itself (exit 255). Use the bracket trick:
 pgrep note. Background jobs started over ssh also need `setsid nohup ... < /dev/null`
 (and `ssh -n`) or the ssh call hangs until they exit.
 
+The bracket trick only hides the pattern itself. It still matches any process whose
+command line contains the literal text somewhere else: the same ssh call restarting
+the job (`pkill -f "[3]9_x --parallel 4"; ... 39_x --parallel 4 &` killed itself
+again), or a parent `bash -c` that wrote a chain script by heredoc (the first
+`aether-chain.sh` waited forever on its own parent). Kill by PID, wait on `$!` in
+one script, or start jobs from a script file so no command line carries the text.
+
 ## OpenSky's Monday archive changes layout by date (2026-10-23)
 
 Days before mid-2020 live under dot-prefixed keys (`states/.2017-06-12/`), and
