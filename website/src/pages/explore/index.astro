@@ -1,0 +1,87 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ExploreSearch from '../../components/ExploreSearch.astro';
+
+// The release index is synced into public/x/ before the build (scripts/sync_explorer_data.sh).
+const indexPath = path.join(process.cwd(), 'public', 'x', 'index.json');
+const index = fs.existsSync(indexPath) ? JSON.parse(fs.readFileSync(indexPath, 'utf8')) : null;
+const r = index?.results;
+const total = (cls: string) => r?.totals.find((t: any) => t.observed_class === cls)?.n ?? 0;
+const registered = r ? r.totals.reduce((s: number, t: any) => s + t.n, 0) : 0;
+const observed = total('adsb') + total('other_only');
+const fmt = (n: number) => n.toLocaleString('en-US');
+const pct = (a: number, b: number) => (b ? Math.round((100 * a) / b) : 0);
+const day = (s: string) => new Date(s + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+const year = (s: string) => s.slice(0, 4);
+---
+
+<BaseLayout title="Explore the US fleet | Aether Flight"
+	description="Look up any US-registered aircraft: is it on the FAA registry, does it fly, where does it live. Open data from adsb.lol and the FAA.">
+	<Header />
+	<main class="explore">
+		{r ? (
+			<h1 class="thesis">Of the <b>{fmt(registered)}</b> aircraft on the FAA registry, <b>{fmt(observed)}</b> were heard
+				on ADS-B <span class="nw">{day(r.window.first_day)} – {day(r.window.last_day)}, {year(r.window.last_day)}</span>. The other <b>{fmt(registered - observed)}</b> were silent.</h1>
+		) : <h1 class="thesis">Which US aircraft actually fly?</h1>}
+		<p class="lede">Look up any tail number: its registration, how often it flies, where it lives and where it was last parked.</p>
+		<ExploreSearch />
+		<p class="also">Or browse <a href="/explore/schools/">flight schools and clubs</a>, or <a href="/explore/data/">download the data</a>.</p>
+
+		{r && (
+			<section class="table-wrap">
+				<h2>By aircraft type</h2>
+				<table>
+					<thead><tr><th>Type</th><th>Registered</th><th>Heard</th><th class="bar-h">Share heard</th></tr></thead>
+					<tbody>
+						{r.by_aircraft_type.map((t: any) => (
+							<tr>
+								<td>{t.aircraft_type ?? 'Unknown'}</td>
+								<td>{fmt(t.registered)}</td>
+								<td>{fmt(t.observed)}</td>
+								<td class="bar"><span style={`width:${pct(t.observed, t.registered)}%`}></span><em>{pct(t.observed, t.registered)}%</em></td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+				<p class="note">"Heard" means adsb.lol's network received at least one transmission from the aircraft's assigned
+					Mode S address in the window. Silent is not the same as not flying: an aircraft without ADS-B Out may fly
+					legally outside rule airspace, and coverage is thin in parts of the country.</p>
+			</section>
+		)}
+
+		<section class="about">
+			<h2>Sources</h2>
+			<p>Contains information from <a href="https://github.com/adsblol/globe_history_2026">adsb.lol</a>, which is made
+				available here under the <a href="https://opendatacommons.org/licenses/odbl/1-0/">Open Database License (ODbL)</a>.
+				Aircraft registration data from the <a href="https://www.faa.gov/licenses_certificates/aircraft_certification/aircraft_registry/releasable_aircraft_download">FAA Releasable Aircraft Registry</a> (public domain).
+				{index && <>Release <code>{index.release}</code>.</>}</p>
+		</section>
+	</main>
+	<Footer />
+</BaseLayout>
+
+<style>
+	.explore { position: relative; z-index: 1; max-width: 72ch; margin: 0 auto; padding: 2rem 1rem 4rem; }
+	h1.thesis { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.7rem, 5.2vw, 2.7rem); color: var(--text-bright); line-height: 1.18; margin: 1.5rem 0 1rem; }
+	h1.thesis b { font-family: var(--font-mono); font-weight: 600; font-size: .78em; color: var(--strip-paper); letter-spacing: -.01em; white-space: nowrap; }
+	h2 { font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; color: var(--text-bright); margin: 2.5rem 0 1rem; }
+	.lede { color: var(--text-dim); margin-bottom: 1.5rem; }
+	.also { color: var(--text-dim); font-size: .8rem; margin-top: .75rem; }
+	.table-wrap { overflow-x: clip; }
+	table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+	th, td { text-align: left; padding: .45rem .5rem; border-bottom: 1px solid var(--line); }
+	td + td, th + th { white-space: nowrap; text-align: right; }
+	h1.thesis .nw { white-space: nowrap; }
+	@media (max-width: 560px) { table { font-size: .7rem; } td.bar { width: 28%; } th, td { padding: .4rem .3rem; } }
+	th { color: var(--text-dim); font-weight: 300; }
+	td.bar { width: 35%; position: relative; }
+	td.bar span { display: block; height: .55rem; background: var(--chart-1); }
+	td.bar em { position: absolute; right: .5rem; top: .3rem; font-style: normal; color: var(--text-dim); font-size: .7rem; }
+	.note, .about p { color: var(--text-dim); font-size: .8rem; margin-top: 1rem; }
+	a { color: var(--chart-highlight); }
+	code { font-size: .75rem; }
+</style>

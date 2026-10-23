@@ -1,0 +1,156 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+
+export function getStaticPaths() {
+	// Synced from the release by scripts/sync_explorer_data.sh; gitignored.
+	const p = path.join(process.cwd(), 'src', 'data', 'explore', 'schools_full.json');
+	if (!fs.existsSync(p)) return [];
+	const { days, schools } = JSON.parse(fs.readFileSync(p, 'utf8'));
+	return schools.map((s: any) => ({ params: { key: s.key }, props: { s, days } }));
+}
+
+const { s, days } = Astro.props as any;
+const fmt = (n: number) => (n ?? 0).toLocaleString('en-US');
+const money = (n: number | null) => (n ? `$${Math.round(n)}` : '—');
+const hexes = s.fleet.filter((f: any) => f.hex).map((f: any) => f.hex);
+const live = hexes.length ? `https://adsb.lol/?icaoFilter=${hexes.join(',')}&hideSideBar` : null;
+const place = [s.airport_name, s.city, s.state].filter(Boolean).join(' · ');
+const maxH = Math.max(1, ...s.daily_hours.map((d: number[]) => d[1]));
+const W = 600, H = 70, bw = W / Math.max(days.length, 1);
+const lastDay = days[days.length - 1];
+const recent = (d: string | null) => d && (Date.parse(lastDay) - Date.parse(d)) / 86400000 <= 7;
+const desc = `${s.name}: ${s.fleet_listed} aircraft, ${s.fleet_flew} observed flying ${days[0]} to ${lastDay}, from open ADS-B data.`;
+---
+
+<BaseLayout title={`${s.name} | Aether Flight`} description={desc}>
+	<Header />
+	<main class="school">
+		<p class="crumb"><a href="/explore/schools/">Flight schools</a></p>
+		<h1>{s.name}</h1>
+		<p class="place">{place}</p>
+		<p class="chips">
+			{s.evidence === 'website'
+				? <span class="chip ok">Fleet from the school's own website</span>
+				: <span class="chip warn">Discovered from the FAA registry; may be any aircraft operator</span>}
+			{s.domain && <a class="chip" href={`https://${s.domain}`} rel="noopener">{s.domain} ↗</a>}
+		</p>
+
+		<section class="grid">
+			<div><span class="k">Aircraft listed</span><span class="v">{fmt(s.fleet_listed)}</span><span class="s">{fmt(s.fleet_on_registry)} on the FAA registry</span></div>
+			<div><span class="k">Flew in window</span><span class="v">{fmt(s.fleet_flew)}</span><span class="s">{days[0]} → {lastDay}</span></div>
+			<div><span class="k">Fleet hours</span><span class="v">{fmt(Math.round(s.fleet_hours))}</span><span class="s">observed airborne</span></div>
+			<div><span class="k">Median wet rate</span><span class="v">{money(s.wet_rate_median)}</span><span class="s">per hour, as published</span></div>
+		</section>
+
+		{live && <p class="actions"><a class="btn" href={live} target="_blank" rel="noopener">Fleet live on adsb.lol ↗</a></p>}
+
+		{s.daily_hours.length > 0 && (
+			<section>
+				<h2>Fleet hours per day</h2>
+				<svg class="strip" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label="Fleet hours airborne per day">
+					{s.daily_hours.map(([i, h]: number[]) => {
+						const bh = Math.max(2, (h / maxH) * (H - 4));
+						return <rect x={(i * bw).toFixed(2)} y={(H - bh).toFixed(2)} width={Math.max(bw - 0.5, 0.8).toFixed(2)} height={bh.toFixed(2)}><title>{days[i]}: {h} h</title></rect>;
+					})}
+				</svg>
+				<div class="strip-axis"><span>{days[0]}</span><span>peak {maxH.toFixed(1)} h</span><span>{lastDay}</span></div>
+			</section>
+		)}
+
+		{s.fleet.length > 0 && (
+			<section>
+				<h2>Strip board</h2>
+				<p class="legend"><span class="e active"></span>flew in the last week <span class="e seen"></span>seen earlier <span class="e ghost"></span>not heard in the window</p>
+				<div class="fps-board" role="table" aria-label="Fleet">
+					<div class="fps-head" role="row">
+						<span role="columnheader">Tail</span><span role="columnheader">Aircraft</span><span role="columnheader" class="w">Wet</span>
+						<span role="columnheader">Days</span><span role="columnheader">Hours</span><span role="columnheader">Last</span><span role="columnheader" class="w">Home</span>
+					</div>
+					{s.fleet.map((f: any) => {
+						const st = !f.on_registry || f.cls === 'not_observed' ? 'ghost' : recent(f.last) ? 'active' : 'seen';
+						return (
+							<div class={`fps fps-row ${st}`} role="row">
+								<div role="cell"><a href={`/explore/tail/?n=${f.n}`} class="f-v">{f.n}</a></div>
+								<div role="cell"><span class="f-a">{[f.year, f.listed_as || f.model].filter(Boolean).join(' ')}{!f.on_registry && ' · not on registry'}</span></div>
+								<div role="cell" class="w">{money(f.wet)}</div>
+								<div role="cell">{f.days || '—'}</div>
+								<div role="cell">{f.hrs ? f.hrs.toFixed(1) : '—'}</div>
+								<div role="cell">{f.last ? f.last.slice(5) : '—'}</div>
+								<div role="cell" class="w">{f.home || '—'}</div>
+							</div>
+						);
+					})}
+				</div>
+			</section>
+		)}
+
+		{s.listings.length > 0 && (
+			<section class="table-wrap">
+				<h2>Listed without a tail number</h2>
+				<table>
+					<thead><tr><th>Listed as</th><th>Wet</th><th>Dry</th><th>Source</th></tr></thead>
+					<tbody>
+						{s.listings.map((l: any) => (
+							<tr><td>{l.listed_as}</td><td>{money(l.wet)}</td><td>{money(l.dry)}</td>
+								<td>{l.source_url ? <a href={l.source_url} rel="noopener nofollow">page ↗</a> : '—'}</td></tr>
+						))}
+					</tbody>
+				</table>
+			</section>
+		)}
+
+		<p class="note">Activity is what adsb.lol's receivers observed from each aircraft's assigned Mode S address; a quiet tail
+			may still fly where coverage is thin. Rates are as the school published them when crawled in 2026 and may have changed.</p>
+		<p class="attrib">Contains information from <a href="https://github.com/adsblol/globe_history_2026">adsb.lol</a>, made available
+			under the <a href="https://opendatacommons.org/licenses/odbl/1-0/">ODbL</a>. Registration data: FAA (public domain).</p>
+	</main>
+	<Footer />
+</BaseLayout>
+
+<style>
+	.school { position: relative; z-index: 1; max-width: 80ch; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+	.crumb { font-size: .75rem; color: var(--text-dim); }
+	h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(2rem, 7vw, 3rem); color: var(--text-bright); line-height: 1.1; margin: .75rem 0 .4rem; }
+	h2 { font-family: var(--font-display); font-weight: 400; font-size: 1.3rem; color: var(--text-bright); margin: 2rem 0 .75rem; }
+	.place { color: var(--text); }
+	.chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .75rem; }
+	.chip { font-size: .7rem; padding: .2rem .55rem; border: 1px solid var(--line); color: var(--text); text-decoration: none; }
+	.chip.ok { border-color: #5f8f6f; color: #a8d4b4; }
+	.chip.warn { border-color: #9e8a5f; color: #e0cfa0; }
+	.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: .75rem; margin-top: 1.5rem; }
+	.grid div { border: 1px solid var(--line); background: var(--bg-card); padding: .8rem; display: flex; flex-direction: column; gap: .15rem; }
+	.k { color: var(--text-dim); font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; }
+	.v { font-family: var(--font-display); font-size: 1.8rem; color: var(--text-bright); line-height: 1.1; }
+	.s { color: var(--text-dim); font-size: .7rem; }
+	.actions { margin-top: 1.25rem; }
+	.btn { display: inline-block; padding: .6rem .9rem; background: var(--accent); color: var(--bg); text-decoration: none; font-size: .8rem; }
+	.strip { width: 100%; height: 70px; display: block; background: var(--bg-card); }
+	.strip rect { fill: var(--chart-highlight); }
+	.strip-axis { display: flex; justify-content: space-between; color: var(--text-dim); font-size: .65rem; margin-top: .25rem; }
+	.table-wrap { overflow-x: auto; }
+	table { width: 100%; border-collapse: collapse; font-size: .75rem; }
+	th, td { text-align: left; padding: .4rem .45rem; border-bottom: 1px solid var(--line); white-space: nowrap; }
+	th { color: var(--text-dim); font-weight: 300; }
+	.legend { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .8rem; color: var(--text-dim); font-size: .68rem; margin-bottom: .6rem; }
+	.legend .e { display: inline-block; width: .55rem; height: .9rem; margin-right: .3rem; vertical-align: -0.15rem; }
+	.legend .e.active { background: var(--edge-active); } .legend .e.seen { background: var(--edge-seen); } .legend .e.ghost { background: var(--edge-ghost); }
+	.fps-board { display: grid; gap: 3px; }
+	.fps-head, .fps-row { grid-template-columns: 6.2rem minmax(0, 1fr) 3.4rem 2.6rem 3.4rem 3.4rem 3.6rem; }
+	.fps-head { display: grid; padding-left: 10px; color: var(--text-dim); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; }
+	.fps-head span { padding: 0 .5rem .2rem; }
+	.fps-row > div { padding: .3rem .5rem; font-size: .72rem; font-weight: 600; border-bottom: 0; white-space: nowrap; }
+	.school .fps a { color: var(--strip-ink); }
+	.fps-row .f-v { font-size: .82rem; }
+	.fps-row .f-a { font-weight: 400; text-transform: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+	.fps-row.ghost { opacity: .78; }
+	@media (max-width: 560px) {
+		.fps-head, .fps-row { grid-template-columns: 5.4rem minmax(0, 1fr) 2.2rem 3rem 3.3rem; }
+		.fps-head .w, .fps-row .w { display: none; }
+	}
+	.note, .attrib { color: var(--text-dim); font-size: .72rem; margin-top: 1.5rem; }
+	a { color: var(--chart-highlight); }
+</style>

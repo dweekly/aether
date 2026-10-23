@@ -104,3 +104,35 @@ body {
 	opacity: 1;
 	transform: translateY(0);
 }
+
+/* ── Flight progress strip ──────────────────────────────────────────────────
+   The explorer's one signature element: an ATC paper flight strip. Buff card,
+   ruled boxes, and a coloured leading edge that encodes observed status:
+   active (flew in the last week), seen (earlier in the window), ghost (not heard). */
+:root {
+	--strip-paper: #e8dec3;
+	--strip-ink: #1a1e27;
+	--strip-rule: #b5a47c;
+	--strip-dim: #5d5644;
+	--edge-active: #3f7d55;
+	--edge-seen: #6f7e94;
+	--edge-ghost: #a3542f;
+	--edge-other: #7a6aa0;
+}
+.fps {
+	display: grid;
+	background: var(--strip-paper);
+	color: var(--strip-ink);
+	border-left: 10px solid var(--edge-seen);
+	font-family: var(--font-mono);
+	text-transform: uppercase;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, .35);
+}
+.fps.active { border-left-color: var(--edge-active); }
+.fps.ghost { border-left-color: var(--edge-ghost); }
+.fps.other { border-left-color: var(--edge-other); }
+.fps > div { padding: .45rem .6rem; border-right: 1px solid var(--strip-rule); border-bottom: 1px solid var(--strip-rule); min-width: 0; }
+.fps .f-k { display: block; font-size: .58rem; letter-spacing: .12em; color: var(--strip-dim); font-weight: 400; }
+.fps .f-v { display: block; font-size: .95rem; font-weight: 600; letter-spacing: .02em; overflow-wrap: anywhere; }
+.fps a { color: inherit; text-decoration-color: var(--strip-rule); }
+.fps a:focus-visible, .fps-board a:focus-visible { outline: 2px solid var(--edge-active); outline-offset: 2px; }

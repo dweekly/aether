@@ -1,0 +1,34 @@
+---
+interface Props { placeholder?: string }
+const { placeholder = 'N-number, e.g. N172SP' } = Astro.props;
+---
+
+<form class="explore-search" action="/explore/tail/" method="get" role="search">
+	<label for="tail-input" class="sr-only">Tail number</label>
+	<input id="tail-input" name="n" type="search" inputmode="text" autocapitalize="characters"
+		autocomplete="off" spellcheck="false" placeholder={placeholder} required />
+	<button type="submit">Look up</button>
+</form>
+
+<script>
+	// Normalize "172sp", "n 172sp", "N-172SP" to "N172SP" before submitting.
+	document.querySelectorAll<HTMLFormElement>('form.explore-search').forEach((form) => {
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const input = form.querySelector('input') as HTMLInputElement;
+			let n = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+			if (!n) return;
+			if (!n.startsWith('N')) n = 'N' + n;
+			window.location.href = `/explore/tail/?n=${encodeURIComponent(n)}`;
+		});
+	});
+</script>
+
+<style>
+	.explore-search { display: flex; gap: .5rem; width: 100%; }
+	input { flex: 1; min-width: 0; font: inherit; font-size: 1rem; padding: .7rem .8rem; background: var(--bg-card);
+		color: var(--text-bright); border: 1px solid var(--line); border-radius: 0; }
+	input:focus { outline: 1px solid var(--accent); }
+	button { font: inherit; padding: .7rem 1rem; background: var(--accent); color: var(--bg); border: 0; cursor: pointer; }
+	.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+</style>

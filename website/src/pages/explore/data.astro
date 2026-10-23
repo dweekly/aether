@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<BaseLayout title="Download the data | Aether Flight"
+	description="Every table behind the explorer as Parquet: the FAA registry joined to adsb.lol's open ADS-B archive, school fleets, and the findings. ODbL.">
+	<Header />
+	<main class="data">
+		<h1>Take it home</h1>
+		<p class="lede">Every table behind the explorer, as Parquet you can query straight from the URL. No account, no API key.</p>
+
+		<section>
+			<h2>Try it</h2>
+			<p>With <a href="https://duckdb.org/docs/installation/">DuckDB</a> installed, this asks how many registered gyroplanes actually flew:</p>
+			<pre><code id="try">duckdb -c "SELECT count(*) AS registered,
+  count(*) FILTER (WHERE observed_class &lt;&gt; 'not_observed') AS heard
+FROM 'https://data.aether-flight.com/v/RELEASE/aircraft.parquet'
+WHERE aircraft_type = 'Gyroplane'"</code></pre>
+		</section>
+
+		<section>
+			<h2>Files</h2>
+			<p id="meta" class="dim">Loading the current release…</p>
+			<ul id="files" class="files"></ul>
+		</section>
+
+		<section>
+			<h2>What's in each table</h2>
+			<dl>
+				<dt><code>aircraft.parquet</code></dt><dd>One row per N-number on the FAA registry snapshot: registration fields, and what adsb.lol observed in the window (days, hours, legs, first and last seen, home airport, LADD flag).</dd>
+				<dt><code>aircraft_day/YYYY-MM.parquet</code></dt><dd>One row per aircraft per day: points by source, observed airborne minutes, legs, callsigns, last ground position.</dd>
+				<dt><code>legs/YYYY-MM.parquet</code></dt><dd>One row per observed leg: start and end time and position, departure and arrival airport when the aircraft was seen low near one.</dd>
+				<dt><code>schools.json</code></dt><dd>Flight schools and clubs: fleets and rates from each school's own website (with the source page), FAA registry matches, and observed activity.</dd>
+				<dt><code>unmatched.parquet</code></dt><dd>US-block addresses heard on ADS-B that are not on the registry snapshot. Not an estimate of privacy-address use.</dd>
+				<dt><code>results.json</code>, <code>training.json</code>, <code>privacy.json</code></dt><dd>The frozen numbers behind the findings, with definitions and window.</dd>
+			</dl>
+		</section>
+
+		<section>
+			<h2>License</h2>
+			<p>Contains information from <a href="https://github.com/adsblol/globe_history_2026">adsb.lol</a>, which is made available here under the
+				<a href="https://opendatacommons.org/licenses/odbl/1-0/">Open Database License (ODbL)</a>. These tables are released under the ODbL too:
+				use them for anything, including commercially; if you publish a database built from them, share it under the ODbL. FAA registry data is
+				public domain. Nothing here is derived from OpenSky or AOPA data, whose terms forbid redistribution. Each release includes a
+				<code>LICENSES.md</code> with the provenance of every file.</p>
+		</section>
+	</main>
+	<Footer />
+</BaseLayout>
+
+<script>
+	const base = 'https://data.aether-flight.com';
+	const mb = (b: number) => (b >= 1e6 ? `${(b / 1e6).toFixed(0)} MB` : `${Math.max(1, Math.round(b / 1e3))} KB`);
+	(async () => {
+		const meta = document.getElementById('meta')!;
+		try {
+			const { release } = await fetch(`${base}/latest.json`, { cache: 'no-store' }).then((r) => r.json());
+			const m = await fetch(`${base}/v/${release}/manifest.json`).then((r) => r.json());
+			meta.textContent = `Release ${release} · window ${m.window.first_day} → ${m.window.last_day} (${m.window.days} days)`;
+			document.getElementById('files')!.innerHTML = m.files
+				.map((f: any) => `<li><a href="${base}/v/${release}/${f.path}">${f.path}</a><span>${mb(f.bytes)}</span></li>`).join('');
+			const code = document.getElementById('try')!;
+			code.textContent = code.textContent!.replace('RELEASE', release);
+		} catch (e: any) {
+			meta.textContent = `The download index did not load (${e.message}). Files are at ${base}/latest.json.`;
+		}
+	})();
+</script>
+
+<style>
+	.data { position: relative; z-index: 1; max-width: 72ch; margin: 0 auto; padding: 2rem 1rem 4rem; }
+	h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(2.2rem, 7vw, 3.2rem); color: var(--text-bright); margin: 1rem 0 .5rem; }
+	h2 { font-family: var(--font-display); font-weight: 400; font-size: 1.4rem; color: var(--text-bright); margin: 2.25rem 0 .75rem; }
+	.lede, .dim { color: var(--text-dim); }
+	p { font-size: .85rem; }
+	pre { background: var(--strip-paper); color: var(--strip-ink); padding: .9rem 1rem; overflow-x: auto; font-size: .75rem; margin-top: .75rem; border-left: 10px solid var(--edge-active); }
+	.files { list-style: none; margin-top: .5rem; }
+	.files li { display: flex; justify-content: space-between; gap: 1rem; padding: .4rem 0; border-bottom: 1px solid var(--line); font-size: .8rem; }
+	.files span { color: var(--text-dim); white-space: nowrap; }
+	dl { display: grid; gap: .3rem 1rem; font-size: .8rem; }
+	dt { color: var(--text-bright); margin-top: .6rem; }
+	dd { color: var(--text-dim); }
+	a { color: var(--chart-highlight); }
+</style>
