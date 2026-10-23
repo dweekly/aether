@@ -22,6 +22,7 @@ const place = [s.airport_name, s.city, s.state].filter(Boolean).join(' · ');
 const maxH = Math.max(1, ...s.daily_hours.map((d: number[]) => d[1]));
 const W = 600, H = 70, bw = W / Math.max(days.length, 1);
 const lastDay = days[days.length - 1];
+// "Flew" needs an airborne observation (last_flew), not just a transponder heard on the ground.
 const recent = (d: string | null) => d && (Date.parse(lastDay) - Date.parse(d)) / 86400000 <= 7;
 const desc = `${s.name}: ${s.fleet_listed} aircraft, ${s.fleet_flew} observed flying ${days[0]} to ${lastDay}, from open ADS-B data.`;
 ---
@@ -33,9 +34,10 @@ const desc = `${s.name}: ${s.fleet_listed} aircraft, ${s.fleet_flew} observed fl
 		<h1>{s.name}</h1>
 		<p class="place">{place}</p>
 		<p class="chips">
-			{s.evidence === 'website'
-				? <span class="chip ok">Fleet from the school's own website</span>
-				: <span class="chip warn">Discovered from the FAA registry; may be any aircraft operator</span>}
+			{s.evidence === 'website' && <span class="chip ok">Fleet from the school's own website</span>}
+			{s.evidence === 'mixed' && <span class="chip ok">Fleet partly from the school's website, partly matched in the FAA registry</span>}
+			{s.evidence === 'registry' && s.domain && <span class="chip warn">Aircraft matched in the FAA registry by owner name, not listed on the website</span>}
+			{s.evidence === 'registry' && !s.domain && <span class="chip warn">Discovered from the FAA registry; may be any aircraft operator</span>}
 			{s.domain && <a class="chip" href={`https://${s.domain}`} rel="noopener">{s.domain} ↗</a>}
 		</p>
 
@@ -64,14 +66,14 @@ const desc = `${s.name}: ${s.fleet_listed} aircraft, ${s.fleet_flew} observed fl
 		{s.fleet.length > 0 && (
 			<section>
 				<h2>Strip board</h2>
-				<p class="legend"><span class="e active"></span>flew in the last week <span class="e seen"></span>seen earlier <span class="e ghost"></span>not heard in the window</p>
+				<p class="legend"><span class="e active"></span>flew in the last week <span class="e seen"></span>heard earlier <span class="e ghost"></span>not heard in the window</p>
 				<div class="fps-board" role="table" aria-label="Fleet">
 					<div class="fps-head" role="row">
 						<span role="columnheader">Tail</span><span role="columnheader">Aircraft</span><span role="columnheader" class="w">Wet</span>
-						<span role="columnheader">Days</span><span role="columnheader">Hours</span><span role="columnheader">Last</span><span role="columnheader" class="w">Home</span>
+						<span role="columnheader">Days</span><span role="columnheader">Hours</span><span role="columnheader">Flew</span><span role="columnheader" class="w">Home</span>
 					</div>
 					{s.fleet.map((f: any) => {
-						const st = !f.on_registry || f.cls === 'not_observed' ? 'ghost' : recent(f.last) ? 'active' : 'seen';
+						const st = !f.on_registry || f.cls === 'not_observed' ? 'ghost' : recent(f.last_flew) ? 'active' : 'seen';
 						return (
 							<div class={`fps fps-row ${st}`} role="row">
 								<div role="cell"><a href={`/explore/tail/?n=${f.n}`} class="f-v">{f.n}</a></div>
@@ -79,7 +81,7 @@ const desc = `${s.name}: ${s.fleet_listed} aircraft, ${s.fleet_flew} observed fl
 								<div role="cell" class="w">{money(f.wet)}</div>
 								<div role="cell">{f.days || '—'}</div>
 								<div role="cell">{f.hrs ? f.hrs.toFixed(1) : '—'}</div>
-								<div role="cell">{f.last ? f.last.slice(5) : '—'}</div>
+								<div role="cell">{f.last_flew ? f.last_flew.slice(5) : '—'}</div>
 								<div role="cell" class="w">{f.home || '—'}</div>
 							</div>
 						);

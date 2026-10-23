@@ -43,9 +43,10 @@ import ExploreSearch from '../../components/ExploreSearch.astro';
 
 	function status(r: Rec, lastDay: string) {
 		if (r.cls === 'not_observed') return ['ghost', 'Not heard'];
-		if (r.cls === 'other_only') return ['other', 'MLAT / TIS-B only'];
-		const ageDays = (Date.parse(lastDay) - Date.parse(r.last)) / 86400000;
-		return ageDays <= 7 ? ['active', 'Flew this week'] : ['seen', `Last ${r.last.slice(5)}`];
+		// "Flew" needs an airborne observation; a transponder heard on the ground is only "heard".
+		if (!r.lastFlew) return [r.cls === 'other_only' ? 'other' : 'seen', `Heard ${r.last.slice(5)}, not airborne`];
+		const ageDays = (Date.parse(lastDay) - Date.parse(r.lastFlew)) / 86400000;
+		return ageDays <= 7 ? ['active', 'Flew this week'] : ['seen', `Last flew ${r.lastFlew.slice(5)}`];
 	}
 
 	async function main() {
@@ -56,10 +57,18 @@ import ExploreSearch from '../../components/ExploreSearch.astro';
 		if (input) input.value = n;
 		document.title = `${n} | Aether Flight`;
 
-		const [idx, shard] = await Promise.all([
-			fetch('/x/index.json').then((r) => r.json()),
-			fetch(`/x/t/${key(n)}.json`).then((r) => (r.ok ? r.json() : {})).catch(() => ({})),
-		]);
+		const idx = await fetch('/x/index.json').then((r) => {
+			if (!r.ok) throw new Error(`index HTTP ${r.status}`);
+			return r.json();
+		});
+		// A shard missing from the index means no registered N-number starts this way; any
+		// other failure is a loading error, never evidence that the aircraft is unregistered.
+		let shard: Record<string, Rec> = {};
+		if (idx.shards.includes(key(n))) {
+			const resp = await fetch(`/x/t/${key(n)}.json`);
+			if (!resp.ok) throw new Error(`data HTTP ${resp.status}`);
+			shard = await resp.json();
+		}
 		const r: Rec | undefined = shard[n];
 		const days: string[] = idx.days;
 		const win = idx.results.window;
