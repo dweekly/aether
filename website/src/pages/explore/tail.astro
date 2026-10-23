@@ -97,6 +97,12 @@ import ExploreSearch from '../../components/ExploreSearch.astro';
 				${r.pia ? '<span class="chip flag">Seen using a PIA address</span>' : ''}
 			</p>
 			${r.hist && r.hist.length ? `<section><h2>Minutes airborne per day</h2>${activityStrip(r.hist, days)}</section>` : ''}
+			${r.recent && r.recent.length ? `<section><h2>Recent flights</h2>
+				<ol class="legs">${r.recent.map(([i, dep, arr, m]: any[]) => {
+					const apt = (x: string | null) => x ? `<a href="/explore/airport/${esc(x)}/">${esc(x)}</a>` : '<span class="unk" title="not seen near an airport">?</span>';
+					return `<li><span class="d">${esc(days[i].slice(5))}</span><span class="r">${apt(dep)} → ${apt(arr)}</span><span class="m">${m ? m + ' min' : '—'}</span></li>`;
+				}).join('')}</ol>
+				<p class="dim small">"?" means the leg started or ended where no receiver saw the aircraft low near an airport.</p></section>` : ''}
 			<section class="actions">
 				<a class="btn" href="${live}" target="_blank" rel="noopener">Live map on adsb.lol ↗</a>
 				<a class="btn ghost" href="https://registry.faa.gov/AircraftInquiry/Search/NNumberResult?nNumberTxt=${esc(r.n.slice(1))}" target="_blank" rel="noopener">FAA registry record ↗</a>
@@ -147,6 +153,10 @@ import ExploreSearch from '../../components/ExploreSearch.astro';
 	.tail .strip { width: 100%; height: 60px; display: block; background: var(--bg-card); }
 	.tail .strip rect { fill: var(--chart-highlight); }
 	.tail .strip-axis { display: flex; justify-content: space-between; color: var(--text-dim); font-size: .65rem; margin-top: .25rem; }
+	.tail .legs { list-style: none; font-size: .8rem; }
+	.tail .legs li { display: grid; grid-template-columns: 3.4rem 1fr auto; gap: .75rem; padding: .35rem 0; border-bottom: 1px solid var(--line); }
+	.tail .legs .d, .tail .legs .m { color: var(--text-dim); }
+	.tail .legs .unk { color: var(--text-dim); }
 	.tail .actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
 	.tail .btn { padding: .6rem .9rem; background: var(--accent); color: var(--bg); text-decoration: none; font-size: .8rem; }
 	.tail .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }

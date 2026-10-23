@@ -26,6 +26,7 @@ from release_window import day_view, included_days  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 HISTORY = ROOT / "data" / "history"
+RECENT_LEGS = 8
 RELEASES = ROOT / "data" / "release"
 
 
@@ -84,6 +85,20 @@ def main():
         if x["observed_class"] != "not_observed":
             hex_to_n[x["hex"]] = n
 
+    # The last RECENT_LEGS airborne legs per aircraft, newest first:
+    # [day_index, dep or null, arr or null, airborne minutes].
+    day_view(c, "legs", HISTORY / "legs" / "*" / "*" / "*.parquet", days)
+    recent = defaultdict(list)
+    for hexid, day, dep, arr, mins in c.execute(f"""
+        SELECT hex, day, dep, arr, round(airborne_min)::INT FROM (
+            SELECT *, row_number() OVER (PARTITION BY hex ORDER BY start_ts DESC) AS rk
+            FROM legs WHERE airborne_min > 0 OR max_alt_ft IS NOT NULL)
+        WHERE rk <= {RECENT_LEGS} ORDER BY hex, start_ts DESC
+    """).fetchall():
+        n = hex_to_n.get(hexid)
+        if n:
+            recent[n].append([day_index[str(day)], dep, arr, mins])
+
     hist = defaultdict(lambda: defaultdict(list))
     for hexid, day, mins, legs in c.execute(f"""
         SELECT hex, day, round(airborne_min)::INT, n_legs FROM ad
@@ -96,6 +111,9 @@ def main():
     for k, recs in shards.items():
         for n, h in hist.get(k, {}).items():
             recs[n]["hist"] = h
+        for n in recs:
+            if recent.get(n):
+                recs[n]["recent"] = recent[n]
         write(web / "t" / f"{k}.json", recs)
     results = json.loads((rel / "results.json").read_text())
     write(web / "index.json", {"release": a.release, "days": days, "results": results,
