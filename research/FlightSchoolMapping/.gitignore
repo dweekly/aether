@@ -33,3 +33,10 @@ output/flight_line_base.json
 # every aggregate run, so it would churn the repo; `make rebuild-adsb`
 # reconstructs it in ~2 min.
 output/adsb_aggregate_state.json.gz
+
+# Transient run state: progress counters, logs, the PDF target cache key
+# written by 22_pdf_rate_sheets.py, and the stub left by a run with no API key
+output/*progress.json
+output/extract_stderr.log
+output/*.failed_no_key
+output/pdf_targets.key

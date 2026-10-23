@@ -15,9 +15,11 @@ local.properties
 research/FlightSchoolMapping/data/
 !research/FlightSchoolMapping/data/adsb/snapshots/
 research/FlightSchoolMapping/output/faa_ga_registry.csv
-research/FlightSchoolMapping/output/fleet_crawl_index.json
 research/FlightSchoolMapping/output/fleet_html/
 research/FlightSchoolMapping/output/fleet_html_raw/
 research/FlightSchoolMapping/output/fleet_browser_html_raw/
 research/FlightSchoolMapping/output/fleet_browser_text/
 .env
+
+# Playwright MCP session logs
+.playwright-mcp/
