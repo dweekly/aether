@@ -33,6 +33,16 @@ Window 2026-03-05 → 2026-10-22 (230 days of the adsb.lol archive). Registry sn
 - 452 PIA (privacy ICAO address) addresses observed. Aggregates only;
   we do not publish PIA-to-tail links. Prior art: Michel & Strohmeier, "Flying in Private Mode".
 
+## 4. What renting costs, and how much the planes fly
+
+- 2,760 rental aircraft carry a wet rate on their school's own page and a tail on the registry (rates as published when crawled; the fleet file was built 2026-03 → 2026-08).
+- 211 of them (8%) were never airborne in the window: on the rate sheet, not in the sky.
+- Those that flew: median 218 observed hours a year, annualized (quartiles 88–403).
+- Cessna 172s (1,201): median $179/h wet (quartiles $160–$195), median 320 hours a year (quartiles 129–499); 51 never flew.
+- Price does not track use: Spearman rho 0.06 between a 172's rate and its hours.
+- Rate x observed hours for a 172 that flew: median $59,362 a year (quartiles $26,730–$92,387).
+- Observed hours are a floor: time flown outside receiver coverage is not counted.
+
 ## Sources to cite on a slide
 
 - Contains information from adsb.lol, made available under the ODbL. FAA Releasable Aircraft Registry (public domain).

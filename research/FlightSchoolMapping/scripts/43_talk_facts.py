@@ -10,10 +10,12 @@ Usage: 43_talk_facts.py --release dev [--out ../../../docs/hackers-2026-facts.md
 
 import argparse
 import json
+import statistics
 from datetime import date
 from pathlib import Path
 
 import duckdb
+from scipy.stats import spearmanr
 
 ROOT = Path(__file__).resolve().parent.parent
 RELEASES = ROOT / "data" / "release"
@@ -30,6 +32,33 @@ def pct(a, b):
 
 def n(x):
     return f"{x:,}"
+
+
+def quartiles(xs):
+    q1, med, q3 = statistics.quantiles(xs, n=4)
+    return round(q1), round(med), round(q3)
+
+
+def rental_utilization(schools, days):
+    """Fleet rows with a wet rate from the school's own page and a tail on the registry,
+    one row per tail; hours are observed airborne hours annualized from the window."""
+    seen, rows = set(), []
+    for s in schools:
+        for f in s["fleet"]:
+            if f.get("wet") and f.get("on_registry") and f["n"] not in seen:
+                seen.add(f["n"])
+                rows.append(f)
+    ann = lambda f: (f.get("hrs") or 0) * 365 / days
+    c172 = [f for f in rows if "CESSNA" in (f.get("model") or "").upper() and "172" in (f.get("model") or "")]
+    rho, pval = spearmanr([f["wet"] for f in c172], [ann(f) for f in c172])
+    return {
+        "rated": len(rows), "never": sum(1 for f in rows if not f.get("last_flew")),
+        "hours_flew": quartiles([ann(f) for f in rows if f.get("last_flew")]),
+        "c172": len(c172), "c172_never": sum(1 for f in c172 if not f.get("last_flew")),
+        "c172_wet": quartiles([f["wet"] for f in c172]), "c172_hours": quartiles([ann(f) for f in c172]),
+        "c172_rho": rho, "c172_p": pval,
+        "c172_billed": quartiles([f["wet"] * ann(f) for f in c172 if f.get("last_flew")]),
+    }
 
 
 def main():
@@ -63,6 +92,7 @@ def main():
         SELECT count(*) FILTER (WHERE adsr AND NOT direct AND NOT nt) FROM s JOIN reg USING (hex)
     """).fetchone()[0]
     faa = FAA_EQUIPPED
+    util = rental_utilization(json.loads((rel / "schools_full.json").read_text())["schools"], w["days"])
 
     lines = [
         "# Hackers 2026 fact sheet",
@@ -122,6 +152,22 @@ def main():
         "open community feeds don't.",
         f"- {n(p['pia']['distinct_pia_addresses_observed'])} PIA (privacy ICAO address) addresses observed. Aggregates only;",
         "  we do not publish PIA-to-tail links. Prior art: Michel & Strohmeier, \"Flying in Private Mode\".",
+        "",
+        "## 4. What renting costs, and how much the planes fly",
+        "",
+        f"- {n(util['rated'])} rental aircraft carry a wet rate on their school's own page and a tail on the registry "
+        "(rates as published when crawled; the fleet file was built 2026-03 → 2026-08).",
+        f"- {n(util['never'])} of them ({pct(util['never'], util['rated'])}) were never airborne in the window: on the rate "
+        "sheet, not in the sky.",
+        f"- Those that flew: median {n(util['hours_flew'][1])} observed hours a year, annualized "
+        f"(quartiles {n(util['hours_flew'][0])}–{n(util['hours_flew'][2])}).",
+        f"- Cessna 172s ({n(util['c172'])}): median ${util['c172_wet'][1]}/h wet (quartiles ${util['c172_wet'][0]}–"
+        f"${util['c172_wet'][2]}), median {n(util['c172_hours'][1])} hours a year (quartiles {n(util['c172_hours'][0])}–"
+        f"{n(util['c172_hours'][2])}); {n(util['c172_never'])} never flew.",
+        f"- Price does not track use: Spearman rho {util['c172_rho']:.2f} between a 172's rate and its hours.",
+        f"- Rate x observed hours for a 172 that flew: median ${n(util['c172_billed'][1])} a year (quartiles "
+        f"${n(util['c172_billed'][0])}–${n(util['c172_billed'][2])}).",
+        "- Observed hours are a floor: time flown outside receiver coverage is not counted.",
         "",
         "## Sources to cite on a slide",
         "",
