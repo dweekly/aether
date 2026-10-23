@@ -25,7 +25,7 @@ const year = (s: string) => s.slice(0, 4);
 	<main class="explore">
 		{r ? (
 			<h1 class="thesis">Of the <b>{fmt(registered)}</b> aircraft on the FAA registry, <b>{fmt(observed)}</b> were heard
-				on ADS-B <span class="nw">{day(r.window.first_day)} – {day(r.window.last_day)}, {year(r.window.last_day)}</span>. The other <b>{fmt(registered - observed)}</b> were silent.</h1>
+				by adsb.lol's open receiver network <span class="nw">{day(r.window.first_day)} – {day(r.window.last_day)}, {year(r.window.last_day)}</span>. The other <b>{fmt(registered - observed)}</b> were silent.</h1>
 		) : <h1 class="thesis">Which US aircraft actually fly?</h1>}
 		<p class="lede">Look up any tail number: its registration, how often it flies, where it lives and where it was last parked.</p>
 		<ExploreSearch />

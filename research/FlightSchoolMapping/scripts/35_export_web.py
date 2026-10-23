@@ -15,6 +15,7 @@ Usage: 35_export_web.py --release dev
 
 import argparse
 import json
+import os
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -25,9 +26,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from release_window import day_view, included_days  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
-HISTORY = ROOT / "data" / "history"
+DATA = Path(os.environ.get("AETHER_DATA", ROOT / "data"))  # tests point this at a fixture tree
+HISTORY = DATA / "history"
 RECENT_LEGS = 8
-RELEASES = ROOT / "data" / "release"
+RELEASES = DATA / "release"
 
 
 def shard_key(n_number):
@@ -54,10 +56,19 @@ def main():
     day_view(c, "ad", HISTORY / "aircraft_day" / "*" / "*" / "*.parquet", days)
     day_index = {d: i for i, d in enumerate(days)}
 
-    parked = {r[0]: r[1:] for r in c.execute(f"""
-        SELECT hex, max(day), arg_max_null(last_ground_airport, day),
-               arg_max_null(round(last_ground_lat, 5), day), arg_max_null(round(last_ground_lon, 5), day)
-        FROM ad WHERE last_ground_lat IS NOT NULL GROUP BY hex
+    # Last parked: the latest of a ground fix or a low arrival at an airport, all fields from
+    # that one event (the same evidence 34 uses for the night airport). Many days have no
+    # ground fix at all, only the low approach, so ground fixes alone go stale.
+    day_view(c, "legs", HISTORY / "legs" / "*" / "*" / "*.parquet", days)
+    parked = {r[0]: r[1:] for r in c.execute("""
+        WITH e AS (
+            SELECT hex, day, last_ground_ts AS ts, last_ground_airport AS apt, last_ground_lat AS lat, last_ground_lon AS lon
+            FROM ad WHERE last_ground_lat IS NOT NULL AND last_ground_ts IS NOT NULL
+            UNION ALL
+            SELECT hex, day, end_ts, arr, end_lat, end_lon
+            FROM legs WHERE arr IS NOT NULL AND end_observed_low AND end_lat IS NOT NULL)
+        SELECT hex, max(day), arg_max_null(apt, (day, ts)), arg_max_null(round(lat, 5), (day, ts)), arg_max_null(round(lon, 5), (day, ts))
+        FROM e GROUP BY hex
     """).fetchall()}
 
     cur = c.execute(f"SELECT * FROM read_parquet('{rel / 'aircraft.parquet'}')")
@@ -87,7 +98,6 @@ def main():
 
     # The last RECENT_LEGS airborne legs per aircraft, newest first:
     # [day_index, dep or null, arr or null, airborne minutes].
-    day_view(c, "legs", HISTORY / "legs" / "*" / "*" / "*.parquet", days)
     recent = defaultdict(list)
     for hexid, day, dep, arr, mins in c.execute(f"""
         SELECT hex, day, dep, arr, round(airborne_min)::INT FROM (
