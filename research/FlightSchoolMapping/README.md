@@ -5,7 +5,9 @@ on their flight line (by make/model/type), their activity rates, and their conta
 information — using publicly available ADS-B telemetry, FAA registration data, and
 targeted web scraping?
 
-**Status (Mar 13, 2026):** 4,825 schools/clubs, 16,881 aircraft, 11,749 unique N-numbers, 6,764 ADS-B active, 4,387 with rental rates. Built by `21_build_flight_line.py` + `22_pdf_rate_sheets.py`. ADS-B via 626 dual-source snapshots (OpenSky + adsb.lol, cron every 15 min).
+**Status (Aug 2, 2026):** 4,825 schools/clubs, 16,881 aircraft, 11,749 unique N-numbers, 8,929 ADS-B active, 4,387 with rental rates. Built by `make` (`21_build_flight_line.py` → `22_pdf_rate_sheets.py`). ADS-B via 6,018 dual-source snapshots (OpenSky + adsb.lol, cron every 15 min), 146,235 unique transponders observed.
+
+Snapshot coverage has a gap from Apr 22 – Jul 17, 2026 (the collector broke when the repo moved from macOS to Linux and the venv's interpreter symlinks went dangling). Per-aircraft `total_sightings` are counted against a flat `n_snapshots` denominator spanning both windows, so activity *rates* derived from them understate aircraft that were only active in one window.
 
 ---
 
@@ -600,26 +602,84 @@ All data is from public sources. 15 of 17 sources are free; only the Anthropic A
 
 ## Quick Reference: Common Operations
 
+The pipeline is driven by a **Makefile** that reruns only what is stale and is
+safe to rerun any number of times. Run it from `research/FlightSchoolMapping/`.
+
+```bash
+make                              # ADS-B aggregate → build → PDF overlay
+                                  #   free, local, deterministic (~90s cold, ~1s warm)
+make status                       # what is stale and why (~1s)
+make refresh                      # re-download FAA registry + airports, then rebuild
+make validate                     # build, then cross-validate fleet against ADS-B
+make rebuild-adsb                 # force a from-scratch ADS-B aggregation
+
+make backup                       # push snapshots + caches + extracts to R2
+make r2-status                    # what is stored offsite
+
+make crawl      ALLOW_CRAWL=1     # HTTP + browser + expansion crawl (hours, free)
+make extract    ALLOW_SPEND=1     # Sonnet batch extraction (~$25)
+make pdf-online ALLOW_SPEND=1     # fetch new rate sheets + Sonnet fallback
+make discover                     # propose new FAA-registry crawl candidates
+make all        ALLOW_CRAWL=1 ALLOW_SPEND=1   # everything
+
+make clean                        # drop digests only — never deletes output
+```
+
+`make` on its own never spends money and never crawls; the crawl and LLM stages
+refuse to run without their explicit gate.
+
+### How staleness is decided
+
+By **content hash**, not mtime. Each stage records a digest of its inputs in
+`.build/<stage>.inputs`, and the digest file is only replaced when the digest
+actually changes. A `git checkout`, an `rsync`, or the 15-minute ADS-B cron
+touching the snapshot directory therefore does *not* trigger a rebuild.
+Directories (the crawl caches, the 11 GB snapshot tree) are hashed by listing
+rather than by reading their contents.
+
+Caveat: `make -n` and `make -q` over-report, because a dry run cannot know a
+digest will come out unchanged. Use `make status`.
+
+Stages cache their own expensive work on top of that, so a full rebuild is
+~90 s rather than the ~10 min it used to be:
+
+| Stage | Was | Now | How |
+|-------|-----|-----|-----|
+| ADS-B aggregate | ~2–4 min | ~5 s | checkpointed counters; only new snapshots read |
+| 21 assembly | ~80 s | ~80 s | genuine work — parses the 190 MB FAA registry |
+| 22 PDF overlay | ~6 min 45 s | ~3 s | target list keyed on crawl-cache digest; extracted PDF text reused when newer than its sources |
+
+### Offsite data (Cloudflare R2)
+
+`scripts/r2_sync.sh` mirrors data to R2 under `aether-research/`, on cron
+(snapshots + extracts nightly, crawl caches weekly):
+
+| Prefix | Contents | Why |
+|--------|----------|-----|
+| `adsb-snapshots/` | 10.8 GB | Irreplaceable — observations cannot be re-fetched |
+| `crawl-cache/` | ~10 GB | Re-crawlable in principle, but the web has moved on |
+| `extract/` | 27 MB | ~$25 of Sonnet; also committed to git, so R2 is the second copy |
+
+Every build first runs `restore-inputs`, which pulls any missing extract file
+from R2. Without it, `21` would quietly
+emit a *smaller* dataset rather than fail. `make restore-adsb` pulls the full
+snapshot history back.
+
+Note: rclone v1.60 on this box logs spurious `501 NotImplemented` on the first
+PUT of each object and succeeds on retry, so `r2_sync.sh` verifies by checksum
+rather than trusting exit codes.
+
+### Individual scripts
+
 ```bash
 cd research/FlightSchoolMapping/scripts
 source .venv/bin/activate
 
-# Full rebuild of flight_line.json (deterministic, no API calls, ~60s)
-python 21_build_flight_line.py
-
-# Apply PDF rate sheet extraction on top (patches flight_line.json)
-python 22_pdf_rate_sheets.py
-
-# Aggregate ADS-B snapshots → adsb_activity.csv (then rebuild to fold in)
-python 11_adsb_dual_source.py --aggregate
-python 21_build_flight_line.py
-python 22_pdf_rate_sheets.py
-
-# Take a single ADS-B snapshot (for testing)
-python 11_adsb_dual_source.py --snapshot
-
-# Expand corpus with new AOPA domains (crawl + Sonnet extraction)
-python 09f_corpus_expansion.py
+python 21_build_flight_line.py          # → flight_line_base.json (~60s)
+python 22_pdf_rate_sheets.py --offline  # base → flight_line.json, no network
+python 11_adsb_dual_source.py --aggregate   # snapshots → adsb_activity.csv
+python 11_adsb_dual_source.py --snapshot    # one ADS-B snapshot, for testing
+python 09f_corpus_expansion.py              # crawl + Sonnet on new AOPA domains
 ```
 
 ## Build Sequence
@@ -629,10 +689,16 @@ assembles everything from scratch (deterministic, no API calls). `22_pdf_rate_sh
 patches the result with PDF-extracted N-numbers.
 
 ```
-STAGE 1 — Reference Data (run once, refresh monthly)
+STAGE 1 — Reference Data (run once, refresh monthly)             [make refresh]
   00_faa141_ingest.py          → faa141_schools.csv
-  01_faa_registry.py           → faa_master.csv, ACFTREF.txt
+  01_faa_registry.py --force   → faa_master.csv, ACFTREF.txt  (raw, from the ZIP)
+                               → faa_ga_registry.csv, faa_school_candidates.csv
   02_airport_reference.py      → airports.csv
+
+  faa_master.csv / ACFTREF.txt are byte-for-byte copies of MASTER.txt and
+  ACFTREF.txt out of ReleasableAircraft.zip — they keep the FAA's original
+  column names, which is what stages 4 and 4b parse. Without --force, a cached
+  ZIP is reused.
 
 STAGE 2 — School Directory Assembly (run once, refresh quarterly)
   08b_aopa_directory.py        → aopa_flight_schools.json (3,667 schools+clubs)
@@ -649,23 +715,39 @@ STAGE 3b — Browser Fleet Crawl & Extraction
 STAGE 3c — Corpus Expansion (new domains from AOPA clubs + universities)
   09f_corpus_expansion.py      → expansion_extract.jsonl (crawl + extract, domain embedded)
 
-STAGE 4 — Assembly (deterministic rebuild, no API calls, ~60s)
-  21_build_flight_line.py      → flight_line.json, build_diagnostics.json
+STAGE 4 — Assembly (deterministic rebuild, no API calls, ~60s)   [make]
+  21_build_flight_line.py      → flight_line_base.json, build_diagnostics.json
     Reads: expansion_extract.jsonl, fleet_browser_extract_results.jsonl,
            fleet_extract_results.jsonl, aopa_flight_schools.json,
            faa_discovered_schools.json, faa_master.csv, ACFTREF.txt,
            adsb_activity.csv
 
-STAGE 4b — PDF Rate Sheet Overlay (patches flight_line.json in-place)
-  22_pdf_rate_sheets.py        → flight_line.json (updated), pdf_extraction_diagnostics.json
-    Downloads PDFs, extracts N-numbers via regex + FAA validation.
-    Resume-friendly (skips already-downloaded files).
+STAGE 4b — PDF Rate Sheet Overlay                                [make]
+  22_pdf_rate_sheets.py        → flight_line.json, pdf_extraction_diagnostics.json
+    Reads flight_line_base.json and writes flight_line.json — two different
+    files, so neither script mutates something it also reads. --offline (the
+    default under make) reuses downloaded PDFs and the cached Sonnet batch.
 
-STAGE 5 — ADS-B Observation (continuous via cron, every 15 min)
-  13_adsb_cron.py              → data/adsb/snapshots/ (cron job)
-  11_adsb_dual_source.py --aggregate → adsb_activity.csv, adsb_activity_summary.json
-  14_adsb_validate.py          → validation report
+STAGE 5 — ADS-B Observation (collection via cron, every 15 min)
+  13_adsb_cron.js              → data/adsb/snapshots/  (crontab, Node, no venv)
+  11_adsb_dual_source.py --aggregate → adsb_activity.csv, adsb_activity_summary.json  [make]
+  14_adsb_validate.py          → validation report                                    [make validate]
+
+  Collection is automated by cron; aggregation is NOT — it runs when you `make`.
+
+  Aggregation is incremental: per-aircraft counters live in
+  output/adsb_aggregate_state.json.gz and only unseen snapshots are read
+  (~3 s vs ~2 min for all 6,400). It falls back to a full rebuild by itself
+  whenever the checkpoint cannot be trusted; `make rebuild-adsb` forces one.
+  An incremental fold is byte-identical to a from-scratch rebuild.
 ```
+
+**Not in the automatic graph:** `08e_faa_registry_discovery.py` reads
+`flight_line.json` to decide which FAA entities are not yet in the corpus, which
+makes it cyclic with the build. It is a discovery step, not a build step:
+rerunning it without then crawling what it found shrinks
+`faa_discovered_schools.json` and silently drops schools. Use `make discover`
+only when you intend to act on the results.
 
 **Key design rules for `flight_line.json`:**
 - Primary key: normalized domain (strip protocol, www., trailing slash)
@@ -897,7 +979,7 @@ ANTHROPIC_API_KEY="sk-..."   # for Sonnet extraction (09b, 10)
 ADSBX_API_KEY="..."          # for ADS-B Exchange API
 ```
 
-## Current Results (as of March 13, 2026)
+## Current Results (as of August 2, 2026)
 
 | Metric | Count |
 |--------|------:|
@@ -905,7 +987,7 @@ ADSBX_API_KEY="..."          # for ADS-B Exchange API
 | With fleet data | 3,323 |
 | Total aircraft entries | 16,881 |
 | Unique N-numbers | 11,749 |
-| ADS-B active aircraft | 6,764 |
+| ADS-B active aircraft | 8,929 |
 | Aircraft with rental rates | 4,387 |
 
 Sources: 1,743 flight schools, 653 flying clubs, 248 college/university programs (from AOPA), plus 2,181 FAA-discovered entities.

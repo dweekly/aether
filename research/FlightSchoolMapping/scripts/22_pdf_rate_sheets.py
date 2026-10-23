@@ -13,6 +13,11 @@ the actual tail numbers. This script:
 4. For complex PDFs where regex fails, uses Sonnet batch API
 5. Merges new N-numbers + rates into flight_line.json
 
+Reads output/flight_line_base.json (built by 21_build_flight_line.py) and
+writes output/flight_line.json — the canonical artifact everything downstream
+consumes. Input and output are deliberately different files so that rerunning
+is non-destructive and `make` can model this as an ordinary build edge.
+
 Usage:
     python 22_pdf_rate_sheets.py                    # full pipeline
     python 22_pdf_rate_sheets.py --phase targets    # phase 1 only: build target list
@@ -21,10 +26,12 @@ Usage:
     python 22_pdf_rate_sheets.py --phase batch      # phases 1-4: + Sonnet batch
     python 22_pdf_rate_sheets.py --phase merge      # phases 1-5: + merge into flight_line
     python 22_pdf_rate_sheets.py --dry-run          # show stats only, no downloads
+    python 22_pdf_rate_sheets.py --offline          # no network, no API: reuse caches only
 """
 
 import argparse
 import csv
+import hashlib
 import json
 import os
 import re
@@ -502,6 +509,39 @@ def load_extraction_urls(zero_nn_domains: set[str]) -> list[dict]:
     return targets
 
 
+def _targets_cache_key(zero_nn_set: set) -> str:
+    """Fingerprint everything build_targets() derives its answer from.
+
+    Parsing ~3,000 domains of cached HTML for PDF links costs ~80 s, and the
+    answer only moves when the crawl caches change or the set of schools with
+    a fleet but no N-numbers changes. flight_line_base.json is NOT an input
+    here — it churns on every ADS-B fold, but the 0-NN domain set it yields
+    almost never does.
+    """
+    h = hashlib.sha256()
+    for d in sorted(zero_nn_set):
+        h.update(d.encode("utf-8", "surrogateescape"))
+        h.update(b"\0")
+    for html_dir_name in ["fleet_html_raw", "fleet_browser_html_raw"]:
+        html_dir = OUTPUT_DIR / html_dir_name
+        h.update(html_dir_name.encode())
+        if not html_dir.is_dir():
+            continue
+        entries = []
+        for dirpath, dirnames, filenames in os.walk(html_dir):
+            dirnames.sort()
+            for name in sorted(filenames):
+                fp = Path(dirpath) / name
+                try:
+                    entries.append(f"{fp.relative_to(html_dir).as_posix()}\0{fp.stat().st_size}")
+                except OSError:
+                    continue
+        for e in sorted(entries):
+            h.update(e.encode("utf-8", "surrogateescape"))
+            h.update(b"\n")
+    return h.hexdigest()
+
+
 def build_targets(flight_line: list[dict], dry_run: bool = False) -> list[dict]:
     """Phase 1: Build deduplicated target list of URLs to download."""
     print("\n═══ Phase 1: Building target list ═══")
@@ -509,6 +549,16 @@ def build_targets(flight_line: list[dict], dry_run: bool = False) -> list[dict]:
     zero_nn = load_zero_nn_domains(flight_line)
     zero_nn_set = set(zero_nn.keys())
     print(f"  0-NN schools with fleet: {len(zero_nn)}")
+
+    cache_key = _targets_cache_key(zero_nn_set)
+    cache_path = OUTPUT_DIR / "pdf_targets.json"
+    key_path = OUTPUT_DIR / "pdf_targets.key"
+    if cache_path.exists() and key_path.exists():
+        if key_path.read_text().strip() == cache_key:
+            cached = json.loads(cache_path.read_text())
+            unique_domains = len({t["domain"] for t in cached})
+            print(f"  Reusing cached target list: {len(cached)} URLs across {unique_domains} domains")
+            return cached
 
     # Source A: PDF links in cached HTML
     pdf_targets = []
@@ -552,10 +602,11 @@ def build_targets(flight_line: list[dict], dry_run: bool = False) -> list[dict]:
     unique_domains = len({t["domain"] for t in deduped})
     print(f"\n  Total targets: {len(deduped)} URLs across {unique_domains} domains")
 
-    # Save target list
+    # Save target list, and the key it was computed under
     if not dry_run:
-        with open(OUTPUT_DIR / "pdf_targets.json", "w") as f:
+        with open(cache_path, "w") as f:
             json.dump(deduped, f, indent=2)
+        key_path.write_text(cache_key + "\n")
         print(f"  Saved: output/pdf_targets.json")
 
     return deduped
@@ -564,7 +615,7 @@ def build_targets(flight_line: list[dict], dry_run: bool = False) -> list[dict]:
 # ── Phase 2: Download PDFs ───────────────────────────────────────
 
 
-def download_targets(targets: list[dict], dry_run: bool = False) -> dict:
+def download_targets(targets: list[dict], dry_run: bool = False, offline: bool = False) -> dict:
     """Phase 2: Download PDFs and HTML pages. Returns progress dict."""
     print("\n═══ Phase 2: Downloading targets ═══")
 
@@ -578,6 +629,12 @@ def download_targets(targets: list[dict], dry_run: bool = False) -> dict:
             progress = json.load(open(progress_path))
         except Exception:
             progress = {}
+
+    if offline:
+        have = sum(1 for t in targets if progress.get(t["url"], {}).get("status") == "ok")
+        print(f"  OFFLINE — using {have} previously downloaded of {len(targets)} targets")
+        print(f"  ({len(targets) - have} not cached; run without --offline to fetch them)")
+        return progress
 
     if dry_run:
         already = sum(1 for t in targets if t["url"] in progress)
@@ -691,6 +748,23 @@ def download_targets(targets: list[dict], dry_run: bool = False) -> dict:
 # ── Phase 3: Extract Text + Regex N-Numbers ──────────────────────
 
 
+def _summarize_extraction(
+    combined_text: str, source_urls: list, text_path: Path, faa_registry: dict
+) -> dict:
+    """Build the per-domain extraction record.
+
+    Shared by the fresh-extract and cached-text paths so the two cannot drift.
+    """
+    n_numbers = find_n_numbers(combined_text, faa_registry)
+    return {
+        "n_numbers": n_numbers,
+        "text_length": len(combined_text),
+        "source_urls": source_urls,
+        "needs_sonnet": len(n_numbers) == 0 and len(combined_text) > 500,
+        "text_path": str(text_path.relative_to(OUTPUT_DIR)),
+    }
+
+
 def extract_text_from_pdf(pdf_path: Path) -> str:
     """Extract text from PDF using pdfplumber, preserving table structure."""
     try:
@@ -775,16 +849,42 @@ def extract_text_and_numbers(
     total_nn = 0
     domains_with_nn = 0
 
+    reused = 0
     for domain, downloads in sorted(by_domain.items()):
-        all_text_parts = []
-        source_urls = []
+        text_path = text_dir / f"{domain}.txt"
 
-        for url, info in downloads:
-            filepath = OUTPUT_DIR / info["path"]
-            if not filepath.exists():
+        # pdfplumber over every cached PDF costs ~5 minutes across the corpus,
+        # and the sources only change when `--phase download` actually fetches
+        # something new. Reuse the previously extracted text whenever it is
+        # newer than every file it was derived from.
+        sources = [
+            (url, OUTPUT_DIR / info["path"])
+            for url, info in downloads
+            if (OUTPUT_DIR / info["path"]).exists()
+        ]
+        if not sources:
+            continue
+
+        if text_path.exists():
+            cached_mtime = text_path.stat().st_mtime
+            if all(p.stat().st_mtime <= cached_mtime for _, p in sources):
+                combined_text = text_path.read_text(encoding="utf-8")
+                source_urls = [url for url, _ in sources]
+                reused += 1
+                results[domain] = _summarize_extraction(
+                    combined_text, source_urls, text_path, faa_registry
+                )
+                nn = results[domain]["n_numbers"]
+                if nn:
+                    total_nn += len(nn)
+                    domains_with_nn += 1
                 continue
 
+        all_text_parts = []
+        source_urls = []
+        for url, filepath in sources:
             source_urls.append(url)
+            info = dict(downloads)[url]
 
             if info["type"] == "pdf":
                 text = extract_text_from_pdf(filepath)
@@ -801,27 +901,18 @@ def extract_text_and_numbers(
             continue
 
         # Save extracted text
-        text_path = text_dir / f"{domain}.txt"
         text_path.write_text(combined_text, encoding="utf-8")
 
-        # Find N-numbers
-        n_numbers = find_n_numbers(combined_text, faa_registry)
-
-        needs_sonnet = len(n_numbers) == 0 and len(combined_text) > 500
-
-        results[domain] = {
-            "n_numbers": n_numbers,
-            "text_length": len(combined_text),
-            "source_urls": source_urls,
-            "needs_sonnet": needs_sonnet,
-            "text_path": str(text_path.relative_to(OUTPUT_DIR)),
-        }
+        results[domain] = _summarize_extraction(
+            combined_text, source_urls, text_path, faa_registry
+        )
+        n_numbers = results[domain]["n_numbers"]
 
         if n_numbers:
             domains_with_nn += 1
             total_nn += len(n_numbers)
 
-    print(f"  Extracted text from {len(results)} domains")
+    print(f"  Extracted text from {len(results)} domains ({reused} reused from cache)")
     print(f"  Regex N-numbers: {total_nn} across {domains_with_nn} domains")
     sonnet_needed = sum(1 for r in results.values() if r["needs_sonnet"])
     print(f"  Domains needing Sonnet: {sonnet_needed}")
@@ -833,7 +924,10 @@ def extract_text_and_numbers(
 
 
 def run_sonnet_batch(
-    extraction_results: dict[str, dict], faa_registry: dict, dry_run: bool = False
+    extraction_results: dict[str, dict],
+    faa_registry: dict,
+    dry_run: bool = False,
+    offline: bool = False,
 ) -> dict[str, list[str]]:
     """Phase 4: Use Sonnet batch API for PDFs where regex found 0 N-numbers.
 
@@ -843,6 +937,9 @@ def run_sonnet_batch(
 
     # Check for cached batch results
     batch_cache_path = OUTPUT_DIR / "pdf_batch_results.json"
+    if offline and not batch_cache_path.exists():
+        print("  OFFLINE — no cached batch results; skipping Sonnet extraction")
+        return {}
     if batch_cache_path.exists() and not dry_run:
         print("  Loading cached batch results...")
         cached = json.load(open(batch_cache_path))
@@ -859,6 +956,11 @@ def run_sonnet_batch(
         total_cached = sum(len(nns) for nns in new_nn_by_domain.values())
         print(f"  Cached: {total_cached} N-numbers across {len(new_nn_by_domain)} domains")
         return new_nn_by_domain
+
+    if offline:
+        # Reachable only with --offline --dry-run; never submit a batch offline.
+        print("  OFFLINE — skipping Sonnet extraction")
+        return {}
 
     # Aircraft-related terms that suggest the text might contain fleet info
     AIRCRAFT_TERMS = re.compile(
@@ -1023,6 +1125,16 @@ def run_sonnet_batch(
 # ── Phase 5: Merge into flight_line.json ─────────────────────────
 
 
+def write_json_atomic(path, obj):
+    """Write JSON via a temp file + rename, so an interrupted run never leaves
+    a truncated flight_line.json behind."""
+    path = Path(path)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    with open(tmp, "w") as f:
+        json.dump(obj, f, indent=2)
+    tmp.replace(path)
+
+
 def merge_into_flight_line(
     flight_line: list[dict],
     extraction_results: dict[str, dict],
@@ -1030,6 +1142,7 @@ def merge_into_flight_line(
     acftref: dict,
     adsb: dict,
     dry_run: bool = False,
+    out_path: Path = None,
 ) -> dict:
     """Phase 5: Merge new N-numbers into flight_line.json entries.
 
@@ -1127,12 +1240,12 @@ def merge_into_flight_line(
     print(f"  Updated {updated} schools with {total_new_nn} new N-numbers")
     print(f"  New ADS-B active aircraft: {total_new_adsb}")
 
-    # Save updated flight_line.json
-    if updated > 0:
-        fl_path = OUTPUT_DIR / "flight_line.json"
-        with open(fl_path, "w") as f:
-            json.dump(flight_line, f, indent=2)
-        print(f"  Saved: output/flight_line.json")
+    # Always write the output — it is this stage's build artifact, so it has to
+    # exist (and be newer than its input) even on a run that added nothing.
+    fl_path = Path(out_path) if out_path else OUTPUT_DIR / "flight_line.json"
+    if not dry_run:
+        write_json_atomic(fl_path, flight_line)
+        print(f"  Saved: {fl_path}")
 
     # Compute total stats
     total_schools = len(flight_line)
@@ -1164,9 +1277,9 @@ def merge_into_flight_line(
     }
 
     diag_path = OUTPUT_DIR / "pdf_extraction_diagnostics.json"
-    with open(diag_path, "w") as f:
-        json.dump(diagnostics, f, indent=2)
-    print(f"  Saved: output/pdf_extraction_diagnostics.json")
+    if not dry_run:
+        write_json_atomic(diag_path, diagnostics)
+        print(f"  Saved: output/pdf_extraction_diagnostics.json")
 
     return diagnostics
 
@@ -1190,17 +1303,33 @@ def main():
         action="store_true",
         help="Show stats only, no downloads or modifications",
     )
+    parser.add_argument(
+        "--offline",
+        action="store_true",
+        help="No network and no API calls: reuse downloaded PDFs and cached batch results only",
+    )
+    parser.add_argument(
+        "--in",
+        dest="in_path",
+        default=None,
+        help="Input path (default: output/flight_line_base.json)",
+    )
+    parser.add_argument(
+        "--out",
+        default=None,
+        help="Output path (default: output/flight_line.json)",
+    )
     args = parser.parse_args()
 
     phase_idx = PHASES.index(args.phase)
 
-    # Load flight_line.json
-    fl_path = OUTPUT_DIR / "flight_line.json"
+    # Load the base build produced by 21_build_flight_line.py
+    fl_path = Path(args.in_path) if args.in_path else OUTPUT_DIR / "flight_line_base.json"
     if not fl_path.exists():
-        print("ERROR: output/flight_line.json not found")
+        print(f"ERROR: {fl_path} not found — run 21_build_flight_line.py first")
         sys.exit(1)
     flight_line = json.load(open(fl_path))
-    print(f"Loaded flight_line.json: {len(flight_line)} schools")
+    print(f"Loaded {fl_path.name}: {len(flight_line)} schools")
 
     # Phase 1: Build targets
     targets = build_targets(flight_line, dry_run=args.dry_run)
@@ -1208,7 +1337,9 @@ def main():
         return
 
     # Phase 2: Download
-    download_progress = download_targets(targets, dry_run=args.dry_run)
+    download_progress = download_targets(
+        targets, dry_run=args.dry_run, offline=args.offline
+    )
     if phase_idx == 1:
         return
 
@@ -1222,7 +1353,9 @@ def main():
         return
 
     # Phase 4: Sonnet batch for complex PDFs
-    run_sonnet_batch(extraction_results, faa_registry, dry_run=args.dry_run)
+    run_sonnet_batch(
+        extraction_results, faa_registry, dry_run=args.dry_run, offline=args.offline
+    )
     if phase_idx == 3:
         return
 
@@ -1230,7 +1363,13 @@ def main():
     acftref = load_acftref()
     adsb = load_adsb_activity()
     diagnostics = merge_into_flight_line(
-        flight_line, extraction_results, faa_registry, acftref, adsb, dry_run=args.dry_run
+        flight_line,
+        extraction_results,
+        faa_registry,
+        acftref,
+        adsb,
+        dry_run=args.dry_run,
+        out_path=args.out,
     )
 
     # Summary

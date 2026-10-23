@@ -1,1 +1,4 @@
 __pycache__/
+.venv/
+.venv.macos-dead/
+.playwright-mcp/

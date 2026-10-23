@@ -6,8 +6,13 @@ Downloads the releasable aircraft database from the FAA, parses MASTER.txt
 and ACFTREF.txt, filters to GA-relevant training aircraft, and flags
 registrants whose names suggest flight schools.
 
-Output: data/faa_registry.csv — enriched registration records for GA fleet
-        data/faa_schools_candidates.csv — subset flagged as likely flight schools
+Output: output/faa_master.csv — raw MASTER.txt, verbatim from the FAA ZIP
+        output/ACFTREF.txt — raw ACFTREF.txt, verbatim from the FAA ZIP
+        output/faa_ga_registry.csv — enriched registration records for GA fleet
+        output/faa_school_candidates.csv — subset flagged as likely flight schools
+
+The first two are what 21_build_flight_line.py and 22_pdf_rate_sheets.py read.
+The latter two are analysis byproducts nothing downstream currently consumes.
 """
 
 import csv
@@ -27,6 +32,12 @@ OUTPUT_DIR = Path(__file__).parent.parent / "output"
 FAA_REGISTRY_URL = (
     "https://registry.faa.gov/database/ReleasableAircraft.zip"
 )
+
+# registry.faa.gov sits behind a WAF that 403s the default requests UA, and
+# also 403s anything containing an "@" (so the usual contact-email form of the
+# repo's AetherResearch UA is rejected). Verified 2026-08-05: this exact string
+# returns 200; "python-requests/*", "curl/*", and any UA with an email do not.
+USER_AGENT = "AetherResearch/1.0 (aviation research)"
 
 # GA training-relevant type codes from ACFTREF
 # Type Aircraft: 1=Glider, 2=Balloon, 3=Blimp, 4=Fixed Wing Single Engine,
@@ -81,27 +92,69 @@ TRAINING_MODELS = [
 ]
 
 
-def download_faa_registry() -> Path:
+def download_faa_registry(force: bool = False) -> Path:
     """Download the FAA releasable aircraft database ZIP."""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     zip_path = DATA_DIR / "ReleasableAircraft.zip"
 
-    if zip_path.exists():
+    if zip_path.exists() and not force:
         print(f"  Using cached {zip_path}")
+        print(f"  (pass --force to re-download; the FAA updates this weekly)")
         return zip_path
 
     print(f"  Downloading FAA registry from {FAA_REGISTRY_URL}...")
-    resp = requests.get(FAA_REGISTRY_URL, stream=True, timeout=120)
+    resp = requests.get(
+        FAA_REGISTRY_URL,
+        stream=True,
+        timeout=120,
+        headers={"User-Agent": USER_AGENT},
+    )
     resp.raise_for_status()
 
+    # Download to a temp file and rename, so an interrupted transfer cannot
+    # leave a truncated ZIP that later runs would happily treat as cached.
+    tmp_path = zip_path.with_suffix(".zip.part")
     total = int(resp.headers.get("content-length", 0))
-    with open(zip_path, "wb") as f:
+    with open(tmp_path, "wb") as f:
         with tqdm(total=total, unit="B", unit_scale=True, desc="FAA ZIP") as pbar:
             for chunk in resp.iter_content(chunk_size=8192):
                 f.write(chunk)
                 pbar.update(len(chunk))
+    tmp_path.replace(zip_path)
 
     return zip_path
+
+
+def export_raw_reference_files(zip_path: Path) -> None:
+    """Copy MASTER.txt and ACFTREF.txt out of the ZIP verbatim.
+
+    These are the files 21_build_flight_line.py and 22_pdf_rate_sheets.py
+    actually consume (as output/faa_master.csv and output/ACFTREF.txt). They
+    need the FAA's original column names — "N-NUMBER", "MFR MDL CODE", spaces
+    and all — so this is a byte-for-byte copy, NOT the normalized DataFrame
+    that the rest of this script builds.
+
+    Historically these two were extracted by hand, which is why a stale copy
+    survived the March -> August gap. Doing it here keeps `make refresh` honest.
+    """
+    targets = {"MASTER.txt": "faa_master.csv", "ACFTREF.txt": "ACFTREF.txt"}
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    with zipfile.ZipFile(zip_path, "r") as zf:
+        for src_name, dest_name in targets.items():
+            matching = [n for n in zf.namelist() if src_name.upper() in n.upper()]
+            if not matching:
+                raise FileNotFoundError(
+                    f"{src_name} not found in ZIP. Contents: {zf.namelist()}"
+                )
+            dest = OUTPUT_DIR / dest_name
+            tmp = dest.with_suffix(dest.suffix + ".tmp")
+            with zf.open(matching[0]) as src, open(tmp, "wb") as out:
+                while chunk := src.read(1 << 20):
+                    out.write(chunk)
+            tmp.replace(dest)
+            size_mb = dest.stat().st_size / (1024 * 1024)
+            print(f"  Exported {matching[0]} -> output/{dest_name} ({size_mb:.0f} MB)")
 
 
 def extract_file_from_zip(zip_path: Path, filename: str) -> pd.DataFrame:
@@ -197,7 +250,7 @@ def flag_flight_school(name: str) -> bool:
     return bool(SCHOOL_REGEX.search(name))
 
 
-def run():
+def run(force_download: bool = False):
     """Execute Phase 1: FAA Registry download and parse."""
     print("=" * 60)
     print("Phase 1: FAA Aircraft Registration Database")
@@ -205,7 +258,11 @@ def run():
 
     # Step 1: Download
     print("\n[1/4] Downloading FAA registry...")
-    zip_path = download_faa_registry()
+    zip_path = download_faa_registry(force=force_download)
+
+    # Step 1b: Export the raw files the downstream build consumes
+    print("\n[1b/4] Exporting raw reference files...")
+    export_raw_reference_files(zip_path)
 
     # Step 2: Parse MASTER and ACFTREF
     print("\n[2/4] Parsing registration records...")
@@ -275,4 +332,13 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Re-download the FAA ZIP even if a cached copy exists",
+    )
+    args = parser.parse_args()
+    run(force_download=args.force)
