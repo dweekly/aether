@@ -29,23 +29,19 @@ reproducible, and if the story's numbers survive a skeptical audience. The bigge
 (Codex) is publishing confident explanations the data cannot establish, so every claim is
 phrased as "observed / not observed by this network in this window".
 
-## Progress (updated 2026-10-23, Friday evening)
+## Progress (updated 2026-10-23, 12:45 PT)
 
-Live: [aether-flight.com/explore](https://aether-flight.com/explore/), with a tail lookup, 2,470 school pages and
-school search, and an ATC flight-strip design. The data updates from a daily trogdor job.
+Live: [aether-flight.com/explore](https://aether-flight.com/explore/). Tail lookup with recent flights;
+2,470 school pages; 1,627 airport pages; downloads at /explore/data/; ATC flight-strip design.
+The release currently covers 93 archive days and grows as the backfill runs.
 
 | Item | State |
 |---|---|
-| 0 Poller retired | Done. The adsb.lol 500 req/day/IP cap was the cause of the collapse |
-| 1 Thin slice | Done: one archive day → registry join → explorer on a phone → production. No R2 downloads or public repo yet |
-| 2 Ingest | `30`/`31` running: 2026-03-05 → 10-21, newest first, ~2 min/day. Daily cron `37` + checker (alert path tested with `CHECK_TEST=1`) |
-| 3 OpenSky Mondays | `39` running detached, 257 Mondays, ~10 h. Internal counts only |
-| 4 Ghost classes | `34`: observational classes, dated cohort, frozen window, night-airport home base |
-| 5 Privacy | `41`: home base assigned for 43% of aircraft that flew, **74% correct** against school-listed airports (n=2,204); weekday pattern **does not** beat baseline (NEGATIVE_RESULTS.md); **12,276 LADD aircraft shown** on adsb.lol in 38 days; 263 PIA addresses |
-| 6 Training detection | `40`: 222 unlisted operations (≥3 aircraft, non-individual registrant). Hand check of 20 random: **85% training-related** (12 schools, 2 clubs, 3 leasebacks), 0 non-training, 3 unclear. Several were schools our crawl missed, so the claim is "missing from our list", not "unknown to the web" |
-| 7 Explorer | Live. Live map is a link to adsb.lol with `icaoFilter`; framing still untested |
-| 8 Story | Not started. Needs the full window (Monday 10-26) |
-| Open repo | Dry run done. Plan: rename `dweekly/aether` → `aether-private` (keeps full history, PR refs and drafts private), create a fresh public `dweekly/aether` from filtered history. Drops `drafts/`, `ip/`, `prd.md`, root `README.md` history, `output/`, `data/adsb/`, story data; replaces 3 AOPA public-web tokens; rewrites 2 commit messages. gitleaks clean on the result. A rename is required because GitHub keeps PR refs (#2, #4) and old SHAs reachable on the original repo |
+| Ingest | Daily cron + checker live. 2026-03-05 → 10-21 backfill running (~30 days/h). Then, chained on trogdor (`~/scratch/aether-chain.sh`): replica recheck, full OpenSky Mondays, 2024-01-01 → 2026-03-04 |
+| Reviews | Stack #5 → #6 → #7 → #8. **#5 merged** (Codex SHIP in round 3). **#6 escalated** after round 2 (3 small defects, all fixed with fixtures); waiting on David: Bug Me ticket `t-x6fpq9bv`. #7 shipped in round 2 (base has moved since). #8 not reviewed yet |
+| Findings (93-day window, preliminary) | 46% of the registry heard; gyroplanes 146 of 431; 1940s-built pistons 13% heard vs 2020s 81%; home base 75% correct (n=2,362); weekday routine does not beat baseline; 13,286 LADD aircraft visible; ~330 training operations missing from our list, 85% training-related on a 20-sample hand check |
+| Fact sheet | `43_talk_facts.py` writes `docs/hackers-2026-facts.md` from one frozen release; final run after the backfill |
+| Open repo | After the stack merges. Procedure below (rename to `aether-private`, fresh public `aether`) |
 
 ## The product and the findings
 
