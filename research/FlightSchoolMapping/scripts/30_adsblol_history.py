@@ -50,7 +50,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from airport_index import AirportIndex  # noqa: E402
+from airport_index import AIRPORT_INDEX_VERSION, AirportIndex  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 HISTORY = ROOT / "data" / "history"
@@ -370,7 +370,7 @@ def main():
 
     manifest = {
         "day": str(day), "release": tag, "instance": instance, "replica_sizes": replica_sizes,
-        "parser_version": PARSER_VERSION,
+        "parser_version": PARSER_VERSION, "airport_index_version": AIRPORT_INDEX_VERSION,
         "assets": [{"name": p["name"], "size": p["size"], "sha256": digests[p["name"]]} for p in parts],
         "trace_files": len(files), "unreadable_files": skipped,
         "us_aircraft": len(rows), "legs": len(legs),

@@ -20,6 +20,9 @@ from scipy.spatial import cKDTree
 
 EARTH_RADIUS_NM = 3440.065
 DEFAULT_CSV = Path(__file__).resolve().parent.parent / "data" / "ourairports_airports.csv"
+# Bump when matching rules change; 32_reassign_airports.py brings old days up to date.
+AIRPORT_INDEX_VERSION = 2
+
 # Lower wins when candidates are within the ambiguity window of each other.
 TYPE_RANK = {"large_airport": 0, "medium_airport": 0, "small_airport": 0,
              "seaplane_base": 1, "balloonport": 2, "heliport": 3}
