@@ -43,6 +43,24 @@ The release currently covers 93 archive days and grows as the backfill runs.
 | Fact sheet | `43_talk_facts.py` writes `docs/hackers-2026-facts.md` from one frozen release; final run after the backfill |
 | Open repo | After the stack merges. Procedure below (rename to `aether-private`, fresh public `aether`) |
 
+## Opening the repo (David chose "scrub and open aether", 2026-10-23)
+
+GitHub keeps pull-request refs (#2, #4–#8) and old commit SHAs reachable on the existing repo, so
+rewriting history in place and flipping it public would still expose the old commits. Instead:
+
+1. Mirror backup of the current repo (bundle to trogdor and R2), verified with `git bundle verify`.
+2. Rename `dweekly/aether` → `dweekly/aether-private`. It stays private with full history, PRs,
+   drafts, the IP folder and every committed output.
+3. Filter a fresh clone of `main` with `git filter-repo`: drop `drafts/`, `ip/`, `prd.md`, the root
+   `README.md` history (a new public README is added), `docs/wt/`,
+   `research/FlightSchoolMapping/output/`, `research/FlightSchoolMapping/data/adsb/`, and the C172
+   story data (AOPA-sourced names); `--replace-text` the three AOPA public web tokens; rewrite the
+   two commit messages that mention the patent application number and a partner.
+4. `gitleaks` over the full filtered history must be clean, plus a grep for the token prefixes,
+   names from the drafts, and the application number (dry run on 2026-10-23: clean).
+5. Create a new public `dweekly/aether`, push the filtered `main` only, update local and trogdor
+   remotes, and point future work at it. Private material is edited in `aether-private` from then on.
+
 ## The product and the findings
 
 **One URL, three layers.** The QR code opens a landing page.
