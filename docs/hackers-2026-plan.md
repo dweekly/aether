@@ -73,17 +73,18 @@ rewriting history in place and flipping it public would still expose the old com
 
 **The school page is the hero view** (David, 2026-10-23). Look up a school and get one
 consistent, structured record:
-- **In the air now:** embed adsb.lol's own tar1090 map, filtered to the school's fleet
-  (David's idea, 2026-10-23). We relay nothing, and the map loads from adsb.lol's viewer
-  data, not the rate-limited `/v2` API.
+- **In the air now:** a link that opens adsb.lol's own tar1090 map, filtered to the
+  school's fleet (David's idea, 2026-10-23). We relay nothing, and the map loads from
+  adsb.lol's viewer data, not the rate-limited `/v2` API.
   - The URL, per tar1090's README-query.md:
     `https://adsb.lol/?icaoFilter=hex1,hex2,…&hideSideBar&hideButtons&zoom=…`
   - The same parameters give the privacy demo: `filterDbFlag=pia,ladd` shows every
     PIA- and LADD-flagged aircraft live.
-  - Framing is **unverified**. adsb.lol's docs site sends `X-Frame-Options: SAMEORIGIN`
-    (`adsblol/website/layouts/index.headers`), but that may not cover the map, and our IP
-    got 403 while over its cap. Test from a browser on another network. If framing is
-    blocked, the page shows an "Open live map" link with the same parameters.
+  - A link, not a frame. adsb.lol puts the map behind a JavaScript bot check that sets a
+    cookie. Tested 2026-10-23 in Chromium (Playwright) from a page on another origin: the
+    check passes at top level, but inside a cross-site iframe it fails with "challenge
+    cookies not found", even after the same browser had passed it at top level, since the
+    frame's cookie is a third-party one. Revisit only if adsb.lol offers an embed mode.
   - Not via `/v2/hex` from our page. That API caps each IP
     (`x-ratelimit-limit: 500, 4;w=1, 60;w=60, 500;w=86400`), and a room of phones behind
     one venue NAT would share it. A Worker relay is no fix either: adsb.lol PR #63 notes
