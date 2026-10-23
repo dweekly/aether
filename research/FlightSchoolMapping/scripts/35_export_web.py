@@ -15,10 +15,14 @@ Usage: 35_export_web.py --release dev
 
 import argparse
 import json
+import sys
 from collections import defaultdict
 from pathlib import Path
 
 import duckdb
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from release_window import day_view, included_days  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 HISTORY = ROOT / "data" / "history"
@@ -45,17 +49,13 @@ def main():
     web = rel / "web"
     c = duckdb.connect()
     c.execute("SET threads TO 16")
-    win = json.loads((rel / "results.json").read_text())["window"]
-    # Only the days frozen into results.json, so a backfill running in parallel
-    # cannot make the explorer's day list disagree with the release's numbers.
-    c.execute(f"""CREATE VIEW ad AS SELECT * FROM read_parquet('{HISTORY / "aircraft_day" / "*" / "*" / "*.parquet"}')
-                  WHERE day BETWEEN DATE '{win["first_day"]}' AND DATE '{win["last_day"]}'""")
-    days = [str(r[0]) for r in c.execute("SELECT DISTINCT day FROM ad ORDER BY 1").fetchall()]
+    days = included_days(rel)  # frozen by 34; see release_window.py
+    day_view(c, "ad", HISTORY / "aircraft_day" / "*" / "*" / "*.parquet", days)
     day_index = {d: i for i, d in enumerate(days)}
 
     parked = {r[0]: r[1:] for r in c.execute(f"""
-        SELECT hex, max_by(day, day), max_by(last_ground_airport, day),
-               max_by(round(last_ground_lat, 5), day), max_by(round(last_ground_lon, 5), day)
+        SELECT hex, max(day), arg_max_null(last_ground_airport, day),
+               arg_max_null(round(last_ground_lat, 5), day), arg_max_null(round(last_ground_lon, 5), day)
         FROM ad WHERE last_ground_lat IS NOT NULL GROUP BY hex
     """).fetchall()}
 
@@ -73,7 +73,7 @@ def main():
             "st": x["state"], "status": x["status_code"], "statusLabel": x["status_label"],
             "valid": x["status_valid"], "exp": x["expiration_date"], "cls": x["observed_class"],
             "days": x["days_observed"], "airDays": x["days_airborne"], "first": x["first_seen"],
-            "last": x["last_seen"], "hrs": x["airborne_hours"], "legs": x["legs"],
+            "last": x["last_seen"], "lastFlew": x["last_flew"], "hrs": x["airborne_hours"], "legs": x["legs"],
             "home": x["home_airport"], "homeShare": x["home_share"], "pia": x["pia_seen"],
             "ladd": x["ladd_flag"],
         }
@@ -87,7 +87,7 @@ def main():
     hist = defaultdict(lambda: defaultdict(list))
     for hexid, day, mins, legs in c.execute(f"""
         SELECT hex, day, round(airborne_min)::INT, n_legs FROM ad
-        WHERE airborne_min > 0 ORDER BY hex, day
+        WHERE n_airborne > 0 ORDER BY hex, day
     """).fetchall():
         n = hex_to_n.get(hexid)
         if n:

@@ -65,15 +65,16 @@ def main():
 
     c = duckdb.connect()
     c.execute("SET threads TO 16")
+    in_days = ", ".join(f"DATE '{d}'" for d in win["included_days"])  # frozen by 34
     for table in ("aircraft_day", "legs"):
         months = [r[0] for r in c.execute(f"""
             SELECT DISTINCT strftime(day, '%Y-%m') FROM read_parquet('{HISTORY / table / "*" / "*" / "*.parquet"}')
-            WHERE day BETWEEN DATE '{win["first_day"]}' AND DATE '{win["last_day"]}' ORDER BY 1""").fetchall()]
+            WHERE day IN ({in_days}) ORDER BY 1""").fetchall()]
         (out / table).mkdir()
         for m in months:
             y, mm = m.split("-")
             c.execute(f"""COPY (SELECT * FROM read_parquet('{HISTORY / table / y / mm / "*.parquet"}')
-                               WHERE day BETWEEN DATE '{win["first_day"]}' AND DATE '{win["last_day"]}'
+                               WHERE day IN ({in_days})
                                ORDER BY day, hex)
                           TO '{out / table / f"{m}.parquet"}' (FORMAT parquet, COMPRESSION zstd)""")
     (out / "LICENSES.md").write_text(LICENSES.format(release=a.release, first=win["first_day"], last=win["last_day"],
