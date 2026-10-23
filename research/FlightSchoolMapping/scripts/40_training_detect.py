@@ -150,7 +150,8 @@ def main():
     # crawl missed rather than ones absent from the web.
     ops = defaultdict(list)
     for d in discovered:
-        if d["score"] >= a.op_threshold and d["registrant_type"] not in (None, "Individual", "Co-Owned") \
+        if d["score"] >= a.op_threshold and (d["registrant"] or "").strip() \
+                and d["registrant_type"] not in (None, "Individual", "Co-Owned") \
                 and d["registrant"] not in ("REGISTRATION PENDING", "SALE REPORTED") \
                 and d["registrant"] not in known_registrants:
             ops[d["registrant"]].append(d)
