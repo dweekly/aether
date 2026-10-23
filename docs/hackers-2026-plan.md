@@ -42,6 +42,7 @@ phrased as "observed / not observed by this network in this window".
 | OpenSky scientific datasets (Monday state vectors 2017–22, March 2026 Trino snapshot) | Pre-2023 depth | Non-profit research only, no redistribution, cite and notify | No. Aggregates with citation |
 | OpenSky Trino (`flights_data4` since 2016, `state_vectors_data4` since 2013) | Per-flight history: "has this tail flown since 2016?" | Application only: "university-affiliated researchers, governmental organisations, and aviation authorities"; private entities need a license. 100 GB scan cap per query; no bulk extraction | No. Aggregates with citation, if access is granted |
 | OpenSky live API (our 15-min cron) | — | Automated use needs a written agreement | Disabled now (see Work item 0) |
+| OpenSky REST API, authenticated (client `dweekly-api-client`, credentials in `~/.config/opensky/credentials.json` on monster4, never in a repo) | Ad-hoc research checks: `/flights/aircraft` against a sample of "not observed" tails, and the consenting home-base sample. Standard tier: 4,000 credits/day per endpoint bucket; one aircraft-day costs 4 | Same terms: research use, no redistribution, cite and notify | No. Validation counts only |
 | AOPA directory | — | "You may not … copy, distribute … publish … any information" | No. School fields come from schools' own pages |
 | Michel & Strohmeier, "Flying in Private Mode" (doi 10.2514/1.I010938) | Prior art on PIA re-identification | Paper | Cited |
 
