@@ -344,6 +344,18 @@ def write_parquet(rows, schema, path):
     os.replace(tmp, path)
 
 
+def fetch(day, instance, parts):
+    """Download and unpack one replica; return (asset digests, extract dir)."""
+    raw = WORK / f"{day}-{instance}" / "raw"
+    ext = WORK / f"{day}-{instance}" / "x"
+    download(parts, raw)
+    digests = {p["name"]: sha256(raw / p["name"]) for p in parts}
+    if ext.exists():
+        shutil.rmtree(ext)
+    extract(parts, raw, ext)
+    return digests, ext
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("day")
@@ -355,13 +367,18 @@ def main():
     t0 = time.time()
 
     instance, tag, parts, replica_sizes = choose_release(day, a.instance)
-    raw = WORK / f"{day}-{instance}" / "raw"
-    ext = WORK / f"{day}-{instance}" / "x"
-    download(parts, raw)
-    digests = {p["name"]: sha256(raw / p["name"]) for p in parts}
-    if ext.exists():
-        shutil.rmtree(ext)
-    extract(parts, raw, ext)
+    try:
+        digests, ext = fetch(day, instance, parts)
+    except RuntimeError as e:
+        others = [i for i in replica_sizes if i != instance]
+        if a.instance != "auto" or not others:
+            raise
+        # A replica can be corrupt upstream (2026-01-29 staging-0 fails to untar); take the other.
+        print(f"{day}: {instance} failed ({e}); trying {others[0]}", file=sys.stderr)
+        shutil.rmtree(WORK / f"{day}-{instance}")
+        instance = others[0]
+        tag, parts = find_release(day, instance)
+        digests, ext = fetch(day, instance, parts)
     t_dl = time.time()
 
     files = sorted(str(p) for p in (ext / "traces").glob("*/trace_full_*.json"))
