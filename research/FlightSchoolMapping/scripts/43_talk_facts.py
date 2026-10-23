@@ -13,8 +13,14 @@ import json
 from datetime import date
 from pathlib import Path
 
+import duckdb
+
 ROOT = Path(__file__).resolve().parent.parent
 RELEASES = ROOT / "data" / "release"
+REGISTRY = ROOT / "data" / "registry"
+# FAA "Current Equipage Levels", All USA Civil Aircraft ADS-B Equipage Counts, row 1-Oct-26
+# (faa.gov/air_traffic/technology/equipadsb/installation/current_equipage_levels, read 2026-10-23).
+FAA_EQUIPPED = {"as_of": "2026-10-01", "all": 173_663, "es1090": 136_553, "uat": 35_762, "dual": 1_348}
 DEFAULT_OUT = ROOT.parent.parent / "docs" / "hackers-2026-facts.md"
 
 
@@ -46,6 +52,17 @@ def main():
     wk = p["weekly_pattern"]
     m = t["metrics"]
     ops = t.get("unlisted_operations", [])
+    # readsb source types (README-json.md): adsb_icao is the aircraft's own 1090 ADS-B;
+    # adsr_icao is an FAA ground-station rebroadcast of a message sent on another link (UAT).
+    src = duckdb.connect().execute(f"""
+        WITH reg AS (SELECT DISTINCT lower(trim(mode_s_code_hex)) AS hex
+                     FROM read_parquet('{REGISTRY / r["registry_date"] / "master.parquet"}')),
+        s AS (SELECT hex, bool_or(sources LIKE '%"adsb_icao"%') AS direct,
+                     bool_or(sources LIKE '%"adsr_icao"%') AS adsr, bool_or(sources LIKE '%"adsb_icao_nt"%') AS nt
+              FROM read_parquet('{rel / "download" / "aircraft_day" / "*.parquet"}') GROUP BY hex)
+        SELECT count(*) FILTER (WHERE adsr AND NOT direct AND NOT nt) FROM s JOIN reg USING (hex)
+    """).fetchone()[0]
+    faa = FAA_EQUIPPED
 
     lines = [
         "# Hackers 2026 fact sheet",
@@ -56,6 +73,12 @@ def main():
         "",
         "## 1. The registry vs the sky",
         "",
+        f"- The FAA counts {n(faa['all'])} ADS-B-equipped US civil aircraft (as of {faa['as_of']}; {n(faa['es1090'])} on 1090ES, "
+        f"{n(faa['uat'])} on UAT, {n(faa['dual'])} dual). adsb.lol's volunteers heard {n(totals.get('adsb', 0))} registered aircraft "
+        f"broadcast their own ADS-B in this window: {pct(totals.get('adsb', 0), faa['all'])} of the FAA's count. The FAA's count may "
+        "include aircraft no longer on the registry, so treat it as a ceiling, not a matched denominator.",
+        f"- {n(src)} of those were heard only as FAA ADS-R rebroadcasts: UAT aircraft the 1090 network hears because the FAA's "
+        "ground stations repeat them. A floor on UAT aircraft heard, since direct UAT receivers may report as plain ADS-B.",
         f"- {n(registered)} aircraft on the FAA registry; {n(heard)} ({pct(heard, registered)}) were heard at least once "
         f"in the window. {n(totals.get('not_observed', 0))} were silent.",
         f"- Of those heard, {n(totals.get('adsb', 0))} broadcast their own ADS-B; {n(totals.get('other_only', 0))} were heard "

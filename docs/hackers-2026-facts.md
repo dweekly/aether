@@ -5,6 +5,8 @@ Window 2026-03-05 → 2026-10-22 (230 days of the adsb.lol archive). Registry sn
 
 ## 1. The registry vs the sky
 
+- The FAA counts 173,663 ADS-B-equipped US civil aircraft (as of 2026-10-01; 136,553 on 1090ES, 35,762 on UAT, 1,348 dual). adsb.lol's volunteers heard 163,876 registered aircraft broadcast their own ADS-B in this window: 94% of the FAA's count. The FAA's count may include aircraft no longer on the registry, so treat it as a ceiling, not a matched denominator.
+- 31,295 of those were heard only as FAA ADS-R rebroadcasts: UAT aircraft the 1090 network hears because the FAA's ground stations repeat them. A floor on UAT aircraft heard, since direct UAT receivers may report as plain ADS-B.
 - 317,972 aircraft on the FAA registry; 166,135 (52%) were heard at least once in the window. 151,837 were silent.
 - Of those heard, 163,876 broadcast their own ADS-B; 2,259 were heard only via MLAT or TIS-B.
 - Gyroplanes: 431 registered, 171 heard.
