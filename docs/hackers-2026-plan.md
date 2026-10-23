@@ -29,18 +29,19 @@ reproducible, and if the story's numbers survive a skeptical audience. The bigge
 (Codex) is publishing confident explanations the data cannot establish, so every claim is
 phrased as "observed / not observed by this network in this window".
 
-## Progress (updated 2026-10-23, 12:45 PT)
+## Progress (updated 2026-10-23, 14:50 PT)
 
-Live: [aether-flight.com/explore](https://aether-flight.com/explore/). Tail lookup with recent flights;
-2,470 school pages; 1,627 airport pages; downloads at /explore/data/; ATC flight-strip design.
-The release currently covers 93 archive days and grows as the backfill runs.
+Live: [aether-flight.com/explore](https://aether-flight.com/explore/), release `v0.2-20261023`:
+230 archive days (2026-03-05 → 10-22). Tail lookup with recent flights and last parked
+position; 2,470 school pages; 1,751 airport pages; downloads at /explore/data/
+(`latest.json` → v0.2-20261023); ATC flight-strip design.
 
 | Item | State |
 |---|---|
-| Ingest | Daily cron + checker live. 2026-03-05 → 10-21 backfill running (~30 days/h). Then, chained on trogdor (`~/scratch/aether-chain.sh`): replica recheck, full OpenSky Mondays, 2024-01-01 → 2026-03-04 |
-| Reviews | Stack #5 → #6 → #7 → #8. **#5 merged** (Codex SHIP in round 3). **#6 escalated** after round 2 (3 small defects, all fixed with fixtures); waiting on David: Bug Me ticket `t-x6fpq9bv`. #7 shipped in round 2 (base has moved since). #8 not reviewed yet |
-| Findings (93-day window, preliminary) | 46% of the registry heard; gyroplanes 146 of 431; 1940s-built pistons 13% heard vs 2020s 81%; home base 75% correct (n=2,362); weekday routine does not beat baseline; 13,286 LADD aircraft visible; ~330 training operations missing from our list, 85% training-related on a 20-sample hand check |
-| Fact sheet | `43_talk_facts.py` writes `docs/hackers-2026-facts.md` from one frozen release; final run after the backfill |
+| Ingest | Daily cron + checker live. 2026-03-05 → 10-22 ingested; 2026-05-06 is missing upstream (adsb.lol published only its MLAT-only feed that day). Running on trogdor (`~/scratch/aether-chain2.sh`, log `aether-chain2.log`): 2024-01-01 → 2026-03-04 backfill, newest first; OpenSky Mondays (`~/scratch/opensky-run.sh`) |
+| Reviews | Stack #5 → #6 → #7 → #8. **#5 merged.** **#6 escalated** after round 2 (3 small defects, all fixed with fixtures); waiting on David: Bug Me ticket `t-x6fpq9bv`. #7 and #8 shipped in round 2. Commits after #8's approval (release `--from`, last-parked fix, fact sheet, OpenSky layout fix carried over from the old branch) get an advisory Codex pass |
+| Findings | [Fact sheet](hackers-2026-facts.md), generated from v0.2-20261023: 52% of the registry heard; gyroplanes 171 of 431; 1940s-built pistons 16% heard vs 2020s 87%; home base for 53% of aircraft that flew, 79% correct (n=2,636); weekday routine no better than baseline; 14,672 LADD aircraft visible; 384 training operations missing from our list |
+| Live map | A link to adsb.lol, not a frame: its bot check fails inside a cross-site iframe (tested 2026-10-23) |
 | Open repo | After the stack merges. Procedure below (rename to `aether-private`, fresh public `aether`) |
 
 ## Opening the repo (David chose "scrub and open aether", 2026-10-23)
