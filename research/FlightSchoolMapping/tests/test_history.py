@@ -140,4 +140,4 @@ def test_unsplit_tar_release_is_accepted(monkeypatch):
 def test_runway_airport_beats_nearby_heliport(airports):
     # Over Schaumburg's runway; Clarke Heliport (LL95) is 0.2 nm away and nearer to this point.
     m = airports.nearest(41.9866, -88.1006)
-    assert m.ident == "K06C"
+    assert m.ident == "06C" and m.type == "small_airport"
