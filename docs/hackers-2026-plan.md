@@ -110,6 +110,9 @@ that day, plus 4,880 the snapshots never caught.
      calling a pinned version of it.
    - Data goes out through an explicit field/source allowlist, with telemetry fields
      regenerated from the archive. Nothing is copied wholesale from `flight_line.json`.
+   - No AOPA code goes into the public repo. `08c_aopa_enrich.py` and the README section on
+     it embed AOPA's public web-app client credential. A secret scan (`gitleaks`) runs on
+     the public repo before its first push.
    - School fleet membership is labelled separately by evidence: the school's own website
      vs inferred from the registry.
    - `make sample` runs reduction, join and analysis on small licensed fixtures and checks
