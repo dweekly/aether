@@ -2,8 +2,9 @@
 """Run 30_adsblol_history.py over a date range, a few days at a time.
 
 Days that already have a manifest are skipped, so this is safe to rerun. Each
-day takes the larger of the prod-0 and staging-0 replicas (30_... --instance
-auto). A day that fails is retried once, then recorded in data/history/GAPS.md.
+day takes the largest replica (30_... --instance auto: prod-0, staging-0, and
+the mid-2025 -0tmp pair). A day that fails is retried once, then recorded in
+data/history/GAPS.md.
 
 --recheck re-ingests manifested days that were taken from a replica more than
 10% smaller than the other one (manifests written before the auto choice have

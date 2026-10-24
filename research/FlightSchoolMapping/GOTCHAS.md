@@ -84,3 +84,12 @@ adsb.lol files each release under the year it was uploaded, not the day it cover
 2025-12-31's three replicas are in `globe_history_2026`. The backfill looked only in
 `globe_history_2025` and logged the day as having no release. `30_adsblol_history.py`
 now tries the next year's repo on a 404.
+
+## Mid-2025 days ship under `-0tmp` replica names (2026-10-24)
+
+From 2025-05-23 to 06-12 adsb.lol also published `prod-0tmp` and `staging-0tmp` releases.
+For 2025-05-28 → 06-10 those are the only replicas, and on 06-11 the plain ones are a
+fifth the size (0.73 GB vs 3.58 GB). The backfill looked only for `prod-0`/`staging-0`,
+so it logged 14 days as missing and took the stub for 06-11. `--instance auto` now
+weighs all four names. List a year's tags (`gh api repos/adsblol/globe_history_YYYY/releases`)
+before assuming the naming is fixed.

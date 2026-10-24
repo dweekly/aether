@@ -25,8 +25,9 @@ Raw downloads are deleted after a successful write unless --keep-raw.
 Usage:
   30_adsblol_history.py 2026-10-22 [--instance auto|prod-0|staging-0] [--keep-raw] [--workers 16]
 
---instance auto (the default) compares the prod-0 and staging-0 releases for the
-day and takes the larger. adsb.lol's own instructions say to ignore a replica
+--instance auto (the default) compares the day's prod-0 and staging-0 releases, plus the
+prod-0tmp and staging-0tmp replicas adsb.lol ran in mid-2025 (the only ones for 2025-05-28
+→ 06-10), and takes the largest. adsb.lol's own instructions say to ignore a replica
 that is significantly smaller (2026-03-24: prod 1,961 MiB vs staging 2,948 MiB).
 """
 
@@ -145,19 +146,22 @@ def find_release(day, instance):
     return tag, parts
 
 
+REPLICAS = ("prod-0", "staging-0", "prod-0tmp", "staging-0tmp")
+
+
 def choose_release(day, instance):
     """Return (instance, tag, parts, sizes). 'auto' picks the larger replica."""
     if instance != "auto":
         tag, parts = find_release(day, instance)
         return instance, tag, parts, {instance: sum(a["size"] for a in parts)}
     found = {}
-    for inst in ("prod-0", "staging-0"):
+    for inst in REPLICAS:
         try:
             found[inst] = find_release(day, inst)
         except Exception:  # noqa: BLE001 - a missing replica is normal; both missing raises below
             pass
     if not found:
-        raise RuntimeError(f"{day}: no prod-0 or staging-0 release")
+        raise RuntimeError(f"{day}: no {', '.join(REPLICAS)} release")
     sizes = {inst: sum(a["size"] for a in parts) for inst, (_, parts) in found.items()}
     best = max(sizes, key=lambda i: (sizes[i], i == "prod-0"))
     return best, found[best][0], found[best][1], sizes
@@ -370,7 +374,7 @@ def main():
     try:
         digests, ext = fetch(day, instance, parts)
     except RuntimeError as e:
-        others = [i for i in replica_sizes if i != instance]
+        others = sorted((i for i in replica_sizes if i != instance), key=replica_sizes.get, reverse=True)
         if a.instance != "auto" or not others:
             raise
         # A replica can be corrupt upstream (2026-01-29 staging-0 fails to untar); take the other.
