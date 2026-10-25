@@ -115,7 +115,7 @@ def silent_tiers(s, k, release, window):
         s.rect(x0, yy, (x1 - x0) * v / top, h, c, f"{label}: {n(v)}")
         s.text(x0 + (x1 - x0) * v / top + 20, yy + h / 2 + 14, n(v), 40, weight=600)
     s.text(x0, H - 125, f"OpenSky's Mondays caught {100 * k['sens_hit'] / k['sens_n']:.0f}% of today's fliers registered before "
-                        f"{k['last_monday'][:4]}, so \"neither\" still holds some that flew.", 24, "dim")
+                        f"{k['last_monday'][:4]}: \"neither\" still holds some that flew.", 22, "dim")
     s.text(x0, H - 90, "OpenSky counts: The OpenSky Network, http://www.opensky-network.org", 22, "dim")
     footer(s, release, window)
 
