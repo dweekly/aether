@@ -20,6 +20,8 @@ from pathlib import Path
 import duckdb
 from scipy.stats import spearmanr
 
+from check_history_window import hours_covered
+
 ROOT = Path(__file__).resolve().parent.parent
 RELEASES = ROOT / "data" / "release"
 REGISTRY = ROOT / "data" / "registry"
@@ -156,6 +158,7 @@ def main():
     cert = piston_by_decade_cert(rel, r["registry_date"])
     util = rental_utilization(json.loads((rel / "schools_full.json").read_text())["schools"], w["days"])
     tiers = silent_tiers(rel, w["first_day"])
+    partial = [(d, h) for d in w["included_days"] if (h := hours_covered(date.fromisoformat(d))) is not None and h < 24]
 
     lines = [
         "# Hackers 2026 fact sheet",
@@ -163,6 +166,8 @@ def main():
         f"Generated {date.today()} from release `{a.release}` by `research/FlightSchoolMapping/scripts/43_talk_facts.py`.",
         f"Window {w['first_day']} → {w['last_day']} ({w['days']} days of the adsb.lol archive). "
         f"Registry snapshot {r['registry_date']}. Regenerate rather than edit.",
+        *([f"Partial days upstream (legs start in fewer than 24 UTC hours): "
+           + ", ".join(f"{d} ({h} of 24 h)" for d, h in partial) + "."] if partial else []),
         "",
         "## 1. The registry vs the sky",
         "",

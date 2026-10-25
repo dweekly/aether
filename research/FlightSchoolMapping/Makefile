@@ -313,6 +313,11 @@ define check_stage
 endef
 
 .PHONY: status
+# Every day of the 60-day privacy window ingested and spanning all 24 UTC hours.
+.PHONY: history-status
+history-status:
+	scripts/.venv/bin/python scripts/check_history_window.py
+
 status:
 	@echo ""
 	@echo "  Pipeline status"
