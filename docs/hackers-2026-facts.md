@@ -1,6 +1,6 @@
 # Hackers 2026 fact sheet
 
-Generated 2026-10-23 from release `v0.3-20261023` by `research/FlightSchoolMapping/scripts/43_talk_facts.py`.
+Generated 2026-10-25 from release `v0.3-20261023` by `research/FlightSchoolMapping/scripts/43_talk_facts.py`.
 Window 2025-10-23 → 2026-10-22 (363 days of the adsb.lol archive). Registry snapshot 2026-10-23. Regenerate rather than edit.
 
 ## 1. The registry vs the sky
@@ -45,7 +45,18 @@ Window 2025-10-23 → 2026-10-22 (363 days of the adsb.lol archive). Registry sn
 - Rate x observed hours for a 172 that flew: median $54,162 a year (quartiles $24,999–$84,569).
 - Observed hours are a floor: time flown outside receiver coverage is not counted.
 
+## 5. When the silent ones went quiet
+
+- Of the 146,326 aircraft silent in the window, 14,007 (10%) were heard by adsb.lol between 2024-01-01 and the window's start: they went quiet recently.
+- 8,071 (6%) more were last seen in OpenSky's Monday samples (257 Mondays, 2017-06-05 → 2022-06-27); by year last seen: 2017 483, 2018 985, 2019 1,150, 2020 1,488, 2021 1,931, 2022 2,034.
+- 124,248 (85%) appear in neither.
+- How much a Monday sample misses: of the 90,213 aircraft heard in this window whose registration certificate predates 2022-06-27, 66,464 (74%) are on at least one Monday. A regular flier usually lands in the sample, but "neither" still holds some that flew.
+- An address follows the N-number, so a hit years ago may be an earlier airframe that held the same number.
+- OpenSky's tables stay internal (their terms forbid redistribution and require de-identification): counts only.
+
 ## Sources to cite on a slide
 
 - Contains information from adsb.lol, made available under the ODbL. FAA Releasable Aircraft Registry (public domain).
-- Any OpenSky-derived count: cite "The OpenSky Network, https://opensky-network.org" and send them the talk link.
+- Any OpenSky-derived count (section 5): cite exactly "The OpenSky Network, http://www.opensky-network.org" and send
+  OpenSky a copy of or link to the talk (their data license, section 4(i)). The license covers non-profit research and
+  education only.
