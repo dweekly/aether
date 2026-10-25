@@ -29,7 +29,7 @@ reproducible, and if the story's numbers survive a skeptical audience. The bigge
 (Codex) is publishing confident explanations the data cannot establish, so every claim is
 phrased as "observed / not observed by this network in this window".
 
-## Progress (updated 2026-10-24, 18:30 PT)
+## Progress (updated 2026-10-24, 17:50 PT)
 
 Live: [aether-flight.com/explore](https://aether-flight.com/explore/), release `v0.3-20261023`:
 the last 12 months, 363 archive days (2025-10-23 → 2026-10-22; 2026-05-05 and 05-06 are an
