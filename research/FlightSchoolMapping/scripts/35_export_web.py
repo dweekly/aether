@@ -5,9 +5,11 @@
   data/release/<release>/web/t/<key>.json  aircraft records keyed by N-number, each with
                                            "hist": [[day_index, airborne_min, legs], ...]
 
-<key> is the three characters after the "N" (N12345 -> "123", N5 -> "5__"), or four
-("1234", "172_") for a prefix whose file would exceed SPLIT_BYTES, so a tail lookup
-fetches exactly one small file: the deepest key index.json lists. Files are deployed with the Pages site:
+<key> is the three characters after the "N" (N12345 -> "123", N5 -> "5__"), so a
+tail lookup fetches exactly one file. A key whose file would exceed SPLIT_BYTES is
+written as <key>-0 ... <key>-<p-1> instead, the part chosen by the fourth character
+(part_of); index.json's "split" maps each such key to p. Parts rather than one file
+per fourth character keep the site under Cloudflare Pages' 20,000-file limit. Files are deployed with the Pages site:
 Cloudflare's REST API rate limit (HTTP 429 at ~1,200 requests / 5 min) makes
 uploading thousands of small objects to R2 impractical without S3 keys.
 
@@ -16,6 +18,7 @@ Usage: 35_export_web.py --release dev
 
 import argparse
 import json
+import math
 import os
 import sys
 from collections import defaultdict
@@ -30,9 +33,12 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = Path(os.environ.get("AETHER_DATA", ROOT / "data"))  # tests point this at a fixture tree
 HISTORY = DATA / "history"
 RECENT_LEGS = 8
-# A three-character shard above this splits by the fourth character. N172xx alone was
-# 617 kB with a 12-month window, which put a cold phone lookup near the 3 s budget.
+# A three-character shard above SPLIT_BYTES is split into parts of about PART_BYTES.
+# N172xx alone was 617 kB with a 12-month window, which put a cold phone lookup near
+# the 3 s budget.
 SPLIT_BYTES = 120_000
+PART_BYTES = 100_000
+SPLIT_CHARS = "_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"  # mirrored in website/src/pages/explore/tail.astro
 RELEASES = DATA / "release"
 
 
@@ -41,16 +47,24 @@ def shard_key(n_number, depth=3):
     return s + "_" * (depth - len(s))
 
 
-def split_large(shards, limit=SPLIT_BYTES):
-    """Replace each shard whose JSON exceeds limit bytes with four-character shards."""
-    out = {}
+def part_of(n_number, parts):
+    """The part of a split shard that holds this N-number: its fourth character, modulo parts."""
+    return max(SPLIT_CHARS.find(shard_key(n_number, 4)[3]), 0) % parts
+
+
+def split_large(shards, limit=SPLIT_BYTES, part_bytes=PART_BYTES):
+    """Return (files, parts): shards over limit bytes become <key>-<i> files, and parts
+    maps each split key to its part count."""
+    files, parts = {}, {}
     for k, recs in shards.items():
-        if len(json.dumps(recs, separators=(",", ":"), default=str)) <= limit:
-            out[k] = recs
+        size = len(json.dumps(recs, separators=(",", ":"), default=str))
+        if size <= limit:
+            files[k] = recs
             continue
+        parts[k] = math.ceil(size / part_bytes)
         for n, rec in recs.items():
-            out.setdefault(shard_key(n, 4), {})[n] = rec
-    return out
+            files.setdefault(f"{k}-{part_of(n, parts[k])}", {})[n] = rec
+    return files, parts
 
 
 def write(path, obj):
@@ -140,16 +154,16 @@ def main():
         for n in recs:
             if recent.get(n):
                 recs[n]["recent"] = recent[n]
-    shards = split_large(shards)
-    for k, recs in shards.items():
+    files, parts = split_large(shards)
+    for k, recs in files.items():
         write(web / "t" / f"{k}.json", recs)
-    # A re-export can split a shard that an earlier run wrote whole; drop files the index won't list.
+    # A re-export can split a shard that an earlier run wrote whole; drop files no lookup can reach.
     for f in (web / "t").glob("*.json"):
-        if f.stem not in shards:
+        if f.stem not in files:
             f.unlink()
     results = json.loads((rel / "results.json").read_text())
     write(web / "index.json", {"release": a.release, "days": days, "results": results,
-                               "shards": sorted(shards)})
+                               "shards": sorted(shards), "split": parts})
     print(f"{a.release}: {sum(len(v) for v in shards.values())} aircraft in {len(shards)} shards, "
           f"{len(days)} days")
 

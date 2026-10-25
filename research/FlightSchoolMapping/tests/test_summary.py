@@ -105,21 +105,21 @@ def test_classification_branches(tmp_path):
     assert results["window"]["included_days"] == ["2026-10-02", "2026-10-03", "2026-10-04"]
 
 
-def test_crowded_shards_split_one_character_deeper():
+def test_crowded_shards_split_into_parts():
     import importlib.util
     spec = importlib.util.spec_from_file_location("export", SCRIPTS / "35_export_web.py")
     export = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(export)
     pad = "x" * 200
-    shards = {
-        "172": {n: {"n": n, "pad": pad} for n in ("N172", "N1720", "N172SP", "N17234")},
-        "5__": {"N5": {"n": "N5"}},
-    }
-    out = export.split_large(shards, limit=500)
-    # The small shard stays; the crowded one splits by the fourth character, short tails padded.
-    assert set(out) == {"5__", "172_", "1720", "172S", "1723"}
-    assert {n for recs in out.values() for n in recs} == {"N172", "N1720", "N172SP", "N17234", "N5"}
-    for k, recs in out.items():
-        assert all(export.shard_key(n, len(k)) == k for n in recs)
+    tails = ("N172", "N1720", "N172SP", "N17234", "N1729Z")
+    shards = {"172": {n: {"n": n, "pad": pad} for n in tails}, "5__": {"N5": {"n": "N5"}}}
+    files, parts = export.split_large(shards, limit=500, part_bytes=500)
+    # The small shard stays whole; the crowded one becomes parts, and every record lands
+    # in the part a lookup computes from its N-number alone.
+    assert "5__" in files and "172" not in files and set(parts) == {"172"} and parts["172"] >= 2
+    assert {n for recs in files.values() for n in recs} == set(tails) | {"N5"}
+    for n in tails:
+        assert n in files[f"172-{export.part_of(n, parts['172'])}"]
+    assert export.part_of("N172", 3) == 0  # no fourth character -> "_", index 0
     # Under the limit nothing splits.
-    assert export.split_large(shards, limit=10_000).keys() == shards.keys()
+    assert export.split_large(shards, limit=10_000) == (shards, {})
