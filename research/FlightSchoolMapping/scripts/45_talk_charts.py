@@ -11,7 +11,7 @@ so the split reads by lightness and survives every color-vision deficiency
 (checked with the dataviz validator); the neutral sits under 3:1 contrast,
 so every neutral mark carries a direct label.
 
-Usage: 45_talk_charts.py --release v0.2-20261023 [--out ../../../docs/hackers-2026-charts]
+Usage: 45_talk_charts.py --release v0.3-20261023 [--out ../../../docs/hackers-2026-charts]
 """
 
 import argparse
@@ -99,6 +99,23 @@ def faa_equipped(s, r, release, window, faa):
         s.text(x0 + (x1 - x0) * v / top + 20, yy + h / 2 + 14, n(v), 40, weight=600)
     s.text(x0, H - 110, f"Heard = {100 * tot.get('adsb', 0) / faa['all']:.0f}% of the FAA's equipped count, "
                         f"{window}", 28, "dim")
+    footer(s, release, window)
+
+
+def silent_tiers(s, k, release, window):
+    rows = [(f"Heard by adsb.lol, {k['lol_first'][:7]} until the window", k["lol"], "accent"),
+            (f"Seen only on an OpenSky Monday, {k['first_monday'][:4]}–{k['last_monday'][:4]}", k["os_only"], "accent"),
+            ("Heard on neither", k["neither"], "context")]
+    s.text(80, 90, f"{n(k['silent'])} aircraft silent in the window: when was each last heard?", 34, weight=600)
+    x0, x1, y, h, gap = 80, W - 300, 200, 110, 100
+    top = max(v for _, v, _ in rows)
+    for i, (label, v, c) in enumerate(rows):
+        yy = y + i * (h + gap)
+        s.text(x0, yy - 18, label, 30)
+        s.rect(x0, yy, (x1 - x0) * v / top, h, c, f"{label}: {n(v)}")
+        s.text(x0 + (x1 - x0) * v / top + 20, yy + h / 2 + 14, n(v), 40, weight=600)
+    s.text(x0, H - 100, f"OpenSky's Mondays caught {100 * k['sens_hit'] / k['sens_n']:.0f}% of today's fliers registered before "
+                        f"{k['last_monday'][:4]}. OpenSky counts: The OpenSky Network.", 24, "dim")
     footer(s, release, window)
 
 
@@ -211,6 +228,7 @@ def main():
     facts = import_module("43_talk_facts")
     faa = facts.FAA_EQUIPPED
     cert = facts.piston_by_decade_cert(rel, r["registry_date"])
+    tiers = facts.silent_tiers(rel, w["first_day"])
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     charts = {
@@ -221,6 +239,8 @@ def main():
         "heard-by-type": lambda s: heard_by_type(s, r, a.release, window),
         "c172-rate-vs-hours": lambda s: c172_rate_vs_hours(s, schools, w["days"], a.release, window),
     }
+    if tiers:
+        charts["silent-tiers"] = lambda s: silent_tiers(s, tiers, a.release, window)
     for name, draw in charts.items():
         for theme, t in THEMES.items():
             s = Svg(t)

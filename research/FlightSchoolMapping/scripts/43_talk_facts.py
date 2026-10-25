@@ -4,6 +4,8 @@
 Every number in docs/hackers-2026-facts.md comes from results.json,
 training.json and privacy.json of the named release, with its window and
 definitions, so the talk cannot drift from the data. Rerun after each release.
+Section 5 also reads the archive days before the window and the internal
+OpenSky Monday tables (39_opensky_mondays.py); only counts leave them.
 
 Usage: 43_talk_facts.py --release dev [--out ../../../docs/hackers-2026-facts.md]
 """
@@ -20,6 +22,8 @@ from scipy.stats import spearmanr
 ROOT = Path(__file__).resolve().parent.parent
 RELEASES = ROOT / "data" / "release"
 REGISTRY = ROOT / "data" / "registry"
+HISTORY = ROOT / "data" / "history"
+OPENSKY = ROOT / "data" / "opensky_mondays"
 # FAA "Current Equipage Levels", All USA Civil Aircraft ADS-B Equipage Counts, row 1-Oct-26
 # (faa.gov/air_traffic/technology/equipadsb/installation/current_equipage_levels, read 2026-10-23).
 FAA_EQUIPPED = {"as_of": "2026-10-01", "all": 173_663, "es1090": 136_553, "uat": 35_762, "dual": 1_348}
@@ -52,6 +56,39 @@ def piston_by_decade_cert(rel, registry_date):
     for decade, cls, reg, obs in rows:
         out.setdefault(decade, {})[cls] = {"registered": reg, "observed": obs}
     return out
+
+
+def silent_tiers(rel, first_day):
+    """Aircraft silent in the window, split by the last time anything heard their address:
+    adsb.lol on an archive day before the window, else an OpenSky Monday, else neither.
+    Sensitivity of the Monday sample: the share of aircraft heard in the window, with a
+    registration certificate issued before the sample ended, that appear on at least one Monday."""
+    mondays = sorted(p.stem for p in OPENSKY.glob("*.parquet"))
+    if not mondays:
+        return None
+    c = duckdb.connect()
+    c.execute(f"""
+        CREATE TABLE t AS
+        WITH lol AS (SELECT lower(hex) AS hex, min(day) AS first FROM read_parquet('{HISTORY / "aircraft_day" / "*" / "*" / "*.parquet"}')
+                     WHERE day < DATE '{first_day}' GROUP BY 1),
+             os AS (SELECT lower(hex) AS hex, max(to_timestamp(last_ts))::DATE AS last_day
+                    FROM read_parquet('{OPENSKY / "*.parquet"}') GROUP BY 1)
+        SELECT a.observed_class <> 'not_observed' AS heard, l.hex IS NOT NULL AS in_lol, o.last_day AS os_last,
+               try_strptime(a.cert_issue_date::VARCHAR, ['%Y-%m-%d', '%Y%m%d'])::DATE AS cert
+        FROM read_parquet('{rel / "aircraft.parquet"}') a
+        LEFT JOIN lol l ON lower(a.hex) = l.hex LEFT JOIN os o ON lower(a.hex) = o.hex
+    """)
+    q = lambda sql: c.execute(sql).fetchone()
+    lol_first = q(f"SELECT min(day) FROM read_parquet('{HISTORY / 'aircraft_day' / '*' / '*' / '*.parquet'}') WHERE day < DATE '{first_day}'")[0]
+    silent, lol, os_only, neither = q("""SELECT count(*), count(*) FILTER (WHERE in_lol),
+        count(*) FILTER (WHERE NOT in_lol AND os_last IS NOT NULL), count(*) FILTER (WHERE NOT in_lol AND os_last IS NULL)
+        FROM t WHERE NOT heard""")
+    by_year = c.execute("SELECT year(os_last), count(*) FROM t WHERE NOT heard AND NOT in_lol AND os_last IS NOT NULL "
+                        "GROUP BY 1 ORDER BY 1").fetchall()
+    sens_n, sens_hit = q(f"SELECT count(*), count(os_last) FROM t WHERE heard AND cert < DATE '{mondays[-1]}'")
+    return {"mondays": len(mondays), "first_monday": mondays[0], "last_monday": mondays[-1], "lol_first": str(lol_first),
+            "silent": silent, "lol": lol, "os_only": os_only, "neither": neither, "os_last_year": by_year,
+            "sens_n": sens_n, "sens_hit": sens_hit}
 
 
 def quartiles(xs):
@@ -114,6 +151,7 @@ def main():
     faa = FAA_EQUIPPED
     cert = piston_by_decade_cert(rel, r["registry_date"])
     util = rental_utilization(json.loads((rel / "schools_full.json").read_text())["schools"], w["days"])
+    tiers = silent_tiers(rel, w["first_day"])
 
     lines = [
         "# Hackers 2026 fact sheet",
@@ -200,6 +238,26 @@ def main():
         f"${n(util['c172_billed'][0])}–${n(util['c172_billed'][2])}).",
         "- Observed hours are a floor: time flown outside receiver coverage is not counted.",
         "",
+    ]
+    if tiers:
+        k = tiers
+        lines += [
+            "## 5. When the silent ones went quiet",
+            "",
+            f"- Of the {n(k['silent'])} aircraft silent in the window, {n(k['lol'])} ({pct(k['lol'], k['silent'])}) were heard by "
+            f"adsb.lol between {k['lol_first']} and the window's start: they went quiet recently.",
+            f"- {n(k['os_only'])} ({pct(k['os_only'], k['silent'])}) more were last seen in OpenSky's Monday samples "
+            f"({n(k['mondays'])} Mondays, {k['first_monday']} → {k['last_monday']}); by year last seen: "
+            + ", ".join(f"{y} {n(c)}" for y, c in k["os_last_year"]) + ".",
+            f"- {n(k['neither'])} ({pct(k['neither'], k['silent'])}) appear in neither.",
+            f"- How much a Monday sample misses: of the {n(k['sens_n'])} aircraft heard in this window whose registration "
+            f"certificate predates {k['last_monday']}, {n(k['sens_hit'])} ({pct(k['sens_hit'], k['sens_n'])}) are on at least "
+            "one Monday. A regular flier usually lands in the sample, but \"neither\" still holds some that flew.",
+            "- An address follows the N-number, so a hit years ago may be an earlier airframe that held the same number.",
+            "- OpenSky's tables stay internal (their terms forbid redistribution and require de-identification): counts only.",
+            "",
+        ]
+    lines += [
         "## Sources to cite on a slide",
         "",
         "- Contains information from adsb.lol, made available under the ODbL. FAA Releasable Aircraft Registry (public domain).",
