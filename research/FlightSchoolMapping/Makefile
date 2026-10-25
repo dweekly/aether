@@ -313,6 +313,11 @@ define check_stage
 endef
 
 .PHONY: status
+# The real ingest and registry join on committed fixtures, checked against sample/expected.json.
+.PHONY: sample
+sample:
+	scripts/sample.sh
+
 # Every day of the 60-day privacy window ingested and spanning all 24 UTC hours.
 .PHONY: history-status
 history-status:

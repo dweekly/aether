@@ -40,3 +40,6 @@ output/*progress.json
 output/extract_stderr.log
 output/*.failed_no_key
 output/pdf_targets.key
+
+# make sample installs its two dependencies here
+.sample-venv/
