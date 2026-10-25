@@ -12,6 +12,7 @@ Usage: 43_talk_facts.py --release dev [--out ../../../docs/hackers-2026-facts.md
 
 import argparse
 import json
+import resource
 import statistics
 from datetime import date
 from pathlib import Path
@@ -66,6 +67,9 @@ def silent_tiers(rel, first_day):
     mondays = sorted(p.stem for p in OPENSKY.glob("*.parquet"))
     if not mondays:
         return None
+    # Every archive day at once is more files than the default 1024 descriptors.
+    soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+    resource.setrlimit(resource.RLIMIT_NOFILE, (max(soft, min(hard, 65536)), hard))
     c = duckdb.connect()
     c.execute(f"""
         CREATE TABLE t AS
