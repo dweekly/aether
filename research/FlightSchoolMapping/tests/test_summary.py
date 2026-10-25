@@ -103,3 +103,23 @@ def test_classification_branches(tmp_path):
     assert out["N8"]["home_airport"] is None              # KPAO now 1 of 2 nights
     results = json.loads((tmp_path / "release" / "w" / "results.json").read_text())
     assert results["window"]["included_days"] == ["2026-10-02", "2026-10-03", "2026-10-04"]
+
+
+def test_crowded_shards_split_one_character_deeper():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("export", SCRIPTS / "35_export_web.py")
+    export = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(export)
+    pad = "x" * 200
+    shards = {
+        "172": {n: {"n": n, "pad": pad} for n in ("N172", "N1720", "N172SP", "N17234")},
+        "5__": {"N5": {"n": "N5"}},
+    }
+    out = export.split_large(shards, limit=500)
+    # The small shard stays; the crowded one splits by the fourth character, short tails padded.
+    assert set(out) == {"5__", "172_", "1720", "172S", "1723"}
+    assert {n for recs in out.values() for n in recs} == {"N172", "N1720", "N172SP", "N17234", "N5"}
+    for k, recs in out.items():
+        assert all(export.shard_key(n, len(k)) == k for n in recs)
+    # Under the limit nothing splits.
+    assert export.split_large(shards, limit=10_000).keys() == shards.keys()

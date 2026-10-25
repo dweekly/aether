@@ -5,8 +5,9 @@
   data/release/<release>/web/t/<key>.json  aircraft records keyed by N-number, each with
                                            "hist": [[day_index, airborne_min, legs], ...]
 
-<key> is the three characters after the "N" (N12345 -> "123", N5 -> "5__"), so a
-tail lookup fetches exactly one file. Files are deployed with the Pages site:
+<key> is the three characters after the "N" (N12345 -> "123", N5 -> "5__"), or four
+("1234", "172_") for a prefix whose file would exceed SPLIT_BYTES, so a tail lookup
+fetches exactly one small file: the deepest key index.json lists. Files are deployed with the Pages site:
 Cloudflare's REST API rate limit (HTTP 429 at ~1,200 requests / 5 min) makes
 uploading thousands of small objects to R2 impractical without S3 keys.
 
@@ -29,12 +30,27 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = Path(os.environ.get("AETHER_DATA", ROOT / "data"))  # tests point this at a fixture tree
 HISTORY = DATA / "history"
 RECENT_LEGS = 8
+# A three-character shard above this splits by the fourth character. N172xx alone was
+# 617 kB with a 12-month window, which put a cold phone lookup near the 3 s budget.
+SPLIT_BYTES = 120_000
 RELEASES = DATA / "release"
 
 
-def shard_key(n_number):
-    s = n_number[1:4].upper()
-    return s + "_" * (3 - len(s))
+def shard_key(n_number, depth=3):
+    s = n_number[1:1 + depth].upper()
+    return s + "_" * (depth - len(s))
+
+
+def split_large(shards, limit=SPLIT_BYTES):
+    """Replace each shard whose JSON exceeds limit bytes with four-character shards."""
+    out = {}
+    for k, recs in shards.items():
+        if len(json.dumps(recs, separators=(",", ":"), default=str)) <= limit:
+            out[k] = recs
+            continue
+        for n, rec in recs.items():
+            out.setdefault(shard_key(n, 4), {})[n] = rec
+    return out
 
 
 def write(path, obj):
@@ -124,7 +140,13 @@ def main():
         for n in recs:
             if recent.get(n):
                 recs[n]["recent"] = recent[n]
+    shards = split_large(shards)
+    for k, recs in shards.items():
         write(web / "t" / f"{k}.json", recs)
+    # A re-export can split a shard that an earlier run wrote whole; drop files the index won't list.
+    for f in (web / "t").glob("*.json"):
+        if f.stem not in shards:
+            f.unlink()
     results = json.loads((rel / "results.json").read_text())
     write(web / "index.json", {"release": a.release, "days": days, "results": results,
                                "shards": sorted(shards)})

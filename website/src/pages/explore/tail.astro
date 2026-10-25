@@ -24,9 +24,11 @@ import ExploreSearch from '../../components/ExploreSearch.astro';
 	const esc = (s: any) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 	const fmt = (n: number) => (n ?? 0).toLocaleString('en-US');
 
-	function key(n: string) {
-		const s = n.slice(1, 4);
-		return s + '_'.repeat(3 - s.length);
+	// Shards are keyed by the 3 characters after "N", or 4 where a prefix is crowded
+	// (35_export_web.py SPLIT_BYTES); the deepest key the index lists holds the record.
+	function key(n: string, depth: number) {
+		const s = n.slice(1, 1 + depth);
+		return s + '_'.repeat(depth - s.length);
 	}
 
 	function activityStrip(hist: number[][], days: string[]) {
@@ -68,8 +70,9 @@ import ExploreSearch from '../../components/ExploreSearch.astro';
 			await fetch('/x/airports.json').then((r) => (r.ok ? r.json() : [])).then((rows: any[]) => rows.map((x) => x[0])).catch(() => []));
 		const aptLink = (x: string | null) => !x ? null : airportIds.has(x) ? `<a href="/explore/airport/${esc(x)}/">${esc(x)}</a>` : esc(x);
 		let shard: Record<string, Rec> = {};
-		if (idx.shards.includes(key(n))) {
-			const resp = await fetch(`/x/t/${key(n)}.json`);
+		const k = [key(n, 4), key(n, 3)].find((x) => idx.shards.includes(x));
+		if (k) {
+			const resp = await fetch(`/x/t/${k}.json`);
 			if (!resp.ok) throw new Error(`data HTTP ${resp.status}`);
 			shard = await resp.json();
 		}
