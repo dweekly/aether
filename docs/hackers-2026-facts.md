@@ -2,6 +2,7 @@
 
 Generated 2026-10-25 from release `v0.3-20261023` by `research/FlightSchoolMapping/scripts/43_talk_facts.py`.
 Window 2025-10-23 → 2026-10-22 (363 days of the adsb.lol archive). Registry snapshot 2026-10-23. Regenerate rather than edit.
+Partial days upstream (legs start in fewer than 24 UTC hours): 2026-05-07 (6 of 24 h), 2026-08-12 (22 of 24 h), 2026-08-13 (19 of 24 h).
 
 ## 1. The registry vs the sky
 
