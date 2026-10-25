@@ -9,6 +9,13 @@
 #   crawl-cache/     fleet_html*, fleet_browser_*, rate_sheet_*  ~10 GB. Static.
 #                    Re-crawlable in principle, but the web has moved on since
 #                    March 2026, so treat as semi-permanent. Sync weekly.
+#   archive-history/ data/history/{aircraft_day,legs,manifest}  ~8.5 GB, +~10 MB/day.
+#                    adsb.lol's daily archive reduced per aircraft and per leg.
+#                    Rebuildable only by re-downloading ~3 TB from adsb.lol's
+#                    GitHub releases, which may not stay up. Sync nightly.
+#   opensky-mondays/ data/opensky_mondays  ~130 MB. Internal only (OpenSky's
+#                    license forbids redistribution); this private bucket is
+#                    storage, not distribution. Static once built.
 #   extract/         output/*.jsonl  ~11 MB. ~$25 of Sonnet plus hours of
 #                    crawling. These are BUILD INPUTS, committed to git and
 #                    mirrored here; restore-extract fills in any that a
@@ -25,9 +32,11 @@
 #   r2_sync.sh backup-adsb        # nightly
 #   r2_sync.sh backup-cache       # weekly
 #   r2_sync.sh backup-extract     # after any crawl/extract run
+#   r2_sync.sh backup-history     # nightly, after 37_history_daily.sh
 #   r2_sync.sh backup-all
 #   r2_sync.sh restore-extract    # what `make` calls when the .jsonl are absent
 #   r2_sync.sh restore-adsb       # full snapshot history (11 GB — slow)
+#   r2_sync.sh restore-history    # reduced archive + OpenSky Mondays (~8.6 GB)
 #   r2_sync.sh status             # what is up there
 #
 # Add --dry-run to any backup subcommand to see what would transfer.
@@ -38,6 +47,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 OUT_DIR="$PROJECT_DIR/output"
 ADSB_DIR="$PROJECT_DIR/data/adsb/snapshots"
+HISTORY_DIR="$PROJECT_DIR/data/history"
+OPENSKY_DIR="$PROJECT_DIR/data/opensky_mondays"
+HISTORY_PARTS=(aircraft_day legs manifest)
 
 CRED_ENV="${R2_CRED_ENV:-$HOME/dev/nanoclaw-data/.env}"
 REMOTE_BASE="${R2_REMOTE_BASE:-r2:nanoclaw-data/aether-research}"
@@ -154,6 +166,32 @@ verify() {
   echo "  verified OK ($(printf '%s\n' "$out" | grep -oE '[0-9]+ matching files' | tail -1))"
 }
 
+# Re-ingesting a day replaces its files, so `copy` updates them; it never deletes remote.
+backup_history() {
+  echo "→ reduced archive history and OpenSky Mondays (copy, never deletes remote)"
+  for d in "${HISTORY_PARTS[@]}"; do
+    echo "  $d"
+    rclone copy "$HISTORY_DIR/$d" "$REMOTE_BASE/archive-history/$d" \
+      "${RCLONE_OPTS[@]}" --stats-one-line "${EXTRA[@]}"
+    verify "$HISTORY_DIR/$d" "$REMOTE_BASE/archive-history/$d"
+  done
+  rclone copy "$OPENSKY_DIR" "$REMOTE_BASE/opensky-mondays" \
+    "${RCLONE_OPTS[@]}" --stats-one-line "${EXTRA[@]}"
+  verify "$OPENSKY_DIR" "$REMOTE_BASE/opensky-mondays"
+}
+
+restore_history() {
+  echo "→ restoring reduced archive history and OpenSky Mondays from R2 (~8.6 GB)"
+  for d in "${HISTORY_PARTS[@]}"; do
+    mkdir -p "$HISTORY_DIR/$d"
+    rclone copy "$REMOTE_BASE/archive-history/$d" "$HISTORY_DIR/$d" \
+      "${RCLONE_OPTS[@]}" --stats-one-line "${EXTRA[@]}"
+  done
+  mkdir -p "$OPENSKY_DIR"
+  rclone copy "$REMOTE_BASE/opensky-mondays" "$OPENSKY_DIR" \
+    "${RCLONE_OPTS[@]}" --stats-one-line "${EXTRA[@]}"
+}
+
 backup_cache() {
   echo "→ crawl caches"
   for d in "${CACHE_DIRS[@]}"; do
@@ -228,7 +266,7 @@ restore_adsb() {
 
 status() {
   echo "R2: $REMOTE_BASE"
-  for p in adsb-snapshots crawl-cache extract; do
+  for p in adsb-snapshots archive-history opensky-mondays crawl-cache extract; do
     printf '  %-16s ' "$p"
     rclone size "$REMOTE_BASE/$p" "${RCLONE_OPTS[@]}" 2>/dev/null \
       | tr '\n' ' ' | sed 's/Total //g' || echo "(empty or unreachable)"
@@ -240,12 +278,14 @@ case "$cmd" in
   backup-adsb)     backup_adsb ;;
   backup-cache)    backup_cache ;;
   backup-extract)  backup_extract ;;
-  backup-all)      backup_adsb; backup_cache; backup_extract ;;
+  backup-history)  backup_history ;;
+  backup-all)      backup_adsb; backup_history; backup_cache; backup_extract ;;
   restore-extract) restore_extract ;;
   restore-adsb)    restore_adsb ;;
+  restore-history) restore_history ;;
   status)          status ;;
   *)
-    sed -n '2,40p' "${BASH_SOURCE[0]}" | sed 's/^# \?//'
+    sed -n '2,42p' "${BASH_SOURCE[0]}" | sed 's/^# \?//'
     exit 1
     ;;
 esac
