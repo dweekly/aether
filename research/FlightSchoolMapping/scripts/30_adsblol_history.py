@@ -21,9 +21,12 @@ Definitions (kept deliberately literal; see docs/hackers-2026-plan.md):
     on the ground or below LOW_ALT_FT at that end; otherwise it is unknown.
 
 Raw downloads are deleted after a successful write unless --keep-raw.
+--traces DIR skips the download and reduces DIR/traces/*/trace_full_*.json instead
+(make sample uses it on the committed fixtures). AETHER_DATA moves data/ elsewhere.
 
 Usage:
   30_adsblol_history.py 2026-10-22 [--instance auto|prod-0|staging-0] [--keep-raw] [--workers 16]
+  30_adsblol_history.py 2026-10-22 --traces DIR
 
 --instance auto (the default) compares the day's prod-0 and staging-0 releases, plus the
 prod-0tmp and staging-0tmp replicas adsb.lol ran in mid-2025 (the only ones for 2025-05-28
@@ -55,7 +58,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from airport_index import AIRPORT_INDEX_VERSION, AirportIndex  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
-HISTORY = ROOT / "data" / "history"
+HISTORY = Path(os.environ.get("AETHER_DATA", ROOT / "data")) / "history"
 WORK = Path(os.environ.get("ADSBLOL_WORK", "/mnt/data/home/dew/scratch/adsblol"))
 
 MAX_GAP_S = 120          # longest gap between airborne points still counted as flying
@@ -366,23 +369,27 @@ def main():
     ap.add_argument("--instance", default="auto")
     ap.add_argument("--keep-raw", action="store_true")
     ap.add_argument("--workers", type=int, default=16)
+    ap.add_argument("--traces", type=Path, help="reduce this directory's traces/ instead of downloading")
     a = ap.parse_args()
     day = date.fromisoformat(a.day)
     t0 = time.time()
 
-    instance, tag, parts, replica_sizes = choose_release(day, a.instance)
-    try:
-        digests, ext = fetch(day, instance, parts)
-    except RuntimeError as e:
-        others = sorted((i for i in replica_sizes if i != instance), key=replica_sizes.get, reverse=True)
-        if a.instance != "auto" or not others:
-            raise
-        # A replica can be corrupt upstream (2026-01-29 staging-0 fails to untar); take the other.
-        print(f"{day}: {instance} failed ({e}); trying {others[0]}", file=sys.stderr)
-        shutil.rmtree(WORK / f"{day}-{instance}")
-        instance = others[0]
-        tag, parts = find_release(day, instance)
-        digests, ext = fetch(day, instance, parts)
+    if a.traces:
+        instance, tag, parts, replica_sizes, digests, ext = "local", f"local:{a.traces.name}", [], {}, {}, a.traces
+    else:
+        instance, tag, parts, replica_sizes = choose_release(day, a.instance)
+        try:
+            digests, ext = fetch(day, instance, parts)
+        except RuntimeError as e:
+            others = sorted((i for i in replica_sizes if i != instance), key=replica_sizes.get, reverse=True)
+            if a.instance != "auto" or not others:
+                raise
+            # A replica can be corrupt upstream (2026-01-29 staging-0 fails to untar); take the other.
+            print(f"{day}: {instance} failed ({e}); trying {others[0]}", file=sys.stderr)
+            shutil.rmtree(WORK / f"{day}-{instance}")
+            instance = others[0]
+            tag, parts = find_release(day, instance)
+            digests, ext = fetch(day, instance, parts)
     t_dl = time.time()
 
     files = sorted(str(p) for p in (ext / "traces").glob("*/trace_full_*.json"))
@@ -413,7 +420,7 @@ def main():
     mpath.write_text(json.dumps(manifest, indent=2) + "\n")
     print(json.dumps(manifest))
 
-    if not a.keep_raw:
+    if not a.keep_raw and not a.traces:
         shutil.rmtree(WORK / f"{day}-{instance}")
 
 
