@@ -265,7 +265,9 @@ def main():
         "## Sources to cite on a slide",
         "",
         "- Contains information from adsb.lol, made available under the ODbL. FAA Releasable Aircraft Registry (public domain).",
-        "- Any OpenSky-derived count: cite \"The OpenSky Network, https://opensky-network.org\" and send them the talk link.",
+        "- Any OpenSky-derived count (section 5): cite exactly \"The OpenSky Network, http://www.opensky-network.org\" and send",
+        "  OpenSky a copy of or link to the talk (their data license, section 4(i)). The license covers non-profit research and",
+        "  education only.",
         "",
     ]
     out = Path(a.out)
