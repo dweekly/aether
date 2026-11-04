@@ -59,6 +59,14 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
   redistributed, so it must never be published wholesale.
 
 ## After the panel
+- Fleet extraction misses tails that sit in image file names, alt text and POH or checklist
+  links: of the 62 unlisted operations confirmed in November, 30 were found by a text match the
+  extraction missed, and in 21 of those the tail sat only in such places
+  (docs/hackers-2026-unlisted-operations.md). Feed image names and alt text to the extraction,
+  or add a deterministic N-number pass over raw HTML checked against the registry.
+- Merge the 13 confirmed schools and clubs the March search missed (and the 40 known sites
+  whose tails it missed) into the school list; `scores.json` in data/research-2026-11/unlisted/
+  has them.
 - Match the FAA Part 141 certificate list (`faa-141-flightschools.csv`, UTF-16, tab-separated)
   to school records, for a "Part 141" flag.
 - 2023 archive backfill (adsb.lol starts 2023-02-16) and the 2022-07 → 2023-02 gap, which no

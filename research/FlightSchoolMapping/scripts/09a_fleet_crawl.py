@@ -808,13 +808,14 @@ async def run_async(
     limit: int | None = None,
     concurrency: int = DEFAULT_CONCURRENCY,
     source_filter: str | None = None,
+    input_path: Path | None = None,
 ):
     print("=" * 60)
     print("Phase 9a: Fleet Page Crawl")
     print(f"  Concurrency: {concurrency} schools at once")
     print("=" * 60)
 
-    enriched_path = OUTPUT_DIR / "flight_schools_enriched.json"
+    enriched_path = input_path or OUTPUT_DIR / "flight_schools_enriched.json"
     if not enriched_path.exists():
         print("  Error: Run Phase 8 (directory scraper) first.")
         return None
@@ -822,7 +823,8 @@ async def run_async(
         schools = json.load(f)
 
     print(f"  Directory schools: {len(schools):,}")
-    schools = merge_aopa_schools(schools)
+    if not input_path:  # an explicit target list is crawled as given
+        schools = merge_aopa_schools(schools)
     print(f"  Total schools: {len(schools):,}")
 
     if source_filter:
@@ -941,8 +943,19 @@ def main():
     parser.add_argument("--limit", type=int, help="Max schools to crawl (for testing)")
     parser.add_argument("--concurrency", type=int, default=DEFAULT_CONCURRENCY)
     parser.add_argument("--source", type=str, help="Filter by source field (e.g. cirrus_training_network)")
+    parser.add_argument("--input", type=Path,
+                        help="JSON list of schools (name, website, airport_code, city, state) instead of "
+                             "output/flight_schools_enriched.json; AOPA merging is skipped")
+    parser.add_argument("--output-dir", type=Path,
+                        help="Write fleet_html/, fleet_html_raw/ and fleet_crawl_index.json here instead of output/")
     args = parser.parse_args()
-    asyncio.run(run_async(limit=args.limit, concurrency=args.concurrency, source_filter=args.source))
+    if args.output_dir:
+        global OUTPUT_DIR, HTML_DIR, RAW_HTML_DIR, AOPA_CACHE_PATH
+        OUTPUT_DIR = args.output_dir
+        HTML_DIR, RAW_HTML_DIR = OUTPUT_DIR / "fleet_html", OUTPUT_DIR / "fleet_html_raw"
+        AOPA_CACHE_PATH = OUTPUT_DIR / "aopa_website_cache.json"
+    asyncio.run(run_async(limit=args.limit, concurrency=args.concurrency, source_filter=args.source,
+                          input_path=args.input))
 
 
 if __name__ == "__main__":

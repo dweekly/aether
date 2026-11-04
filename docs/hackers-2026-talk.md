@@ -58,6 +58,7 @@ From the fact sheet (`docs/hackers-2026-facts.md`, sections 2 and 4):
 
 - 2,760 rental aircraft have a published rate and a registered tail. 164 of them (6%) had no observed flights in 12 months: a stale listing, an idle plane, or flying out of receiver range, not yet separated.
 - Cessna 172s (1,201 of them): median $179/h posted. Posted rate and observed airborne hours have almost no pooled rank correlation (Spearman ρ 0.06); not a price effect. Chart: `docs/hackers-2026-charts/c172-rate-vs-hours-dark.png`.
+- Follow-up (`docs/hackers-2026-unlisted-operations.md`): of the 372, 255 have a website a web search tied to them, 62 show at least one of their own registered tails on it (against another operation's tails: 0 of 255), and 13 of the confirmed schools and clubs were on none of the March lists. 30 of the 62 confirmations came only from a raw text match, 21 of them because the tail is only in an image file name, alt text or a link: an extraction recall gap.
 - 372 registrant names with 3 or more aircraft our model ranks as trainers have no link to a fleet in our data. They're leads, not schools: a hand check of 20 (earlier window) found 12 schools, 2 clubs, 3 leasebacks and 3 unclear. Most of the model's lift comes from aircraft type and registrant fleet size, not flight behavior.
 - The busiest aircraft in our matched school-fleet data, N43171, a 1983 PA-28-181 based at Fort Lauderdale Executive, flew 1,966 observed hours on 331 days.
 

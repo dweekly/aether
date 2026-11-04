@@ -850,7 +850,19 @@ async def main():
                         help='Parallel browser tabs (default 1)')
     parser.add_argument('--targets', type=str, default='',
                         help='JSON file with custom target list (overrides default)')
+    parser.add_argument('--output-dir', type=Path, default=None,
+                        help='Read and write indexes, page text and flight_line.json here instead of output/')
     args = parser.parse_args()
+    if args.output_dir:
+        global OUTPUT_DIR, CRAWL_INDEX, BROWSER_INDEX, BROWSER_TEXT_DIR, BROWSER_RAW_HTML_DIR, FLIGHT_LINE
+        global PROGRESS_FILE
+        OUTPUT_DIR = args.output_dir
+        CRAWL_INDEX = OUTPUT_DIR / "fleet_crawl_index.json"
+        BROWSER_INDEX = OUTPUT_DIR / "fleet_browser_index.json"
+        BROWSER_TEXT_DIR = OUTPUT_DIR / "fleet_browser_text"
+        BROWSER_RAW_HTML_DIR = OUTPUT_DIR / "fleet_browser_html_raw"
+        FLIGHT_LINE = OUTPUT_DIR / "flight_line.json"
+        PROGRESS_FILE = OUTPUT_DIR / "fleet_browser_progress.json"
 
     client = anthropic.Anthropic()
 
@@ -1090,10 +1102,15 @@ async def main():
             await browser.close()
 
     # Run all workers concurrently — each is a separate browser process
-    await asyncio.gather(
+    worker_results = await asyncio.gather(
         *[browser_worker(i, chunk) for i, chunk in enumerate(chunks)],
         return_exceptions=True,
     )
+    # A worker that dies (e.g. the browser fails to launch) used to vanish here and the
+    # run ended with "0 schools" and exit 0. Say so and fail once the index is saved.
+    worker_errors = [r for r in worker_results if isinstance(r, BaseException)]
+    for r in worker_errors:
+        print(f"  WORKER FAILED: {r!r}"[:300], file=sys.stderr)
 
     browser_results = list(existing_browser.values()) + new_results
 
@@ -1159,6 +1176,8 @@ async def main():
     print(f"\nCrawl complete: {total} schools")
     print(f"  {with_pages} with content, {with_pdfs} with PDFs, {rate_sheets} rate sheets")
     print(f"  {still_flagged} still flagged")
+    if worker_errors:
+        sys.exit(f"{len(worker_errors)} of {n_workers} browser workers failed")
 
 
 if __name__ == '__main__':
