@@ -36,3 +36,15 @@ A different solution would also serve if it produces measured numbers the talk c
 ## Out of scope
 
 Publishing any of this in the explorer or the release, re-running the photo/VLM or PDF passes, a new school discovery crawl beyond the 372, changes to the March outputs.
+
+## More school sources (probed 2026-11-04, not yet run)
+
+What March used: AOPA's finder, the FAA Part 141 list, three web directories, Cirrus's locator, then state and federal side-lists, the 372 sky-found operations and FSAI's member directory (`docs/hackers-2026-fsai-directory.md`). Candidates for what's still missing, best first:
+
+- **Common Crawl's URL index.** Every domain with a crawled path like `/discovery-flight`, `/aircraft-rental` or `/flight-training`, found with SQL over the columnar index on AWS Athena (a few dollars a query) instead of crawling the web ourselves. Also enumerates the customer paths of scheduling platforms (myFBO, Flight Circle, AircraftClubs). The free CDX index API returned 504s for those domains on 2026-11-04.
+- **FAA airmen file.** The releasable airmen database lists certificate holders who allow their address to be released, with ratings including flight instructor. That gives where Part 61 instruction can happen (CFIs per town) rather than schools; joined to aircraft owners by name and address it finds instructors who own a trainer.
+- **Niche associations.** The Soaring Society of America's club and commercial operator list, the Seaplane Pilots Association's school list, helicopter training lists and the airline pathway programs' partner schools. Small lists, but in segments the general directories cover worst.
+- **OpenStreetMap.** Only 230 objects worldwide carry `amenity=flight_school` (taginfo, 2026-11-04). A California-only Overpass query by tag and name returned 52 objects, about 35 of them real training operations, of which about 6 are not in our list by a rough name and domain check (Aerocademy, Fresno Flight Center, Flight School Bakersfield, Golden State Flying Club, Hillside Aviation, Pacific States Aviation). Nationwide by name is too heavy for the public Overpass servers (502 and 504); run it on trogdor over the Geofabrik US extract instead.
+- **Google Places.** "Flight school" is a Google business category, so a text search around each public-use airport would have the best recall, at a few hundred dollars of API calls, and Google's terms forbid storing the results, so it could inform the talk but not the public explorer.
+
+Not useful: Certificate Transparency for scheduling platforms. myFBO, AircraftClubs, Flight Schedule Pro and Schedule Master serve customers from wildcard certificates or paths, so the logs name no customers (Cert Spotter, 2026-11-04; crt.sh returned 502).
