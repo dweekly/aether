@@ -13,8 +13,8 @@ skipped. Spend is computed from each response's recorded usage and the run stops
 before the budget is exceeded.
 
 Usage:
-  51a_unlisted_discover.py --limit 10          # pilot
-  51a_unlisted_discover.py --budget 15         # the rest
+  55a_unlisted_discover.py --limit 10          # pilot
+  55a_unlisted_discover.py --budget 15         # the rest
 """
 
 import argparse

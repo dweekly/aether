@@ -7,11 +7,11 @@ share one, e.g. leasing LLCs that fly on the same school's line), runs
 site the HTTP crawl flagged (thin pages, captcha, no fleet page, blocked) or could not
 fetch at all, as the March pipeline did. Both write only under crawl/.
 
-With --extract, then runs extract_v2.py (Claude Haiku 5.5, Message Batches) on both
+With --extract, then runs extract_v2.py (Claude Haiku 5.5 at effort medium, Message Batches) on both
 layouts under extract/http and extract/browser, refusing to submit over --extract-budget.
 extract_v2.py lives on branch research-rerun; copy it into scripts/ first.
 
-Usage: 51b_unlisted_crawl.py [--skip-http] [--skip-browser] [--extract]
+Usage: 55b_unlisted_crawl.py [--skip-http] [--skip-browser] [--extract]
 """
 
 import argparse
@@ -25,6 +25,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import unlisted_ops as U  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
+# Haiku 5.5 at effort low lists one entry per aircraft type, not per tail, on big fleet
+# tables (found by the workstream 1 re-run), so extraction runs at medium. Results land in
+# extract/<layout>/claude-haiku-5-5-effort-medium/.
+EFFORT, TAG = "medium", "effort-medium"
+VARIANT = ["--effort", EFFORT, "--tag", TAG]
 PY = sys.executable
 
 
@@ -70,7 +75,7 @@ def main():
     disc = load_discovery()
     missing = [o["registrant"] for o in ops if o["registrant"] not in disc]
     if missing:
-        sys.exit(f"{len(missing)} operations have no discovery record yet; run 51a first")
+        sys.exit(f"{len(missing)} operations have no discovery record yet; run 55a first")
     crawl = U.OUT / "crawl"
     crawl.mkdir(parents=True, exist_ok=True)
     ts = targets(ops, disc)
@@ -120,7 +125,8 @@ def extract(crawl, budget, model="claude-haiku-5-5"):
         run = U.OUT / "extract" / layout
         if not (run / "requests.jsonl").exists():
             subprocess.run(ev2 + ["build", *args, "--run", str(run)], check=True)
-        subprocess.run(ev2 + ["estimate", "--run", str(run), "--model", model, "--sample", "20"], check=True)
+        subprocess.run(ev2 + ["estimate", "--run", str(run), "--model", model, "--sample", "20",
+                              "--effort", EFFORT], check=True)
         last = [json.loads(x) for x in (run / "log.jsonl").open() if '"estimate"' in x][-1]
         est += last["est_cost_usd_batch"]
     print(f"estimated extraction cost ${est:.2f} (budget ${budget:.2f})", flush=True)
@@ -128,11 +134,11 @@ def extract(crawl, budget, model="claude-haiku-5-5"):
         sys.exit("estimate over budget; not submitting")
     for layout in runs:
         run = U.OUT / "extract" / layout
-        if not (run / model / "batches.json").exists():
-            subprocess.run(ev2 + ["submit", "--run", str(run), "--model", model], check=True)
+        if not (run / f"{model}-{TAG}" / "batches.json").exists():
+            subprocess.run(ev2 + ["submit", "--run", str(run), "--model", model, *VARIANT], check=True)
     for layout in runs:
-        subprocess.run(ev2 + ["fetch", "--run", str(U.OUT / "extract" / layout), "--model", model, "--wait"],
-                       check=True)
+        subprocess.run(ev2 + ["fetch", "--run", str(U.OUT / "extract" / layout), "--model", model, "--wait",
+                              *VARIANT], check=True)
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ holds no tail on any known fleet. That script wrote the list into training.json;
 module recomputes it from training_scores.parquet, aircraft.parquet and
 schools_full.json and refuses to continue unless both agree tail for tail.
 
-Shared by 51a_unlisted_discover.py, 51b_unlisted_crawl.py and 51_unlisted_schools.py.
+Shared by 55a_unlisted_discover.py, 55b_unlisted_crawl.py and 55_unlisted_schools.py.
 """
 
 import csv
