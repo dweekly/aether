@@ -811,6 +811,7 @@ only when you intend to act on the results.
 | `09f_corpus_expansion.py` | Crawl + extract new AOPA domains (clubs, universities) |
 | `49_scrape_facts.py` | Check the raw model output of 09b/09c against the registry and a release's flight data; cost from recorded usage; exits 1 if the shuffled-airport control fails |
 | `demo_extract.py` | Talk demo: one school URL in, its fleet and rates out, each tail checked against a release (`demo_extract.tape` records it with VHS) |
+| `56_fsai_directory.py` | Parse the FSAI (formerly FSANA) member directory pulled in a browser by `probes/fsai_directory_pull.js`, classify entries and match US training providers against `flight_line.json`; writes `docs/hackers-2026-fsai-directory.md` |
 
 ## Aircraft Provenance Model
 

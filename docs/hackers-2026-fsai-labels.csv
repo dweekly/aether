@@ -1,0 +1,145 @@
+fsai_id,name,state,label
+4230602783,Alaska Airman Checks,AK,examiner
+4001722183,Alaska Flight Academy,AK,school
+4000475743,"Calvary Aeronautical Services, LLC",AK,no_website
+3578726883,UCA Aviation Academy,AR,no_website
+3952657661,"Wing and a Prayer Aviation, LLC",AR,school
+3777889665,AV8R UNLIMITED,AZ,school
+3947481269,"Ace Pilot Academy, DBA, JPG Aviation Services, LLC",AZ,school
+4067189611,"E&M Aviation Services, LLC",AZ,school
+1904992587,"JPG Aviation Services, LLC",AZ,examiner
+1403051199,(individual),CA,individual
+1666549837,(individual),CA,individual
+3962056063,(individual),CA,individual
+1402838571,"American Aviation Academy, Inc.",CA,school
+3944348061,Anywhere ATP,CA,no_website
+1861708125,Aviation Marine,CA,school
+4241240293,Echelon Sport Aviation,CA,school
+3311842083,Flight Test Prep,CA,vendor
+2587741095,Flight Ventures Aviation Academy,CA,school
+4068090225,Golden State Flyers LLC,CA,school
+3962063395,Jakes Airventures,CA,no_website
+1403056087,"Precision Flight Controls, Inc",CA,vendor
+1887989679,Quantum3D,CA,vendor
+3959883347,VMC Aviation,CA,no_website
+3965590087,Winging It Flight Services,CA,school
+3497967347,World Wide Wings LLC,CA,school
+2225162697,American Flight Schools,CO,school
+1631846259,Bye Aerospace,CO,vendor
+1906700943,"Flight Training International, Inc",CO,school
+1636458087,"Three Wing Flight School, LLC",CT,same_as_ours
+3949818955,(individual),FL,individual
+1781844315,AB Flight LLC - Evektor Aircraft Sales,FL,school
+3624274489,Aero Global Aviation Academy,FL,school
+4235578767,"Airways Flight Service's, LLC",FL,no_website
+3616424361,"Alexander Aviation Associates, Inc.",FL,school
+1631782715,American Flyers,FL,same_as_ours
+3120050405,Aviation Conversations,FL,vendor
+1868831163,"Brodeur & Company, Inc.",FL,vendor
+2598757425,Cockpit Group,FL,school
+4117153525,Dobbs Flight Service LLC,FL,school
+1824619203,"Eagle's Wings Performance, Inc.",FL,no_website
+3510591829,Expert Aviation Inc,FL,examiner
+1402921667,"FL Aviation Center, LLC",FL,school
+1402938775,"FN Aviation - US, Inc",FL,no_website
+4162437179,First Aviator Academy - USA,FL,no_website
+1865701621,FlyX05,FL,school
+1402955883,"Helicopter Academy.com, LLC",FL,same_as_ours
+3337962333,International Aerospace Intelligence Organization,FL,vendor
+1402979101,"Island Air Express, LLC",FL,no_website
+3420354461,JAVaviation,FL,no_website
+2542953573,"Let's Fly Jacksonville, LLC",FL,school
+3999137653,Levil Aviation,FL,vendor
+3591147291,Lockwood Aviation Supply,FL,vendor
+1701153211,Norton Aviation,FL,school
+3624067971,Orient Flight School,FL,school
+3562044139,Panhandle Helicopter Academy,FL,school
+1690920183,Skyline Aviation Academy,FL,school
+1403046311,"Old Republic Aerospace, Inc.",GA,insurer
+3339798999,"Speedway Flight Training, LLC",GA,school
+4130896137,Smart Aviation Tech,IA,school
+3802674269,Paradizo LLC,ID,vendor
+1860429913,"Flight Training Finance, LLC",IL,vendor
+3960698421,Vertical Lift Aviation,IL,no_website
+4248529523,"Bisosoft, LLC",IN,vendor
+2232624229,FlyKeegan,IN,no_website
+3558012761,PlaneEnglish,IN,vendor
+2236468641,Republic Airways,IN,airline
+1933434637,Superior Flight Training,IN,school
+1899709881,Marsh McLennan Agency,KS,insurer
+2949235579,WingsLeasing,KS,vendor
+4230558791,"Altitude Aviation, LLC",LA,no_website
+1403101301,Southern Aviators Flight Training LLC,LA,school
+3616388923,Upskill Air,MD,no_website
+1403020649,Midwest Aviation Service Inc.,MI,school
+3256106663,"National Aviation & Marine Und, LLC",MI,insurer
+4208328167,4state Check Ride,MO,examiner
+1631863367,Aeronautical Proficiency Training LLC,MO,no_website
+3944894295,Baugh Flight Park,MO,no_website
+3332724841,Departure Aviation Services LLC,NC,no_website
+1703597211,First Class Aviation,ND,no_website
+2188841191,Joy of Flight,NJ,no_website
+1403073195,Roatan Aviation LLC,NJ,school
+1631845037,"Roberts Aviation Services, Inc",OH,no_website
+3968849161,Talon Air llc.,OH,no_website
+2073670135,FlyHome Aviation,OK,no_website
+1403068307,AssuredPartners Aerospace,OR,insurer
+3958661347,"BUSWELL AVIATION, INC.",OR,no_website
+3960638543,KC Aviation Services,OR,no_website
+1695561339,Mary Schu Aviation,OR,no_website
+1811799201,North Country Enterprises,OR,no_website
+2103521151,(individual),PA,individual
+1897799895,Air Conrad LLC,PA,school
+2264737167,Alphabet Aviation,PA,examiner
+3914103561,"Beaver Air Group, LLC",PA,school
+3747047607,Braden Aviation LLC,PA,no_website
+1402920445,"Fayette Aviation, Inc.",PA,no_website
+3975796231,"Stein Air, LLC.",PA,no_website
+2221561463,SunEx Aviation,PR,school
+2103658015,Edisto Aviation LLC,SC,no_website
+3728120049,High Street Insurance Partners-Aerospace,SC,insurer
+3946893487,SCDPE,SC,examiner
+1403084193,Sioux Falls Flight School,SD,school
+3033327509,Highland Aero LLC,TN,school
+1673571449,"Myers Aviation, LLC",TN,school
+3594654431,(individual),TX,individual
+4074514279,(individual),TX,individual
+4245568617,ATACS LLC,TX,no_website
+4030109243,Bristell Aircraft Texas,TX,vendor
+4245822793,Elton Aviation LLC,TX,no_website
+3946930147,Farlow Aviaiton,TX,no_website
+1402925333,Flight Academy Advisors Inc.,TX,vendor
+4004382477,Flight College,TX,school
+1811735657,Ridenour Aviation Services,TX,no_website
+1403074417,"Salaika Aviation, LLC.",TX,school
+4061959451,Smart Motion Aviation,TX,no_website
+4070756629,VectoredOps,TX,school
+4003986549,Waypoint,TX,school
+1631807155,Wing Aero Products,TX,vendor
+4066672705,Ytesa AIR LLC,VT,same_as_ours
+2028766523,Four Forces,WA,school
+4246793061,Maxwell Aviation,WA,school
+2781366995,Sun Sport Aviation,WI,school
+3691666567,(individual),,individual
+1631768051,AeroTrek Flight Academy LLC,,no_website
+1631775383,American Flight Schools,,duplicate
+1631783937,Beacon Aviation Associates,,no_website
+4091139589,"Blue Sky Academy Georgia  (in cooperation with Blue Sky Aviation, Czech Rep",,foreign
+4249326267,Bourne and Bourne Enterprise LLC,,no_website
+1631786381,"Buzzard Air Service, LLC",,no_website
+1631797379,Europe-American Aviation,,no_website
+4011630159,Executive Air Services,,no_website
+1631803489,"Fayette Aviation, Inc.",,duplicate
+1631804711,Florida Helicopters,,no_website
+1631805933,Fly Gateway Aviation Institute,,no_website
+1631823041,Gulf Coast International Flight Academy,,no_website
+4193886571,Horizontes Training Center,,foreign
+2180317741,JOF,,no_website
+1631834039,"Old Republic Aerospace, Inc.",,duplicate
+1631836483,Positive Attitude  Aviation,,no_website
+1631849925,"Rotors & Wings Aviation, LLC",,no_website
+3631439075,Sky S.A.,,foreign
+2594146819,Symbiotics Ltd,,vendor
+1631858479,VSL Aviation,,no_website
+1631862145,Wings Industry Advisory Committee,,vendor
+3629615851,iFly Escuela de Vuelo,,foreign
