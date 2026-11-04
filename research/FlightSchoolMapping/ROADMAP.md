@@ -110,6 +110,21 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
   yesterday?" also needs a position index (e.g. H3 cell × hour × hex) built during
   reduction, which the aircraft-day/leg tables do not keep.
 
+## Hardening
+- `58_airmen_llc_join.py` places addresses at ZIP centroids and takes airports from OurAirports
+  types; geocoded addresses and the FAA's public-use airport list would make the
+  "near an airport with no school" count exact.
+- 58's shuffled-address control mostly produces addresses that don't exist, so it is generous to
+  the real join; a control drawn from a real address list (OpenAddresses, county parcels) would
+  be a fair null. The surname checks carry the evidence meanwhile.
+- 58 normalizes street 1 only; a USPS CASS pass on both files would catch FIRST/1ST and units in
+  street 2.
+- `52_florida_owners.py`'s pilot validation counts remote-pilot-only airmen as pilots, keeps name
+  suffixes (JR, SR) in the surname it searches for, and uses the October airmen file; 58 measures
+  the same check with those fixed. 52 also breaks ties between same-named Florida entities
+  arbitrarily, so its counts move by a few aircraft between runs (6,220 in the probe, 6,225 in
+  the doc, 6,223 here); 58 adds a tie-break on document number. Port the fixes to 52.
+
 ## Tech Debt
 - `output/adsb_activity_summary.json` (55 MB) and `adsb_activity.csv` are committed and
   rewritten on every ADS-B fold, so each rebuild commit adds tens of MB to history. They
