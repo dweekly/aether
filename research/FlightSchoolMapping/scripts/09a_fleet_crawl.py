@@ -570,7 +570,16 @@ async def crawl_school(
             raise
         finally:
             if ATTEMPTS_PATH is not None:
-                _log_attempt(attempt, result)
+                try:
+                    _log_attempt(attempt, result)
+                except Exception as exc:  # never lose the line: write what is known
+                    with open(ATTEMPTS_PATH, "a") as f:
+                        f.write(json.dumps({"website": attempt.get("website", ""),
+                                            "school_name": attempt.get("school_name", ""),
+                                            "status": attempt.get("status"),
+                                            "error": attempt.get("error", ""),
+                                            "log_error": f"{type(exc).__name__}: {str(exc)[:160]}"},
+                                           default=str) + "\n")
         return result
 
 

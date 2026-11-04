@@ -19,8 +19,13 @@ visits the same sites:
   march_domains.json      {domain: [lists it was in]}: the denominator of the
       re-crawl's coverage gate (domains attempted >= 90% of March's)
 
+  --retry-from REC instead writes REC/retry/targets_http.json: every domain that no
+  November crawler reached (no HTTP status, or 4xx/5xx, in every attempt), for a
+  later 09a pass that tells a transient outage from a dead site.
+
 Usage:
     python 50a_recrawl_targets.py --march ../output --out ../data/research-2026-11/recrawl
+    python 50a_recrawl_targets.py --retry-from ../data/research-2026-11/recrawl
 
 Exits non-zero if a March input is missing or a list comes out empty.
 """
@@ -49,11 +54,37 @@ def load(path: Path):
     return json.loads(path.read_text())
 
 
+def retry_targets(rec: Path) -> int:
+    """Domains no November crawler reached, as 09a targets, from the attempt logs."""
+    best: dict[str, dict] = {}
+    for fname in ("crawl_attempts_http.jsonl", "crawl_attempts_browser.jsonl", "expansion_crawl.jsonl"):
+        for a in load(rec / fname):
+            d = norm_domain(a.get("domain") or a.get("website", ""))
+            code = a.get("status") if fname != "expansion_crawl.jsonl" else a.get("http_status")
+            homepage_failed = "homepage_failed" in a.get("crawl_flags", [])
+            reached = code is not None and code < 400 and not homepage_failed
+            prev = best.setdefault(d, {"reached": False, "website": "", "name": ""})
+            prev["reached"] |= reached
+            prev["website"] = prev["website"] or a.get("website") or f"https://{d}"
+            prev["name"] = prev["name"] or a.get("school_name") or a.get("name", "")
+    rows = [{"name": v["name"], "website": v["website"], "airport_code": "", "city": "", "state_name": ""}
+            for d, v in sorted(best.items()) if not v["reached"]]
+    (rec / "retry").mkdir(exist_ok=True)
+    (rec / "retry" / "targets_http.json").write_text(json.dumps(rows, indent=1))
+    print(f"Retry targets: {len(rows):,} of {len(best):,} attempted domains reached by no crawler")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("--march", required=True, help="the March crawl's output/ directory (read only)")
-    ap.add_argument("--out", required=True, help="where to write the target lists")
+    ap.add_argument("--march", help="the March crawl's output/ directory (read only)")
+    ap.add_argument("--out", help="where to write the target lists")
+    ap.add_argument("--retry-from", help="a re-crawl dir: write retry/targets_http.json from its attempt logs")
     args = ap.parse_args()
+    if args.retry_from:
+        return retry_targets(Path(args.retry_from))
+    if not (args.march and args.out):
+        ap.error("--march and --out are required (or --retry-from)")
     march, out = Path(args.march), Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
 
