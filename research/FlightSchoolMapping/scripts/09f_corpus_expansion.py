@@ -24,6 +24,9 @@ Usage:
     python 09f_corpus_expansion.py --extract-only     # just extract already-crawled
     python 09f_corpus_expansion.py --limit 100        # process first N targets
     python 09f_corpus_expansion.py --concurrency 30   # tune parallelism
+    python 09f_corpus_expansion.py --crawl-only --targets T.json --out-dir D
+        # re-crawl a fixed target list (name, domain, website, ...) into D;
+        # D/expansion_crawl.jsonl records every attempt with status and final URL
 """
 import argparse
 import asyncio
@@ -230,6 +233,8 @@ async def crawl_school(
                     timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
                     allow_redirects=True,
                 ) as resp:
+                    result["http_status"] = resp.status
+                    result["final_url"] = str(resp.url)
                     if resp.status != 200:
                         result["status"] = f"http_{resp.status}"
                         result["errors"].append(f"Homepage returned {resp.status}")
@@ -628,10 +633,29 @@ async def main():
         default=5,
         help="Concurrent Sonnet API calls",
     )
+    parser.add_argument("--targets", type=str, default="",
+                        help="JSON list of targets to crawl as given, instead of build_targets()")
+    parser.add_argument("--out-dir", type=str, default="",
+                        help="Write HTML, crawl/extract logs and progress here instead of output/")
     args = parser.parse_args()
 
+    if args.out_dir:
+        global OUTPUT_DIR, HTML_DIR, RAW_HTML_DIR, BROWSER_TEXT_DIR
+        global CRAWL_LOG, EXTRACT_LOG, PROGRESS_FILE
+        OUTPUT_DIR = Path(args.out_dir).resolve()
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        HTML_DIR = OUTPUT_DIR / "fleet_html"
+        RAW_HTML_DIR = OUTPUT_DIR / "fleet_html_raw"
+        BROWSER_TEXT_DIR = OUTPUT_DIR / "fleet_browser_text"
+        CRAWL_LOG = OUTPUT_DIR / "expansion_crawl.jsonl"
+        EXTRACT_LOG = OUTPUT_DIR / "expansion_extract.jsonl"
+        PROGRESS_FILE = OUTPUT_DIR / "expansion_progress.json"
+
     if not args.extract_only:
-        targets = build_targets()
+        if args.targets:
+            targets = json.loads(Path(args.targets).read_text())
+        else:
+            targets = build_targets()
         if args.limit:
             targets = targets[: args.limit]
         print(f"New targets to crawl: {len(targets)}")
