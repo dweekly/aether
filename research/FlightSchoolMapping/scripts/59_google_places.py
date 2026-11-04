@@ -394,6 +394,11 @@ def report(a):
               f"{len(smp):,} ({k / max(1, len(smp)):.1%}) are labelled as flight training, so about "
               f"{round(k / max(1, len(smp)) * (sel['rest'] - len(smp))):,} more such places sit among the "
               f"{sel['rest'] - len(smp):,} not fetched."]
+        rest_ids = [i for i, q in ids.items() if len(q) < sel["min_queries"] and i not in set(sel["sample"])]
+        got = [det[i] for i in rest_ids if i in det]
+        if len(got) == len(rest_ids):
+            L += ["", f"Those {len(rest_ids):,} were then fetched too: {sum(is_school(d) for d in got):,} are labelled "
+                      "as flight training, so the sample's estimate held."]
     L += ["", "## Matching", "", "| Match rule | Places |", "|---|---|"]
     L += [f"| {k} | {mt[k]:,} |" for k in ("domain", "exact", "address", "fuzzy", "colocated", "none")]
     smp_p = REPO / "docs" / "hackers-2026-google-sample.csv"
@@ -401,23 +406,21 @@ def report(a):
         with open(smp_p) as f:
             js = collections.Counter(r["judgement"] for r in csv.DictReader(f))
         n_s, k_s = sum(js.values()), js["training"]
-        z = 1.96; ph = k_s / n_s; den = 1 + z * z / n_s
-        mid = (ph + z * z / (2 * n_s)) / den; half = z * math.sqrt(ph * (1 - ph) / n_s + z * z / (4 * n_s * n_s)) / den
+        lo, hi = k_s / n_s, (k_s + js["unclear"]) / n_s
         L += ["", "## Hand check", "",
-              f"A random {n_s} of the {len(confirmed):,} (drawn with Python's random.seed(99) from the list as "
-              f"first generated, sorted by state and name) were read by hand "
-              f"(`docs/hackers-2026-google-sample.csv`): {k_s} are flight training (schools, clubs, soaring "
-              f"clubs and independent instructors), {js['not']} are not, {js['unclear']} could not be read. "
-              f"Precision {ph:.0%} (95% Wilson {mid - half:.0%} to {mid + half:.0%}), so about "
-              f"{round(ph * len(confirmed)):,} of the {len(confirmed):,} ({round((mid - half) * len(confirmed)):,} to "
-              f"{round((mid + half) * len(confirmed)):,}) are flight-training operations we did not have. "
-              "Several are one instructor's business, Part 61 instruction that no directory lists."]
-    def dom(r):
-        return re.sub(r"^https?://(www\.)?", "", (r["site"].get("final") or r["website"]).lower()).split("/")[0]
-    L += ["", f"## {len(confirmed):,} confirmed, not in our list", "",
+              f"A random {n_s} of the {len(confirmed):,} (Python random.seed(2026) over the list below) were read by "
+              f"hand (`docs/hackers-2026-google-sample.csv`): {k_s} are flight training we did not have, "
+              f"{js['not']} are not flight training (charter, maintenance, software, directories, paramotor, simulator), "
+              f"{js['ours']} already in our list, {js['unclear']} unclear. Precision is {lo:.0%} to {hi:.0%}, "
+              f"so somewhere around {round(lo * len(confirmed)):,} to {round(hi * len(confirmed)):,} of these are new. "
+              "Keyword checks on a homepage cannot separate an FBO or charter operator that mentions training from a "
+              "school, so the added-schools step classifies each site with a model and is hand-checked again."]
+    L += ["", f"## {len(confirmed):,} candidates not in our list", "",
           "Listed by the website each was checked on, which we fetched ourselves; Google's names and "
           "addresses for them stay in the ignored data dir (`c_google_matched.csv`).", ""]
-    L += [f"- {d}" for d in sorted(dom(r) for r in confirmed)]
+    def site_dom(r):
+        return re.sub(r"^https?://(www\.)?", "", (r["site"].get("final") or r["website"]).lower()).split("/")[0]
+    L += [f"- {d}" for d in sorted(site_dom(r) for r in confirmed)]
     Path(a.md).write_text("\n".join(L) + "\n")
     print(f"report: {len(confirmed)} confirmed new -> {a.md}")
 
