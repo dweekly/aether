@@ -22,7 +22,10 @@ reproduce the counts are at the end.
 > registry a public record by statute; the rest are records requests at best. Pilot registration
 > survives only in Illinois and Montana (and on the books in Massachusetts); Idaho, Oregon,
 > Washington, North Dakota and others repealed theirs between 1999 and 2017.
-> Flight schools: STATE-EDU-SUMMARY
+> Flight schools: most state education boards exempt FAA-regulated flight training, and those that
+> cover it on paper rarely list any. Two state aviation agencies do license flight schools and
+> publish the list free: **Michigan** (75 licenses, May 2026) and **Minnesota** (56, June 2024).
+> Those two lists, with Alaska's, hold about 43 flight schools that are not in our 4,825.
 
 > **The federal lists that name flight schools cannot see Part 61.** SEVP (student visas) and the
 > VA (GI Bill) both admit flight schools only if the FAA certificates them under Part 141 or 142, so
@@ -32,14 +35,15 @@ reproduce the counts are at the end.
 > began, about 9,000 of them Part 61, and estimates 19,738 providers who train only US citizens. That
 > list is not public.
 
-> **Matching the free federal lists against our 4,825 schools finds very little that is new, and
-> what it finds points at our own pipeline.** Of 247 SEVP flight schools, 225 match automatically and
-> 10 more are in our list under another name; about 8 are missing. Of 229 VA-approved flight
+> **Matching the federal lists against our 4,825 schools finds little that is new, and what it
+> finds points at our own pipeline.** Of 247 SEVP flight schools, 225 match automatically and 10
+> more are in our list under another name; about 8 are missing. Of 229 VA-approved flight
 > facilities, 178 match; of the other 51, 22 are simulator, airline or type-rating centers and
 > nearly all the rest are campuses of schools we have. Of 106 colleges with pilot-program awards in
-> IPEDS, 104 match. Every missing school from SEVP and VA is a Part 141 certificate holder that is
-> already in the FAA file the pipeline ingests (`faa-141-flightschools.csv`); by the same matcher, 45
-> of its 519 certificates have no match in `flight_line.json`, some of them name misses.
+> IPEDS, 104 match. Most of the missing SEVP and VA schools hold Part 141 certificates listed in the
+> FAA file the pipeline already ingests (`faa-141-flightschools.csv`); by the same matcher, 45 of
+> that file's 519 certificates have no match in `flight_line.json`, some of them name misses. The
+> state aviation lists (Michigan, Minnesota) are where the new schools are.
 
 ## 1. State aircraft registration
 
@@ -132,7 +136,104 @@ is all a pilot needs; NJ says so in an agency FAQ. No other state current regist
 
 ## 3. State licensing of flight schools
 
-STATE-EDU-SECTION
+Two kinds of state body could license a flight school: the private postsecondary or career-school
+board that licenses trade schools, and the state aviation agency. Researched for all 50 states and
+DC from statutes, rules and agency pages.
+
+> **Most education boards exempt FAA-regulated flight training, and the ones that don't rarely
+> list any flight schools.** The useful state lists come from two aviation agencies that license
+> flight schools outright: **Michigan** (MCL 259.85: "A person shall not operate a flight school in
+> this state unless the person holds an annual license") and **Minnesota** (flight and ground schools
+> are "commercial operations" that MnDOT licenses, Minn. Stat. 360.013 subd. 45 and 360.018). Both
+> lists are free PDFs, and together they name about 40 flight schools that are not in our list.
+
+How the education boards treat flight schools:
+
+- **Exempt outright** (FAA-regulated flight instruction is outside the law): CO, FL, MT, NV (agency
+  statement), NH, OK, PA, WA (only if every course is FAA-certified). Several of these say
+  "regulated by" or "approved by" the FAA, which may reach only Part 141 schools.
+- **Conditional**: CA (exempt only if the school takes no more than $2,500 in advance and no loans,
+  Educ. Code 94874(j)); AZ (exempt only for Part 141, A.R.S. 32-3021(G)(7)); AK, GA, RI (Part 141 or an
+  FAA air agency certificate, exemption on application); AR (only schools teaching nothing beyond the
+  private certificate); IA (bond waived only if no tuition is taken in advance); NY (only schools
+  teaching "solely" flight and ground school); TX (exempt only if the school applies to TWC); TN, NE,
+  UT, VA, WY (wording fits Part 141; Part 61 unclear); AL (exemption certificates, two flight schools
+  hold one); SC (recreational training excluded, career training licensed); ID (individual
+  pay-per-flight instructors exempt).
+- **Covered on the face of the law, no aviation exemption**: CT, DE, DC, IL, IN, KS, KY, LA, MA, MD,
+  ME, MI, MN, MO, MS, NC, ND, NJ, NM, OH, OR (HECC can grant an exemption; its own form uses a Part
+  141 flight school as the example), SD, WI, WV. In practice only KY, DE, ME, HI, OR, NM, SC and PA
+  show any flight school on their lists, a handful each. VT regulates only degree programs; HI
+  licenses trade schools only on request.
+- **Aviation agencies**: Michigan and Minnesota license flight schools. New Hampshire registers
+  commercial aviation operators, including "flight training; instruction" (RSA 422:3 XVI), for $48 a
+  year; its site returned 403, so no list. Maryland's aviation administration may license "air
+  schools" (Transp. 5-903) but whether it does is UNVERIFIED. Montana's statute (67-3-101) still lets
+  MDT license "air schools", implementation UNVERIFIED. Connecticut, Maine and North Dakota (2011)
+  repealed theirs; South Carolina's air-school approval section is reserved.
+
+| State | Body | Flight schools | Citation | List access | Flight schools on the list |
+|---|---|---|---|---|---|
+| AL | ACCS Private School Licensure | exempt by certificate | Ala. Code 16-46-3(b)(6) (2019 ACCS copy) | free per record (HTML tables, approved and exempt) | 2 on the exempt list |
+| AK | ACPE | conditional: Part 141/142 on application | 20 AAC 17.015(a)(9) | **bulk free** (one HTML page, "FLIGHT SCHOOLS" section) | 13 aviation entries |
+| AZ | Board for Private Postsecondary Education | Part 141 exempt; others licensed unless under 40 hours and $1,000 | A.R.S. 32-3021(G)(7), (12) | UNVERIFIED (ppse.az.gov 403) | UNVERIFIED |
+| AR | State Board of Private Career Education | private-pilot-only exempt | A.C.A. 6-51-603(9) | PDF list | none |
+| CA | BPPE | conditional ($2,500 prepayment, no loans) | Educ. Code 94874(j) (BPPE's Act PDF, as amended 2026-01-01) | free per record, behind invisible reCAPTCHA | not tested |
+| CO | Division of Private Occupational Schools | exempt | C.R.S. 23-64-104(1)(m) | PDF exists, returned 403 | UNVERIFIED |
+| CT | Office of Higher Education | covered | CGS 10a-22a | bulk free (JavaScript registry) | none |
+| DE | DOE Private Business and Trade Schools | covered | 14 Del. C. 8501, 8529 | HTML table; curl got 403 (see note below) | 2 (Fly Gateway Aviation Institute; FlightSafety Wilmington) |
+| DC | Higher Education Licensure Commission | covered | DC Code 38-1310 | bulk free (HTML) | none |
+| FL | Commission for Independent Education | exempt ("institution regulated by the FAA") | Fla. Stat. 1005.06(1)(g) | UNVERIFIED (fldoe.org 403) | UNVERIFIED |
+| GA | GNPEC | exempt with FAA air agency certificate, $200, on application | O.C.G.A. 20-3-250.3(a)(5) | free per record (Qlik dashboard) | not tested |
+| HI | DOE (trade schools) | opt-in | HRS 302A-425, 305J-3 | bulk free (HTML, 17) | 1 helicopter school |
+| ID | State Board of Education | per-flight instructors exempt | Idaho Code 33-2403(4)(i) | free HTML | none |
+| IL | IBHE PBVS | covered | 105 ILCS 426/15, /30 | **bulk free XLSX** | none (maintenance, drone, dispatch only) |
+| IN | DWD Office for Career and Technical Schools | covered | IC 22-4.1-21-9 | bulk free PDF | none |
+| IA | DOE (bond, 714.18) | bond waived if no tuition in advance | Iowa Code 714.18(5) | no list | n/a |
+| KS | Board of Regents | covered | K.S.A. 74-32,164 | bulk free HTML | none in Kansas |
+| KY | Commission on Proprietary Education | **licensed** | KRS 165A.310(12) | bulk free PDF | 3 (Epic Flight Academy, Nexgen Flight Academy, Wings Flight Training) |
+| LA | Board of Regents | covered | R.S. 17:3140.1 | bulk free PDF | none |
+| ME | DOE | covered | 20-A MRSA 9501 | free HTML | 2 |
+| MD | MHEC | covered | Educ. 10-101; COMAR 13B.01.01.03 (from a summary) | free per record, CIP filter | 1 (maintenance) |
+| MA | Office of Private Occupational School Education | covered | M.G.L. c.112 §263 | UNVERIFIED (mass.gov 403) | UNVERIFIED |
+| MI | LEO Proprietary School Unit; **MDOT Aeronautics** | **MDOT licenses flight schools** | MCL 259.85; 395.101a | MDOT: **bulk free PDF**, May 2026 | **75 licensed flight schools** |
+| MN | Office of Higher Education; **MnDOT Aeronautics** | **MnDOT licenses flight schools** as commercial operators | Minn. Stat. 360.013 subd. 45, 360.018; 136A.821 | MnDOT: **bulk free PDF**, 2024-06-04; OHE behind a CAPTCHA | **56 flight-school licenses** |
+| MS | Commission on Proprietary School and College Registration | covered | Miss. Code 75-60-5 (2025 SB2525 text) | free HTML | 2, both "Not Authorized" |
+| MO | DHEWD Proprietary School Certification | covered | RSMo 173.616 | per record; dhewd.mo.gov 403 | UNVERIFIED |
+| MT | Commissioner of Higher Education | exempt | Regents Policy 221 (20-25-107) | n/a | n/a |
+| NE | DOE Private Postsecondary Career Schools | conditional | Neb. Rev. Stat. 85-1604(8) | PDF list (35) | none |
+| NV | Commission on Postsecondary Education | exempt (agency statement) | cpe.nv.gov; NRS 394 silent | none public | n/a |
+| NH | Higher Education Commission | exempt | RSA 188-G:1, II(i) | 403 | UNVERIFIED |
+| NJ | Dept of Labor (Training Evaluation Unit) | covered | N.J.S.A. 34:15C-1f; N.J.A.C. 12:41-2.1 | no license list found | n/a |
+| NM | HED Private Post-Secondary Schools | licensed | NMSA 21-23-6.1 | bulk free HTML (167) | 3 (Bode Aviation, Red Arrow Flight Academy, Vertical Limit Aviation) |
+| NY | NYSED BPSS | exempt only if solely flight training | Educ. Law 5001(2)(h) (public.law mirror) | per record (search form, not submitted) | not tested |
+| NC | State Board of Proprietary Schools | covered | G.S. 115D-88 | bulk free HTML (134) | none (1 maintenance school) |
+| ND | Board for Career and Technical Education | covered | NDCC 15-20.4-02 | HTML (10) | none |
+| OH | State Board of Career Colleges and Schools | covered; flight-only schools apparently do not register (SBDC checklist) | ORC 3332.02 | UNVERIFIED (scr.ohio.gov 404) | UNVERIFIED |
+| OK | Board of Private Vocational Schools | exempt; opt-in | 70 O.S. 21-101.1(2) | **bulk free XLSX** | 1 (Spartan) |
+| OR | HECC Private Career Schools | licensed unless exempted | ORS 345.015(8) | bulk free PDF (rev. 2026-10-19) | 1 school, 3 campuses (Hillsboro Aero Academy) |
+| PA | State Board of Private Licensed Schools | exempt (FAA-regulated flying schools) | 22 Pa. Code 73.42(5) | **bulk free CSV** (data.pa.gov) | 1 (Nulton Aviation Flight Academy) |
+| RI | Office of the Postsecondary Commissioner | conditional, renewed yearly | Reg. A-6; RIGL 16-40-12 | per school | n/a |
+| SC | Commission on Higher Education | career training licensed | S.C. Code 59-58-30(7) | PDF (Feb 2025) | 2 (Carolina Sky Flight Training, pending closure; USAeroFlight) |
+| SD | Secretary of State | covered | SDCL 13-48-41 | HTML (32) | none |
+| TN | THEC | conditional, on request | T.C.A. 49-7-2004(a)(10) (THEC's wording) | HTML (263) | none in Tennessee |
+| TX | TWC Career Schools and Colleges | exempt only on application | Tex. Educ. Code 132.002(a)(8), (d) (public.law mirror) | per record (search form, not submitted); TWC's Eligible Training Provider List is bulk free but has no pilot program | n/a |
+| UT | Division of Consumer Protection | conditional | Utah Code 13-34-111(3)(d) | per record | not tested |
+| VT | State Board of Education | not covered (degree programs only) | 16 V.S.A. 176 | n/a | n/a |
+| VA | SCHEV | conditional | Va. Code 23.1-226(B)(3) | UNVERIFIED (schev.edu 403) | UNVERIFIED |
+| WA | Workforce Board | exempt if only FAA-certified courses | RCW 28C.10.030(8) | **bulk free JSON** (306) | none |
+| WV | CTC Council | covered | 135CSR35 | none public | n/a |
+| WI | DSPS Educational Approval Program | covered | Wis. Stat. 440.52 | Cloudflare 403 | UNVERIFIED |
+| WY | DOE private school licensing | exempt if FAA-approved | W.S. 21-2-406(a)(iii) | none public | n/a |
+
+Statute text for CA 94874(j), WA RCW 28C.10.030(8), PA 22 Pa. Code 73.42(5), MI MCL 259.85 and MN
+360.013/360.018 was re-read directly for this document; the other rows rest on the state-by-state
+research notes, which cite the pages fetched. Where a statute was read from a mirror (TX, NY:
+public.law; AR, GA, MS, NM: FindLaw) or a summary (MD COMAR), the row says so or is marked.
+
+Note on Delaware: plain fetching returned a Cloudflare 403, and the list was then read through a
+browser, which this research's rules should have treated as blocked. The two Delaware entries are
+reported, but treat the source as obtained past a bot check.
 
 ## 4. Federal lists that enumerate flight schools as a side effect
 
@@ -209,6 +310,10 @@ State Aviation (gsfc.com).
 | VA flight facilities, all (most not approved, many withdrawn) | 519 | 303 | 216 | not reviewed | not reviewed | not reviewed |
 | IPEDS colleges with 49.0102 or 49.0108 awards | 106 | 104 | 2 | 0 | 0 | **2** (Fullerton College, Southwestern College; flight may be through a partner, UNVERIFIED) |
 | IPEDS, any 49.01xx award | 221 | 178 | 43 | not reviewed | mostly aviation-maintenance and management colleges | not reviewed |
+| **Michigan MDOT licensed flight schools** (May 2026) | 75 | 45 | 30 | 4 (SkyWalker Flying; three ATP sites); 1 more uncertain (Kalamazoo Flight Instruction, perhaps our Kal-Aero) | 0 | **25 rows, about 23 schools** |
+| **Minnesota MnDOT flight-school licenses** (2024-06-04) | 56 | 37 | 19 | 0 | 1 (an aerial photography operator) | **19 rows, 17 operators** (Janson Flying Service holds 3) |
+| Alaska ACPE "FLIGHT SCHOOLS" and other aviation entries | 13 | 10 | 3 | 0 | 0 | **3** (Alaska Flight Academy, CKT Aviation, Desert Air Transport) |
+| Other state education lists (KY, NM, OR, OK, PA, SC, HI, DE, ME, AL and others; aviation-named entries) | 63 | 44 | 19 | 2 (Fly Gateway, Nulton) | most (Embry-Riddle base campuses, maintenance, ATC, drone schools, FlightSafety) | **1 to 3** (Carolina Sky Flight Training, pending closure; Epic Flight Academy in Erlanger KY and Epic Aviation in Tuscaloosa are uncertain) |
 | FAA Part 141 file the pipeline ingests (certificates) | 519 | 474 | 45 | at least 12 by spot check (e.g. Auburn, Marshall's Bill Noe Flight School, Charleston Southern, Farmingdale, South Dakota State, St. Charles Flying Service, Faithful Guardian) | a few (balloon schools, CAE USA, Gleim's online ground school) | up to about 25 |
 
 The 10 SEVP schools we already have under another name: Bell Textron (our Bell Helicopter Training
@@ -219,7 +324,25 @@ Athens, whose site lists a Lawrenceville location), University of Central Missou
 and University of North Dakota (we hold its Mesa site and the UND Aerospace Foundation, but no Grand
 Forks location: worth fixing).
 
-### Ten flight schools we don't have, with evidence
+### Ten flight schools from the state lists that we don't have
+
+Each was searched in `flight_line.json` by name, domain and airport; each website answered an HTTP
+request on 2026-11-03 except where noted.
+
+| # | School | Where | Evidence |
+|---|---|---|---|
+| 1 | Hall's Flying Service | Grosse Ile (ONZ) and Monroe (TTF), MI | MDOT licensed flight schools, May 2026, both airports; halls-flyingservices.com |
+| 2 | Lapeer Aviation Flight Training | Flint (FNT), MI | MDOT list; lapeeraviation.com (answered 406 to a script) |
+| 3 | Victors Aviation | Troy (VVL), MI | MDOT list; victorsaviation.com |
+| 4 | Maxflight Helicopter Services | Grosse Ile (ONZ), MI | MDOT list; maxflighthelomi.com |
+| 5 | Three Point Aviation | Alma (AMN) and Clare (48D), MI | MDOT list, two licenses; we have only a "City of Clare" owner record at 48D |
+| 6 | MN Helicopters Inc | Anoka County-Blaine, MN | MnDOT flight-school license list, 2024-06-04; mnhelicopters.com |
+| 7 | 86 Charlie LLC dba Spectrum Pilot Services | Dodge Center, MN | MnDOT list; spectrumpilotservices.com |
+| 8 | Sawtooth Aviation LLC | Grand Marais-Cook County, MN | MnDOT list; sawtoothaviation.com |
+| 9 | Wings Over Water, Inc. | East Gull Lake, MN (seaplane training) | MnDOT list; wingsoverwaterseaplanes.com |
+| 10 | Alaska Flight Academy | Wasilla, AK | ACPE institution list, "FLIGHT SCHOOLS" section, authorized until 2031-02-27; also FAA Part 141 certificate 5NMS069O; alaskaflightacademy.com |
+
+### Ten flight schools from the federal lists that we don't have
 
 Each was searched in `flight_line.json` by name, DBA, domain, airport identifier and street address.
 
@@ -236,8 +359,8 @@ Each was searched in `flight_line.json` by name, DBA, domain, airport identifier
 | 9 | GC Aviation Services-1 LLC dba First Flight Aviation | Miamisburg, OH (KMGY), 10600 Springboro Pike | Part 141 cert CWBS055D; VA facility 26000235, approved, 10 Post-9/11 recipients. We hold "GC AVIATION SERVICES-1 LLC" only as an FAA aircraft-owner record with no website or airport |
 | 10 | Fullerton College | Fullerton, CA | IPEDS UNITID 114859, 10 awards in CIP 49.0102 (professional pilot). Not in our list; whether students fly with the college or a partner is UNVERIFIED |
 
-The pattern matters more than the count: these lists can only recover Part 141 schools, and the
-Part 141 schools they recover are already in the FAA file we ingest. The fix is in our join of
+The pattern matters more than the count: these lists can only recover Part 141 and 142 schools,
+and seven of the ten above are already in the FAA Part 141 file we ingest. The fix is in our join of
 that file, not a new source. Filed as a ROADMAP item rather than fixed here.
 
 Data issue found on the way: our "Atp Flight Academy" entry at KA39 carries the domain
@@ -257,7 +380,15 @@ best-named school among domain hits, which avoids it; the record itself still ne
 - TSA: whether the FTSP provider list is releasable under FOIA.
 - Census County Business Patterns needs an API key, so establishment counts for NAICS 611512 were
   not pulled.
-- STATE-EDU-UNVERIFIED
+- Education-board lists not obtained: AZ, CO, FL, MA, MO, OH, VA, WI, NH (403, 404 or Cloudflare);
+  MN's Office of Higher Education list (CAPTCHA). Per-record searches in CA (reCAPTCHA), GA, NY, TX
+  and UT were not run.
+- Whether "regulated by" or "approved by the FAA" exemptions (CO, FL, NE, UT, VA, WY) reach Part 61
+  schools: our reading, no agency guidance found.
+- Aviation-agency licensing was not checked in most states; Maryland, Montana, New Jersey and Rhode
+  Island have statutory authority whose use is UNVERIFIED. New Hampshire's operator registry
+  exists by statute but its pages returned 403.
+- Statute currency: AL (2019 copy), MS (2025 SB2525 enactment), HI (2026 bills), DE (archived rule).
 
 ## Reproducing the counts
 
@@ -271,7 +402,11 @@ curl -sO https://nces.ed.gov/ipeds/datacenter/data/HD2024.zip
 curl -sO https://nces.ed.gov/ipeds/datacenter/data/C2024_A.zip
 curl -sO https://ed-public-download.scorecard.network/downloads/Most-Recent-Cohorts-Field-of-Study_10152026.zip
 curl -s -o fr.htm https://www.govinfo.gov/content/pkg/FR-2024-05-01/html/2024-08800.htm
+curl -sO https://www.dot.mn.gov/aero/documents/aviationbusinesses/flightschools.pdf
+# Michigan: the PDF linked from https://www.michigan.gov/mdot/travel/mobility/aeronautics/licensing/licensed-flight-schools
 ```
+
+The state education-board files are linked from each board's page in the table in section 3.
 
 Each list was reduced to a CSV with `source,name,city,state,website` (plus `address` where the
 source has one), then:
@@ -280,10 +415,16 @@ source has one), then:
 python -I research/FlightSchoolMapping/scripts/probes/match_external_school_lists.py \
   research/FlightSchoolMapping/output/flight_line.json \
   research/FlightSchoolMapping/output/airports.csv,research/FlightSchoolMapping/data/ourairports_airports.csv \
-  OUT_DIR c_faa141.csv c_sevp.csv c_va.csv c_ipeds.csv
+  OUT_DIR c_faa141.csv c_sevp.csv c_va.csv c_ipeds.csv c_mi_mdot.csv c_mn_mndot.csv c_state_edu.csv
 ```
+
+For Michigan, the "website" column is the domain of each school's listed email address (webmail and
+ISP domains are ignored by the matcher).
 
 which printed, on 2026-11-03: `c_faa141 700 rows {exact 367, domain 147, address 38, fuzzy 28,
 colocated 31, none 89}`, `c_sevp 511 {exact 389, address 24, fuzzy 19, colocated 6, none 73}`,
 `c_va 519 {exact 233, fuzzy 62, domain 8, none 216}`, `c_ipeds 221 {domain 172, exact 3, fuzzy 3,
-none 43}`.
+none 43}`, `c_mi_mdot 75 {exact 22, domain 21, fuzzy 2, none 30}`, `c_mn_mndot 56 {domain 28,
+exact 7, fuzzy 2, none 19}`, `c_state_edu 63 {exact 22, domain 21, fuzzy 1, none 19}`. Some matches
+are to FAA aircraft-owner records in our list (all-caps names with no website) rather than to a
+school record; they count as matches here.

@@ -35,6 +35,9 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
   "UND AEROSPACE FOUNDATION" owner record).
 - **"Atp Flight Academy" at KA39 carries the domain `auburn.edu`**, so any domain join sends
   Auburn records to ATP.
+- **Ingest the Michigan (MDOT) and Minnesota (MnDOT) state flight-school license lists**, free PDFs
+  with about 40 schools we lack (about 23 in MI, 17 in MN), plus Alaska ACPE's three. Same doc,
+  sections 3 and 5.
 
 ### Story ideas
 - "Which training fleets are actually flying?" — ADS-B activity rates vs. fleet size

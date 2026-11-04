@@ -28,7 +28,8 @@ from pathlib import Path
 GENERIC_HOSTS = {'facebook.com', 'wixsite.com', 'google.com', 'business.site', 'squarespace.com',
                  'weebly.com', 'wordpress.com', 'godaddysites.com', 'linkedin.com', 'instagram.com',
                  'yelp.com', 'blogspot.com', 'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'aol.com',
-                 'icloud.com', 'comcast.net', 'msn.com', 'live.com', 'me.com', 'att.net', 'verizon.net', 'earthlink.net', 'square.site', 'site123.me', 'webs.com', 'myshopify.com'}
+                 'icloud.com', 'comcast.net', 'msn.com', 'live.com', 'me.com', 'att.net', 'verizon.net', 'earthlink.net', 'charter.net', 'ameritech.net', 'sbcglobal.net',
+                 'bellsouth.net', 'cox.net', 'frontier.com', 'frontiernet.net', 'mail.com', 'ymail.com', 'protonmail.com', 'square.site', 'site123.me', 'webs.com', 'myshopify.com'}
 LEGAL = r'\b(incorporated|inc|llc|l l c|corp|corporation|co|company|ltd|lp|llp|pllc|pc|the)\b'
 GENERIC = {'aviation', 'flight', 'flying', 'fly', 'school', 'schools', 'academy', 'training', 'center',
            'centre', 'aero', 'aeronautics', 'aeronautical', 'air', 'pilot', 'pilots', 'services', 'service',
