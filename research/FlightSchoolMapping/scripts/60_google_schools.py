@@ -28,6 +28,11 @@ Steps, from research/FlightSchoolMapping/ (working files in data/research-2026-1
                (hand decisions for ambiguous pairs are in HAND below)
   ingest       "added" rows -> output/flight_schools_enriched.json (source google_places) and the
                extraction inputs (crawl index and browser text restricted to the added sites)
+  (extract)    extract_v2.py build/estimate/submit/fetch on extract/http and extract/browser, then
+               57_added_schools.py merge-extract; 21 and 22 rebuild flight_line.json
+  check        the added schools: place IDs, values found again on their pages, none equal to Google's;
+               tails shared with schools we already had, for hand review
+  scrape-inputs  the extraction runs restricted to the added sites, for 49_scrape_facts.py --results
 
 Usage:
   60_google_schools.py candidates
@@ -741,12 +746,29 @@ def cmd_check(a):
     print("PASS")
 
 
+def cmd_scrape_inputs(a):
+    """The extraction runs restricted to the sites finally added (a site moved to duplicate after
+    extraction leaves), as --results/--index pairs for 49_scrape_facts.py."""
+    build = _load("build21", "21_build_flight_line.py")
+    added = {json.loads(l)["domain"] for l in (OUT / "added_extract.jsonl").open()}
+    for layout in ("http", "browser"):
+        idx = json.loads((EXTRACT / layout / "index.json").read_text())
+        keep = {e["custom_id"] for e in idx if (build.normalize_domain(e["school_website"]) or e["domain"]) in added}
+        d = W / "scrape" / "runs" / layout
+        d.mkdir(parents=True, exist_ok=True)
+        (d / "index.json").write_text(json.dumps([e for e in idx if e["custom_id"] in keep]))
+        rows = [l for l in (EXTRACT / layout / "claude-haiku-5-5" / "results.jsonl").open()
+                if json.loads(l)["custom_id"] in keep]
+        (d / "results.jsonl").write_text("".join(rows))
+        print(f"{layout}: {len(idx)} requests -> {len(keep)} for added sites -> {d}")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
     ap.add_argument("--env-file", default="/mnt/data/home/dew/dev/aether/.env",
                     help="where ANTHROPIC_API_KEY is (the production checkout's .env on trogdor; never copied)")
-    for c in ("candidates", "browser-targets", "classify-build", "classify-report", "dedupe", "ingest", "check"):
+    for c in ("candidates", "browser-targets", "classify-build", "classify-report", "dedupe", "ingest", "check", "scrape-inputs"):
         sub.add_parser(c)
     sm = sub.add_parser("sample")
     sm.add_argument("--n", type=int, default=30)
@@ -758,7 +780,7 @@ def main():
     if a.cmd in ("estimate", "submit", "fetch"):
         return hb.run_cli(a, a.env_file)
     {"candidates": cmd_candidates, "browser-targets": cmd_browser_targets, "classify-build": cmd_classify_build,
-     "classify-report": cmd_classify_report, "sample": cmd_sample, "dedupe": cmd_dedupe, "ingest": cmd_ingest, "check": cmd_check}[a.cmd](a)
+     "classify-report": cmd_classify_report, "sample": cmd_sample, "dedupe": cmd_dedupe, "ingest": cmd_ingest, "check": cmd_check, "scrape-inputs": cmd_scrape_inputs}[a.cmd](a)
 
 
 if __name__ == "__main__":

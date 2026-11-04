@@ -5,6 +5,8 @@ on their flight line (by make/model/type), their activity rates, and their conta
 information — using publicly available ADS-B telemetry, FAA registration data, and
 targeted web scraping?
 
+**Schools (Nov 4, 2026, branch `hackers-talk`):** 5,458 records in `flight_line.json`: the 4,825 of the March build, 67 added from public lists (`57_added_schools.py`) and 566 found through Google Places (`60_google_schools.py`); 18,040 fleet rows, 12,076 distinct tails. Every record carries `field_sources`, `public_contact` and `google_place_ids` (docs/hackers-2026-google-schools.md).
+
 **Status (Aug 2, 2026):** 4,825 schools/clubs, 16,881 aircraft, 11,749 unique N-numbers, 8,929 ADS-B active, 4,387 with rental rates. Built by `make` (`21_build_flight_line.py` → `22_pdf_rate_sheets.py`). ADS-B via 6,018 dual-source snapshots (OpenSky + adsb.lol, cron every 15 min), 146,235 unique transponders observed.
 
 Snapshot coverage has a gap from Apr 22 – Jul 17, 2026 (the collector broke when the repo moved from macOS to Linux and the venv's interpreter symlinks went dangling). Per-aircraft `total_sightings` are counted against a flat `n_snapshots` denominator spanning both windows, so activity *rates* derived from them understate aircraft that were only active in one window.
@@ -215,7 +217,20 @@ with fleet, locations, contact info, and ADS-B cross-references.
   "provenance": [
     {"list": "mi_mdot", "record_id": "row38", "list_date": "2026-05",
      "pulled": "2026-11-03", "name_on_list": "Kalamazoo Flight Instruction"}
-  ]
+  ],
+  // Schools found through Google Places (60_google_schools.py) have list "google_places", one
+  // entry per place ID, and no name_on_list (Google's names are not kept).
+
+  // On every record (docs/hackers-2026-google-schools.md):
+  // where each non-empty name and contact value came from
+  "field_sources": {"name": {"source": "aopa", "ref": "aopa:12345", "retrieved": "2026-03-11"},
+                    "contact.phone": {"source": "site_extraction", "ref": "https://example.com/",
+                                      "retrieved": "2026-03-07", "via": "http_recovered fleet extraction"}},
+  // contact details from permitted sources only (own pages, FAA registry, state lists, FSAI;
+  // never AOPA or Google), each verified verbatim on its page when the source is "site"
+  "public_contact": {"phone": {"value": "(555) 010-0000", "source": "site",
+                               "ref": "https://example.com/contact", "retrieved": "2026-11-02"}},
+  "google_place_ids": [{"place_id": "ChIJ...", "match": "exact"}]
 }
 ```
 
@@ -827,6 +842,9 @@ only when you intend to act on the results.
 | `57_added_schools.py` | Add schools found on outside lists (FSAI directory, Michigan and Minnesota flight-school licenses, state education lists, SEVP, VA, IPEDS, the unlisted-operations pass) to `flight_schools_enriched.json` with a `provenance` list, from the hand dispositions in `docs/hackers-2026-added-schools.csv`; folds their extractions into `added_extract.jsonl`; `check` and `release-check` gate the rebuild (see `docs/hackers-2026-added-schools.md`) |
 | `56_fsai_directory.py` | Parse the FSAI (formerly FSANA) member directory pulled in a browser by `probes/fsai_directory_pull.js`, classify entries and match US training providers against `flight_line.json`; writes `docs/hackers-2026-fsai-directory.md` |
 | `58_airmen_llc_join.py` | Join the FAA releasable airmen file (fetched with `--download`) to LLC and corporation registrations by exact normalized address, with a shuffled-house-number control, surname validations and the Florida comparison; writes `docs/hackers-2026-airmen-llc.md` and exits 1 if a gate fails |
+| `60_google_schools.py` | Classify the Google Places candidates from their own pages with Claude Haiku 5.5 (Message Batches), verify every returned value verbatim on its page, dedupe strictly against `flight_line.json`, add the schools (source `google_places`, place IDs as provenance) and check them; dispositions in `docs/hackers-2026-google-schools.csv` |
+| `61_contact_provenance.py` | Name, phone, street address and hours for every school website from its cached own pages (November re-crawl first), each kept only if found verbatim on its page, then FSAI and state-list fallbacks: `output/contact_sourced.json`, which 21 turns into `public_contact` |
+| `page_text.py`, `haiku_batch.py` | Shared by 60 and 61: page text with JSON-LD and `tel:` links, the verbatim check, the prompt pieces; Message Batches run directories in extract_v2's layout |
 | `59_google_places.py` | Find flight schools with Google Places (New): free IDs-only text searches over self-splitting US tiles, paid details only after a printed estimate under `--max-usd`, matched against `flight_line.json`, unmatched confirmed from each school's own site |
 
 ## Aircraft Provenance Model

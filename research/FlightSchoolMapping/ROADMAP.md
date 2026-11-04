@@ -111,7 +111,13 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
   reduction, which the aircraft-day/leg tables do not keep.
 
 ## Hardening
-- Delete Google Places content by 2026-12-03 (`59_google_places.py purge`): the Places terms allow caching coordinates for at most 30 days and nothing else but place IDs; details.json, websites.json and the matcher CSVs hold names, addresses, labels, coordinates and websites from 2026-11-04.
+- Delete Google Places content by 2026-12-03 (`59_google_places.py purge`): the Places terms allow caching coordinates for at most 30 days and nothing else but place IDs; details.json, websites.json and the matcher CSVs hold names, addresses, labels, coordinates and websites from 2026-11-04. The trogdor clone `aether-addschools` holds copies (`data/research-2026-11/google/c_google_matched.csv`, `place_ids.json`, `site_checks.json`) and `google/schools/candidates.json` (Google names and addresses kept for 60's dedupe): delete those too.
+- Key schools on site-builder hosts by host and path: flight_line has a school whose domain is `sites.google.com`, which any other Google Sites school would collide with (60 skips the domain rule for that host; docs/hackers-2026-google-schools.md).
+- Link FAA-discovered registrant records to the website school that flies their tails: some are the same operation counted twice (myflighttime.com and FLY AVIATION CORP, 5starflight.com and CASH MANAGEMENT CONSULTING LLC, flydtpa.com and ROTORMATE LLC), others are leaseback owners listed as schools. `60 check` prints the shared tails.
+- 35 picks a tail's last 8 legs by `row_number()` over `start_ts`, which ties; add a tie-break so two runs agree (N4084H differs between identical runs).
+- Render `contact` (school's own name, phone, address, hours, each with its source link) on the explorer school page; rc2 carries it as data only.
+- 61 has no cached page text for 571 school websites (247 never crawled); fetching each one's contact page would fill phone, address and hours from its own site.
+- Remove or relabel non-training records found by the contact check: centralarkansasskydiving.com (skydiving), sundogparagliding.com (paragliding).
 - `58_airmen_llc_join.py` places addresses at ZIP centroids and takes airports from OurAirports
   types; geocoded addresses and the FAA's public-use airport list would make the
   "near an airport with no school" count exact.

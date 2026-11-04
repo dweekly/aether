@@ -29,6 +29,11 @@ the pipeline can take late additions without disturbing the paid March extractio
 approach would serve the same goal if it adds only verified schools, keeps provenance per
 school, and leaves every existing record byte-identical.
 
+> **Followed by.** Release candidate rc2 (`v0.4-20261104-rc2`) adds 566 schools found through Google
+> Places on top of these 67, and gives every record per-field provenance, contact details from
+> permitted sources and Google place IDs: [`hackers-2026-google-schools.md`](hackers-2026-google-schools.md).
+> Its publish commands supersede the rc1 ones below.
+
 ## Sources and candidates
 
 | Source | List | Candidates | Schools added | with a website | Duplicates | Rejected |
