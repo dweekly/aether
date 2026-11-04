@@ -14,7 +14,7 @@ Raw model output from the HTTP (09b) and browser (09c) crawl passes, March 2026,
 - 5,586 (school, tail) claims; 4,296 distinct tails, from 829 school extractions with at least one tail (a site read by both passes counts twice).
 - Well-formed N-numbers: 4,233 (98.5%). Malformed examples: N051GX, N13006C, N16186T, N16OME, N318OU, N411OS, N472KES, N725295, N87IOU, NC41578, NC71017, NC7987H.
 - On the FAA registry of 2026-10-23: 4,147 (98.0% of well-formed). A further 68 are deregistered (sold abroad, destroyed, or lapsed since the crawl). Not found anywhere: 18 (0.4%), e.g. N15RY, N190CE, N20867, N2195S, N364RB, N42310, N544TH, N624TA, N632HB, N636TG, N650DR, N666CK.
-- Make named on the website agrees with the registry's manufacturer: 4,892 of 4,930 checked (99.2%).
+- Make named on the website agrees with the registry's manufacturer: 4,903 of 4,934 checked (99.4%).
 - Flew in the release window: 3,857 (93.0% of registered).
 - Lives where the website says: 3,275 of 4,184 with both a website airport and an inferred home base (78.3%). Negative control, website airports shuffled across the same tails: 0.5%.
 

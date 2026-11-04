@@ -52,13 +52,14 @@ MAKES = {
     "CESSNA": ("CESSNA", "TEXTRON"), "SKYHAWK": ("CESSNA", "TEXTRON"), "SKYLANE": ("CESSNA", "TEXTRON"),
     "PIPER": ("PIPER", "NEW PIPER"), "WARRIOR": ("PIPER", "NEW PIPER"), "ARCHER": ("PIPER", "NEW PIPER"),
     "SENECA": ("PIPER", "NEW PIPER"), "SEMINOLE": ("PIPER", "NEW PIPER"), "CHEROKEE": ("PIPER", "NEW PIPER"),
-    "CIRRUS": ("CIRRUS",), "DIAMOND": ("DIAMOND",), "BEECH": ("BEECH", "RAYTHEON", "TEXTRON"),
-    "BEECHCRAFT": ("BEECH", "RAYTHEON", "TEXTRON"), "BONANZA": ("BEECH", "RAYTHEON", "TEXTRON"),
-    "MOONEY": ("MOONEY",), "GRUMMAN": ("GRUMMAN", "AMERICAN GENERAL", "TIGER"), "ROBINSON": ("ROBINSON",),
+    "CIRRUS": ("CIRRUS",), "DIAMOND": ("DIAMOND",), "BEECH": ("BEECH", "HAWKER BEECHCRAFT", "RAYTHEON", "TEXTRON"),
+    "BEECHCRAFT": ("BEECH", "HAWKER BEECHCRAFT", "RAYTHEON", "TEXTRON"),
+    "BONANZA": ("BEECH", "HAWKER BEECHCRAFT", "RAYTHEON", "TEXTRON"),
+    "MOONEY": ("MOONEY",), "GRUMMAN": ("GRUMMAN", "AMERICAN GENERAL", "GULFSTREAM AMERICAN", "TIGER"), "ROBINSON": ("ROBINSON",),
     "SLING": ("SLING", "THE AIRPLANE FACTORY"), "TECNAM": ("TECNAM", "COSTRUZIONI"), "PIPISTREL": ("PIPISTREL",),
     "AERONCA": ("AERONCA",), "CHAMPION": ("CHAMPION", "AMERICAN CHAMPION", "BELLANCA"),
     "DECATHLON": ("CHAMPION", "AMERICAN CHAMPION", "BELLANCA"), "CITABRIA": ("CHAMPION", "AMERICAN CHAMPION", "BELLANCA"),
-    "SCHWEIZER": ("SCHWEIZER", "SIKORSKY"), "ICON": ("ICON",), "ERCOUPE": ("ERCO", "FORNEY", "ALON"),
+    "SCHWEIZER": ("SCHWEIZER", "SIKORSKY"), "ICON": ("ICON",), "SCHEMPP": ("SCHEMPP-HIRTH",), "ERCOUPE": ("ERCO", "FORNEY", "ALON"),
 }
 
 
@@ -94,6 +95,16 @@ def model_items():
 def normalize(n):
     n = re.sub(r"[\s\-]", "", n.upper())
     return n if n.startswith("N") else "N" + n
+
+
+# Registry manufacturers that must match exactly: "AMERICAN" alone is a Grumman American
+# airframe, but as a prefix it would also take AMERICAN CHAMPION.
+EXACT = {"GRUMMAN": {"AMERICAN"}}
+
+
+def make_agrees(word, mfr):
+    mfr = (mfr or "").upper().strip()
+    return mfr.startswith(MAKES[word]) or mfr in EXACT.get(word, set())
 
 
 def make_word(name):
@@ -139,7 +150,7 @@ def main():
     flew = {n for n in on_reg if (reg[n][1] or 0) > 0}
 
     make_rows = [r for r in rows if r["n"] in on_reg and make_word(r["name"])]
-    make_ok = [r for r in make_rows if (reg[r["n"]][0] or "").upper().startswith(MAKES[make_word(r["name"])])]
+    make_ok = [r for r in make_rows if make_agrees(make_word(r["name"]), reg[r["n"]][0])]
 
     alias = canonical_ids()[0]
     canon = lambda x: alias.get(x.upper(), x.upper()) if x else None
