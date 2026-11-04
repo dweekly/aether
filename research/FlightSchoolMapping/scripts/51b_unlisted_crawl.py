@@ -7,7 +7,11 @@ share one, e.g. leasing LLCs that fly on the same school's line), runs
 site the HTTP crawl flagged (thin pages, captcha, no fleet page, blocked) or could not
 fetch at all, as the March pipeline did. Both write only under crawl/.
 
-Usage: 51b_unlisted_crawl.py [--skip-http] [--skip-browser]
+With --extract, then runs extract_v2.py (Claude Haiku 5.5, Message Batches) on both
+layouts under extract/http and extract/browser, refusing to submit over --extract-budget.
+extract_v2.py lives on branch research-rerun; copy it into scripts/ first.
+
+Usage: 51b_unlisted_crawl.py [--skip-http] [--skip-browser] [--extract]
 """
 
 import argparse
@@ -59,6 +63,8 @@ def main():
     ap.add_argument("--skip-http", action="store_true")
     ap.add_argument("--skip-browser", action="store_true")
     ap.add_argument("--browser-concurrency", type=int, default=6)
+    ap.add_argument("--extract", action="store_true", help="then run extract_v2.py with Claude Haiku 5.5")
+    ap.add_argument("--extract-budget", type=float, default=5.0)
     a = ap.parse_args()
     ops = U.rebuild()
     disc = load_discovery()
@@ -89,6 +95,44 @@ def main():
         subprocess.run([PY, str(HERE / "10_fleet_browser_crawl.py"), "--crawl-only",
                         "--targets", str(crawl / "browser_targets.json"), "--output-dir", str(crawl),
                         "--concurrency", str(a.browser_concurrency)], check=True, env=env)
+        # 10_ gathers its workers with return_exceptions=True, so a browser that fails to
+        # launch ends the run with "0 schools" and exit 0. Check every target came back.
+        bi = json.loads((crawl / "fleet_browser_index.json").read_text())
+        lost = {e["school_website"] for e in browser} - {e["school_website"] for e in bi}
+        if lost:
+            sys.exit(f"browser crawl returned no record for {len(lost)} of {len(browser)} sites, e.g. {sorted(lost)[:3]}")
+        print(f"browser crawl: {len(bi)} records, {sum(1 for e in bi if e.get('pages'))} with pages")
+
+    if a.extract:
+        extract(crawl, a.extract_budget)
+
+
+def extract(crawl, budget, model="claude-haiku-5-5"):
+    """extract_v2.py over both crawl layouts: build, estimate, refuse over budget, submit, fetch."""
+    ev2 = [PY, str(HERE / "extract_v2.py"), "--env-file", str(U.ENV_FILE)]
+    runs = {"http": ["--layout", "http", "--index", str(crawl / "fleet_crawl_index.json"),
+                     "--pages-dir", str(crawl / "fleet_html")],
+            "browser": ["--layout", "browser", "--pages-dir", str(crawl / "fleet_browser_text"),
+                        "--meta-index", str(crawl / "fleet_crawl_index.json"),
+                        "--meta-index", str(crawl / "fleet_browser_index.json")]}
+    est = 0.0
+    for layout, args in runs.items():
+        run = U.OUT / "extract" / layout
+        if not (run / "requests.jsonl").exists():
+            subprocess.run(ev2 + ["build", *args, "--run", str(run)], check=True)
+        subprocess.run(ev2 + ["estimate", "--run", str(run), "--model", model, "--sample", "20"], check=True)
+        last = [json.loads(x) for x in (run / "log.jsonl").open() if '"estimate"' in x][-1]
+        est += last["est_cost_usd_batch"]
+    print(f"estimated extraction cost ${est:.2f} (budget ${budget:.2f})", flush=True)
+    if est > budget:
+        sys.exit("estimate over budget; not submitting")
+    for layout in runs:
+        run = U.OUT / "extract" / layout
+        if not (run / model / "batches.json").exists():
+            subprocess.run(ev2 + ["submit", "--run", str(run), "--model", model], check=True)
+    for layout in runs:
+        subprocess.run(ev2 + ["fetch", "--run", str(U.OUT / "extract" / layout), "--model", model, "--wait"],
+                       check=True)
 
 
 if __name__ == "__main__":
