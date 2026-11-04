@@ -1,82 +1,90 @@
-# Hackers 2026: "Tedium was the moat" (7-minute talk)
+# Hackers 2026 talk: narrative and facts
 
-Written 2026-11-03. Replaces the 2026-10-27 field-guide spine in [hackers-2026-plan.md](hackers-2026-plan.md) as the talk itself; the plan still governs the release, explorer and licensing.
+David's 7 minutes in the Aviation session, Saturday 16:00–17:00 (assumed 2026-11-07). David writes the talk track. This file is the narrative it hangs on, the facts with their sources, and the slide list. The backdrop deck is a Claude Slides artifact (link in the PR).
 
-**Slot.** One of several presenters in the Aviation session David leads: Saturday 16:00–17:00, one hour ([conference wiki](https://wiki.hackersconference.org/books/2026/page/aviation)); Saturday assumed to be 2026-11-07. David's own talk is 7 minutes. The release freeze moves from Wed 11-04 to Thu 11-05, two days before.
+## Narrative
 
-**Why this spine.** David, 2026-11-03: pulling ADS-B and the FCC and FAA registrations alone isn't interesting enough, and another panelist covers ADS-B. What is new is that a list nobody had (every flight school in the US, what it flies and what it charges) was assembled in a week for about $100 of model time. The idea for the room: information that used to be protected only by how tedious it was to gather isn't protected any more. A different talk would serve too, if it gives the room the same realization with numbers that survive a skeptic.
+1. I wanted a list of every flight school in the US, with the planes each one flies and what it charges. There isn't one.
+2. So we built it in a week in March 2026: we found the schools, had a language model read their websites, and spent about $100 on model time.
+3. Then we checked what the model read against two independent public sources, the FAA registry and a year of flight tracking. It holds up.
+4. With the list in hand, a few things show up that nobody could see before.
+5. Some things are still out of reach, because they're withheld by law or by license, not because they're hard to gather.
+6. Gathering this used to be a months-long job for a research firm. Now it's a week and $100 for one person. A lot of information that's public but scattered is about to become datasets.
+7. The data, the explorer and the code are available.
 
-Bullets are for David. The words on stage are his.
-
-## The arc, with times
-
-| Beat | Time | Slide | Every number from |
-|---|---|---|---|
-| 1. There is no list | 0:00–0:50 | One sentence, no chart | FAA Part 141 export (March 2026) |
-| 2. So we read their websites | 0:50–2:00 | 22 s recorded demo, then the cost line | [scrape facts](hackers-2026-scrape-facts.md) |
-| 3. Trust, then verify | 2:00–3:15 | Funnel: claimed → real → right make → flew → lives there | [scrape facts](hackers-2026-scrape-facts.md) |
-| 4. What the map shows | 3:15–4:45 | Two findings, one slide each | [fact sheet](hackers-2026-facts.md) §2, §4 |
-| 5. The moat moves | 4:45–6:15 | Two columns: "was tedious" / "still hidden" | Sources survey, romp doc |
-| 6. Fork it | 6:15–7:00 | QR code | Explorer, downloads, repo |
+## Facts, by section
 
 ### 1. There is no list
 
-- The FAA certificates Part 141 schools. Most training happens under Part 61, and a Part 61 school doesn't register anywhere.
-- The closest thing to a national list is AOPA's directory, and its terms forbid copying or republishing it.
-- So "every flight school in America, what it flies and what it charges" was a consulting engagement. Nobody had published it.
-- The FAA's own Part 141 list (exported 2026-03-02, `research/FlightSchoolMapping/faa-141-flightschools.csv`) has 519 certificated schools at 703 locations. That's a small slice of the 4,825 schools and clubs we found.
+- The FAA certificates Part 141 pilot schools: 519 certificates at 703 locations (the FAA's own export, 2026-03-02, `research/FlightSchoolMapping/faa-141-flightschools.csv`).
+- Part 61 instruction, which is most training, needs no school certificate, so those schools appear on no government list.
+- AOPA runs a directory. Its terms forbid copying or republishing it, so it seeded the search but isn't in the release.
+- We ended up with 4,825 schools, clubs and university programs (`research/FlightSchoolMapping/README.md`, current results).
 
-### 2. So we read their websites
+### 2. How it was built
 
-- One week, 2026-03-05 → 03-12 (git history). The first full extraction ran within a day of starting.
-- The sites are the long tail: Wix and Squarespace pages that render only in a browser, PDF rate sheets, rate sheets posted as photos, N-numbers painted on airplanes in pictures.
-- 32,462 cached pages: 26,087 fetched over plain HTTP from 4,780 school sites, and 6,375 rendered in headless Chromium from 1,987 sites that show nothing without a browser. 4,909 model calls.
-- Model time: **$100** at batch prices, from the token counts in the results. That's a floor, since three later passes (corpus expansion, rate sheets, photos) didn't record usage. (The pipeline README's "~$15–25" was wrong.)
-- **Recorded demo, 22 s** (`docs/hackers-2026-charts/demo_extract.mp4`, also `.gif`; `scripts/demo_extract.py`, recorded by `vhs scripts/demo_extract.tape`): one school's homepage in, and 12 s later its fleet and prices come out, each tail checked against the FAA registry and this year's flights. The school is Skybound Aviation at Peachtree-DeKalb (KPDK): ten tails, $205–$275/h wet, all registered, all flew, all based at KPDK. One row is yellow: the site says "Piper Warrior" and the registry says a 1976 PA-28-181 (sold as the Archer). Say that they disagree, not which is wrong. A 1970 Cessna 172K rents for $205/h. The run cost $0.02 on Claude Opus 5.5. It's recorded, so nothing calls the API on stage.
+- Dates: 2026-03-05 to 03-12 (git history). The first full extraction ran on day one.
+- Where the schools came from: the AOPA directory, the FAA Part 141 list, three web directories, the Cirrus training locator, and FAA registrants with school-like names.
+- Pages: 32,462 cached, 26,087 fetched over plain HTTP from 4,780 school sites and 6,375 rendered in headless Chromium from 1,987 sites that show nothing without a browser (Wix, Squarespace and the like). The sites also carry PDF rate sheets, photographed rate sheets and tail numbers painted on aircraft in photos.
+- Model: Claude Sonnet 4.6 through the Message Batches API, 4,909 calls, 55.9M input tokens and 2.2M output. That's $100 at batch prices, a floor, since the expansion, PDF and photo passes didn't record usage (`docs/hackers-2026-scrape-facts.md`).
+- Demo (recorded, 22 s, `docs/hackers-2026-charts/demo_extract.mp4`): Skybound Aviation, Peachtree-DeKalb (KPDK). Homepage in, and 12 s later ten aircraft with rates of $205–$275/h wet, each checked against the registry and the flight data. It cost $0.02 on Claude Opus 5.5. One row disagrees: the site says Piper Warrior, the registry says a 1976 PA-28-181 (sold as the Archer). A 1970 Cessna 172K rents for $205/h.
 
-### 3. Trust, then verify
+### 3. Checking it
 
-The reason to believe the map: aviation has independent ground truth for every claim the model makes. Of 4,296 distinct tails the model read off school pages:
-- 98.5% are well-formed N-numbers, and 98.0% of those are on the FAA registry today. Another 68 have since been deregistered. Only 18 (0.4%) can't be found anywhere.
-- The errors look like a scanner's: `N16OME`, `N87IOU`, letter O for zero.
-- The make on the site matches the registry's manufacturer 99.2% of the time.
-- 93% of the registered tails flew in the last 12 months.
-- 78% live at the airport the website names. With the airports shuffled across the same tails, that falls to 0.5%, so the match isn't luck.
-- The lesson for the room: extraction is trustworthy when an independent source can check it, so build the check before you trust the output.
+Ground truth: the FAA Releasable Aircraft Registry (public domain, snapshot 2026-10-23) and the adsb.lol archive (ODbL, 2025-10-23 to 2026-10-22). Raw model output from the HTTP and browser passes, before any cleanup (`docs/hackers-2026-scrape-facts.md`):
 
-### 4. What the map shows (pick two for the slot)
+- 4,296 distinct tail numbers.
+- 98.5% are well-formed N-numbers.
+- 98.0% of those are on today's registry. 68 more were deregistered after the crawl. 18 (0.4%) aren't found anywhere.
+- Misreads look like OCR errors: N16OME, N87IOU, N318OU (letter O for zero).
+- Make on the website matches the registry's manufacturer: 99.4% (4,903 of 4,934).
+- Flew in the last 12 months: 93.0% of registered tails.
+- Based at the airport the website names: 78.3% (3,275 of 4,184). Control: shuffle the website airports across the same tails and it drops to 0.5%.
 
-- **On the rate sheet, not in the sky.** Of 2,760 rental planes with a published price and a registered tail, 164 (6%) didn't fly once in the year.
-- **Price doesn't track use.** A Cessna 172 rents for a median $179/h wet whether it flies 100 hours a year or 500 (Spearman ρ 0.06). The median 172 that flew grossed at least $54k at its posted rate.
-- **Schools the web never mentioned.** Joining the registry with flight behavior finds 372 operations that fly like flight schools but appear on no list. A hand check of 20 found 17 training-related (85%).
-- **The vivid example (unconfirmed):** ten Sling LSAs based at North Perry. Two are registered to Dynasty Aviation, eight to separate Montana LLCs at one registered agent's suite, and our classifier scores nine of the ten as trainers. Ask the school before saying anything on stage beyond "the joins suggest one fleet".
+### 4. What the list shows
 
-### 5. The moat moves
+From the fact sheet (`docs/hackers-2026-facts.md`, sections 2 and 4):
 
-- **Was tedious, now a weekend:** fleets, prices, who flies how much, where planes sleep.
-- **Still hidden, by law or license, not effort:** who owns an LLC (the Montana record names only its agent), beneficial ownership (FinCEN's data isn't public, and the FAA's planned >25% owner collection won't be either), AOPA's directory terms, OpenSky's research-only license.
-- Obscurity was doing privacy and competitive work that nobody wrote down. A school's prices used to be comparable only by phone. Now a stranger can compare all of them overnight.
-- Question for the room: which list doesn't exist in your industry yet?
+- 2,760 rental aircraft have a published wet rate and a registered tail. 164 of them (6%) didn't fly once in 12 months.
+- Cessna 172s (1,201 of them): median $179/h wet. Rate and hours flown are unrelated (Spearman ρ 0.06). Chart: `docs/hackers-2026-charts/c172-rate-vs-hours-dark.png`.
+- The median 172 that flew grossed $54,162 a year at its posted rate, a floor because some flying happens out of receiver range.
+- Registry plus flight behavior finds 372 operations with 3 or more aircraft that fly like schools but aren't on our list. In a hand check of 20, 17 were schools, clubs or leasebacks.
+- The busiest school airplane, N43171, a 1983 PA-28-181 based at Fort Lauderdale Executive, flew 1,966 observed hours on 331 days.
 
-### 6. Fork it
+### 5. What stays hidden
 
-- The QR opens aether-flight.com/explore: 2,470 school pages built only from the schools' own pages, plus tail lookup, airports and ODbL downloads.
-- The code, `make sample` and an "add a source" recipe. **Blocker:** the repo has to be public before the QR goes on a slide (the procedure is in the plan; it needs David's go).
+- Who owns an LLC. Montana's business registry for N970PM LLC lists only its registered agent, All Day $49 Montana Registered Agent LLC, and no members.
+- Beneficial ownership. FinCEN's database was never public, and its 2026 rule exempts US companies. The FAA's planned collection of >25% owners won't be public either.
+- Licensed data: the AOPA directory, OpenSky's research-only archive. We used them only where their terms allow, and kept them out of the release.
 
-## Cut for time (keep as backup slides or Q&A)
+### 6. Where to get it
 
-The FAA's-books audit (registry ghosts, TAF counts unchanged for 28 years), trustee registrations flying abroad, Montana and Delaware agent mailboxes, home-base privacy and LADD, the OpenSky depth. Every one of them is in the fact sheet and the romp doc.
+- Explorer: aether-flight.com/explore (2,470 school pages built from the schools' own sites, tail lookup, airports).
+- Downloads: aether-flight.com/explore/data, ODbL.
+- Code: the repo, once it's public (needs David's go; procedure in the plan).
 
-## Gates
+## Slides
 
-- `scripts/.venv/bin/python scripts/49_scrape_facts.py --release v0.3-20261023` (on trogdor) exits 0. It exits 1 if the corpus is implausibly small or the shuffled-airport control comes within 3× of the real home-base match. Last run 2026-11-03: PASS (78.3% vs 0.5%).
-- `43_talk_facts.py --release v0.3-20261023` regenerates the fact sheet. Beat 4 quotes only its sections 2 and 4.
-- The demo recording shows only tails that `49` would score green or red. No live API call on stage.
+Backdrops only: one number, chart or image each.
+
+| # | Slide | On it |
+|---|---|---|
+| 1 | Title | Talk title, name |
+| 2 | No list | 519 Part 141 certificates · 4,825 schools found |
+| 3 | The build | 32,462 pages · 4,909 calls · 7 days · $100 |
+| 4 | Demo | The recording |
+| 5 | Checked | Bar chart of the six numbers in section 3 |
+| 6 | Misreads | N16OME N87IOU N318OU |
+| 7 | Never flew | 6% (164 of 2,760) |
+| 8 | 172 rate vs hours | The chart |
+| 9 | Not on any list | 372 |
+| 10 | Hidden | The Montana record: agent, no members |
+| 11 | Get it | QR code, URL |
 
 ## Open items
 
 | Item | Owner | Default if no answer |
 |---|---|---|
-| Ask Dynasty Aviation about the eight Slings | David | Beat 4 uses the schools-from-the-sky finding without naming a school |
-| Make the repo public (plan's "Opening the repo") | David's go, Claude executes | QR points at the explorer only |
-| Other presenters' names and topics, for the wiki page | David | Wiki left with David's entry only |
+| Make the repo public | David | Slide 11 points at the explorer only |
+| Ask Dynasty Aviation about the eight Slings | David | No school named beyond Skybound in the demo |
+| Talk title | David | Slide 1 says "Every flight school in the US" |
