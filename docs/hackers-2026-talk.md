@@ -27,7 +27,7 @@ Source survey: `docs/hackers-2026-data-sources.md` (on PR #8's branch), 39 sourc
 - State lists (`docs/hackers-2026-state-registries.md`): 24 states register aircraft, none publishes the registry free in bulk; Michigan (75) and Minnesota (56) license flight schools and publish the lists, which would add about 40 schools we don't have.
 - The trade association's list (`docs/hackers-2026-fsai-directory.md`): the Flight School Association International (FSANA until February 2026) publishes a member directory, 567 entries, searchable only through its own page. 385 are US training providers by their tags or names; 241 were already in our list. Of the 144 that weren't, sorting by hand found examiners, insurers, vendors, an airline and individuals who ticked "flight school"; 20 are live flight-training websites we didn't have (Alaska Flight Academy and American Flight Schools in Englewood among them), and 11 more listed school sites no longer answer.
 - Google Places (`docs/hackers-2026-google-places.md`): free IDs-only text searches over 516 self-splitting rectangles (2,360 searches, 26 minutes) found 11,420 places; Google labels 4,527 operating US places as flight training. 1,993 match a school in our list by website or a near-identical name, which also gives 1,543 of our schools a Google place ID. 771 others have a live website that mentions flight training; a hand check of 30 says 53% to 73% of those are real operations we lacked (about 410 to 565), the rest being charter operators, FBOs, vendors and paramotor schools. Then Claude Haiku 5.5 read each crawled site (`docs/hackers-2026-google-schools.md`): 605 give flight instruction, 130 don't, 36 unclear; a hand check of 30 of its yeses found 29 right. 566 added after dedupe (426 schools, 121 independent instructors, 19 clubs); their tails score like March's (99.8% well-formed, 97.7% in the registry, 92.0% seen flying, 84.6% home base matches). Haiku cost $3.00. Cost: about $142 of Place Details ($109 names and labels, $33 websites); the searches were free. Google's terms let us keep only the place IDs, so names, phones and hours come from the schools' own sites.
-- Added since (`docs/hackers-2026-added-schools.md`, `docs/hackers-2026-google-schools.md`): 67 schools from FSAI (20), Michigan and Minnesota licenses (39), other state and federal lists (4) and the sky-found operations (5), then 566 found through Google Places, so 5,458 in the rebuilt list, every name and contact value with its source. The live explorer and the March-based slides are still release v0.3 (4,825) until v0.4 rc2 (2,836 school pages) is published.
+- Added since (`docs/hackers-2026-added-schools.md`, `docs/hackers-2026-google-schools.md`): 67 schools from FSAI (20), Michigan and Minnesota licenses (39), other state and federal lists (4) and the sky-found operations (5), then 566 found through Google Places, so 5,458 in the rebuilt list, every name and contact value with its source. Published 2026-11-04 as release v0.4-20261104-rc3 (2,836 school pages, place IDs with Google Maps links; public contact without independent instructors' street addresses or FSAI-sourced values). Rollback to v0.3: the command in docs/hackers-2026-google-schools.md.
 - AOPA runs a directory. Its terms forbid copying or republishing it, so it seeded the search but isn't in the release.
 - We assembled 4,825 candidate records: schools, clubs, university programs and FAA registrants with school-like names (`research/FlightSchoolMapping/README.md`). 1,502 have no fleet and 1,525 no website; the public release has 2,470 school pages with fleet evidence. National completeness is not measured.
 
@@ -119,21 +119,15 @@ Backdrops only: one number, chart, image or record each.
 | 12 | 2 | `checked` | Consistency checks, not accuracy |
 | 13 | 2 | `misreads` | 81 bad tails, whose fault |
 | 14 | 2 | `audit` | 40 random pages read by hand |
-| 15 | 2 | `bodybug` | The bug that ate 41% of the pages |
-| 16 | 2 | `eightmonths` | Eight months later: 157 gone, 207 blocking, 26% of rates up |
-| 17 | 3 | `joins` | The joins |
-| 18 | 3 | `neverflew` | Never flew |
-| 19 | 3 | `learntofly` | Cost to learn to fly: $12,000 median |
-| 20 | 3 | `c172` | 172 rate vs hours |
-| 21 | 3 | `yearbuilt` | Year built: median 1979 |
-| 22 | 3 | `notlisted` | 372 → 255 → 62 → 13 |
-| 23 | 3 | `googletiles` | Searching Google Maps one rectangle at a time: 516 rectangles, 2,360 free searches |
-| 24 | 3 | `everylist` | Every list we could find: source, schools added, machine time, cost |
-| 25 | 3 | `hidden` | Florida 82.5% vs Montana N970PM |
-| 26 |  | `wish` | Datasets we wish existed |
-| 27 |  | `getit` | QR code, URL |
+| 15 | 2 | `eightmonths` | Eight months later: 157 gone, 207 blocking, 26% of rates up |
+| 16 | 3 | `learntofly` | Cost to learn to fly: $12,000 median |
+| 17 | 3 | `yearbuilt` | Year built: median 1979 |
+| 18 | 3 | `everylist` | Every list we could find: source, schools added, machine time, cost |
+| 19 | 3 | `hidden` | Who's behind the LLC? Three free joins: registry 88,071 LLC aircraft → 20% have a pilot at the address → Florida 86% named; Delaware/Montana dead end |
+| 20 |  | `wish` | Datasets we wish existed |
+| 21 |  | `getit` | QR code, URL |
 
-The deck is https://claude.ai/artifact/KUkKop9nCZBpYwrHGcuBtW (private to David). For 7 minutes, the suggested cut keeps the cover, nolist, schoolsmap, build, demo, checked, misreads, bodybug, eightmonths, neverflew, notlisted, hidden and getit.
+The deck is https://claude.ai/artifact/KUkKop9nCZBpYwrHGcuBtW (private to David). Cut 2026-11-04 after David's review (code fixes, joins table, never-flew, rate-vs-hours, the 372 funnel and the Google tiles slide): kept as files in the session scratchpad only. Being reworked: eightmonths (are the new blocks anti-AI defenses?), learntofly (a cost map), yearbuilt (the 1986 cliff and Cirrus).
 
 ## Open items
 
