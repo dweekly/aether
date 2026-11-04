@@ -103,11 +103,12 @@ def load_crawl(crawl):
         s["browser_flags"] = e.get("crawl_flags", [])
         s["browser_pages"] = len(e.get("pages", []))
         for p in e.get("pages", []) + e.get("pdfs", []):
-            if p.get("text"):
-                s["texts"].append(p["text"])
             tp = p.get("text_path")
+            text = p.get("text") or ""
             if tp and (crawl / "fleet_browser_text" / tp).exists():
-                s["texts"].append((crawl / "fleet_browser_text" / tp).read_text(encoding="utf-8", errors="replace"))
+                text = (crawl / "fleet_browser_text" / tp).read_text(encoding="utf-8", errors="replace")
+            if len(text.strip()) >= 50:  # extract_v2's browser layout skips shorter pages ("502 Bad Gateway")
+                s["texts"].append(text)
     return sites
 
 
@@ -171,6 +172,12 @@ def main():
     march = defaultdict(set)
     for d, srcs in U.march_domains().items():
         march[site_key(d)] |= srcs
+    # Tails the March pipeline read off each known site (website evidence), to say why a
+    # confirmed site we already knew still left these registrants off our list.
+    march_tails = defaultdict(set)
+    for sch in json.loads((U.REL / "schools_full.json").read_text())["schools"]:
+        if sch.get("domain"):
+            march_tails[site_key(sch["domain"])] |= {f["n"] for f in sch["fleet"] if f["evidence"] == "website"}
 
     rows, problems = [], []
     for o in ops:
@@ -185,6 +192,7 @@ def main():
             k = site_key(site)
             row["domain"] = k
             row["in_march_list"] = sorted(march.get(k, ()))
+            row["march_site_tails"] = len(march_tails.get(k, ()))
             s = sites.get(site)
             if s is None:
                 problems.append(f"no crawl record for {site} ({o['registrant']})")
@@ -253,6 +261,9 @@ def main():
         "confirmed_school_or_club_missed_by_march": len(missed),
         "confirmed_school_or_club_missed_by_march_sites": len({r["domain"] for r in missed}),
         "confirmed_school_or_club_site_in_march_list": len(known),
+        "confirmed_school_or_club_site_in_march_list_no_march_tails": sum(1 for r in known if not r["march_site_tails"]),
+        "school_or_club_with_site_not_in_march": sum(1 for r in rows if r["operation_type"] in ("school", "club")
+                                                      and r.get("domain") and not r["in_march_list"]),
         "confirmed_aircraft": sum(r["aircraft"] for r in rows if r["status"] == "confirmed"),
         "confirmed_by_text_only": sum(1 for r in rows if r.get("tails_in_text") and not r.get("tails_in_extract")),
         "confirmed_by_extract_only": sum(1 for r in rows if r.get("tails_in_extract") and not r.get("tails_in_text")),
@@ -260,9 +271,11 @@ def main():
         "spend_usd": {"discovery": round(spend_discovery, 2)},
     }
     for layout in ("http", "browser"):
-        u = U.OUT / "extract" / layout / EXTRACT_DIR / "usage.json"
-        if u.exists():
-            summary["spend_usd"][f"extract_{layout}"] = json.loads(u.read_text())["cost_usd_batch"]
+        # EXTRACT_MODEL alone is a first submission at effort low, cancelled minutes in; what it billed counts.
+        for d, label in ((EXTRACT_DIR, f"extract_{layout}"), (EXTRACT_MODEL, f"extract_{layout}_cancelled_low")):
+            u = U.OUT / "extract" / layout / d / "usage.json"
+            if u.exists():
+                summary["spend_usd"][label] = json.loads(u.read_text())["cost_usd_batch"]
     (U.OUT / "scores.json").write_text(json.dumps(rows, indent=1) + "\n")
     (U.OUT / "summary.json").write_text(json.dumps(summary, indent=1) + "\n")
     print(json.dumps(summary, indent=1))
@@ -311,15 +324,20 @@ def render(s, rows):
     w("")
     w(f"- {s['with_website']} of {s['operations']} operations ({pct(s['with_website'], s['operations'])}) have a website "
       f"the search could tie to them ({s['distinct_sites']} distinct sites).")
-    w(f"- {s['confirmed']} ({pct(s['confirmed'], s['operations'])} of all {s['operations']}) are confirmed: at least one "
-      f"of the registrant's own tails is on the site. {s['unconfirmed']} sites list none of them; "
-      f"{s['unreachable']} could not be read.")
+    w(f"- {s['confirmed']} are confirmed ({pct(s['confirmed'], s['with_website'])} of those with a website, "
+      f"{pct(s['confirmed'], s['operations'])} of all {s['operations']}): at least one of the registrant's own tails is "
+      f"on the site. For {s['unconfirmed']} the site lists none of them; for {s['unreachable']} the site could not be "
+      "read.")
     w(f"- Confirmed schools and clubs: {s['confirmed_school_or_club']} operations on "
       f"{s['confirmed_school_or_club_sites']} sites. **{s['confirmed_school_or_club_missed_by_march']} of them "
       f"({s['confirmed_school_or_club_missed_by_march_sites']} sites) were missed entirely by the March web "
       "search**: their domain is in none of the March directory, AOPA, Cirrus, expansion or crawl lists. The other "
       f"{s['confirmed_school_or_club_site_in_march_list']} were on a site we already knew, whose March fleet "
-      "extraction did not carry these tails.")
+      "extraction did not carry these tails: for "
+      f"{s['confirmed_school_or_club_site_in_march_list_no_march_tails']} of them March read no tails off the site at "
+      "all.")
+    w(f"- Counting unconfirmed ones too, {s['school_or_club_with_site_not_in_march']} operations the search called a "
+      "school or club have a site that was on none of the March lists.")
     w(f"- Negative control: each site searched for a different operation's tails confirms {s['control']['hits']} of "
       f"{s['control']['sites']} (real pairing: {s['control']['real_hits']}).")
     w("")
@@ -341,8 +359,17 @@ def render(s, rows):
     w(f"- Tails found by text match only: {s['confirmed_by_text_only']}; by extraction only: "
       f"{s['confirmed_by_extract_only']}; the rest by both.")
     w(f"- Aircraft in confirmed operations: {s['confirmed_aircraft']:,}.")
+    w("- Hand look at the 30 text-only confirmations (first matching tail on each site, 2026-11-03): in 21 the tail is "
+      "only in an image file name, alt text, a POH or checklist link or a page URL; in 9 it is in visible text the "
+      "extraction did not return as a fleet entry (headings such as \"Piper Warrior N43337\", a club's insurance "
+      "note, a blog post, a for-sale listing).")
+    w("- A confirmation ties the registrant to the site; it does not by itself make the operation a school. Two "
+      "confirmed sites list the tail as an aircraft for sale (an avionics shop and a dealer's inventory page).")
     w("")
     w("## The largest confirmed operations missed by the March search")
+    w("")
+    w("Aircraft: training-like aircraft in the operation. Tails on site: the registrant's registered tails found on "
+      "the site, of all it holds.")
     w("")
     w("| Registrant | Home | Aircraft | Type | Site | Tails on site |")
     w("|---|---|---:|---|---|---:|")
@@ -356,7 +383,11 @@ def render(s, rows):
     w("")
     sp = s["spend_usd"]
     w("- " + ", ".join(f"{k}: ${v:.2f}" for k, v in sp.items()) + f"; total ${sum(sp.values()):.2f}. Discovery is "
-      "recorded usage at list prices plus $10 per 1,000 searches; extraction is recorded usage at batch prices.")
+      "recorded usage at list prices plus $10 per 1,000 searches; extraction is recorded usage at batch prices. The "
+      "`_cancelled_low` lines are a first submission at effort low, cancelled after the workstream 1 re-run found that "
+      "Haiku 5.5 at low lists one entry per aircraft type on big fleet tables; most of it had already run.")
+    w("- Discovery settings: the first 20 operations (the largest) ran at effort medium with up to 4 or 5 searches and "
+      "cost $1.37; the other 352 ran at effort low with up to 3 searches, to fit the $15 budget.")
     w("")
     w("## Caveats")
     w("")
