@@ -24,6 +24,18 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
 - Schools with PDF rate sheets not yet extracted (Phase 5 pipeline exists but incomplete)
 - Re-crawl schools whose websites have changed since initial scrape
 
+### Part 141 coverage gaps (found 2026-11-03)
+- **Some Part 141 certificate holders in `faa-141-flightschools.csv` never reach
+  `flight_line.json`.** `scripts/probes/match_external_school_lists.py` finds no match for 45
+  of 519 certificates; a spot check puts about 12 of those down to name misses, leaving up to
+  about 25 real gaps (e.g. JC Air Academy, Aero Tech Academy, Orlando Flight Academy, World
+  Wide Wings). SEVP's and VA's flight-school lists turned up the same schools. See
+  `docs/hackers-2026-state-registries.md` section 5.
+- **University of North Dakota has no Grand Forks location** (only its Mesa site and the
+  "UND AEROSPACE FOUNDATION" owner record).
+- **"Atp Flight Academy" at KA39 carries the domain `auburn.edu`**, so any domain join sends
+  Auburn records to ATP.
+
 ### Story ideas
 - "Which training fleets are actually flying?" — ADS-B activity rates vs. fleet size
 - "The GA training fleet is old" — age distribution, regional differences
