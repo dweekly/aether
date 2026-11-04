@@ -64,6 +64,28 @@ MATCH_RANK = {"domain": 0, "added_from_google_places": 0, "exact": 1, "address":
 SEP = re.compile(r"\s*[|–—:·•]\s*|\s+-\s+")
 
 
+# Public contact policy (David, 2026-11-04): no street address for a school that is one instructor
+# teaching alone (often a home; city/state, phone, website and hours stay), and no contact value whose
+# only source is the FSAI member directory. Internal data keeps everything with its provenance.
+INDIVIDUALS_CSV = ROOT.parent.parent / "docs" / "hackers-2026-google-schools.csv"
+
+
+def individual_instructors():
+    import csv
+    if not INDIVIDUALS_CSV.exists():
+        sys.exit(f"FAIL missing {INDIVIDUALS_CSV} (needed for the public contact policy)")
+    with open(INDIVIDUALS_CSV, newline="", encoding="utf-8") as f:
+        return {r["school_key"] for r in csv.DictReader(f)
+                if r["operation_type"] == "independent_instructor" and r["disposition"] == "added"}
+
+
+def public_contact(contact, domain, individuals):
+    out = {k: v for k, v in (contact or {}).items() if not str(v.get("source", "")).startswith("fsai")}
+    if domain in individuals:
+        out.pop("address", None)
+    return out
+
+
 def resolve_url(src, domain):
     """Make a crawled source_url absolute: relative paths ("aircraft.html") resolve
     against the school's site; scheme-less hosts ("example.com/fleet") get https."""
@@ -112,6 +134,7 @@ def main():
     ap.add_argument("--release", required=True)
     a = ap.parse_args()
     rel = RELEASES / a.release
+    individuals = individual_instructors()
     c = duckdb.connect()
     aircraft = {r[0]: r for r in c.execute(f"""
         SELECT n_number, hex, mfr, model, year_mfr, observed_class, days_airborne, airborne_hours,
@@ -185,7 +208,7 @@ def main():
                         "fleet": fleet, "listings": listings,
                         "google_place_ids": [g["place_id"] for g in sorted(
                             s.get("google_place_ids") or [], key=lambda g: (MATCH_RANK.get(g["match"], 9), g["place_id"]))],
-                        "contact": s.get("public_contact") or {}}
+                        "contact": public_contact(s.get("public_contact"), domain, individuals)}
             if s.get("provenance"):  # which public list it came from; record ids stay internal
                 raw[key]["added_from"] = [{"list": p["list"], "pulled": p["pulled"]} for p in s["provenance"]]
 
