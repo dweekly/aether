@@ -135,8 +135,13 @@ def model_items(passes=PASSES, indexes=None):
 
 
 def normalize(n):
+    """Upper-case and drop spaces and dashes; add the N only to a bare US number (first char a digit).
+
+    Until 2026-11-03 this added an N to everything, so a correctly reported Canadian C-FEFY was
+    scored as the malformed US tail NCFEFY: 50 of the 81 "bad" March tails were this bug.
+    """
     n = re.sub(r"[\s\-]", "", n.upper())
-    return n if n.startswith("N") else "N" + n
+    return "N" + n if n[:1].isdigit() else n
 
 
 # Registry manufacturers that must match exactly: "AMERICAN" alone is a Grumman American
@@ -207,7 +212,9 @@ def main():
             seen.add(key)
             rows.append(it)
     tails = {r["n"] for r in rows}
-    wellformed = {n for n in tails if N_RE.match(n)}
+    non_us = {n for n in tails if not n.startswith("N")}  # e.g. Canadian C-FEFY, reported as written
+    us = tails - non_us
+    wellformed = {n for n in us if N_RE.match(n)}
     on_reg = {n for n in wellformed if n in reg}
     only_dereg = {n for n in wellformed - on_reg if n in dereg}
     flew = {n for n in on_reg if (reg[n][1] or 0) > 0}
@@ -236,11 +243,11 @@ def main():
         "cost_usd_batch": round(cost, 2),
         "tail_rows": len(rows), "distinct_tails": len(tails),
         "wellformed": len(wellformed), "on_registry": len(on_reg), "deregistered_only": len(only_dereg),
-        "not_found": len(wellformed - on_reg - only_dereg), "malformed": len(tails - wellformed),
+        "not_found": len(wellformed - on_reg - only_dereg), "malformed": len(us - wellformed), "non_us": len(non_us), "us_tails": len(us),
         "flew_in_window": len(flew),
         "make_checked": len(make_rows), "make_agrees": len(make_ok),
         "home_checked": len(home_rows), "home_matches": match, "home_matches_shuffled": control,
-        "malformed_examples": sorted(tails - wellformed)[:12],
+        "malformed_examples": sorted(us - wellformed)[:12], "non_us_examples": sorted(non_us)[:6],
         "not_found_examples": sorted(wellformed - on_reg - only_dereg)[:12],
     }
     if run_mode:
@@ -265,8 +272,9 @@ def main():
     body = f"""## What the model said, against the registry and the radios
 
 - {o['tail_rows']:,} (school, tail) claims; {o['distinct_tails']:,} distinct tails, from {o['schools_with_any_tail']:,} school extractions with at least one tail (a site read by both passes counts twice).
-- Well-formed N-numbers: {o['wellformed']:,} ({p(o['wellformed'], o['distinct_tails'])}). Malformed examples: {', '.join(o['malformed_examples']) or 'none'}.
-- On the FAA registry of {reg_date}: {o['on_registry']:,} ({p(o['on_registry'], o['wellformed'])} of well-formed). A further {o['deregistered_only']:,} are deregistered (sold abroad, destroyed, or lapsed since the crawl). Not found anywhere: {o['not_found']:,} ({p(o['not_found'], o['wellformed'])}), e.g. {', '.join(o['not_found_examples'])}.
+- Non-US registrations, reported as written (not scored as N-numbers): {o['non_us']:,}, e.g. {', '.join(o['non_us_examples']) or 'none'}.
+- Well-formed N-numbers: {o['wellformed']:,} of {o['us_tails']:,} US tails ({p(o['wellformed'], o['us_tails'])}). Malformed examples: {', '.join(o['malformed_examples']) or 'none'}.
+- On the FAA registry of {reg_date}: {o['on_registry']:,} ({p(o['on_registry'], o['wellformed'])} of well-formed). A further {o['deregistered_only']:,} are in the FAA's deregistered file. Not found anywhere: {o['not_found']:,} ({p(o['not_found'], o['wellformed'])}), e.g. {', '.join(o['not_found_examples'])}.
 - Make named on the website agrees with the registry's manufacturer: {o['make_agrees']:,} of {o['make_checked']:,} checked ({p(o['make_agrees'], o['make_checked'])}).
 - Flew in the release window: {o['flew_in_window']:,} ({p(o['flew_in_window'], o['on_registry'])} of registered).
 - Lives where the website says: {o['home_matches']:,} of {o['home_checked']:,} with both a website airport and an inferred home base ({p(o['home_matches'], o['home_checked'])}). Negative control, website airports shuffled across the same tails: {p(o['home_matches_shuffled'], o['home_checked'])}.

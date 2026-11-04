@@ -34,14 +34,18 @@ Source survey: `docs/hackers-2026-data-sources.md` (on PR #8's branch), 39 sourc
 - Model: Claude Sonnet 4.6 through the Message Batches API, 4,909 calls, 55.9M input tokens and 2.2M output. That's $100 at batch prices, a floor, since the expansion, PDF and photo passes didn't record usage (`docs/hackers-2026-scrape-facts.md`).
 - Demo (recorded, 22 s, `docs/hackers-2026-charts/demo_extract.mp4`): Skybound Aviation, Peachtree-DeKalb (KPDK). Homepage in, and 12 s later ten aircraft with rates of $205–$275/h wet, each checked against the registry and the flight data. It cost $0.02 on Claude Opus 5.5. One row disagrees: the site says Piper Warrior, the registry says a 1976 PA-28-181 (sold as the Archer). A 1970 Cessna 172K rents for $205/h.
 
+### Act 2. The same job, eight months later
+
+- Claude Haiku 5.5 re-read the same cached March pages with the same prompt for $15.15, against $100.22 for Sonnet 4.6 in March, with the same consistency numbers (98.1% vs 98.0% in the registry). It reported 4,066 distinct tails to March's 4,296: at low effort the 5.5 models write one entry per aircraft type on big fleet tables; medium effort recovers most of them (`docs/hackers-2026-model-rerun.md`).
+
 ### Act 2. Checking it
 
 Ground truth: the FAA Releasable Aircraft Registry (public domain, snapshot 2026-10-23) and the adsb.lol archive (ODbL, 2025-10-23 to 2026-10-22). Raw model output from the HTTP and browser passes, before any cleanup (`docs/hackers-2026-scrape-facts.md`):
 
-- 4,296 distinct tail numbers.
-- 98.5% are well-formed N-numbers.
+- 4,296 distinct tail numbers: 4,245 US and 51 foreign registrations (mostly Canadian, reported as written).
+- 99.7% of the US tails are well-formed N-numbers. (Until 2026-11-03 the scoring script prefixed an N to every tail, turning a correct C-FEFY into a "malformed" NCFEFY; that was 50 of the 81 "bad" tails.)
 - 98.0% of those are in the registry snapshot; 38 of them are pending or sale-reported, so 97.1% hold a valid registration. 68 more are in the deregistered file. 18 (0.4%) are in neither file.
-- Bad strings include N16OME, N87IOU, N318OU (letter O for zero). Not yet traced to the page or the model (the error audit in the research plan does that).
+- The 81 "bad" tails, each opened at its source page (`docs/hackers-2026-error-audit.csv`): 50 were my scoring bug (correct Canadian registrations), 15 unclear, 7 typos on the school's own page (N16OME for N160ME), 4 simulator IDs, 3 vintage NC markings read correctly, and 2 model misreads (a tail lifted from an email address; a table cell run into an airport code).
 - Manufacturer family on the website matches the registry: 99.4% (4,903 of 4,934 eligible claims). This checks the make only, not model or variant.
 - Observed airborne in the last 12 months: 93.0% of tails in the snapshot. No observations is not the same as not flying.
 - The model's airport agrees with the flight-inferred home airport for 78.3% of eligible claims (3,275 of 4,184, on 3,224 tails). The prompt gave the model a known-airport hint, so this isn't an independent check of the website. Control: shuffled nationally, 0.5%; that rules out chance, not the wrong school's airplane at the same airport.
@@ -54,6 +58,10 @@ From the fact sheet (`docs/hackers-2026-facts.md`, sections 2 and 4):
 - Cessna 172s (1,201 of them): median $179/h posted. Posted rate and observed airborne hours have almost no pooled rank correlation (Spearman ρ 0.06); not a price effect. Chart: `docs/hackers-2026-charts/c172-rate-vs-hours-dark.png`.
 - 372 registrant names with 3 or more aircraft our model ranks as trainers have no link to a fleet in our data. They're leads, not schools: a hand check of 20 (earlier window) found 12 schools, 2 clubs, 3 leasebacks and 3 unclear. Most of the model's lift comes from aircraft type and registrant fleet size, not flight behavior.
 - The busiest aircraft in our matched school-fleet data, N43171, a 1983 PA-28-181 based at Fort Lauderdale Executive, flew 1,966 observed hours on 331 days.
+
+### Act 3. What learning to fly costs, as posted
+
+- From the re-run's new price fields: median private pilot certificate $12,000 (151 schools, interquartile $9,060 to $15,000; 92 are estimates, not packages), instructor $70/h, wet airplane $175/h, simulator $75/h, club dues $50/month. Only 347 of 2,453 school sites post any training price. Hand check: 63 of 66 prices right; quote medians, not single schools.
 
 ### Act 3. Where ownership stops
 
