@@ -261,7 +261,13 @@ def main():
     ap.add_argument("--out", default=str(ROOT / "data" / "research-2026-11" / "google"))
     ap.add_argument("--max-usd", type=float, default=0.0, help="refuse a paid step whose estimate exceeds this")
     ap.add_argument("--md", default=str(REPO / "docs" / "hackers-2026-google-places.md"))
+    ap.add_argument("--ipv4", action="store_true",
+                    help="connect over IPv4 only (for a key restricted to an IPv4 address)")
     a = ap.parse_args()
+    if a.ipv4:
+        import socket
+        orig = socket.getaddrinfo
+        socket.getaddrinfo = lambda *x, **k: [r for r in orig(*x, **k) if r[0] == socket.AF_INET]
     {"search": search, "details": details, "match": match, "websites": websites, "report": report}[a.step](a)
 
 
