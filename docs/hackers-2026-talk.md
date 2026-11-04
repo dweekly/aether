@@ -58,7 +58,7 @@ From the fact sheet (`docs/hackers-2026-facts.md`, sections 2 and 4):
 
 ### Act 3. Where ownership stops
 
-- Florida's free quarterly corporate file names at least one manager, member or officer for 82.5% of LLC aircraft with a Florida address (6,220 of 7,541). This is a probe (`scripts/probes/beneficial_florida_join.py` on PR #8's branch); promote it to a gated script before it goes on a slide.
+- Florida's free quarterly corporate file names at least one manager, member or officer for 82.5% of LLC aircraft with a Florida address (6,225 of 7,541). Validation: where a pilot lives at the registry address, the pilot's surname is in an officer's name 67.5% of the time, against 0.2% for another aircraft's officers (`docs/hackers-2026-florida-owners.md`, `52_florida_owners.py`, PASS).
 
 - Who owns an LLC. Montana's business registry for N970PM LLC lists only its registered agent, All Day $49 Montana Registered Agent LLC, and no members.
 - Beneficial ownership. FinCEN's database was never public, and its 2026 rule exempts US companies. The FAA's planned collection of >25% owners won't be public either.
@@ -95,6 +95,5 @@ Backdrops only: one number, chart, image or record each.
 | Item | Owner | Default if no answer |
 |---|---|---|
 | Make the repo public | David | Slide 13 points at the explorer only |
-| Promote the Florida join to a gated script | Claude | Slide 12 shows Montana only |
 | Ask Dynasty Aviation about the eight Slings | David | No school named beyond Skybound in the demo |
 | Talk title | David | Slide 1 says "Every flight school in the US" |
