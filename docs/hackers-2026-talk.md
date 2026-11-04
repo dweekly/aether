@@ -127,9 +127,11 @@ Backdrops only: one number, chart, image or record each.
 | 20 | 3 | `c172` | 172 rate vs hours |
 | 21 | 3 | `yearbuilt` | Year built: median 1979 |
 | 22 | 3 | `notlisted` | 372 → 255 → 62 → 13 |
-| 23 | 3 | `hidden` | Florida 82.5% vs Montana N970PM |
-| 24 |  | `wish` | Datasets we wish existed |
-| 25 |  | `getit` | QR code, URL |
+| 23 | 3 | `googletiles` | Searching Google Maps one rectangle at a time: 516 rectangles, 2,360 free searches |
+| 24 | 3 | `everylist` | Every list we could find: source, schools added, machine time, cost |
+| 25 | 3 | `hidden` | Florida 82.5% vs Montana N970PM |
+| 26 |  | `wish` | Datasets we wish existed |
+| 27 |  | `getit` | QR code, URL |
 
 The deck is https://claude.ai/artifact/KUkKop9nCZBpYwrHGcuBtW (private to David). For 7 minutes, the suggested cut keeps the cover, nolist, schoolsmap, build, demo, checked, misreads, bodybug, eightmonths, neverflew, notlisted, hidden and getit.
 
