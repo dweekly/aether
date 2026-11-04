@@ -423,8 +423,9 @@ def report(a):
 
 
 def chart(a):
-    """Backdrop: every rectangle searched, for all queries (finer where Google's 60-result cap forced
-    splits, drawn brighter), with a dot for each place labelled as flight training. Lower 48 only."""
+    """Backdrop: every rectangle searched, for all queries, finer where Google's 60-result cap forced splits
+    (drawn brighter). Rectangles are our own queries; Google's place locations are not drawn, because the
+    Maps terms forbid showing Places content on a non-Google map. Lower 48 only."""
     out = Path(a.out)
     spec = importlib.util.spec_from_file_location("bd", HERE / "53_talk_backdrops.py")
     bd = importlib.util.module_from_spec(spec)
@@ -432,30 +433,36 @@ def chart(a):
     import matplotlib.patches as mp
     bd.setup(Path(a.fonts))
     cache = json.loads((out / "search_cache.json").read_text())
-    det = json.loads((out / "details.json").read_text())
+    det = json.loads((out / "details.json").read_text()) if (out / "details.json").exists() else {}
     tiles = {tuple(map(float, k.split("|", 1)[1].split(","))) for k in cache}
     conus = [t for t in tiles if t[0] >= 24 and t[2] <= 50 and t[1] >= -125 and t[3] <= -65]
-    sch = [d["location"] for d in det.values() if is_school(d)]
+    n_sch = sum(is_school(d) for d in det.values())
     k = math.cos(math.radians(38))
     fig = bd.frame("Searching Google Maps one rectangle at a time",
                    f"{len(cache):,} searches over {len(QUERIES)} phrases; a rectangle with 60 results (the cap) splits in four")
     ax = fig.add_axes([0.04, 0.10, 0.92, 0.72])
+    # Outline from OurAirports (public domain), not Google: every US airport as a faint point.
+    with open(ROOT / "data" / "ourairports_airports.csv", encoding="utf-8") as f:
+        apt = [(float(r["latitude_deg"]), float(r["longitude_deg"])) for r in csv.DictReader(f)
+               if r["iso_country"] == "US" and r["type"] != "closed"]
+    apt = [(la, lo) for la, lo in apt if 24 <= la <= 50 and -125 <= lo <= -65]
+    ax.scatter([lo * k for la, lo in apt], [la for la, lo in apt], s=2, color=bd.MUTED, alpha=0.35, linewidth=0, zorder=1)
     for la0, lo0, la1, lo1 in sorted(conus, key=lambda t: -(t[2] - t[0])):
         side = la1 - la0
-        col, lw, al = ((bd.GRID, 1.0, 1.0) if side >= 4 else (bd.MUTED, 0.8, 0.6) if side >= 1 else (bd.BUFF, 0.6, 0.8))
+        col, lw, al = ((bd.GRID, 1.2, 1.0) if side >= 4 else (bd.MUTED, 1.0, 0.8) if side >= 1
+                       else (bd.BUFF, 0.8, 0.9) if side >= 0.25 else (bd.AMBER, 0.8, 1.0))
         ax.add_patch(mp.Rectangle((lo0 * k, la0), (lo1 - lo0) * k, side, fill=False, edgecolor=col, linewidth=lw, alpha=al))
-    pts = [(p["latitude"], p["longitude"]) for p in sch if 24 <= p["latitude"] <= 50 and -125 <= p["longitude"] <= -65]
-    ax.scatter([lo * k for la, lo in pts], [la for la, lo in pts], s=9, color=bd.AMBER, alpha=0.75, linewidth=0, zorder=3)
     ax.set_xlim(-125 * k, -65 * k)
     ax.set_ylim(24, 50)
     ax.set_aspect("equal")
     ax.axis("off")
-    bd.footer(fig, f"{len(tiles):,} distinct rectangles; {len(pts):,} dots, places Google labels as flight training. "
-                   "Searches return IDs only, which is free.")
+    smallest = min(t[2] - t[0] for t in conus)
+    bd.footer(fig, f"{len(tiles):,} distinct rectangles, the smallest {smallest * 111:.0f} km tall, over every US airport "
+                   f"(grey, OurAirports). Searches return place IDs only, which is free.")
     dest = Path(a.chart_out)
     dest.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(dest)
-    print(f"chart: {len(tiles):,} tiles, {len(pts):,} dots -> {dest}")
+    print(f"chart: {len(tiles):,} tiles -> {dest}")
 
 
 def placeids(a):
@@ -476,9 +483,26 @@ def placeids(a):
           f"({dict(collections.Counter(r['match_type'] for r in rows))}) -> {dest}")
 
 
+def purge(a):
+    """Delete the Google content we were allowed only to use, not keep: names, addresses, labels,
+    coordinates and websites from Place Details, and the matcher's copies of them. Keeps place IDs
+    (storable indefinitely), our own search rectangles, our homepage checks of each website, and the
+    derived outputs (place-ID join, report). The Places terms allow caching coordinates for at most
+    30 consecutive days; run this once the added-schools pass has used the data, and by 2026-12-03."""
+    out = Path(a.out)
+    gone = []
+    for name in ("details.json", "websites.json", "c_google.csv", "c_google_matched.csv"):
+        p = out / name
+        if p.exists():
+            p.unlink()
+            gone.append(name)
+    print(f"purge: deleted {gone or 'nothing'}; kept place_ids.json, search_cache.json (place IDs only), "
+          f"site_checks.json, billing_ledger.json")
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("step", choices=["search", "details", "match", "websites", "report", "chart", "placeids"])
+    ap.add_argument("step", choices=["search", "details", "match", "websites", "report", "chart", "placeids", "purge"])
     ap.add_argument("--out", default=str(ROOT / "data" / "research-2026-11" / "google"))
     ap.add_argument("--max-usd", type=float, default=0.0, help="refuse a paid step whose estimate exceeds this")
     ap.add_argument("--md", default=str(REPO / "docs" / "hackers-2026-google-places.md"))
@@ -498,7 +522,7 @@ def main():
         orig = socket.getaddrinfo
         socket.getaddrinfo = lambda *x, **k: [r for r in orig(*x, **k) if r[0] == socket.AF_INET]
     {"search": search, "details": details, "match": match, "websites": websites, "report": report,
-     "chart": chart, "placeids": placeids}[a.step](a)
+     "chart": chart, "placeids": placeids, "purge": purge}[a.step](a)
 
 
 if __name__ == "__main__":

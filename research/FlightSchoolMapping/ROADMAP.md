@@ -111,6 +111,7 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
   reduction, which the aircraft-day/leg tables do not keep.
 
 ## Hardening
+- Delete Google Places content by 2026-12-03 (`59_google_places.py purge`): the Places terms allow caching coordinates for at most 30 days and nothing else but place IDs; details.json, websites.json and the matcher CSVs hold names, addresses, labels, coordinates and websites from 2026-11-04.
 - `58_airmen_llc_join.py` places addresses at ZIP centroids and takes airports from OurAirports
   types; geocoded addresses and the FAA's public-use airport list would make the
   "near an airport with no school" count exact.
