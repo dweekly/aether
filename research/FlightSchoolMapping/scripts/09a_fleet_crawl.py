@@ -420,8 +420,11 @@ def clean_html(raw_html: str) -> str:
         r"newsletter|subscribe|banner|advertisement|ad-|advert)",
         re.IGNORECASE,
     )
+    # Never <html> or <body>: themes put words like "one-sidebar" or "has-widgets" on
+    # <body>, and deleting it emptied ~40% of the March HTTP pages
+    # (docs/hackers-2026-extraction-audit.md).
     for tag in soup.find_all(True):
-        if tag.attrs is None:
+        if tag.attrs is None or tag.name in ("html", "body"):
             continue
         classes = " ".join(tag.get("class", []))
         tag_id = tag.get("id", "")

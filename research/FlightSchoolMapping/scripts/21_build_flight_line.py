@@ -18,6 +18,11 @@ Data sources:
   - output/faa_master.csv                    (FAA registration database)
   - output/ACFTREF.txt                       (FAA aircraft type reference)
   - output/adsb_activity.csv                 (ADS-B surveillance activity)
+  - output/flight_schools_enriched.json      (only entries with a "provenance" list: schools
+                                              added late from outside lists by
+                                              57_added_schools.py; they join the directory
+                                              after HTTP recovery, so they cannot change it)
+  - output/added_extract.jsonl               (extractions for those schools, domain embedded)
 
 Output:
   - output/flight_line_base.json             (fleet data, before PDF overlay)
@@ -263,6 +268,42 @@ def build_school_directory():
     return directory, aopa_by_phone, aopa_by_email, aopa_by_name_state, faa_only_schools
 
 
+def add_late_schools(directory):
+    """Schools added after the March build from outside lists (57_added_schools.py).
+
+    They live in flight_schools_enriched.json with a "provenance" list (which list,
+    its record id, date pulled). Each joins the directory under its domain, and its
+    provenance is carried to its flight_line record. Called after HTTP recovery so the
+    March recovery cannot be steered onto them. Returns those without a website, which
+    are emitted with domain "" like FAA-only entities.
+    """
+    path = OUTPUT_DIR / "flight_schools_enriched.json"
+    entries = [e for e in (json.loads(path.read_text()) if path.exists() else []) if e.get("provenance")]
+    no_site = []
+    for e in entries:
+        domain = normalize_domain(e.get("website", ""))
+        rec = {
+            "name": e.get("name", ""),
+            "domain": domain,
+            "aopa_type": "",
+            "aopa_id": "",
+            "locations": [{"airport_id": e["airport_code"], "airport_name": "", "lat": None, "lon": None,
+                           "label": "listed by " + e["provenance"][0]["list"]}] if e.get("airport_code") else [],
+            "contact": {"phone": "", "email": "", "website": e.get("website", ""),
+                        "address": ", ".join(x for x in (e.get("city", ""), e.get("state", "")) if x)},
+            "faa_entities": [],
+            "provenance": e["provenance"],
+        }
+        if not domain:
+            no_site.append(rec)
+        elif domain in directory:
+            sys.exit(f"FAIL late-added school {domain} is already in the directory; 57 should have rejected it")
+        else:
+            directory[domain] = rec
+    print(f"  Late-added schools: {len(entries):,} ({len(no_site):,} without a website)")
+    return no_site
+
+
 # ── Phase 2: Recover HTTP Batch Extractions ──────────────────────
 
 def recover_http_extractions(directory, aopa_by_phone, aopa_by_email, aopa_by_name_state):
@@ -449,6 +490,18 @@ def load_all_extractions(http_recovered):
                 extractions[domain].append(("browser", parsed, ""))
                 browser_count += 1
     print(f"  Browser:   {browser_count:,} results")
+
+    # 3d: late-added schools (57_added_schools.py --merge-extract; domain embedded)
+    added_path = OUTPUT_DIR / "added_extract.jsonl"
+    added_count = 0
+    if added_path.exists():
+        for line in added_path.read_text().splitlines():
+            if line.strip():
+                rec = json.loads(line)
+                if rec.get("domain") and rec.get("data"):
+                    extractions[rec["domain"]].append(("added", rec["data"], rec.get("ts", "")))
+                    added_count += 1
+    print(f"  Added:     {added_count:,} results")
 
     # 3c: HTTP recovered (from Phase 2)
     for domain, content in http_recovered.items():
@@ -740,6 +793,8 @@ def build_flight_line(dry_run=False, diff=False, out_path=None):
         directory, aopa_by_phone, aopa_by_email, aopa_by_name_state
     )
 
+    late_no_site = add_late_schools(directory)
+
     # Phase 3: Load all extractions
     extractions = load_all_extractions(http_recovered)
 
@@ -807,6 +862,8 @@ def build_flight_line(dry_run=False, diff=False, out_path=None):
             "n_number_count": nn_count,
             "adsb_active_count": adsb_active,
         }
+        if dir_entry.get("provenance"):
+            school["provenance"] = dir_entry["provenance"]
         flight_line.append(school)
 
     # Second: directory-only schools (no extraction but have AOPA entry)
@@ -829,6 +886,8 @@ def build_flight_line(dry_run=False, diff=False, out_path=None):
             "n_number_count": 0,
             "adsb_active_count": 0,
         }
+        if dir_entry.get("provenance"):
+            school["provenance"] = dir_entry["provenance"]
 
         # Check if FAA entities have aircraft
         for faa_ent in dir_entry.get("faa_entities", []):
@@ -900,6 +959,15 @@ def build_flight_line(dry_run=False, diff=False, out_path=None):
         }
         flight_line.append(school)
         faa_only_added += 1
+
+    # Fourth: late-added schools with no website (a state license, no site found)
+    for rec in late_no_site:
+        flight_line.append({
+            "name": rec["name"], "domain": "", "aopa_type": "", "aopa_id": "",
+            "locations": rec["locations"], "contact": rec["contact"], "fleet": [],
+            "extraction_sources": [], "fleet_count": 0, "n_number_count": 0,
+            "adsb_active_count": 0, "provenance": rec["provenance"],
+        })
 
     print(f"  Directory-only schools added: {dir_only:,}")
     print(f"  FAA-only schools added: {faa_only_added:,}")
