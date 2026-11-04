@@ -56,6 +56,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--registry", default=None)
     ap.add_argument("--release", default=None)
+    ap.add_argument("--from", dest="first", default=None,
+                    help="first archive day to include (YYYY-MM-DD); default: every ingested day")
     a = ap.parse_args()
     reg_date = a.registry or latest_registry()
     release = a.release or f"v0.1-{date.today():%Y%m%d}"
@@ -74,7 +76,7 @@ def main():
         SELECT day, hex, reg, "type", "desc", pia, ladd, airborne_min, n_airborne, n_legs, n_points,
                last_ground_airport, last_ground_ts, last_ts, ({adsb_pred}) AS has_adsb
         FROM read_parquet('{days_glob}')
-        WHERE day <= current_date - 1
+        WHERE day <= current_date - 1 {f"AND day >= DATE '{date.fromisoformat(a.first)}'" if a.first else ""}
     """)
     window = c.execute("SELECT min(day), max(day), count(DISTINCT day) FROM ad").fetchone()
     # The exact days frozen into this release. Later stages filter on this list, not on

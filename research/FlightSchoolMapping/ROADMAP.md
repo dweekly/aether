@@ -43,6 +43,23 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
 - `flight_line.json` mixes OpenSky-derived activity with AOPA-sourced fields; neither can be
   redistributed, so it must never be published wholesale.
 
+## After the panel
+- Match the FAA Part 141 certificate list (`faa-141-flightschools.csv`, UTF-16, tab-separated)
+  to school records, for a "Part 141" flag.
+- 2023 archive backfill (adsb.lol starts 2023-02-16) and the 2022-07 → 2023-02 gap, which no
+  open source covers.
+- PIA linkage research beyond aggregates (Michel & Strohmeier method), aggregate-only.
+- Normalize multi-year comparisons for receiver growth: a mid-2024 archive day is ~2.2 GB
+  against ~4 GB in late 2026, and OpenSky's GA coverage roughly doubled 2018 → 2022.
+- Automate explorer releases: rebuild and deploy after the daily ingest. Deploying from
+  trogdor needs a Cloudflare API token scoped to the aether-flight Pages project and the
+  aether-public bucket (today wrangler's OAuth login lives only on monster4).
+- The live C172 story still shows school names that came from the AOPA directory, whose
+  terms forbid republication. The open data no longer carries them; the story should
+  switch to names from the schools' own sites.
+- Back up `data/history/` (reduced archive tables) to R2; it is re-derivable from
+  adsb.lol only as long as adsb.lol keeps its releases.
+
 ## Later products
 - **Ask the fleet:** a chat interface, Claude skill or MCP server over the public parquet,
   for questions like "how many operational gyrocopters are there in the US?" Registry plus

@@ -21,12 +21,16 @@ Definitions (kept deliberately literal; see docs/hackers-2026-plan.md):
     on the ground or below LOW_ALT_FT at that end; otherwise it is unknown.
 
 Raw downloads are deleted after a successful write unless --keep-raw.
+--traces DIR skips the download and reduces DIR/traces/*/trace_full_*.json instead
+(make sample uses it on the committed fixtures). AETHER_DATA moves data/ elsewhere.
 
 Usage:
   30_adsblol_history.py 2026-10-22 [--instance auto|prod-0|staging-0] [--keep-raw] [--workers 16]
+  30_adsblol_history.py 2026-10-22 --traces DIR
 
---instance auto (the default) compares the prod-0 and staging-0 releases for the
-day and takes the larger. adsb.lol's own instructions say to ignore a replica
+--instance auto (the default) compares the day's prod-0 and staging-0 releases, plus the
+prod-0tmp and staging-0tmp replicas adsb.lol ran in mid-2025 (the only ones for 2025-05-28
+→ 06-10), and takes the largest. adsb.lol's own instructions say to ignore a replica
 that is significantly smaller (2026-03-24: prod 1,961 MiB vs staging 2,948 MiB).
 """
 
@@ -40,6 +44,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import urllib.error
 import urllib.request
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
@@ -50,10 +55,10 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from airport_index import AirportIndex  # noqa: E402
+from airport_index import AIRPORT_INDEX_VERSION, AirportIndex  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
-HISTORY = ROOT / "data" / "history"
+HISTORY = Path(os.environ.get("AETHER_DATA", ROOT / "data")) / "history"
 WORK = Path(os.environ.get("ADSBLOL_WORK", "/mnt/data/home/dew/scratch/adsblol"))
 
 MAX_GAP_S = 120          # longest gap between airborne points still counted as flying
@@ -127,7 +132,15 @@ def gh_json(url):
 
 def find_release(day, instance):
     tag = f"v{day:%Y.%m.%d}-planes-readsb-{instance}"
-    rel = gh_json(f"https://api.github.com/repos/adsblol/globe_history_{day.year}/releases/tags/{tag}")
+    # A day is published in the repo for the year it was uploaded, so 2025-12-31 lives in
+    # globe_history_2026.
+    for year in (day.year, day.year + 1):
+        try:
+            rel = gh_json(f"https://api.github.com/repos/adsblol/globe_history_{year}/releases/tags/{tag}")
+            break
+        except urllib.error.HTTPError as e:
+            if e.code != 404 or year != day.year:
+                raise
     # Most days are split (.tar.aa, .tar.ab, ...); some, e.g. 2025-01-01, ship one unsplit .tar.
     parts = sorted((a for a in rel["assets"] if a["name"].endswith(".tar") or ".tar." in a["name"]),
                    key=lambda a: a["name"])
@@ -136,19 +149,22 @@ def find_release(day, instance):
     return tag, parts
 
 
+REPLICAS = ("prod-0", "staging-0", "prod-0tmp", "staging-0tmp")
+
+
 def choose_release(day, instance):
     """Return (instance, tag, parts, sizes). 'auto' picks the larger replica."""
     if instance != "auto":
         tag, parts = find_release(day, instance)
         return instance, tag, parts, {instance: sum(a["size"] for a in parts)}
     found = {}
-    for inst in ("prod-0", "staging-0"):
+    for inst in REPLICAS:
         try:
             found[inst] = find_release(day, inst)
         except Exception:  # noqa: BLE001 - a missing replica is normal; both missing raises below
             pass
     if not found:
-        raise RuntimeError(f"{day}: no prod-0 or staging-0 release")
+        raise RuntimeError(f"{day}: no {', '.join(REPLICAS)} release")
     sizes = {inst: sum(a["size"] for a in parts) for inst, (_, parts) in found.items()}
     best = max(sizes, key=lambda i: (sizes[i], i == "prod-0"))
     return best, found[best][0], found[best][1], sizes
@@ -335,17 +351,8 @@ def write_parquet(rows, schema, path):
     os.replace(tmp, path)
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("day")
-    ap.add_argument("--instance", default="auto")
-    ap.add_argument("--keep-raw", action="store_true")
-    ap.add_argument("--workers", type=int, default=16)
-    a = ap.parse_args()
-    day = date.fromisoformat(a.day)
-    t0 = time.time()
-
-    instance, tag, parts, replica_sizes = choose_release(day, a.instance)
+def fetch(day, instance, parts):
+    """Download and unpack one replica; return (asset digests, extract dir)."""
     raw = WORK / f"{day}-{instance}" / "raw"
     ext = WORK / f"{day}-{instance}" / "x"
     download(parts, raw)
@@ -353,6 +360,36 @@ def main():
     if ext.exists():
         shutil.rmtree(ext)
     extract(parts, raw, ext)
+    return digests, ext
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("day")
+    ap.add_argument("--instance", default="auto")
+    ap.add_argument("--keep-raw", action="store_true")
+    ap.add_argument("--workers", type=int, default=16)
+    ap.add_argument("--traces", type=Path, help="reduce this directory's traces/ instead of downloading")
+    a = ap.parse_args()
+    day = date.fromisoformat(a.day)
+    t0 = time.time()
+
+    if a.traces:
+        instance, tag, parts, replica_sizes, digests, ext = "local", f"local:{a.traces.name}", [], {}, {}, a.traces
+    else:
+        instance, tag, parts, replica_sizes = choose_release(day, a.instance)
+        try:
+            digests, ext = fetch(day, instance, parts)
+        except RuntimeError as e:
+            others = sorted((i for i in replica_sizes if i != instance), key=replica_sizes.get, reverse=True)
+            if a.instance != "auto" or not others:
+                raise
+            # A replica can be corrupt upstream (2026-01-29 staging-0 fails to untar); take the other.
+            print(f"{day}: {instance} failed ({e}); trying {others[0]}", file=sys.stderr)
+            shutil.rmtree(WORK / f"{day}-{instance}")
+            instance = others[0]
+            tag, parts = find_release(day, instance)
+            digests, ext = fetch(day, instance, parts)
     t_dl = time.time()
 
     files = sorted(str(p) for p in (ext / "traces").glob("*/trace_full_*.json"))
@@ -370,7 +407,7 @@ def main():
 
     manifest = {
         "day": str(day), "release": tag, "instance": instance, "replica_sizes": replica_sizes,
-        "parser_version": PARSER_VERSION,
+        "parser_version": PARSER_VERSION, "airport_index_version": AIRPORT_INDEX_VERSION,
         "assets": [{"name": p["name"], "size": p["size"], "sha256": digests[p["name"]]} for p in parts],
         "trace_files": len(files), "unreadable_files": skipped,
         "us_aircraft": len(rows), "legs": len(legs),
@@ -383,7 +420,7 @@ def main():
     mpath.write_text(json.dumps(manifest, indent=2) + "\n")
     print(json.dumps(manifest))
 
-    if not a.keep_raw:
+    if not a.keep_raw and not a.traces:
         shutil.rmtree(WORK / f"{day}-{instance}")
 
 

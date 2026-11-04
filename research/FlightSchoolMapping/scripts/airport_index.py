@@ -20,6 +20,12 @@ from scipy.spatial import cKDTree
 
 EARTH_RADIUS_NM = 3440.065
 DEFAULT_CSV = Path(__file__).resolve().parent.parent / "data" / "ourairports_airports.csv"
+# Bump when matching rules change; 32_reassign_airports.py brings old days up to date.
+AIRPORT_INDEX_VERSION = 2
+
+# Lower wins when candidates are within the ambiguity window of each other.
+TYPE_RANK = {"large_airport": 0, "medium_airport": 0, "small_airport": 0,
+             "seaplane_base": 1, "balloonport": 2, "heliport": 3}
 INCLUDED_TYPES = {
     "large_airport", "medium_airport", "small_airport",
     "heliport", "seaplane_base", "balloonport",
@@ -77,20 +83,52 @@ class AirportIndex:
         self.tree = cKDTree(_unit(self.lats, self.lons))
 
     def nearest(self, lat, lon, max_nm=3.0, ambiguity_nm=0.5):
-        """Nearest airport within max_nm, or None.
+        """Best airport within max_nm, or None.
 
-        ambiguous=True when the runner-up is within ambiguity_nm of the winner,
-        e.g. an airport with an on-field heliport.
+        Among candidates within ambiguity_nm of the nearest, a runway airport
+        beats a heliport, seaplane base or balloonport: a Cessna doing
+        touch-and-goes at Schaumburg (06C) is otherwise matched to Clarke
+        Heliport (LL95), 0.2 nm away. ambiguous=True when another candidate of
+        the same rank is also inside that window.
         """
-        dist, idx = self.tree.query(_unit([lat], [lon])[0], k=2)
+        dist, idx = self.tree.query(_unit([lat], [lon])[0], k=8)
         nm = chord_to_nm(dist)
         if nm[0] > max_nm:
             return None
-        i = int(idx[0])
+        window = [(float(d), int(i)) for d, i in zip(nm, idx) if d - nm[0] < ambiguity_nm and d <= max_nm]
+        best_rank = min(TYPE_RANK.get(self.types[i], 9) for _, i in window)
+        top = [(d, i) for d, i in window if TYPE_RANK.get(self.types[i], 9) == best_rank]
+        d, i = top[0]
         return Match(
             ident=self.idents[i],
             name=self.names[i],
             type=self.types[i],
-            distance_nm=float(nm[0]),
-            ambiguous=bool(nm[1] - nm[0] < ambiguity_nm),
+            distance_nm=d,
+            ambiguous=len(top) > 1,
         )
+
+
+def canonical_ids(csv_path=DEFAULT_CSV):
+    """Map every identifier form to the one AirportIndex reports, plus metadata.
+
+    Returns (alias, meta): alias maps ident / gps_code / local_code / "K"+local_code
+    (the form school websites often use, e.g. K7S3 for 7S3) to the index identifier;
+    meta maps that identifier to (name, municipality, iso_region, type). Local codes
+    collide across countries (A11 is both an Alaskan seaplane base and an Australian
+    strip), so US records win every collision.
+    """
+    alias, meta = {}, {}
+    rows = []
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if r["type"] in INCLUDED_TYPES:
+                rows.append(r)
+    rows.sort(key=lambda r: r["iso_country"] != "US")  # US first, so setdefault keeps US records
+    for r in rows:
+        canon = r["gps_code"] or r["local_code"] or r["ident"]
+        meta.setdefault(canon, (r["name"], r["municipality"], r["iso_region"], r["type"]))
+        for code in (canon, r["ident"], r["gps_code"], r["local_code"],
+                     "K" + r["local_code"] if len(r["local_code"]) == 3 else ""):
+            if code:
+                alias.setdefault(code.upper(), canon)
+    return alias, meta

@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<BaseLayout title="Flight schools | Aether Flight"
+	description="Search US flight schools and flying clubs by name, airport or state; see which of their aircraft actually fly.">
+	<Header />
+	<main class="schools">
+		<h1>Flight schools and clubs</h1>
+		<p class="lede">Fleets from the schools' own websites and the FAA registry, with every aircraft checked against open ADS-B data.</p>
+		<input id="q" type="search" placeholder="Name, airport (KPAO) or state (CA)" autocomplete="off" />
+		<p id="count" class="dim"></p>
+		<ol id="list"></ol>
+	</main>
+	<Footer />
+</BaseLayout>
+
+<script>
+	type Row = [string, string, string | null, string | null, string | null, number, number];
+	const list = document.getElementById('list')!;
+	const count = document.getElementById('count')!;
+	const q = document.getElementById('q') as HTMLInputElement;
+	const esc = (s: any) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+	let rows: Row[] = [];
+
+	function render() {
+		const t = q.value.trim().toLowerCase();
+		const hits = !t ? rows : rows.filter((r) =>
+			r[1].toLowerCase().includes(t) || (r[2] || '').toLowerCase() === t || (r[2] || '').toLowerCase() === 'k' + t ||
+			(r[4] || '').toLowerCase() === t || (r[3] || '').toLowerCase().includes(t) || r[0].includes(t));
+		count.textContent = `${hits.length.toLocaleString()} of ${rows.length.toLocaleString()}, busiest first`;
+		list.innerHTML = hits.slice(0, 200).map((r) => `
+			<li><a href="/explore/school/${encodeURIComponent(r[0])}/"><strong>${esc(r[1])}</strong>
+			<span>${esc([r[2], r[3], r[4]].filter(Boolean).join(' · '))}</span>
+			<span class="n">${r[6]}/${r[5]} flying</span></a></li>`).join('');
+	}
+
+	fetch('/x/schools.json').then((r) => r.json()).then((d) => {
+		rows = d;
+		const p = new URLSearchParams(location.search).get('q');
+		if (p) q.value = p;
+		render();
+	});
+	q.addEventListener('input', render);
+</script>
+
+<style is:global>
+	.schools { position: relative; z-index: 1; max-width: 72ch; margin: 0 auto; padding: 2rem 1rem 4rem; }
+	.schools h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(2rem, 6vw, 3rem); color: var(--text-bright); margin: 1rem 0 .5rem; }
+	.schools .lede, .schools .dim { color: var(--text-dim); font-size: .8rem; }
+	.schools input { width: 100%; font: inherit; font-size: 1rem; padding: .7rem .8rem; margin: 1rem 0 .5rem; background: var(--bg-card); color: var(--text-bright); border: 1px solid var(--line); }
+	.schools ol { list-style: none; }
+	.schools li a { display: grid; grid-template-columns: 1fr auto; gap: .1rem .75rem; padding: .6rem 0; border-bottom: 1px solid var(--line); color: var(--text); text-decoration: none; }
+	.schools li strong { color: var(--text-bright); font-weight: 400; }
+	.schools li span { color: var(--text-dim); font-size: .72rem; grid-column: 1; }
+	.schools li .n { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+</style>

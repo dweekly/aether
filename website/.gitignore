@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Explorer release data, synced from trogdor (scripts/sync_explorer_data.sh)
+public/x/
+src/data/explore/

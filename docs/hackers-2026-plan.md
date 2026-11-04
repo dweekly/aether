@@ -29,6 +29,43 @@ reproducible, and if the story's numbers survive a skeptical audience. The bigge
 (Codex) is publishing confident explanations the data cannot establish, so every claim is
 phrased as "observed / not observed by this network in this window".
 
+## Progress (updated 2026-10-24, 18:25 PT)
+
+Live: [aether-flight.com/explore](https://aether-flight.com/explore/), release `v0.3-20261023`:
+the last 12 months, 363 archive days (2025-10-23 → 2026-10-22; 2026-05-05 and 05-06 are an
+upstream outage). Tail lookup with recent flights and last parked position; 2,470 school pages;
+1,808 airport pages; downloads at /explore/data/ (`latest.json` → v0.3-20261023); ATC
+flight-strip design.
+
+| Item | State |
+|---|---|
+| Ingest | Daily cron + checker live. 2024-01-01 → 2026-10-22 ingested (1,025 days); only 2026-05-05 (both replicas near-empty) and 05-06 (MLAT-only) are missing upstream. OpenSky Mondays: all 257 (2017-06-05 → 2022-06-27) reduced to internal tables |
+| Reviews | Stack #5 → #6 → #7 → #8. **#5 merged.** **#6 escalated** after round 2 (3 small defects, all fixed with fixtures); waiting on David: Bug Me ticket `t-x6fpq9bv`. #7 and #8 shipped in round 2. Commits after #8's approval (release `--from`, last-parked fix, fact sheet, OpenSky layout fix carried over from the old branch) get an advisory Codex pass |
+| Findings | [Fact sheet](hackers-2026-facts.md), generated from v0.3-20261023 (12 months): 54% of the registry heard; 169,344 heard broadcasting ADS-B, 98% of the FAA's equipped count; gyroplanes 178 of 431; 1940s-built pistons 17% heard vs 2020s 88%; home base for 54% of aircraft that flew, 80% correct (n=2,681); weekday routine no better than baseline; 15,214 LADD aircraft visible; 372 training operations missing from our list; of the 146,326 silent, 14,007 heard by adsb.lol in 2024–25, 8,071 only on an OpenSky Monday 2017–22, 124,248 in neither (the Monday sample catches 74% of today's fliers) |
+| Talk kit | Charts in `docs/hackers-2026-charts/` (`45_talk_charts.py`); a designed, private briefer of the fact sheet plus charts for David's phone: https://claude.ai/artifact/J9b9xyH325Le5TL5Ch7Yoe |
+| Live map | A link to adsb.lol, not a frame: its bot check fails inside a cross-site iframe (tested 2026-10-23) |
+| Gates (2026-10-24) | **Archive vs snapshots** (`check_history_vs_snapshots.py`): PASS on all four fixed dates, 98.6–98.7% of snapshot-seen US addresses; negative control (a year-shifted archive) fails at 45.8%. **`make history-status`**: 60 of 60 days complete; across the 12-month release three days are short upstream (2026-05-07, 08-12, 08-13, named in the fact sheet). **Status checker**: `CHECK_TEST=1` delivers to ntfy and Mailgun test mode. **Explorer budget** (Chromium, 390×844, 150 ms RTT, 1.6 Mbps, 4× CPU, cold cache): landing 0.3 s; cold tail lookup 1.5 s and 137–149 kB, down from 2.5 s after splitting crowded shards; not yet run on real iOS Safari or Android Chrome. **`make sample`**: fresh clone, install and run in 17 s on monster4 and on trogdor; 101 adsb.lol traces and a 317-row registry slice, checked against `sample/expected.json`; a wrong expectation exits 1. Reduced archive and OpenSky tables backed up to R2 nightly (07:15 UTC), checksum-verified |
+| Question for David | OpenSky's data license (`states/LICENSE.txt`, section 1) covers non-profit research and education; the site names Primatech Paper Co LLC. Does a count on a conference slide fit? If not, section 5 drops its OpenSky line and the chart its middle bar |
+| Open repo | After the stack merges. Procedure below (rename to `aether-private`, fresh public `aether`) |
+
+## Opening the repo (David chose "scrub and open aether", 2026-10-23)
+
+GitHub keeps pull-request refs (#2, #4–#8) and old commit SHAs reachable on the existing repo, so
+rewriting history in place and flipping it public would still expose the old commits. Instead:
+
+1. Mirror backup of the current repo (bundle to trogdor and R2), verified with `git bundle verify`.
+2. Rename `dweekly/aether` → `dweekly/aether-private`. It stays private with full history, PRs,
+   drafts, the IP folder and every committed output.
+3. Filter a fresh clone of `main` with `git filter-repo`: drop `drafts/`, `ip/`, `prd.md`, the root
+   `README.md` history (a new public README is added), `docs/wt/`,
+   `research/FlightSchoolMapping/output/`, `research/FlightSchoolMapping/data/adsb/`, and the C172
+   story data (AOPA-sourced names); `--replace-text` the three AOPA public web tokens; rewrite the
+   two commit messages that mention the patent application number and a partner.
+4. `gitleaks` over the full filtered history must be clean, plus a grep for the token prefixes,
+   names from the drafts, and the application number (dry run on 2026-10-23: clean).
+5. Create a new public `dweekly/aether`, push the filtered `main` only, update local and trogdor
+   remotes, and point future work at it. Private material is edited in `aether-private` from then on.
+
 ## The product and the findings
 
 **One URL, three layers.** The QR code opens a landing page.
@@ -41,17 +78,18 @@ phrased as "observed / not observed by this network in this window".
 
 **The school page is the hero view** (David, 2026-10-23). Look up a school and get one
 consistent, structured record:
-- **In the air now:** embed adsb.lol's own tar1090 map, filtered to the school's fleet
-  (David's idea, 2026-10-23). We relay nothing, and the map loads from adsb.lol's viewer
-  data, not the rate-limited `/v2` API.
+- **In the air now:** a link that opens adsb.lol's own tar1090 map, filtered to the
+  school's fleet (David's idea, 2026-10-23). We relay nothing, and the map loads from
+  adsb.lol's viewer data, not the rate-limited `/v2` API.
   - The URL, per tar1090's README-query.md:
     `https://adsb.lol/?icaoFilter=hex1,hex2,…&hideSideBar&hideButtons&zoom=…`
   - The same parameters give the privacy demo: `filterDbFlag=pia,ladd` shows every
     PIA- and LADD-flagged aircraft live.
-  - Framing is **unverified**. adsb.lol's docs site sends `X-Frame-Options: SAMEORIGIN`
-    (`adsblol/website/layouts/index.headers`), but that may not cover the map, and our IP
-    got 403 while over its cap. Test from a browser on another network. If framing is
-    blocked, the page shows an "Open live map" link with the same parameters.
+  - A link, not a frame. adsb.lol puts the map behind a JavaScript bot check that sets a
+    cookie. Tested 2026-10-23 in Chromium (Playwright) from a page on another origin: the
+    check passes at top level, but inside a cross-site iframe it fails with "challenge
+    cookies not found", even after the same browser had passed it at top level, since the
+    frame's cookie is a third-party one. Revisit only if adsb.lol offers an embed mode.
   - Not via `/v2/hex` from our page. That API caps each IP
     (`x-ratelimit-limit: 500, 4;w=1, 60;w=60, 500;w=86400`), and a room of phones behind
     one venue NAT would share it. A Worker relay is no fix either: adsb.lol PR #63 notes

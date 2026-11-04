@@ -1,0 +1,179 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ExploreSearch from '../../components/ExploreSearch.astro';
+---
+
+<BaseLayout title="Aircraft lookup | Aether Flight"
+	description="Registration, activity, home base and last parked position for a US-registered aircraft, from open data.">
+	<Header />
+	<main class="tail">
+		<ExploreSearch />
+		<div id="out" aria-live="polite"><p class="dim">Loading…</p></div>
+		<p class="attrib">Contains information from <a href="https://github.com/adsblol/globe_history_2026">adsb.lol</a>, made
+			available under the <a href="https://opendatacommons.org/licenses/odbl/1-0/">ODbL</a>. Registration data: FAA
+			Releasable Aircraft Registry (public domain). <a href="/explore/">About this data</a>.</p>
+	</main>
+	<Footer />
+</BaseLayout>
+
+<script>
+	type Rec = Record<string, any>;
+	const out = document.getElementById('out')!;
+	const esc = (s: any) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+	const fmt = (n: number) => (n ?? 0).toLocaleString('en-US');
+
+	// Shards are keyed by the 3 characters after "N". A crowded key is split into parts,
+	// chosen by the 4th character (35_export_web.py part_of and SPLIT_CHARS).
+	const SPLIT_CHARS = '_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	function key(n: string, depth: number) {
+		const s = n.slice(1, 1 + depth);
+		return s + '_'.repeat(depth - s.length);
+	}
+
+	function activityStrip(hist: number[][], days: string[]) {
+		const w = 600, h = 60, n = days.length;
+		const max = Math.max(60, ...hist.map((d) => d[1]));
+		const bw = w / n;
+		const bars = hist.map(([i, m]) => {
+			const bh = Math.max(2, (m / max) * (h - 4));
+			return `<rect x="${(i * bw).toFixed(2)}" y="${(h - bh).toFixed(2)}" width="${Math.max(bw - 0.5, 0.8).toFixed(2)}" height="${bh.toFixed(2)}"><title>${days[i]}: ${m} min</title></rect>`;
+		}).join('');
+		return `<svg class="strip" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="Minutes airborne per day">${bars}</svg>
+			<div class="strip-axis"><span>${days[0]}</span><span>${days[n - 1]}</span></div>`;
+	}
+
+	function status(r: Rec, lastDay: string) {
+		if (r.cls === 'not_observed') return ['ghost', 'Not heard'];
+		// "Flew" needs an airborne observation; a transponder heard on the ground is only "heard".
+		if (!r.lastFlew) return [r.cls === 'other_only' ? 'other' : 'seen', `Heard ${r.last.slice(5)}, not airborne`];
+		const ageDays = (Date.parse(lastDay) - Date.parse(r.lastFlew)) / 86400000;
+		return ageDays <= 7 ? ['active', 'Flew this week'] : ['seen', `Last flew ${r.lastFlew.slice(5)}`];
+	}
+
+	async function main() {
+		const params = new URLSearchParams(location.search);
+		const n = (params.get('n') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+		if (!n) { out.innerHTML = '<p class="dim">Enter an N-number above.</p>'; return; }
+		const input = document.getElementById('tail-input') as HTMLInputElement | null;
+		if (input) input.value = n;
+		document.title = `${n} | Aether Flight`;
+
+		const idx = await fetch('/x/index.json').then((r) => {
+			if (!r.ok) throw new Error(`index HTTP ${r.status}`);
+			return r.json();
+		});
+		// A shard missing from the index means no registered N-number starts this way; any
+		// other failure is a loading error, never evidence that the aircraft is unregistered.
+		// Only airports with a generated page (>= 5 based aircraft) get links.
+		const airportIds = new Set<string>(
+			await fetch('/x/airports.json').then((r) => (r.ok ? r.json() : [])).then((rows: any[]) => rows.map((x) => x[0])).catch(() => []));
+		const aptLink = (x: string | null) => !x ? null : airportIds.has(x) ? `<a href="/explore/airport/${esc(x)}/">${esc(x)}</a>` : esc(x);
+		let shard: Record<string, Rec> = {};
+		const k3 = key(n, 3);
+		if (idx.shards.includes(k3)) {
+			const parts = idx.split?.[k3];
+			const file = parts ? `${k3}-${Math.max(SPLIT_CHARS.indexOf(key(n, 4)[3]), 0) % parts}` : k3;
+			const resp = await fetch(`/x/t/${file}.json`);
+			if (!resp.ok) throw new Error(`data HTTP ${resp.status}`);
+			shard = await resp.json();
+		}
+		const r: Rec | undefined = shard[n];
+		const days: string[] = idx.days;
+		const win = idx.results.window;
+		if (!r) {
+			out.innerHTML = `<h1>${esc(n)}</h1><p>Not on the FAA registry snapshot of ${esc(idx.results.registry_date)}.
+				It may be deregistered, reserved, or mistyped. <a href="https://registry.faa.gov/AircraftInquiry/Search/NNumberResult?nNumberTxt=${esc(n.slice(1))}">Check the FAA registry</a>.</p>`;
+			return;
+		}
+		const [cls, label] = status(r, win.last_day);
+		const title = [r.yr, r.mfr, r.model].filter(Boolean).join(' ');
+		const live = `https://adsb.lol/?icao=${esc(r.hex)}&zoom=11`;
+		const park = r.park
+			? `<a href="https://www.openstreetmap.org/?mlat=${r.park.lat}&mlon=${r.park.lon}#map=17/${r.park.lat}/${r.park.lon}">${esc(r.park.apt || 'map')}</a> ${esc(r.park.day.slice(5))}`
+			: '—';
+		out.innerHTML = `
+			<div class="fps fps-tail ${cls}" role="group" aria-label="Flight strip for ${esc(r.n)}">
+				<div class="f-id"><span class="f-k">Registration</span><h1 class="f-v">${esc(r.n)}</h1><span class="f-sub">${esc(title)}</span></div>
+				<div><span class="f-k">Status</span><span class="f-v">${esc(label)}</span></div>
+				<div><span class="f-k">Home</span><span class="f-v">${aptLink(r.home) || '—'}</span><span class="f-sub">${r.home ? Math.round(r.homeShare * 100) + '% of nights' : 'too few nights'}</span></div>
+				<div><span class="f-k">Parked</span><span class="f-v">${park}</span></div>
+				<div><span class="f-k">Airborne</span><span class="f-v">${fmt(r.airDays)} d · ${fmt(r.hrs)} h</span><span class="f-sub">of ${win.days} days</span></div>
+			</div>
+			<p class="flags">
+				${r.valid ? '' : `<span class="chip warn">${esc(r.statusLabel || 'Registration status ' + r.status)}</span>`}
+				${r.ladd ? '<span class="chip flag">On the FAA LADD list</span>' : ''}
+				${r.pia ? '<span class="chip flag">Seen using a PIA address</span>' : ''}
+			</p>
+			${r.hist && r.hist.length ? `<section><h2>Minutes airborne per day</h2>${activityStrip(r.hist, days)}</section>` : ''}
+			${r.recent && r.recent.length ? `<section><h2>Recent flights</h2>
+				<ol class="legs">${r.recent.map(([i, dep, arr, m]: any[]) => {
+					const apt = (x: string | null) => aptLink(x) || '<span class="unk" title="not seen near an airport">?</span>';
+					return `<li><span class="d">${esc(days[i].slice(5))}</span><span class="r">${apt(dep)} → ${apt(arr)}</span><span class="m">${m ? m + ' min' : '—'}</span></li>`;
+				}).join('')}</ol>
+				<p class="dim small">"?" means the leg started or ended where no receiver saw the aircraft low near an airport.</p></section>` : ''}
+			<section class="actions">
+				<a class="btn" href="${live}" target="_blank" rel="noopener">Live map on adsb.lol ↗</a>
+				<a class="btn ghost" href="https://registry.faa.gov/AircraftInquiry/Search/NNumberResult?nNumberTxt=${esc(r.n.slice(1))}" target="_blank" rel="noopener">FAA registry record ↗</a>
+			</section>
+			<section><h2>Registration</h2>
+				<dl>
+					<dt>Registrant</dt><dd>${esc(r.owner)} (${esc(r.regType || '')})</dd>
+					<dt>Location</dt><dd>${esc([r.city, r.st].filter(Boolean).join(', '))}</dd>
+					<dt>Type</dt><dd>${esc(r.type || '')}${r.eng ? ', ' + esc(r.eng) : ''}${r.seats ? ', ' + r.seats + ' seats' : ''}</dd>
+					<dt>Mode S</dt><dd><code>${esc(r.hex)}</code></dd>
+					<dt>Expires</dt><dd>${esc(r.exp ? `${r.exp.slice(0, 4)}-${r.exp.slice(4, 6)}-${r.exp.slice(6, 8)}` : '—')}</dd>
+				</dl>
+			</section>
+			<p class="dim small">Window: ${esc(win.first_day)} → ${esc(win.last_day)}. First seen ${esc(r.first || '—')}, last seen ${esc(r.last || '—')}.
+				"Not observed" means adsb.lol received nothing from this aircraft's assigned address in the window; it does not prove the aircraft did not fly.</p>`;
+	}
+	main().catch((e) => { out.innerHTML = `<p class="dim">Could not load data (${esc(e.message)}).</p>`; });
+</script>
+
+<style is:global>
+	.tail { position: relative; z-index: 1; max-width: 72ch; margin: 0 auto; padding: 2rem 1rem 4rem; }
+	.tail .fps-tail { margin-top: 2rem; grid-template-columns: 2fr 1.5fr .9fr 1.1fr 1.3fr; }
+	.tail .fps a { color: var(--strip-ink); }
+	.tail .fps-tail h1.f-v { font-family: var(--font-mono); font-size: clamp(1.9rem, 8vw, 2.6rem); font-weight: 600; line-height: 1.05; letter-spacing: .01em; }
+	.tail .fps .f-sub { display: block; font-size: .62rem; color: var(--strip-dim); margin-top: .1rem; }
+	@media (max-width: 640px) {
+		.tail .fps-tail { grid-template-columns: 1fr 1fr; }
+		.tail .fps-tail .f-id { grid-column: 1 / -1; }
+	}
+	.tail .flags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; }
+	.tail h2 { font-family: var(--font-display); font-weight: 400; font-size: 1.3rem; color: var(--text-bright); margin: 2rem 0 .75rem; }
+	.tail .model { color: var(--text); margin: .4rem 0 .8rem; }
+	.tail .chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+	.tail .chip { font-size: .7rem; padding: .2rem .55rem; border: 1px solid var(--line); color: var(--text); }
+	.tail .chip.active { border-color: #5f8f6f; color: #a8d4b4; }
+	.tail .chip.seen { border-color: var(--accent); }
+	.tail .chip.ghost { border-color: #8f6f5f; color: #d4b4a8; }
+	.tail .chip.other { border-color: #7b6f9e; color: #c4b8e0; }
+	.tail .chip.ok { color: var(--text-dim); }
+	.tail .chip.warn { border-color: #9e8a5f; color: #e0cfa0; }
+	.tail .chip.flag { border-color: #9e7b8a; color: #e0b8c8; }
+	.tail .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: .75rem; margin-top: 1.5rem; }
+	.tail .grid div { border: 1px solid var(--line); background: var(--bg-card); padding: .8rem; display: flex; flex-direction: column; gap: .15rem; }
+	.tail .k { color: var(--text-dim); font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; }
+	.tail .v { font-family: var(--font-display); font-size: 1.8rem; color: var(--text-bright); line-height: 1.1; }
+	.tail .v.small { font-family: var(--font-mono); font-size: .85rem; }
+	.tail .s { color: var(--text-dim); font-size: .7rem; }
+	.tail .strip { width: 100%; height: 60px; display: block; background: var(--bg-card); }
+	.tail .strip rect { fill: var(--chart-highlight); }
+	.tail .strip-axis { display: flex; justify-content: space-between; color: var(--text-dim); font-size: .65rem; margin-top: .25rem; }
+	.tail .legs { list-style: none; font-size: .8rem; }
+	.tail .legs li { display: grid; grid-template-columns: 3.4rem 1fr auto; gap: .75rem; padding: .35rem 0; border-bottom: 1px solid var(--line); }
+	.tail .legs .d, .tail .legs .m { color: var(--text-dim); }
+	.tail .legs .unk { color: var(--text-dim); }
+	.tail .actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
+	.tail .btn { padding: .6rem .9rem; background: var(--accent); color: var(--bg); text-decoration: none; font-size: .8rem; }
+	.tail .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+	.tail dl { display: grid; grid-template-columns: 7rem 1fr; gap: .35rem .75rem; font-size: .85rem; }
+	.tail dt { color: var(--text-dim); }
+	.tail .dim { color: var(--text-dim); }
+	.tail .small { font-size: .75rem; margin-top: 1.5rem; }
+	.tail .attrib { color: var(--text-dim); font-size: .7rem; margin-top: 2.5rem; }
+	.tail a { color: var(--chart-highlight); }
+</style>
