@@ -164,6 +164,7 @@ def november_attempts(rec):
                 s = "ok"
             att[norm_domain(a.get("domain") or a.get("website", ""))].append(
                 {"crawler": crawler, "status": s, "code": code, "final_domain": a.get("final_domain", ""),
+                 "website": a.get("website", ""),
                  "error": a.get("error", ""), "kind": error_kind(a.get("error")) if s == "unreachable" else ""})
     for a in jsonl(rec / "expansion_crawl.jsonl"):
         s = a.get("status", "")
@@ -171,7 +172,7 @@ def november_attempts(rec):
         status = "ok" if s == "done" else http_kind(code or int(s[5:])) if s.startswith("http_") else "unreachable"
         err = "; ".join(a.get("errors", []))
         att[norm_domain(a.get("domain", ""))].append(
-            {"crawler": "expansion", "status": status, "code": code,
+            {"crawler": "expansion", "status": status, "code": code, "website": "",
              "final_domain": norm_domain(a.get("final_url", "")), "error": err,
              "kind": error_kind(err) if status == "unreachable" else ""})
     return att
@@ -273,7 +274,9 @@ def load_month(runs, model):
                 continue
             d = index[cid]["domain"].lower()
             e = doms.setdefault(d, {"tails": defaultdict(list), "fields": defaultdict(list), "types": [],
-                                    "pages": set(), "text": []})
+                                    "pages": set(), "text": [], "urls": set()})
+            e["urls"] |= {pg["url"].lower().rstrip("/").replace("http://", "https://").replace("://www.", "://")
+                          for pg in index[cid].get("pages", [])}
             body = pages_part(users[cid])
             e["pages"].add(hashlib.sha256(body.encode()).hexdigest())
             e["text"].append(body)
@@ -294,6 +297,12 @@ def load_month(runs, model):
             e["text"] = "\n".join(e["text"])
         out[p] = doms
     return out, counts
+
+
+def tail_on_page(tail, text):
+    """Is the N-number written on the page text (N172SP, N-172SP or N 172SP, any case)?"""
+    pat = r"(?<![A-Za-z0-9])N[\s-]?" + re.escape(tail[1:]) + r"(?![A-Za-z0-9])"
+    return re.search(pat, text, re.I) is not None
 
 
 def one(values):
@@ -404,6 +413,12 @@ def main():
         for x in jsonl(retry_path):
             retry[norm_domain(x.get("domain") or x.get("website", ""))] = x
     attempted = {d for d in march_domains if d in att}
+    first_http = min(x["ts"] for x in jsonl(a.recrawl / "crawl_attempts_http.jsonl") if x.get("ts"))
+    retry_gap_h = None
+    if retry:
+        from datetime import datetime
+        first_retry = min(x["ts"] for x in retry.values() if x.get("ts"))
+        retry_gap_h = round((datetime.fromisoformat(first_retry) - datetime.fromisoformat(first_http)).total_seconds() / 3600, 1)
     coverage = len(attempted) / len(march_domains)
     gates["coverage"] = {"march_domains": len(march_domains), "attempted": len(attempted),
                          "share": round(coverage, 4), "min": MIN_COVERAGE, "pass": coverage >= MIN_COVERAGE}
@@ -411,8 +426,8 @@ def main():
     nst = {d: best(att[d]) for d in attempted}
     R["status_march"] = dict(Counter(mst.get(d, "not_recorded") for d in march_domains))
     R["status_november"] = dict(Counter(nst[d]["status"] for d in attempted))
-    alive_march = [d for d in attempted if mst.get(d) == "ok"]
-    died, died_kinds, died_examples = [], Counter(), []
+    alive_march = sorted(d for d in attempted if mst.get(d) == "ok")
+    died, died_kinds, died_examples, page_moved = [], Counter(), [], 0
     for d in alive_march:
         b = nst[d]
         if b["status"] not in ("unreachable", "http_error"):
@@ -420,6 +435,9 @@ def main():
         r = retry.get(d)
         if r is not None and r.get("status") is not None and r["status"] < 400:
             continue  # came back on the retry: transient
+        if b["status"] == "http_error" and urlparse(b.get("website", "")).path.strip("/"):
+            page_moved += 1  # the school's page under a larger site (a university, say) moved
+            continue
         kind = b["kind"] if b["status"] == "unreachable" else f"http_{b['code']}"
         died.append(d)
         died_kinds[kind] += 1
@@ -456,7 +474,8 @@ def main():
         "http_targets_without_attempt_line_list": unlogged}
     R["sites"] = {"march_domains": len(march_domains), "attempted": len(attempted),
                   "alive_in_march": len(alive_march), "died": len(died), "died_by_reason": dict(died_kinds),
-                  "died_examples": died_examples, "retried": len(retry),
+                  "died_examples": died_examples, "retried": len(retry), "page_moved": page_moved,
+                  "crawl_started": first_http, "retry_hours_after_start": retry_gap_h,
                   "newly_blocked": sum(newly_blocked.values()), "newly_blocked_by_code": dict(newly_blocked),
                   "blocked_now_reached_in_march_only_by_stealth_browser": blocked_browser_only,
                   "redirect_away_new": len(redirected), "redirect_away_same_as_march": already,
@@ -491,10 +510,12 @@ def main():
 
     # Fleets, per school, over the passes the school has in both months.
     fleet = {"schools": 0, "schools_with_tails": 0, "unchanged": 0, "changed": 0, "added": 0, "removed": 0,
-             "kept": 0, "tails_march": 0, "tails_november": 0}
+             "kept": 0, "tails_march": 0, "tails_november": 0,
+             "added_absent_from_march_pages": 0, "removed_absent_from_november_pages": 0,
+             "removed_absent_where_every_march_page_refetched": 0, "schools_every_march_page_refetched": 0}
     control = {"schools": 0, "schools_with_tails": 0, "changed": 0, "added": 0, "removed": 0, "kept": 0}
     per_school = []
-    pairs, pairs_verbatim, pairs_ctrl, ambiguous = [], [], [], 0
+    pairs, pairs_verbatim, pairs_strict, pairs_ctrl, ambiguous = [], [], [], [], 0
     pair_rows = []
     fields = {f: [] for f in NEW_FIELDS}
     fields_ctrl = {f: [] for f in NEW_FIELDS}
@@ -522,6 +543,14 @@ def main():
             elif not identical:
                 fleet["unchanged"] += 1
             if not identical:
+                text_m = "\n".join(mar[p][d]["text"] for p in ps)
+                text_n = "\n".join(nov[p][d]["text"] for p in ps)
+                fleet["added_absent_from_march_pages"] += sum(1 for t in add if not tail_on_page(t, text_m))
+                gone = sum(1 for t in rem if not tail_on_page(t, text_n))
+                fleet["removed_absent_from_november_pages"] += gone
+                if all(mar[p][d]["urls"] <= nov[p][d]["urls"] for p in ps):
+                    fleet["schools_every_march_page_refetched"] += 1
+                    fleet["removed_absent_where_every_march_page_refetched"] += gone
                 fleet["tails_march"] += len(tm)
                 fleet["tails_november"] += len(tn)
                 per_school.append({"domain": d, "march": len(tm), "november": len(tn),
@@ -544,10 +573,16 @@ def main():
                 else:
                     pairs.append((vm, vn))
                     verb = on_page(vm, mar[p][d]["text"]) and on_page(vn, nov[p][d]["text"])
+                    # Strict: each month's rate is on its own page and not on the other month's,
+                    # so the move cannot be the model picking a different one of two posted rates.
+                    strict = verb and (vm == vn or (not on_page(vm, nov[p][d]["text"])
+                                                    and not on_page(vn, mar[p][d]["text"])))
                     if verb:
                         pairs_verbatim.append((vm, vn))
+                    if strict:
+                        pairs_strict.append((vm, vn))
                     pair_rows.append({"domain": d, "tail": t, "pass": p, "march": vm, "november": vn,
-                                      "verbatim": verb})
+                                      "verbatim": verb, "strict": strict})
                 break
         for f in NEW_FIELDS:
             for p in ps:
@@ -569,6 +604,7 @@ def main():
     big = sorted(per_school, key=lambda r: -(r["added"] + r["removed"]))[:10]
     R["fleet_biggest_changes"] = big
     R["prices"] = {"all": change_stats(pairs), "verbatim_on_both_pages": change_stats(pairs_verbatim),
+                   "strict_old_rate_gone_new_rate_new": change_stats(pairs_strict),
                    "control_identical_pages": change_stats(pairs_ctrl), "ambiguous_skipped": ambiguous}
     R["new_fields"] = {f: change_stats(v) for f, v in fields.items()}
     R["new_fields_control_identical_pages"] = {f: change_stats(v) for f, v in fields_ctrl.items()}
@@ -619,6 +655,21 @@ def render(R):
         "Workstream 3 of [the research plan](hackers-2026-research-plan.md). Every number below comes from",
         f"that script's run, which {'passed' if R['all_gates_pass'] else '**failed**'} its gates.",
         "",
+        f"> **Headline.** Of {s['alive_in_march']:,} flight-school sites a crawler reached in March, {s['died']:,}"
+        f" ({s['died'] / s['alive_in_march'] * 100:.1f}%) could not be reached in November, {s['newly_blocked']:,} more"
+        f" now refuse the crawler, {s['redirect_away_new']:,} redirect to another domain and {s['newly_defunct']:,}"
+        f" read as parked or closed. For the same tail at the same school, with each month's rate on its own page"
+        f" and not the other's ({pr['strict_old_rate_gone_new_rate_new']['n']:,} pairs), "
+        f"{pct(pr['strict_old_rate_gone_new_rate_new']['share_up'])} of hourly rates went up,"
+        f" {pct(pr['strict_old_rate_gone_new_rate_new']['share_down'])} down and"
+        f" {pct(pr['strict_old_rate_gone_new_rate_new']['share_flat'])} stayed put; where a rate moved, the median"
+        f" move was {pr['strict_old_rate_gone_new_rate_new']['median_change_pct_when_changed']:+.1f}%.",
+        "",
+        f"> **Read with care.** The fleet change ({f['added']:,} tails added, {f['removed']:,} removed) mixes real"
+        " fleet changes with pages the crawler reached in one month only; the page-text checks under *Fleets*"
+        " separate them. 09a's cleaner empties many HTTP pages in both months; schools it emptied in either"
+        " month are compared on the browser pass only.",
+        "",
         "## Method",
         "",
         "- **Same sites.** The November crawl visited the March target lists, rebuilt from March's own",
@@ -629,6 +680,9 @@ def render(R):
         "- **Different machine.** March's crawl ran on macOS (its error strings are macOS resolver",
         "  messages); November's ran on trogdor (Linux). Some challenges (SiteGround's `sgcaptcha`, for",
         "  one) key on the client IP, so part of the new blocking may be about who is asking, not the site.",
+        f"- **When.** The November crawl started {s['crawl_started'][:16].replace('T', ' ')} UTC. The"
+        f" {s['retried']:,} sites no crawler reached were retried over HTTP {s['retry_hours_after_start']} hours after"
+        " the start; a site counts as gone only if the retry failed too.",
         f"- **Same extraction.** Both months were extracted by `extract_v2.py` with `{R['model']}`, the same",
         "  prompt (the March prompt plus the training-price block) and the same settings. The March side is",
         "  workstream 1's run over the March caches. The expansion crawl (`09f`) is counted for site",
@@ -667,7 +721,8 @@ def render(R):
         "## Sites",
         "",
         f"Of {s['alive_in_march']:,} domains a March crawler reached, **{s['died']:,}** could not be reached in"
-        f" November by any crawler{' or on a retry' if s['retried'] else ''}, "
+        f" November by any crawler{' or on a retry' if s['retried'] else ''} (a further {s['page_moved']:,} whose"
+        " target was a page under a larger site now get an HTTP error there: moved, not gone), "
         f"**{s['redirect_away_new']:,}** now redirect to a different domain (another "
         f"{s['redirect_away_same_as_march']:,} already did in March), and **{s['newly_defunct']:,}** are now classed"
         " defunct by the model (parked or closed) where March's pages were not. Another"
@@ -700,6 +755,15 @@ def render(R):
         f"changed their tail list: **{f['added']:,} tails added and {f['removed']:,} removed**, against "
         f"{f['kept']:,} kept ({f['tails_march']:,} tails in March, {f['tails_november']:,} in November).",
         "",
+        f"Checked against the page text: {f['added_absent_from_march_pages']:,} of the {f['added']:,} added tails"
+        f" are on no March page we fetched for that school, and {f['removed_absent_from_november_pages']:,} of the"
+        f" {f['removed']:,} removed are on no November page. The rest were on the other month's pages too, so"
+        " the model read them in one month and not the other: extraction noise, not fleet change. A tail"
+        " missing from November's pages can still mean the crawler did not reach that page this time;"
+        f" at the {f['schools_every_march_page_refetched']:,} schools where November re-fetched every page URL"
+        f" March had, {f['removed_absent_where_every_march_page_refetched']:,} removed tails are gone from the"
+        " page text, which rules that out for them.",
+        "",
         f"Control: on {c['schools_with_tails']:,} schools with tails and byte-identical pages, the model's"
         f" own churn was {c['added']:,} added and {c['removed']:,} removed against {c['kept']:,} kept"
         f" ({c['changed']:,} school{'s' if c['changed'] != 1 else ''} changed). Read the change above against that floor.",
@@ -710,6 +774,7 @@ def render(R):
         "|---|---|---|---|---|---|---|",
         stat_row("All pairs, changed pages", pr["all"]),
         stat_row("Both rates verbatim on their page", pr["verbatim_on_both_pages"]),
+        stat_row("Strict: and neither rate on the other month's page", pr["strict_old_rate_gone_new_rate_new"]),
         stat_row("Control: identical pages", pr["control_identical_pages"]),
         "",
         f"{pr['ambiguous_skipped']:,} tail pairs were skipped because a month had two different rates for one tail.",
