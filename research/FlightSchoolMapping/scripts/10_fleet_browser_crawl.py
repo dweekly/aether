@@ -850,7 +850,19 @@ async def main():
                         help='Parallel browser tabs (default 1)')
     parser.add_argument('--targets', type=str, default='',
                         help='JSON file with custom target list (overrides default)')
+    parser.add_argument('--output-dir', type=Path, default=None,
+                        help='Read and write indexes, page text and flight_line.json here instead of output/')
     args = parser.parse_args()
+    if args.output_dir:
+        global OUTPUT_DIR, CRAWL_INDEX, BROWSER_INDEX, BROWSER_TEXT_DIR, BROWSER_RAW_HTML_DIR, FLIGHT_LINE
+        global PROGRESS_FILE
+        OUTPUT_DIR = args.output_dir
+        CRAWL_INDEX = OUTPUT_DIR / "fleet_crawl_index.json"
+        BROWSER_INDEX = OUTPUT_DIR / "fleet_browser_index.json"
+        BROWSER_TEXT_DIR = OUTPUT_DIR / "fleet_browser_text"
+        BROWSER_RAW_HTML_DIR = OUTPUT_DIR / "fleet_browser_html_raw"
+        FLIGHT_LINE = OUTPUT_DIR / "flight_line.json"
+        PROGRESS_FILE = OUTPUT_DIR / "fleet_browser_progress.json"
 
     client = anthropic.Anthropic()
 
