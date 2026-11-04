@@ -6,7 +6,7 @@ Raw model output from the HTTP (09b) and browser (09c) crawl passes, March 2026,
 ## The work
 
 - 4,909 extraction calls succeeded (browser:succeeded 1,928, browser:unparseable 3, http:errored 98, http:succeeded 2,981, http:unparseable 2).
-- Pages cached for the model to read: 4,780 HTTP-crawled files and 1,987 browser-rendered texts.
+- Pages cached for the model to read: 26,087 HTTP-crawled files and 6,375 browser-rendered texts.
 - Tokens: 55.88M in, 2.19M out. At Sonnet 4.6 batch prices that is **$100**. That is a floor: it leaves out the expansion pass, rate-sheet and photo passes, and any runs whose results were overwritten.
 
 ## What the model said, against the registry and the radios

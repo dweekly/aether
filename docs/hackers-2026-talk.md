@@ -12,7 +12,7 @@ Bullets are for David. The words on stage are his.
 
 | Beat | Time | Slide | Every number from |
 |---|---|---|---|
-| 1. There is no list | 0:00–0:50 | One sentence, no chart | *verify* Part 141 count (see below) |
+| 1. There is no list | 0:00–0:50 | One sentence, no chart | FAA Part 141 export (March 2026) |
 | 2. So we read their websites | 0:50–2:00 | 22 s recorded demo, then the cost line | [scrape facts](hackers-2026-scrape-facts.md) |
 | 3. Trust, then verify | 2:00–3:15 | Funnel: claimed → real → right make → flew → lives there | [scrape facts](hackers-2026-scrape-facts.md) |
 | 4. What the map shows | 3:15–4:45 | Two findings, one slide each | [fact sheet](hackers-2026-facts.md) §2, §4 |
@@ -24,13 +24,13 @@ Bullets are for David. The words on stage are his.
 - The FAA certificates Part 141 schools. Most training happens under Part 61, and a Part 61 school doesn't register anywhere.
 - The closest thing to a national list is AOPA's directory, and its terms forbid copying or republishing it.
 - So "every flight school in America, what it flies and what it charges" was a consulting engagement. Nobody had published it.
-- *Verify before the slide:* the current Part 141 count from the FAA's own list (our March ingest of `faa141_schools.csv` had about 630 rows).
+- The FAA's own Part 141 list (exported 2026-03-02, `research/FlightSchoolMapping/faa-141-flightschools.csv`) has 519 certificated schools at 703 locations. That's a small slice of the 4,825 schools and clubs we found.
 
 ### 2. So we read their websites
 
 - One week, 2026-03-05 → 03-12 (git history). The first full extraction ran within a day of starting.
 - The sites are the long tail: Wix and Squarespace pages that render only in a browser, PDF rate sheets, rate sheets posted as photos, N-numbers painted on airplanes in pictures.
-- 6,767 cached pages (4,780 fetched over plain HTTP, 1,987 rendered in headless Chromium), 4,909 model calls.
+- 32,462 cached pages: 26,087 fetched over plain HTTP from 4,780 school sites, and 6,375 rendered in headless Chromium from 1,987 sites that show nothing without a browser. 4,909 model calls.
 - Model time: **$100** at batch prices, from the token counts in the results. That's a floor, since three later passes (corpus expansion, rate sheets, photos) didn't record usage. (The pipeline README's "~$15–25" was wrong.)
 - **Recorded demo, 22 s** (`docs/hackers-2026-charts/demo_extract.mp4`, also `.gif`; `scripts/demo_extract.py`, recorded by `vhs scripts/demo_extract.tape`): one school's homepage in, and 12 s later its fleet and prices come out, each tail checked against the FAA registry and this year's flights. The school is Skybound Aviation at Peachtree-DeKalb (KPDK): ten tails, $205–$275/h wet, all registered, all flew, all based at KPDK. One row is yellow: the site says "Piper Warrior" and the registry says a 1976 PA-28-181 (sold as the Archer). Say that they disagree, not which is wrong. A 1970 Cessna 172K rents for $205/h. The run cost $0.02 on Claude Opus 5.5. It's recorded, so nothing calls the API on stage.
 
@@ -77,7 +77,6 @@ The FAA's-books audit (registry ghosts, TAF counts unchanged for 28 years), trus
 
 | Item | Owner | Default if no answer |
 |---|---|---|
-| Part 141 count from the FAA's current list | Claude | Say "a few hundred" |
 | Ask Dynasty Aviation about the eight Slings | David | Beat 4 uses the schools-from-the-sky finding without naming a school |
 | Make the repo public (plan's "Opening the repo") | David's go, Claude executes | QR points at the explorer only |
 | Other presenters' names and topics, for the wiki page | David | Wiki left with David's entry only |

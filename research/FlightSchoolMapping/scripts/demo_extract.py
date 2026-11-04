@@ -26,6 +26,9 @@ import anthropic
 import duckdb
 from playwright.sync_api import sync_playwright
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from airport_index import canonical_ids  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 ENV = ROOT.parent.parent / ".env"
 MODEL = "claude-opus-5-5"
@@ -126,6 +129,8 @@ def main():
         f"{DIM}({time.time() - t0:.0f} s, ${cost:.3f}){X}\n")
 
     c = duckdb.connect()
+    alias = canonical_ids()[0]
+    canon = lambda x: alias.get(x.upper(), x.upper()) if x else None  # noqa: E731
     say(f"{B}{'tail':8} {'website says':26} {'rate':>6}  {'FAA registry':30} {'hrs/12mo':>8}  home{X}")
     for f in data["fleet"]:
         n = re.sub(r"[\s\-]", "", f["n_number"].upper())
@@ -142,7 +147,7 @@ def main():
         squash = lambda s: re.sub(r"[^a-z0-9]", "", s.lower())  # noqa: E731
         make_ok = mfr.split()[0].lower() in f["make_model"].lower() and squash(model) in squash(f["make_model"])
         hrs = f"{hours:,.0f} h" if hours else "—"
-        home_ok = home and home.upper().lstrip("K") == data["home_airport"].upper().lstrip("K")
+        home_ok = home and canon(home) == canon(data["home_airport"])  # KMRI and PAMR are both Merrill Field
         say(f"{G}{n:8}{X} {f['make_model'][:26]:26} {rate:>6}  {(G if make_ok else Y)}{reg:30}{X} "
             f"{(G if hours else Y)}{hrs:>8}{X}  {(G if home_ok else Y)}{home or '—'}{X}")
 

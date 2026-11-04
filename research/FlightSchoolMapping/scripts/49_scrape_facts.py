@@ -150,7 +150,8 @@ def main():
     rng.shuffle(shuffled)
     control = sum(canon(s) == canon(reg[r["n"]][2]) for s, r in zip(shuffled, home_rows))
 
-    pages = {k: sum(1 for _ in d.iterdir()) if d.exists() else None for k, d in PAGE_DIRS.items()}
+    # Pages sit under one directory per school domain, so count files, not directories.
+    pages = {k: sum(1 for f in d.rglob("*") if f.is_file()) if d.exists() else None for k, d in PAGE_DIRS.items()}
     cost = usage["in"] / 1e6 * PRICE_IN + usage["out"] / 1e6 * PRICE_OUT
     out = {
         "release": a.release, "registry_date": reg_date,
@@ -202,7 +203,7 @@ Caveats: a tail that is real and registered can still be a stock photo or a plan
         fails.append(f"only {o['distinct_tails']} distinct tails")
     if o["home_checked"] < 500:
         fails.append(f"home check too small ({o['home_checked']})")
-    elif o["home_matches_shuffled"] * 3 > o["home_matches"]:
+    elif o["home_matches_shuffled"] * 3 >= o["home_matches"]:  # also fails 0 vs 0
         fails.append("negative control within 3x of the real home-base match")
     if fails:
         sys.exit("FAIL " + "; ".join(fails))
