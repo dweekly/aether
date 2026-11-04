@@ -64,9 +64,29 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
   extraction missed, and in 21 of those the tail sat only in such places
   (docs/hackers-2026-unlisted-operations.md). Feed image names and alt text to the extraction,
   or add a deterministic N-number pass over raw HTML checked against the registry.
-- Merge the 13 confirmed schools and clubs the March search missed (and the 40 known sites
-  whose tails it missed) into the school list; `scores.json` in data/research-2026-11/unlisted/
-  has them.
+- The 13 confirmed schools and clubs the March search missed went through
+  `57_added_schools.py` (docs/hackers-2026-added-schools.md): 5 added, 8 were already ours
+  under another domain or as FAA registrant records. Still open: the 40 known sites whose
+  tails March missed.
+- Attach the websites now known to FAA-registrant-only records (RD AIRE LLC, AEROLANDING LLC,
+  FLY VERMONT LLC, FMFA INC, GC AVIATION SERVICES-1 LLC dba First Flight Aviation), and move
+  schools whose domain changed (Lincoln Skyways to lincolnskyways.com, Nulton to
+  flynultonaviation.com; Pilot Training Center Homestead now calls itself Orient Flight
+  School; flightschooljackson.com redirects to Solo Aviation). These edit existing records,
+  so the added-schools pass left them alone. `38_schools.py` drops registrant-only records
+  whose names lack an operator word, which is why RD Aire, AeroLanding, Fly Vermont and FMFA
+  counted among the 372 "missing" operations although `flight_line.json` holds them.
+- 09a's `clean_html` still empties Elementor sites: Elementor marks every content block
+  `elementor-widget`, which the boilerplate filter deletes. The `<body>` fix un-empties 429 of
+  the 529 emptied March pages whose `<body>` matched; 100 stay emptied
+  (`scripts/probes/clean_html_body_fix.py --n 0`). Match whole class tokens, or never delete
+  an element holding most of the page's text. The browser pass covers these sites today.
+- `40_training_detect.py` is not deterministic: six runs on the v0.3 inputs gave 376, 372,
+  366, 360, 364 and 353 unlisted operations (2026-11-04). Unverified cause: the feature query
+  `GROUP BY`s without `ORDER BY`, and StratifiedKFold assigns folds by row position. Add an
+  `ORDER BY` and re-check that two runs match.
+- `56_fsai_directory.py`'s `TRAINING_TEXT` has `cfi\\b` inside a raw string, which matches a
+  literal backslash, so "CFI" never counts as training text.
 - Match the FAA Part 141 certificate list (`faa-141-flightschools.csv`, UTF-16, tab-separated)
   to school records, for a "Part 141" flag.
 - 2023 archive backfill (adsb.lol starts 2023-02-16) and the 2022-07 → 2023-02 gap, which no
@@ -94,7 +114,9 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
 - `output/adsb_activity_summary.json` (55 MB) and `adsb_activity.csv` are committed and
   rewritten on every ADS-B fold, so each rebuild commit adds tens of MB to history. They
   are derived from the snapshots: move them to R2 with the other big blobs, out of git.
-- Website deploy path to Cloudflare is not recorded anywhere; write it down or script it.
+- Website deploy path to Cloudflare: the Pages project is `aether-flight` (production
+  deployments come from `main`, per `wrangler pages deployment list`); the staged-release
+  publish commands are in docs/hackers-2026-added-schools.md. Script it.
 - monster4 still holds a stale ~18 GB copy of `data/` and `output/` (a checksum-verified
   subset of trogdor's). Safe to delete once trogdor + R2 are the agreed home.
 - Stale remote branches `claude/adsb-data-snapshot-P5LM4`, `claude/update-night-flying-ads-2AKrz`,
