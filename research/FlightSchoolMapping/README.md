@@ -546,7 +546,7 @@ Legacy output from `11_school_aircraft_merge.py`. Strict exact-normalized-name m
 
 ## Data Sources
 
-All data is from public sources. 15 of 17 sources are free; only the Anthropic API (~$15 total) and ADS-B Exchange (~$10/mo, optional) are paid.
+All data is from public sources. 15 of 17 sources are free; only the Anthropic API (at least $100; see below) and ADS-B Exchange (~$10/mo, optional) are paid.
 
 ### Flight school directories
 
@@ -592,7 +592,7 @@ All data is from public sources. 15 of 17 sources are free; only the Anthropic A
 
 | Source | URL | Usage | Script | Auth | Cost |
 |--------|-----|-------|--------|------|------|
-| **Anthropic Claude API** | `api.anthropic.com/v1/messages/batches` (Sonnet 4.6) | ~5,000 batch requests | `09b_fleet_extract.py`, `09c_browser_extract.py`, `09f_corpus_expansion.py`, `22_pdf_rate_sheets.py` | API key | ~$25 total (batch pricing: $3/MTok input, $15/MTok output) |
+| **Anthropic Claude API** | `api.anthropic.com/v1/messages/batches` (Sonnet 4.6) | ~5,000 batch requests | `09b_fleet_extract.py`, `09c_browser_extract.py`, `09f_corpus_expansion.py`, `22_pdf_rate_sheets.py` | API key | At least $100: the HTTP and browser passes recorded 55.9M input and 2.2M output tokens, at Sonnet 4.6 batch prices of $1.50/$7.50 per MTok (half the $3/$15 list price). The expansion, PDF and photo passes recorded no usage. `49_scrape_facts.py` recomputes it. |
 
 ### Geocoding
 
@@ -617,7 +617,7 @@ make backup                       # push snapshots + caches + extracts to R2
 make r2-status                    # what is stored offsite
 
 make crawl      ALLOW_CRAWL=1     # HTTP + browser + expansion crawl (hours, free)
-make extract    ALLOW_SPEND=1     # Sonnet batch extraction (~$25)
+make extract    ALLOW_SPEND=1     # Sonnet batch extraction (about $100 for a full run)
 make pdf-online ALLOW_SPEND=1     # fetch new rate sheets + Sonnet fallback
 make discover                     # propose new FAA-registry crawl candidates
 make all        ALLOW_CRAWL=1 ALLOW_SPEND=1   # everything
@@ -658,7 +658,7 @@ Stages cache their own expensive work on top of that, so a full rebuild is
 |--------|----------|-----|
 | `adsb-snapshots/` | 10.8 GB | Irreplaceable — observations cannot be re-fetched |
 | `crawl-cache/` | ~10 GB | Re-crawlable in principle, but the web has moved on |
-| `extract/` | 27 MB | ~$25 of Sonnet; also committed to git, so R2 is the second copy |
+| `extract/` | 27 MB | at least $100 of Sonnet; also committed to git, so R2 is the second copy |
 
 Every build first runs `restore-inputs`, which pulls any missing extract file
 from R2. Without it, `21` would quietly
@@ -809,6 +809,8 @@ only when you intend to act on the results.
 | `21_build_flight_line.py` | **Deterministic assembly** of flight_line.json from all extraction artifacts |
 | `22_pdf_rate_sheets.py` | Download PDF rate sheets, extract N-numbers via regex + Sonnet batch |
 | `09f_corpus_expansion.py` | Crawl + extract new AOPA domains (clubs, universities) |
+| `49_scrape_facts.py` | Check the raw model output of 09b/09c against the registry and a release's flight data; cost from recorded usage; exits 1 if the shuffled-airport control fails |
+| `demo_extract.py` | Talk demo: one school URL in, its fleet and rates out, each tail checked against a release (`demo_extract.tape` records it with VHS) |
 
 ## Aircraft Provenance Model
 
