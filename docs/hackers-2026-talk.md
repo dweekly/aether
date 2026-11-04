@@ -40,6 +40,11 @@ Source survey: `docs/hackers-2026-data-sources.md` (on PR #8's branch), 39 sourc
 
 - Claude Haiku 5.5 re-read the same cached March pages with the same prompt for $15.15, against $100.22 for Sonnet 4.6 in March, with the same consistency numbers (98.1% vs 98.0% in the registry). It reported 4,066 distinct tails to March's 4,296: at low effort the 5.5 models write one entry per aircraft type on big fleet tables; medium effort recovers most of them (`docs/hackers-2026-model-rerun.md`).
 
+### Act 2. A hand audit, and the bug it found
+
+- 40 random extraction calls read by hand (`docs/hackers-2026-extraction-audit.md`, method committed before the draw): tail precision 68 of 75 (91%; 6 of the 7 false tails from one site whose pages arrived empty, so the model read sold aircraft out of URL slugs), recall 68 of 68 on the pages each call saw, rates 52 of 55 (one invented, copied from the plane above it). Only 36 of the 55 returned rates are stated as including fuel on the page; for 19 the page doesn't say. Of the 15 calls that returned no fleet, the model missed a listed fleet 0 times.
+- The bigger failure was before the model: `09a`'s `clean_html` deletes any element whose class or id contains "sidebar", "widget", "ad-" and the like, and many sites put such a word on `<body>`. 812 of 1,992 schools in the HTTP crawl kept under 5% of their page text; the browser pass happened to re-read 799 of them.
+
 ### Act 2. Checking it
 
 Ground truth: the FAA Releasable Aircraft Registry (public domain, snapshot 2026-10-23) and the adsb.lol archive (ODbL, 2025-10-23 to 2026-10-22). Raw model output from the HTTP and browser passes, before any cleanup (`docs/hackers-2026-scrape-facts.md`):
