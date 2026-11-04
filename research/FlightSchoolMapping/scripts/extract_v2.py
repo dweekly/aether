@@ -379,19 +379,25 @@ def cmd_estimate(a):
     c = client(a.env_file)
     rng = random.Random(a.seed)
     sample = rng.sample(reqs, min(a.sample, len(reqs)))
-    ratios, big = [], 0
+    xs, ys = [], []
     for r in sample:
         p = params_for(r, meta["layout"], a.model, a.effort)
         n = c.messages.count_tokens(model=p["model"], system=p["system"], messages=p["messages"],
                                     thinking=p["thinking"], output_config=p["output_config"]).input_tokens
-        ratios.append(n / len(r["user"]))
-    ratio = sum(ratios) / len(ratios)
-    est_in = [len(r["user"]) * ratio for r in reqs]
+        xs.append(len(r["user"]))
+        ys.append(n)
+    # tokens = fixed + per_char * chars (least squares): the fixed part is the system prompt and
+    # schema, so a mean of per-request ratios would overstate large requests.
+    mx, my = sum(xs) / len(xs), sum(ys) / len(ys)
+    per_char = sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / sum((x - mx) ** 2 for x in xs)
+    fixed = my - per_char * mx
+    est_in = [fixed + per_char * len(r["user"]) for r in reqs]
+    ratio = per_char
     big = sum(1 for t in est_in if t > 100_000)
     out_per = a.out_tokens
     cost = sum(price_request(a.model, t, out_per) for t in est_in)
     log(a.run, event="estimate", model=a.model, effort=a.effort, sample=len(sample),
-        tokens_per_char=round(ratio, 4), est_tokens_in=int(sum(est_in)), requests_over_100k=big,
+        tokens_per_char=round(ratio, 4), fixed_tokens=int(fixed), sample_tokens=sum(ys), sample_fit_tokens=int(sum(fixed + per_char * x for x in xs)), est_tokens_in=int(sum(est_in)), requests_over_100k=big,
         assumed_out_tokens_per_request=out_per, est_cost_usd_batch=round(cost, 2))
 
 
