@@ -261,7 +261,7 @@ def cmd_merge_extract(a):
     meta = json.loads((run / "run.json").read_text())
     index = {e["custom_id"]: e for e in json.loads((run / "index.json").read_text())}
     added = {normalize_domain(e["website"]) for e in json.loads(ENRICHED.read_text())
-             if e.get("source") == SOURCE and e.get("website")}
+             if e.get("provenance") and e.get("website")}  # this script's schools and 60's (Google Places)
     new, skipped = {}, defaultdict(int)
     for line in (run / a.model / "results.jsonl").open():
         r = json.loads(line)
@@ -290,6 +290,16 @@ def cmd_merge_extract(a):
           f"{ADDED_EXTRACT.name} now {len(out)} lines")
 
 
+# Fields 21 adds to every record (provenance per field, public contact, place IDs). The gates compare
+# pre-existing records with these removed: "unchanged except added fields".
+ADDED_FIELDS = ("field_sources", "public_contact", "google_place_ids")
+RELEASE_ADDED_FIELDS = ("google_place_ids", "contact")
+
+
+def strip(rec, fields):
+    return {k: v for k, v in rec.items() if k not in fields}
+
+
 def key_of(s):
     return s["domain"] or f"{s['name']}|{(s.get('contact') or {}).get('address', '')}"
 
@@ -297,9 +307,9 @@ def key_of(s):
 def cmd_check(a):
     """Gates. 1: every added school is in flight_line.json with its provenance. 2: every school in the
     reference is present and byte-identical (JSON), and nothing else is new."""
-    new = json.loads((OUT / "flight_line.json").read_text())
-    ref = json.loads(Path(a.reference).read_text())
-    entries = [e for e in json.loads(ENRICHED.read_text()) if e.get("source") == SOURCE]
+    new = [strip(s, ADDED_FIELDS) for s in json.loads((OUT / "flight_line.json").read_text())]
+    ref = [strip(s, ADDED_FIELDS) for s in json.loads(Path(a.reference).read_text())]
+    entries = [e for e in json.loads(ENRICHED.read_text()) if e.get("provenance")]  # 57's and 60's
     fails = []
     nk = defaultdict(list)
     for s in new:
@@ -328,8 +338,10 @@ def cmd_check(a):
     print(f"added schools with a fleet row: {sum(1 for s in extra if s['fleet'])}; "
           f"tails: {sum(s['n_number_count'] for s in extra)}; "
           f"rows with a wet rate: {sum(1 for s in extra for f in s['fleet'] if f.get('wet_rate_hr'))}")
-    if len(new) != len(ref) + len(entries):
-        fails.append(f"count: {len(new)} != {len(ref)} + {len(entries)}")
+    if len(new) != len(ref) + len(extra):
+        fails.append(f"count: {len(new)} != {len(ref)} + {len(extra)}")
+    if len(extra) != sum(1 for e in entries if not any(s.get("provenance") == e["provenance"] for s in ref)):
+        fails.append(f"{len(extra)} new records, but {len(entries)} added entries of which some were in the reference")
     if fails:
         print("FAIL\n  " + "\n  ".join(fails))
         sys.exit(1)
@@ -344,11 +356,12 @@ def cmd_release_check(a):
     (its "recent" legs compared as a set: 35 does not order legs within a day)."""
     rel = ROOT / "data" / "release"
     rc, ref = rel / a.release, rel / a.reference_release
-    new = {s["key"]: s for s in json.loads((rc / "schools_full.json").read_text())["schools"]}
-    old = {s["key"]: s for s in json.loads((ref / "schools_full.json").read_text())["schools"]}
+    new_full = {s["key"]: s for s in json.loads((rc / "schools_full.json").read_text())["schools"]}
+    new = {k: strip(s, RELEASE_ADDED_FIELDS) for k, s in new_full.items()}
+    old = {s["key"]: strip(s, RELEASE_ADDED_FIELDS) for s in json.loads((ref / "schools_full.json").read_text())["schools"]}
     fl = json.loads((OUT / "flight_line.json").read_text())
     want = {s["domain"] for s in fl if s.get("provenance") and s["domain"]
-            and any(f.get("n_number") or f.get("display_name") for f in s["fleet"])}
+            and any(f.get("n_number") or f.get("display_name") for f in s["fleet"])} - set(old)
     fails = []
     changed = [k for k in old if json.dumps(old[k], sort_keys=True) != json.dumps(new.get(k), sort_keys=True)]
     if changed:
@@ -357,6 +370,13 @@ def cmd_release_check(a):
     if extra != want:
         fails.append(f"new schools {sorted(extra - want)[:5]} not added; added {sorted(want - extra)[:5]} missing")
     unnamed = sorted(k for k in extra if new[k]["name_source"] == "domain")
+    # The added fields: place IDs are strings; contact values each carry a source, ref and date, never AOPA
+    for k, x in new_full.items():
+        bad = [f for f, v in (x.get("contact") or {}).items()
+               if not (v.get("value") and v.get("source") and v.get("ref")) or v["source"] in ("aopa", "google_places")]
+        if bad or not all(isinstance(g, str) and g for g in x.get("google_place_ids", [])):
+            fails.append(f"{k}: contact fields without provenance or from AOPA/Google {bad}, or bad place IDs")
+            break
     def tails(r):
         """Every tail record in the shards index.json points at (35 does not delete shards an
         earlier export split differently, so web/t can hold stale files the explorer never reads)."""

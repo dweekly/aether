@@ -23,6 +23,19 @@ Data sources:
                                               57_added_schools.py; they join the directory
                                               after HTTP recovery, so they cannot change it)
   - output/added_extract.jsonl               (extractions for those schools, domain embedded)
+  - output/contact_sourced.json              (61_contact_provenance.py: name, phone, address, hours
+                                              from each school's own pages, with source URL and date)
+  - output/google_place_ids.json             (59_google_places.py placeids: Google place IDs matched
+                                              to our schools; place IDs are all of Google's we keep)
+
+Every record also carries, as added fields:
+  field_sources    where each non-empty name/contact value came from: {"name"|"contact.<f>":
+                   {"source", "ref", "retrieved"}}; source is aopa, site_extraction (the fleet
+                   extraction's reading of the school's pages), faa_registry, a public list, or site
+  public_contact   contact details from permitted public sources only (the school's own pages
+                   first, then FAA registry, state lists, FSAI): {field: {"value", "source", "ref",
+                   "retrieved"}}; never AOPA, never Google content
+  google_place_ids [{"place_id", "match"}] for an "Open in Google Maps" link
 
 Output:
   - output/flight_line_base.json             (fleet data, before PDF overlay)
@@ -85,6 +98,88 @@ def normalize_domain(url: str) -> str:
         if domain == plat or domain.endswith(f".{plat}"):
             return ""
     return domain
+
+
+# ── Provenance ───────────────────────────────────────────────────
+# As-of dates of the March inputs (git history of output/): the AOPA directory was scraped 2026-03-05..11,
+# FAA discovery ran 2026-03-11, the March browser crawl and its extraction finished 2026-03-10.
+AOPA_AS_OF = "2026-03-11"
+FAA_DISCOVERY_AS_OF = "2026-03-11"
+BROWSER_CRAWL_AS_OF = "2026-03-10"
+_CRAWL_DATES = {}
+
+
+def _http_crawl_date(domain):
+    if not _CRAWL_DATES:
+        p = OUTPUT_DIR / "fleet_crawl_index.json"
+        for x in (json.loads(p.read_text()) if p.exists() else []):
+            d = normalize_domain(x.get("school_website", ""))
+            if d and x.get("crawl_ts"):
+                _CRAWL_DATES.setdefault(d, x["crawl_ts"][:10])
+        _CRAWL_DATES.setdefault("", "2026-03")
+    return _CRAWL_DATES.get(domain, "2026-03")
+
+
+def extraction_prov(domain, tag, ts):
+    """A value the fleet extraction read off the school's pages (not checked verbatim)."""
+    retrieved = {"http_recovered": _http_crawl_date(domain), "browser": BROWSER_CRAWL_AS_OF}.get(tag) or (ts or "")[:10]
+    return {"source": "site_extraction", "ref": f"https://{domain}/", "retrieved": retrieved,
+            "via": f"{tag} fleet extraction"}
+
+
+def dir_prov(dir_entry, field):
+    """Where a directory entry's value came from: AOPA, or the outside list a late-added school came from
+    (or that school's own pages, when 60_google_schools.py recorded it per field)."""
+    if dir_entry.get("provenance"):
+        fs = (dir_entry.get("field_sources") or {}).get(field)
+        if fs:
+            return fs
+        pv = dir_entry["provenance"][0]
+        return {"source": pv["list"], "ref": f"{pv['list']}:{pv['record_id']}", "retrieved": pv["pulled"]}
+    return {"source": "aopa", "ref": f"aopa:{dir_entry.get('aopa_id', '')}", "retrieved": AOPA_AS_OF}
+
+
+def faa_prov(name):
+    return {"source": "faa_registry", "ref": f"registrant:{name}", "retrieved": FAA_DISCOVERY_AS_OF}
+
+
+PUBLIC_FIELDS = ("name", "website", "phone", "address", "hours", "city_state")
+
+
+def load_public_sources():
+    """(contact_sourced by domain, place IDs by domain, place IDs by registrant name)."""
+    cs_p, gp_p = OUTPUT_DIR / "contact_sourced.json", OUTPUT_DIR / "google_place_ids.json"
+    cs = json.loads(cs_p.read_text())["schools"] if cs_p.exists() else {}
+    by_dom, by_name = defaultdict(list), defaultdict(list)
+    for m in (json.loads(gp_p.read_text())["matches"] if gp_p.exists() else []):
+        (by_dom[m["school_domain"]] if m["school_domain"] else by_name[m["school_name"]]).append(
+            {"place_id": m["place_id"], "match": m["match_type"]})
+    print(f"  Public contact sources: {len(cs):,} websites; place IDs for {len(by_dom):,} domains, "
+          f"{len(by_name):,} registrant names")
+    return cs, by_dom, by_name
+
+
+def add_public_fields(school, field_sources, public, by_dom, by_name):
+    """The three added fields, in a fixed order after the existing ones."""
+    pc = {}
+    if school["domain"]:
+        for f in PUBLIC_FIELDS:
+            v = public.get(school["domain"], {}).get(f)
+            if v:
+                pc[f] = {k: v[k] for k in ("value", "source", "ref", "retrieved")}
+    for f, prov in field_sources.items():  # registry and public-list values fill what the site did not give
+        name = "city_state" if f == "contact.address" else f
+        if name in ("name", "city_state") and name not in pc \
+                and prov["source"] not in ("aopa", "site_extraction", "site", "domain", "crawl_target"):
+            val = school["name"] if name == "name" else school["contact"].get("address", "")
+            if val:
+                pc[name] = {"value": val, **{k: prov[k] for k in ("source", "ref", "retrieved")}}
+    ids = by_dom.get(school["domain"], []) if school["domain"] else by_name.get(school["name"], [])
+    ids = ids + [{"place_id": pv["record_id"], "match": "added_from_google_places"}
+                 for pv in school.get("provenance") or [] if pv["list"] == "google_places"]
+    school["field_sources"] = field_sources
+    school["public_contact"] = pc
+    school["google_place_ids"] = sorted({x["place_id"]: x for x in ids}.values(), key=lambda x: x["place_id"])
 
 
 def normalize_phone(phone: str) -> str:
@@ -288,12 +383,15 @@ def add_late_schools(directory):
             "aopa_type": "",
             "aopa_id": "",
             "locations": [{"airport_id": e["airport_code"], "airport_name": "", "lat": None, "lon": None,
-                           "label": "listed by " + e["provenance"][0]["list"]}] if e.get("airport_code") else [],
-            "contact": {"phone": "", "email": "", "website": e.get("website", ""),
-                        "address": ", ".join(x for x in (e.get("city", ""), e.get("state", "")) if x)},
+                           "label": ("from the school's site" if e["provenance"][0]["list"] == "google_places"
+                                     else "listed by " + e["provenance"][0]["list"])}] if e.get("airport_code") else [],
+            "contact": {"phone": e.get("phone", ""), "email": "", "website": e.get("website", ""),
+                        "address": e.get("address") or ", ".join(x for x in (e.get("city", ""), e.get("state", "")) if x)},
             "faa_entities": [],
             "provenance": e["provenance"],
         }
+        if e.get("field_sources"):
+            rec["field_sources"] = e["field_sources"]
         if not domain:
             no_site.append(rec)
         elif domain in directory:
@@ -590,22 +688,28 @@ def merge_extractions(directory, extractions):
 
         # Get best contact info (prefer non-empty)
         best_contact = primary_content.get("contact", {})
+        contact_src = {f: extraction_prov(domain, primary_source, primary_ts)
+                       for f, v in best_contact.items() if v}
         for _source, content, _ts in ext_list[1:]:
             alt = content.get("contact", {})
-            if not best_contact.get("phone") and alt.get("phone"):
-                best_contact["phone"] = alt["phone"]
-            if not best_contact.get("email") and alt.get("email"):
-                best_contact["email"] = alt["email"]
-            if not best_contact.get("address") and alt.get("address"):
-                best_contact["address"] = alt["address"]
+            for f in ("phone", "email", "address"):
+                if not best_contact.get(f) and alt.get(f):
+                    best_contact[f] = alt[f]
+                    contact_src[f] = extraction_prov(domain, _source, _ts)
 
         # Prefer directory name if available
         dir_entry = directory.get(domain)
         school_name = ""
         if dir_entry:
             school_name = dir_entry.get("name", "")
+        name_src = dir_prov(dir_entry, "name") if school_name else None
         if not school_name:
             school_name = primary_content.get("_index_school_name", "") or primary_content.get("canonical_name", "")
+            if primary_content.get("_index_school_name"):
+                name_src = {"source": "crawl_target", "ref": f"{primary_source} crawl index",
+                            "retrieved": extraction_prov(domain, primary_source, primary_ts)["retrieved"]}
+            elif school_name:
+                name_src = extraction_prov(domain, primary_source, primary_ts)
 
         merged[domain] = {
             "fleet": combined_fleet,
@@ -616,6 +720,8 @@ def merge_extractions(directory, extractions):
             "rate_sheet_url": primary_content.get("rate_sheet_url", ""),
             "locations": primary_content.get("locations", []),
             "extraction_sources": sorted(sources_used),
+            "_contact_src": contact_src,
+            "_name_src": name_src,
         }
 
     print(f"  Merged domains: {len(merged):,}")
@@ -806,6 +912,7 @@ def build_flight_line(dry_run=False, diff=False, out_path=None):
     faa_registry = load_faa_registry()
     acftref = load_acftref()
     adsb = load_adsb_activity()
+    public, place_by_dom, place_by_name = load_public_sources()
 
     # Enrich web-extracted fleet
     for domain, rec in merged.items():
@@ -836,21 +943,23 @@ def build_flight_line(dry_run=False, diff=False, out_path=None):
             locations = dir_entry["locations"]
 
         contact = rec.get("contact", {})
+        csrc = dict(rec.get("_contact_src") or {})
         dir_contact = dir_entry.get("contact", {})
         if dir_contact:
-            if not contact.get("phone") and dir_contact.get("phone"):
-                contact["phone"] = dir_contact["phone"]
-            if not contact.get("email") and dir_contact.get("email"):
-                contact["email"] = dir_contact["email"]
-            if not contact.get("website") and dir_contact.get("website"):
-                contact["website"] = dir_contact["website"]
-            if not contact.get("address") and dir_contact.get("address"):
-                contact["address"] = dir_contact["address"]
+            for f in ("phone", "email", "website", "address"):
+                if not contact.get(f) and dir_contact.get(f):
+                    contact[f] = dir_contact[f]
+                    csrc[f] = dir_prov(dir_entry, "contact." + f)
         if not contact.get("website"):
             contact["website"] = f"https://{domain}/"
+            csrc["website"] = {"source": "domain", "ref": domain, "retrieved": _http_crawl_date(domain)}
+        name = rec.get("school_name") or dir_entry.get("name", domain)
+        fsrc = {"name": (rec.get("_name_src") if rec.get("school_name") else None)
+                or (dir_prov(dir_entry, "name") if dir_entry.get("name") else {"source": "domain", "ref": domain, "retrieved": ""})}
+        fsrc.update({"contact." + f: csrc[f] for f in sorted(contact) if contact.get(f) and f in csrc})
 
         school = {
-            "name": rec.get("school_name") or dir_entry.get("name", domain),
+            "name": name,
             "domain": domain,
             "aopa_type": dir_entry.get("aopa_type", ""),
             "aopa_id": dir_entry.get("aopa_id", ""),
@@ -864,6 +973,7 @@ def build_flight_line(dry_run=False, diff=False, out_path=None):
         }
         if dir_entry.get("provenance"):
             school["provenance"] = dir_entry["provenance"]
+        add_public_fields(school, fsrc, public, place_by_dom, place_by_name)
         flight_line.append(school)
 
     # Second: directory-only schools (no extraction but have AOPA entry)
@@ -910,6 +1020,10 @@ def build_flight_line(dry_run=False, diff=False, out_path=None):
         )
         if school["fleet"]:
             school["extraction_sources"] = ["faa_registry"]
+        fsrc = {"name": dir_prov(dir_entry, "name")}
+        fsrc.update({"contact." + f: dir_prov(dir_entry, "contact." + f)
+                     for f in sorted(school["contact"]) if school["contact"].get(f)})
+        add_public_fields(school, fsrc, public, place_by_dom, place_by_name)
         flight_line.append(school)
 
     # Third: FAA-only schools (no website, no AOPA match)
@@ -957,17 +1071,26 @@ def build_flight_line(dry_run=False, diff=False, out_path=None):
                 1 for a in fleet if a.get("adsb", {}).get("active")
             ),
         }
+        fsrc = {"name": faa_prov(name)}
+        if school["contact"]["address"]:
+            fsrc["contact.address"] = faa_prov(name)
+        add_public_fields(school, fsrc, public, place_by_dom, place_by_name)
         flight_line.append(school)
         faa_only_added += 1
 
     # Fourth: late-added schools with no website (a state license, no site found)
     for rec in late_no_site:
-        flight_line.append({
+        school = {
             "name": rec["name"], "domain": "", "aopa_type": "", "aopa_id": "",
             "locations": rec["locations"], "contact": rec["contact"], "fleet": [],
             "extraction_sources": [], "fleet_count": 0, "n_number_count": 0,
             "adsb_active_count": 0, "provenance": rec["provenance"],
-        })
+        }
+        fsrc = {"name": dir_prov(rec, "name")}
+        fsrc.update({"contact." + f: dir_prov(rec, "contact." + f)
+                     for f in sorted(rec["contact"]) if rec["contact"].get(f)})
+        add_public_fields(school, fsrc, public, place_by_dom, place_by_name)
+        flight_line.append(school)
 
     print(f"  Directory-only schools added: {dir_only:,}")
     print(f"  FAA-only schools added: {faa_only_added:,}")

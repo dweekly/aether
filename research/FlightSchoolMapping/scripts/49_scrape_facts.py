@@ -172,6 +172,10 @@ def main():
     ap.add_argument("--rows-out", type=Path, help="JSONL of every (pass, school, tail) claim and its outcome")
     ap.add_argument("--label", default="", help="--results: what the run is, for the Markdown heading")
     ap.add_argument("--output-dir", type=Path, default=OUT_DIR, help="where the March results and page caches are")
+    ap.add_argument("--min-tails", type=int, default=1000,
+                    help="fail below this many distinct tails (lower it only to score a small run, such as the "
+                         "schools added after March; the other gates still apply)")
+    ap.add_argument("--min-home", type=int, default=500, help="fail below this many tails in the home-base check")
     a = ap.parse_args()
     pair = lambda xs: {k: Path(v) for k, v in (x.split("=", 1) for x in xs or [])}
     run_mode = bool(a.results)
@@ -312,9 +316,9 @@ Raw model output from the HTTP (09b) and browser (09c) crawl passes, March 2026,
     print(md)
 
     fails = []
-    if o["distinct_tails"] < 1000:
+    if o["distinct_tails"] < a.min_tails:
         fails.append(f"only {o['distinct_tails']} distinct tails")
-    if o["home_checked"] < 500:
+    if o["home_checked"] < a.min_home:
         fails.append(f"home check too small ({o['home_checked']})")
     elif o["home_matches_shuffled"] * 3 >= o["home_matches"]:  # also fails 0 vs 0
         fails.append("negative control within 3x of the real home-base match")

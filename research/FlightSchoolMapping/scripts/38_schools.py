@@ -18,6 +18,10 @@ with no website were discovered from the FAA registry; their key is
 with no website and an AOPA-sourced name are named after the registrant that
 holds most of their fleet, or dropped if none is known.
 Fleet rows without an N-number (a model and a rate) are kept as listings.
+Added in rc2: "google_place_ids" (place IDs only, best match first: Google's terms let us keep and
+publish them) and "contact" (flight_line's public_contact: name, website, phone, address, hours,
+city/state from the school's own pages, the FAA registry or a public list, each with source, ref and
+retrieved; never AOPA). Schools added from Google Places are named from their own pages.
 Fleet evidence per tail: "website" when the row's source_url is on the
 school's domain, else "registry" (matched by FAA registrant name).
 
@@ -56,6 +60,7 @@ GENERIC = {"home", "welcome", "index", "about", "about us", "fleet", "our fleet"
 # FAA-discovered entities must look like an operator, not a private owner.
 OPERATOR_WORDS = re.compile(r"\b(FLIGHT|FLYING|FLYERS?|AVIATION|AERO|AIR|AIRWAYS|ACADEMY|SCHOOL|CLUB|COLLEGE|"
                             r"UNIVERSITY|PILOTS?|TRAINING|SOARING|GLIDING|HELICOPTERS?|WINGS|SKY|JET|AIRCRAFT)\b")
+MATCH_RANK = {"domain": 0, "added_from_google_places": 0, "exact": 1, "address": 2, "fuzzy": 3}
 SEP = re.compile(r"\s*[|–—:·•]\s*|\s+-\s+")
 
 
@@ -150,7 +155,9 @@ def main():
         if domain and s.get("provenance"):
             # Added late from an outside list (57_added_schools.py): the name is the one we set
             # from that list by hand, since page titles of small sites are often unusable ("MA").
-            key, name, name_src = domain, s["name"], "added_list"
+            # Schools found through Google Places are named as their own pages name them (60).
+            key, name = domain, s["name"]
+            name_src = "site_verified" if s["provenance"][0]["list"] == "google_places" else "added_list"
         elif domain:
             key = domain
             name, name_src = site_name(domain)
@@ -171,9 +178,14 @@ def main():
             seen = {f["n"] for f in raw[key]["fleet"]}
             raw[key]["fleet"] += [f for f in fleet if f["n"] not in seen]
             raw[key]["listings"] += listings
+            raw[key]["google_place_ids"] += [g["place_id"] for g in s.get("google_place_ids") or []
+                                             if g["place_id"] not in raw[key]["google_place_ids"]]
         else:
             raw[key] = {"name": name, "name_source": name_src, "domain": domain or None,
-                        "fleet": fleet, "listings": listings}
+                        "fleet": fleet, "listings": listings,
+                        "google_place_ids": [g["place_id"] for g in sorted(
+                            s.get("google_place_ids") or [], key=lambda g: (MATCH_RANK.get(g["match"], 9), g["place_id"]))],
+                        "contact": s.get("public_contact") or {}}
             if s.get("provenance"):  # which public list it came from; record ids stay internal
                 raw[key]["added_from"] = [{"list": p["list"], "pulled": p["pulled"]} for p in s["provenance"]]
 
@@ -207,6 +219,8 @@ def main():
             "fleet": sorted(fleet, key=lambda f: (-(f["hrs"] or 0), f["n"])),
             "listings": listings,
             **({"added_from": r["added_from"]} if r.get("added_from") else {}),
+            "google_place_ids": r["google_place_ids"],
+            "contact": r["contact"],
         })
 
     # Daily fleet hours per school, for the activity chart.
