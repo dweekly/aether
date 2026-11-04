@@ -180,7 +180,8 @@ def main():
         if set(idx_paths) != set(passes):
             sys.exit(f"FAIL each --results pass needs an --index: {sorted(passes)} vs {sorted(idx_paths)}")
         indexes = {k: {e["custom_id"]: e for e in json.loads(v.read_text())} for k, v in idx_paths.items()}
-        page_dirs = {k: Path(next(iter(ix.values()))["pages_dir"]) for k, ix in indexes.items() if ix}
+        page_dirs = {k: Path(next(iter(ix.values())).get("pages_dir") or page_dirs.get(k, ""))
+                     for k, ix in indexes.items() if ix}
     rel = RELEASES / a.release
     results = json.loads((rel / "results.json").read_text())
     reg_date = results.get("registry_date") or results.get("registry", {}).get("date")

@@ -379,25 +379,19 @@ def cmd_estimate(a):
     c = client(a.env_file)
     rng = random.Random(a.seed)
     sample = rng.sample(reqs, min(a.sample, len(reqs)))
-    xs, ys = [], []
+    ratios, big = [], 0
     for r in sample:
         p = params_for(r, meta["layout"], a.model, a.effort)
         n = c.messages.count_tokens(model=p["model"], system=p["system"], messages=p["messages"],
                                     thinking=p["thinking"], output_config=p["output_config"]).input_tokens
-        xs.append(len(r["user"]))
-        ys.append(n)
-    # tokens = fixed + per_char * chars (least squares): the fixed part is the system prompt and
-    # schema, so a mean of per-request ratios would overstate large requests.
-    mx, my = sum(xs) / len(xs), sum(ys) / len(ys)
-    per_char = sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / sum((x - mx) ** 2 for x in xs)
-    fixed = my - per_char * mx
-    est_in = [fixed + per_char * len(r["user"]) for r in reqs]
-    ratio = per_char
+        ratios.append(n / len(r["user"]))
+    ratio = sum(ratios) / len(ratios)
+    est_in = [len(r["user"]) * ratio for r in reqs]
     big = sum(1 for t in est_in if t > 100_000)
     out_per = a.out_tokens
     cost = sum(price_request(a.model, t, out_per) for t in est_in)
     log(a.run, event="estimate", model=a.model, effort=a.effort, sample=len(sample),
-        tokens_per_char=round(ratio, 4), fixed_tokens=int(fixed), sample_tokens=sum(ys), sample_fit_tokens=int(sum(fixed + per_char * x for x in xs)), est_tokens_in=int(sum(est_in)), requests_over_100k=big,
+        tokens_per_char=round(ratio, 4), est_tokens_in=int(sum(est_in)), requests_over_100k=big,
         assumed_out_tokens_per_request=out_per, est_cost_usd_batch=round(cost, 2))
 
 
@@ -439,7 +433,7 @@ def _chunks(lines):
 
 def cmd_submit(a):
     meta, index, reqs = load_run(a.run)
-    d = Path(a.run) / a.model
+    d = Path(a.run) / (a.model + (f"-{a.tag}" if a.tag else ""))
     if (d / "batches.json").exists():
         sys.exit(f"FAIL {d}/batches.json exists: already submitted")
     d.mkdir(exist_ok=True)
@@ -454,7 +448,7 @@ def cmd_submit(a):
         b = c.messages.batches.create(requests=[json.loads(x) for x in chunk])
         ids.append(b.id)
         print(f"  {b.id}: {len(chunk)} requests, {sum(map(len, chunk)) / 1e6:.0f} MB")
-    info = {"model": a.model, "effort": a.effort, "thinking": "adaptive", "max_tokens": MAX_TOKENS,
+    info = {"model": a.model, "effort": a.effort, "tag": a.tag, "thinking": "adaptive", "max_tokens": MAX_TOKENS,
             "prompt_fingerprint": prompt_fingerprint(meta["layout"]), "requests": len(reqs),
             "batch_ids": ids, "submitted_at": _now()}
     (d / "batches.json").write_text(json.dumps(info, indent=2) + "\n")
@@ -463,7 +457,7 @@ def cmd_submit(a):
 
 def cmd_fetch(a):
     meta, index, reqs = load_run(a.run)
-    d = Path(a.run) / a.model
+    d = Path(a.run) / (a.model + (f"-{a.tag}" if a.tag else ""))
     info = json.loads((d / "batches.json").read_text())
     c = client(a.env_file)
     while True:
@@ -567,6 +561,7 @@ def main():
             p.add_argument("--limit", type=int, default=5)
         if name in ("submit", "fetch"):
             p.add_argument("--only", help="file of custom_ids to restrict to")
+            p.add_argument("--tag", default="", help="results dir suffix for a variant run, e.g. effort-high")
         if name == "fetch":
             p.add_argument("--wait", action="store_true")
     t = sub.add_parser("selftest")

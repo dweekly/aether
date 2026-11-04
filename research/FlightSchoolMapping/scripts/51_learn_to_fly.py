@@ -171,6 +171,7 @@ def main():
         out["national"][f] = med([r[f] for r in rows.values()])
         lo, hi = PLAUSIBLE[f]
         out["outside_plausible"][f] = sorted(x for x in (r[f] for r in rows.values()) if x is not None and not lo <= x <= hi)
+        out.setdefault("national_plausible", {})[f] = med([r[f] for r in rows.values() if r[f] is not None and lo <= r[f] <= hi])
         for key, label in (("region", "by_region"), ("state", "by_state")):
             groups = defaultdict(list)
             for r in rows.values():
@@ -190,6 +191,10 @@ def main():
                            "fixed": sum(1 for _, p in ppl if not p.get("is_estimate")),
                            "fixed_price": med([p["price_usd"] for _, p in ppl if not p.get("is_estimate")]),
                            "estimate_price": med([p["price_usd"] for _, p in ppl if p.get("is_estimate")])}
+    lo, hi = PLAUSIBLE["private_pilot_package.price_usd"]
+    ok = [(d, p) for d, p in ppl if lo <= p["price_usd"] <= hi]
+    out["ppl_packages"]["plausible_fixed_price"] = med([p["price_usd"] for _, p in ok if not p.get("is_estimate")])
+    out["ppl_packages"]["plausible_estimate_price"] = med([p["price_usd"] for _, p in ok if p.get("is_estimate")])
 
     fails = []
     if a.check:
@@ -228,7 +233,7 @@ def main():
     a.json_out.write_text(json.dumps(out, indent=1) + "\n")
     print(json.dumps({k: out[k] for k in ("schools", "coverage", "ppl_packages", "instructor_included_in_rental")}, indent=1))
     for f in fields + ["wet_rate_hr_school_median"]:
-        print(f, out["national"][f])
+        print(f, out["national"][f], "plausible:", out.get("national_plausible", {}).get(f))
     if fails:
         sys.exit("FAIL " + "; ".join(fails))
     print("PASS")
