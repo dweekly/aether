@@ -40,6 +40,10 @@ Source survey: `docs/hackers-2026-data-sources.md` (on PR #8's branch), 39 sourc
 
 - Claude Haiku 5.5 re-read the same cached March pages with the same prompt for $15.15, against $100.22 for Sonnet 4.6 in March, with the same consistency numbers (98.1% vs 98.0% in the registry). It reported 4,066 distinct tails to March's 4,296: at low effort the 5.5 models write one entry per aircraft type on big fleet tables; medium effort recovers most of them (`docs/hackers-2026-model-rerun.md`).
 
+- The same sites, re-crawled 2026-11-04 with the March crawlers and re-read with Haiku 5.5 for $13.67 (`docs/hackers-2026-march-vs-november.md`, gates pass, re-run and reproduced). Of 3,067 sites reached in March: 157 (5.1%) are gone (53 no longer resolve, 40 return 404), 207 now refuse the crawler (each served the same crawler a page in March; March ran from a Mac and November from trogdor, so some of this is who is asking), 111 redirect to another domain (one school's old domain now forwards to an online slots site) and 68 read as parked or closed.
+- Posted rates: of 1,281 strict pairs (same school, same tail, each month's rate on its own page only), 26% went up, 2% down, 72% unchanged; where a rate moved, the median move was +5.7%. On byte-identical pages, 58 of 58 unchanged. Read it as the school's posted prices rising, not a per-aircraft fact: a hand check of 3 random increases found all 3 real price rises, but one was a dry rate with fuel billed separately (Colorado Flight Center, $160 + $82 fuel for a 182) and one pinned the first column of a price row to a different aircraft (COS Pilot).
+- Fleets: 302 of 548 schools with tails changed their list (610 added, 746 removed); the identical-pages control churned 0 added and 4 removed of 97. The `clean_html` bug below hit both months (812 and 709 schools emptied), so those schools are compared on the browser pass only.
+
 ### Act 2. A hand audit, and the bug it found
 
 - 40 random extraction calls read by hand (`docs/hackers-2026-extraction-audit.md`, method committed before the draw): tail precision 68 of 75 (91%; 6 of the 7 false tails from one site whose pages arrived empty, so the model read sold aircraft out of URL slugs), recall 68 of 68 on the pages each call saw, rates 52 of 55 (one invented, copied from the plane above it). Only 36 of the 55 returned rates are stated as including fuel on the page; for 19 the page doesn't say. Of the 15 calls that returned no fleet, the model missed a listed fleet 0 times.
@@ -93,26 +97,40 @@ Codex, prompted as a harsh pilot-and-engineer critic, reviewed this doc and the 
 
 Backdrops only: one number, chart, image or record each.
 
-| # | Act | Slide | On it |
+| # | Act | Slide id | On it |
 |---|---|---|---|
-| 1 | | Title | Talk title, name, the three acts |
-| 2 | 1 | Public, in theory | Sources grouped by access: bulk free, per record, paid, licensed, not public |
-| 3 | 2 | No list | 519 Part 141 certificates; 4,825 schools found |
-| 4 | 2 | The build | 32,462 pages, 4,909 calls, 7 days, $100 |
-| 5 | 2 | Demo | The recording |
-| 6 | 2 | Checked | Bar chart of the six numbers above |
-| 7 | 2 | Misreads | N16OME N87IOU N318OU |
-| 8 | 3 | The joins | Which datasets join on which key |
-| 9 | 3 | Never flew | 6% (164 of 2,760) |
-| 10 | 3 | 172 rate vs hours | The chart |
-| 11 | 3 | Not on any list | 372 |
-| 12 | 3 | Ownership | Florida names managers for 82.5%; Montana's N970PM record names none |
-| 13 | | Get it | QR code, URL |
+| 1 |  | `cover` | Title |
+| 2 | 1 | `sources` | Public, in theory: sources by access |
+| 3 | 1 | `faa` | What the FAA publishes |
+| 4 | 1 | `lampsonchart` | Lampson Field forecast, flat 37,000 for 28 years |
+| 5 | 1 | `droneschart` | Drone registrations halve overnight |
+| 6 | 2 | `nolist` | There is a list. You can't see it: 519 Part 141, 13,000 with TSA, 4,825 candidates |
+| 7 | 2 | `schoolsmap` | Map: 3,152 of 4,825 placed |
+| 8 | 2 | `build` | The build: 32,462 pages, 4,909 calls, $100 |
+| 9 | 2 | `costnow` | Same job now: $100 vs $15 |
+| 10 | 2 | `demo` | Demo recording |
+| 11 | 2 | `trace` | One row traced: N6860J |
+| 12 | 2 | `checked` | Consistency checks, not accuracy |
+| 13 | 2 | `misreads` | 81 bad tails, whose fault |
+| 14 | 2 | `audit` | 40 random pages read by hand |
+| 15 | 2 | `bodybug` | The bug that ate 41% of the pages |
+| 16 | 2 | `eightmonths` | Eight months later: 157 gone, 207 blocking, 26% of rates up |
+| 17 | 3 | `joins` | The joins |
+| 18 | 3 | `neverflew` | Never flew |
+| 19 | 3 | `learntofly` | Cost to learn to fly: $12,000 median |
+| 20 | 3 | `c172` | 172 rate vs hours |
+| 21 | 3 | `yearbuilt` | Year built: median 1979 |
+| 22 | 3 | `notlisted` | 372 → 255 → 62 → 13 |
+| 23 | 3 | `hidden` | Florida 82.5% vs Montana N970PM |
+| 24 |  | `wish` | Datasets we wish existed |
+| 25 |  | `getit` | QR code, URL |
+
+The deck is https://claude.ai/artifact/KUkKop9nCZBpYwrHGcuBtW (private to David). For 7 minutes, the suggested cut keeps the cover, nolist, schoolsmap, build, demo, checked, misreads, bodybug, eightmonths, neverflew, notlisted, hidden and getit.
 
 ## Open items
 
 | Item | Owner | Default if no answer |
 |---|---|---|
-| Make the repo public | David | Slide 13 points at the explorer only |
+| Make the repo public | David | The getit slide points at the explorer only |
 | Ask Dynasty Aviation about the eight Slings | David | No school named beyond Skybound in the demo |
 | Talk title | David | Slide 1 says "Every flight school in the US" |
