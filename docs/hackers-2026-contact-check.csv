@@ -1,0 +1,31 @@
+domain,field,value,judgement,note
+blackhawk.edu,phone,(608) 758-6900,correct,"the college's main number, in its footer; not the aviation center's own line"
+taefc.org,phone,316-515-7232,correct,club phone on its contact page
+roswell.enmu.edu,address,52 University Blvd.,correct,"the college's street address, without the city that follows it on the page"
+sundanceairport.com,phone,405.373.3886,wrong,"the page lists it as the after-hours call-out number, not the main line"
+calaironline.com,address,"12101 Crenshaw Blvd. #100, Hawthorne, CA 90250",correct,contact page
+usatsflighttraining.com,address,"355 Golden Knights Blvd • Titusville, FL 32780",correct,header on every page
+orlandosanfordflyingclub.com,phone,(407) 340-3045,correct,
+aviation.siu.edu,address,"545 N. Airport Road, Murphysboro, IL 62966",correct,School of Aviation contact block
+gsfc.com,address,1640 North Johnson Ave,correct,"street only; El Cajon, CA 92020 follows it on the page"
+paop.org,phone,(610) 620-3584,wrong,a member to contact about a dinner meeting; not the organization's phone
+pilotrise.com,phone,817-755-5652,correct,
+centralarkansasskydiving.com,phone,501-354-8888,correct,"correct for the site, but this is a skydiving center that is in our school list (pre-existing)"
+helialtitude.com,phone,+1 619-661-1605,correct,
+watchmefly.academy,phone,737-256-7305,correct,
+flyaeroaviation.com,address,"4225 Douglas Drive Long Beach, CA 90808",correct,
+centralfloridaft.com,phone,(813) 291-0477,correct,
+rdaflyingclub.com,phone,405-464-8018,correct,
+snapflight.com,phone,814.574.7998,correct,the instructor's scheduling line
+smokeeagles.com,address,"4011 W Commonwealth Ave, Fullerton, CA 92833",correct,Fullerton Municipal Airport
+songbirdltf.com,phone,(720) 507-0179,correct,
+independenthelicopters.com,address,"758 Aviation Ave, New Windsor, NY 12553",correct,the first of its two locations (Stewart)
+sundogparagliding.com,phone,503-781-1795,correct,"correct for the site, but a paragliding school is in our school list (pre-existing)"
+flycfca.com,phone,910-720-0054,correct,
+cirrusaviation.com,phone,(941) 360-9074,correct,
+centralfloridaft.com,address,"39442 South Ave., Zephyrhills, FL 33542",correct,
+aeroatlanta.com,phone,(770) 422-2376,correct,
+flyboldaviation.com,address,"965 Airport Access Dr, Greenwood, IN 46143",correct,
+fairmontstate.edu,address,"1201 Locust Avenue, Fairmont, WV 26554",correct,"the university's address, not its aerospace center's"
+flyingcaviation.com,phone,501-483-5006,correct,
+westairflighttraining.com,address,"2990 North Rancho Drive, Las Vegas, NV, 89130",correct,

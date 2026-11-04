@@ -393,7 +393,7 @@ def cmd_release_check(a):
         return out
     t_new, t_old = tails(rc), tails(ref)
     added_tails = {f["n"] for k in extra for f in new[k]["fleet"]}
-    t_diff = []
+    t_diff, t_tie = [], []
     for n in set(t_new) | set(t_old):
         a_, b_ = dict(t_new.get(n) or {}), dict(t_old.get(n) or {})
         if n in added_tails:  # its "sch" list may now name an added school; nothing else may change
@@ -404,7 +404,17 @@ def cmd_release_check(a):
             if "recent" in x:
                 x["recent"] = sorted(x["recent"], key=json.dumps)
         if a_ != b_:
+            # 35 keeps a tail's last 8 legs by row_number() over start_ts; legs with tied start times are
+            # picked arbitrarily, so the last leg kept can differ between two runs on identical inputs
+            # (shown for N4084H, docs/hackers-2026-google-schools.md). Counted apart, not as a change.
+            ra, rb = (t_new.get(n) or {}).get("recent", []), (t_old.get(n) or {}).get("recent", [])
+            if {k: v for k, v in a_.items() if k != "recent"} == {k: v for k, v in b_.items() if k != "recent"} \
+                    and len(ra) == len(rb) and ra[:-1] == rb[:-1]:
+                t_tie.append(n)
+                continue
             t_diff.append(n)
+    if t_tie:
+        print(f"  {len(t_tie)} tails differ only in the last of their recent legs (35's tie at the cut): {sorted(t_tie)[:5]}")
     if t_diff:
         fails.append(f"{len(t_diff)} tail records differ beyond an added school in their sch list, e.g. {sorted(t_diff)[:3]}")
     print(f"control {len(old):,} schools, candidate {len(new):,}; control schools changed {len(changed)}; "

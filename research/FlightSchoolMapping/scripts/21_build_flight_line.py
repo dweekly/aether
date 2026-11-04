@@ -945,6 +945,11 @@ def build_flight_line(dry_run=False, diff=False, out_path=None):
         contact = rec.get("contact", {})
         csrc = dict(rec.get("_contact_src") or {})
         dir_contact = dir_entry.get("contact", {})
+        if dir_entry.get("field_sources"):
+            # Found through Google Places (60): contact only as its own pages give it, each value verified
+            # verbatim on a page; the fleet extraction's unverified reading could carry a Google-formatted
+            # address from a maps link on the page.
+            contact, csrc = {"phone": "", "email": "", "address": "", "website": ""}, {}
         if dir_contact:
             for f in ("phone", "email", "website", "address"):
                 if not contact.get(f) and dir_contact.get(f):
@@ -955,7 +960,8 @@ def build_flight_line(dry_run=False, diff=False, out_path=None):
             csrc["website"] = {"source": "domain", "ref": domain, "retrieved": _http_crawl_date(domain)}
         name = rec.get("school_name") or dir_entry.get("name", domain)
         fsrc = {"name": (rec.get("_name_src") if rec.get("school_name") else None)
-                or (dir_prov(dir_entry, "name") if dir_entry.get("name") else {"source": "domain", "ref": domain, "retrieved": ""})}
+                or (dir_prov(dir_entry, "name") if dir_entry.get("name")
+                    else {"source": "domain", "ref": domain, "retrieved": _http_crawl_date(domain)})}
         fsrc.update({"contact." + f: csrc[f] for f in sorted(contact) if contact.get(f) and f in csrc})
 
         school = {

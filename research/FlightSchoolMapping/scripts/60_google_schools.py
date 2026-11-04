@@ -312,7 +312,40 @@ ABBR = set(STATES.values())
 
 # Hand decisions on the ambiguous pairs `dedupe` prints (site -> (disposition, detail)). Every entry was
 # read against both sites or records; see docs/hackers-2026-google-schools.md.
-HAND = {}
+HAND = {
+    "jberlife.com": ("duplicate", "jberaeroclub.com (Elmendorf Aero Club): same street address and phone; jberlife.com "
+                                  "is the base's page for its aero club (hand review)"),
+    "spartaaviation.com": ("duplicate", "spartafbo.com (Sparta Aviation Services): same phone (hand review)"),
+    "neworleansaerialtours.com": ("duplicate", "flynola.com (New Orleans Flight Training): same phone (hand review)"),
+    "orientflightschool.com": ("duplicate", "pilottrainingcenterhomestead.com: same street address; that site now calls "
+                                            "itself Orient Flight School (docs/hackers-2026-added-schools.md)"),
+    "aviationworksinc.com": ("duplicate", "newarkheathairport.com (Aviation Works Flight Academy): the same business at "
+                                          "Licking County Regional; our record's domain now redirects to another site "
+                                          "(hand review)"),
+    "northcountyflighttraining.com": ("duplicate", "northcountyflight.com (North County Flight Training): same name; our "
+                                                   "record's domain served another school's page in March (hand review)"),
+    "charlestonaviationvault.com": ("duplicate", "chsflightschool.com (CHS Flight School): its pages call it a subsidiary "
+                                                 "of CHS Flight School (hand review)"),
+    "firstflightaviation.com": ("duplicate", "GC AVIATION SERVICES-1 LLC (MIAMISBURG, OH): the FAA registrant record for "
+                                             "First Flight Aviation's fleet (docs/hackers-2026-added-schools.md)"),
+    "angelflightclubmiami.com": ("added", "not miamiflyingclub.org (Miami Flying Club): a different business, with its own phone (hand review; the rule matched a place name and a street address)"),
+    "corvallisflighttraining.com": ("added", "not corvallisaero.com (Corvallis Aero Service): a different business, with its own phone (hand review; the rule matched a place name and a street address)"),
+    "fargowings.com": ("added", "not fargojet.com (Fargo Jet Center), in the same building: a different business, with its own phone (hand review; the rule matched a place name and a street address)"),
+    "harveyaviation.com": ("added", "not harveyrihn.com (Harvey & Rihn Aviation, La Porte): a different business, with its own phone (hand review; the rule matched a place name and a street address)"),
+    "miamiflightschool.us": ("added", "not faapilottraining.com (Pilot Training Center Miami), in the same building: a different business, with its own phone (hand review; the rule matched a place name and a street address)"),
+    "pinehurstaero.com": ("added", "not pinehurstaviationservices.com (Pinehurst Aces): a different business, with its own phone (hand review; the rule matched a place name and a street address)"),
+    "sandiegoflightschool.com": ("added", "not seaplanesoflosangeles.com (San Diego Seaplanes), on the same field: a different business, with its own phone (hand review; the rule matched a place name and a street address)"),
+    "uflyorlando.com": ("added", "not cirrusaircraft.com (Cirrus Orlando): a different business, with its own phone (hand review; the rule matched a place name and a street address)"),
+    "utahflightinstructor.com": ("added", "not utahhelicopter.com (Utah Helicopter): a different business, with its own phone (hand review; the rule matched a place name and a street address)"),
+    "coloradosbestflightschool.com": ("duplicate", "flights-inc.com (Flights, Inc.): 10 of its 17 listed tails are Flights, Inc.'s (hand review of shared tails after extraction)"),
+    "desertskiesaviationaz.com": ("duplicate", "SWAZ AVIATION LLC (an FAA registrant record): 14 of its 17 listed tails are that registrant's (hand review of shared tails after extraction)"),
+    "graceaeroaviation.com": ("duplicate", "WINGS OF GRACE MINISTRIES INC (an FAA registrant record): 5 of its 6 listed tails, all 5 of the registrant's (hand review of shared tails after extraction)"),
+    "goflytexas.com": ("duplicate", "OPTIMA AVIATION LLC DBA (an FAA registrant record): all 4 of its listed tails are that registrant's (hand review of shared tails after extraction)"),
+    "livelyaviation.com": ("duplicate", "TRIPLE R AVIATION LLC (an FAA registrant record): 4 of its 6 listed tails, all 4 of the registrant's (hand review of shared tails after extraction)"),
+    "ggahub.com": ("duplicate", "GEAUX GIDDUM 1 LLC (an FAA registrant record): same distinctive name in Mississippi and both of the registrant's tails (hand review of shared tails after extraction)"),
+    "flightadventuresjax.com": ("rejected", "a ride business: Stearman \"discovery training flights\" with no training "
+                                            "program (classifier hand check)"),
+}
 
 
 def state_of(addr):
@@ -360,10 +393,15 @@ def name_match(a, b, mx, generic):
     if not da or not db:
         return False, ratio if (da & db) else 0.0
     shared = bool(set(ta) & set(tb) & (da | db))
-    if not (all(t in sb for t in da) or all(t in sa for t in db)):
+    # 59's rule tests "inside" on squashed strings, which lets "Flights Inc" match "Colorado Flight
+    # School" (coloradoflightSchool). Here a word, or a squashed name, must equal a run of whole words
+    # of the other name, so FlyRight still matches Fly Right.
+    runs_a = {"".join(ta[i:j]) for i in range(len(ta)) for j in range(i + 1, len(ta) + 1)}
+    runs_b = {"".join(tb[i:j]) for i in range(len(tb)) for j in range(i + 1, len(tb) + 1)}
+    if not (da <= runs_b or db <= runs_a):
         return False, ratio if shared else 0.0
-    short, long_ = sorted((sa, sb), key=len)
-    return (ratio >= 0.8 or (len(short) >= 6 and short in long_)), ratio
+    short, long_, long_runs = (sa, sb, runs_b) if len(sa) <= len(sb) else (sb, sa, runs_a)
+    return (ratio >= 0.8 or (len(short) >= 6 and short in long_runs)), ratio
 
 
 def our_records():
@@ -387,6 +425,8 @@ def our_records():
                     redirects[d].add(t)
     recs = []
     for s in fl:
+        if (s.get("provenance") or [{}])[0].get("list") == SOURCE:
+            continue  # this script's own additions, from an earlier ingest and rebuild
         c = s.get("contact") or {}
         addr = c.get("address", "")
         recs.append({"key": s["domain"] or f"{s['name']} ({addr})", "domain": s["domain"],
@@ -399,8 +439,8 @@ def our_records():
 
 def cmd_dedupe(a):
     mx = _mx()
-    generic = mx.GENERIC - {"north", "south", "east", "west", "central", "northern", "southern", "eastern",
-                            "western", "county", "state", "international"}
+    generic = (mx.GENERIC - {"north", "south", "east", "west", "central", "northern", "southern", "eastern",
+                             "western", "county", "state", "international"}) | {"airplane", "airplanes", "leasing"}
     cands = {c["candidate_id"]: c for c in json.loads((W / "candidates.json").read_text())}
     cls = {r["candidate_id"]: r for r in json.loads((W / "classified.json").read_text())}
     ours, nd = our_records()
@@ -455,6 +495,8 @@ def cmd_dedupe(a):
         st = site_state or c["g_state"]
         doms = {c["site"], nd(c["url"])} | final.get(c["site"], set())
         doms.discard("")
+        if c["site"] in ("sites.google.com",):  # one host for many sites: only the path identifies one
+            doms = set()
         row = {"candidate_id": cid, "place_ids": ";".join(c["place_ids"]), "site": c["site"],
                "classification": r["flight_instruction"], "operation_type": r.get("operation_type", ""),
                "aircraft": ";".join(r.get("aircraft") or []), "not_training_kind": r.get("not_training_kind", ""),
@@ -550,9 +592,10 @@ def cmd_ingest(a):
         rows = [r for r in csv.DictReader(f) if r["disposition"] == "added"]
     cls = {r["candidate_id"]: r for r in json.loads((W / "classified.json").read_text())}
     cands = {c["candidate_id"]: c for c in json.loads((W / "candidates.json").read_text())}
+    import page_text as pt
     build = _load("build21", "21_build_flight_line.py")
     fl = json.loads((OUT / "flight_line.json").read_text())
-    ours = {s["domain"] for s in fl if s["domain"]}
+    ours = {s["domain"] for s in fl if s["domain"] and (s.get("provenance") or [{}])[0].get("list") != SOURCE}
     entries, sites, unnamed = [], {}, []
     for r in rows:
         c, k = cands[r["candidate_id"]], cls[r["candidate_id"]]
@@ -560,14 +603,14 @@ def cmd_ingest(a):
         dom = build.normalize_domain(c["url"])
         if dom and dom in ours:
             sys.exit(f"FAIL {dom} is already in flight_line.json (dispose as duplicate)")
-        prov = lambda v: {"source": "site", "ref": v["ref"], "retrieved": k["retrieved"].get(v["ref"], PULLED)}
+        prov = lambda v: {"source": "site", "ref": pt.clean_url(v["ref"]), "retrieved": k["retrieved"].get(v["ref"], PULLED)}
         first = next(iter(k["retrieved"]))
         name = ct["name"]["value"]
         if not name:
             unnamed.append(r["site"])
             name = r["site"]
         fs = {"name": prov(ct["name"]) if ct["name"]["value"] else {"source": "domain", "ref": r["site"], "retrieved": PULLED},
-              "contact.website": {"source": "site", "ref": first, "retrieved": k["retrieved"][first]}}
+              "contact.website": {"source": "site", "ref": pt.clean_url(first), "retrieved": k["retrieved"][first]}}
         addr, phone = ct["street_address"]["value"], ct["phone"]["value"]
         if addr:
             fs["contact.address"] = prov(ct["street_address"])
@@ -577,7 +620,7 @@ def cmd_ingest(a):
         if phone:
             fs["contact.phone"] = prov(ct["phone"])
         apt = next((x.upper() for x in k["airports"] if AIRPORT_ID.match(x.upper().strip())), "")
-        e = {"name": name, "website": c["url"], "city": ct["city_state"]["city"], "state": ct["city_state"]["state"],
+        e = {"name": name, "website": pt.clean_url(c["url"]), "city": ct["city_state"]["city"], "state": ct["city_state"]["state"],
              "state_name": ct["city_state"]["state"], "airport_code": apt, "address": addr, "phone": phone,
              "source": SOURCE, "field_sources": fs,
              "provenance": [{"list": SOURCE, "record_id": pid, "list_date": PULLED, "pulled": PULLED}
@@ -591,6 +634,16 @@ def cmd_ingest(a):
     if clash:
         sys.exit(f"FAIL already added by 57: {sorted(clash)}")
     ENRICHED.write_text(json.dumps(kept + entries, indent=2) + "\n")
+    # 21 makes a school of every domain with an extraction, so extractions of a site later judged a duplicate
+    # leave added_extract.jsonl (they stay in their run directories under data/).
+    added_ext = OUT / "added_extract.jsonl"
+    if added_ext.exists():
+        keep_d = {build.normalize_domain(e.get("website", "")) for e in kept + entries if e.get("provenance")}
+        lines = added_ext.read_text().splitlines()
+        kept_l = [l for l in lines if json.loads(l)["domain"] in keep_d]
+        if len(kept_l) != len(lines):
+            added_ext.write_text("".join(l + "\n" for l in kept_l))
+            print(f"added_extract.jsonl: dropped {len(lines) - len(kept_l)} lines of sites no longer added")
     # Extraction inputs: 09a's index and 10's text, only for the added sites, named as their pages name them.
     EXTRACT.mkdir(parents=True, exist_ok=True)
     http = []
@@ -615,12 +668,85 @@ def cmd_ingest(a):
           f"{len(meta)} browser -> {EXTRACT}")
 
 
+def cmd_check(a):
+    """Gates on the rebuilt flight_line.json. 1: every school added from Google Places carries its place IDs
+    and nothing from Google: each of its name, address, phone and website values has source "site" (or is
+    its domain) and is found again, verbatim, on the page its provenance names. 2: tails it shares with a
+    school we already had, for hand review (a shared tail can mean the same operation under another name)."""
+    import page_text as pt
+    fl = json.loads((OUT / "flight_line.json").read_text())
+    index = {e["site"]: e for e in json.loads((CLASSIFY_RUN / "index.json").read_text())}
+    texts = {}
+    for e in index.values():
+        for p in e["pages"]:
+            texts[p["url"]] = None
+    added = [s for s in fl if (s.get("provenance") or [{}])[0].get("list") == SOURCE]
+    old_tails = defaultdict(set)
+    for s in fl:
+        if (s.get("provenance") or [{}])[0].get("list") != SOURCE:
+            for f in s["fleet"]:
+                if f.get("n_number"):
+                    old_tails[f["n_number"]].add(s["domain"] or s["name"])
+    gwork = {c["site"]: c for c in json.loads((W / "candidates.json").read_text())}  # Google's, for the leak test
+    fails, checked, overlaps = [], Counter(), []
+    with open(DISPOSITIONS) as f:
+        site_of = {r["school_key"]: r["site"] for r in csv.DictReader(f) if r["disposition"] == "added"}
+    for s in added:
+        key = s["domain"] or "nosite:" + site_dom(s["contact"]["website"])
+        site = site_of.get(key) or site_dom(s["contact"]["website"])
+        sent = {pt.clean_url(u): t for u, t in sent_pages(pt, index[site])} if site in index else {}
+        if not s.get("google_place_ids"):
+            fails.append(f"{key}: no place IDs")
+        for field, value in [("name", s["name"])] + [("contact." + k, v) for k, v in s["contact"].items() if v]:
+            prov = s["field_sources"].get(field)
+            if prov is None:
+                fails.append(f"{key} {field}: no provenance")
+                continue
+            if prov["source"] == "domain" or field == "contact.website":
+                checked["website_or_domain"] += 1
+                continue
+            kind = "phone" if field == "contact.phone" else "text"
+            g = gwork.get(site, {})
+            if prov["source"] == "site_extraction":
+                # read off the school's pages by the fleet extraction (21 prefers it), not checked verbatim;
+                # it must not be Google's own value for this place
+                if pt.norm(value) and pt.norm(value) in (pt.norm(g.get("g_name")), pt.norm(g.get("g_address"))):
+                    fails.append(f"{key} {field}={value!r}: equals Google's value and is not verified on a page")
+                checked[field + " (fleet extraction)"] += 1
+            elif prov["source"] == "site" and "," in value and not pt.on_page(value, sent.get(prov["ref"], ""), kind) \
+                    and pt.on_page(value.rsplit(",", 1)[0].strip(), sent.get(prov["ref"], "")) \
+                    and any(pt.on_page(x, sent.get(prov["ref"], "")) for x in
+                            [value.rsplit(",", 1)[-1].strip()] + [k for k, v in STATES.items() if v == value.rsplit(",", 1)[-1].strip()]):
+                checked[field + " (city and state)"] += 1  # built from a city and a state each on the page
+            elif prov["source"] != "site" or not pt.on_page(value, sent.get(prov["ref"], ""), kind):
+                fails.append(f"{key} {field}={value!r}: not found again on {prov['ref']} ({prov['source']})")
+            else:
+                checked[field] += 1
+        for f in s["fleet"]:
+            if f.get("n_number") and f["n_number"] in old_tails:
+                overlaps.append((key, s["name"], f["n_number"], sorted(old_tails[f["n_number"]])))
+    with_tails = sum(1 for s in added if any(f.get("n_number") for f in s["fleet"]))
+    models_only = sum(1 for s in added if s["fleet"] and not any(f.get("n_number") for f in s["fleet"]))
+    print(f"{len(added)} schools from Google Places in flight_line.json; values re-verified on their pages: "
+          f"{dict(checked)}")
+    print(f"fleets: {with_tails} list tails, {models_only} list only makes and models, "
+          f"{len(added) - with_tails - models_only} list no aircraft; "
+          f"{sum(len([f for f in s['fleet'] if f.get('n_number')]) for s in added)} tail rows")
+    print(f"{len(overlaps)} tails shared with a school we already had (review by hand):")
+    for o in overlaps:
+        print("  ", o)
+    if fails:
+        print("FAIL\n  " + "\n  ".join(fails[:20]))
+        sys.exit(1)
+    print("PASS")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
     ap.add_argument("--env-file", default="/mnt/data/home/dew/dev/aether/.env",
                     help="where ANTHROPIC_API_KEY is (the production checkout's .env on trogdor; never copied)")
-    for c in ("candidates", "browser-targets", "classify-build", "classify-report", "dedupe", "ingest"):
+    for c in ("candidates", "browser-targets", "classify-build", "classify-report", "dedupe", "ingest", "check"):
         sub.add_parser(c)
     sm = sub.add_parser("sample")
     sm.add_argument("--n", type=int, default=30)
@@ -632,7 +758,7 @@ def main():
     if a.cmd in ("estimate", "submit", "fetch"):
         return hb.run_cli(a, a.env_file)
     {"candidates": cmd_candidates, "browser-targets": cmd_browser_targets, "classify-build": cmd_classify_build,
-     "classify-report": cmd_classify_report, "sample": cmd_sample, "dedupe": cmd_dedupe, "ingest": cmd_ingest}[a.cmd](a)
+     "classify-report": cmd_classify_report, "sample": cmd_sample, "dedupe": cmd_dedupe, "ingest": cmd_ingest, "check": cmd_check}[a.cmd](a)
 
 
 if __name__ == "__main__":

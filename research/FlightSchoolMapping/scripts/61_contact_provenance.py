@@ -189,14 +189,14 @@ def cmd_report(a):
             how[f"{name}:{v[f]['how']}"] += 1
             if v[f]["value"]:
                 r, cache = retrieved[v[f]["ref"]]
-                rec[name] = {"value": v[f]["value"], "source": "site", "ref": v[f]["ref"], "retrieved": r,
-                             "cache": cache}
+                rec[name] = {"value": v[f]["value"], "source": "site", "ref": pt.clean_url(v[f]["ref"]),
+                             "retrieved": r, "cache": cache}
         if v["city_state"]["value"]:
             r, cache = retrieved[v["city_state"]["ref"]]
-            rec["city_state"] = {"value": v["city_state"]["value"], "source": "site", "ref": v["city_state"]["ref"],
-                                 "retrieved": r, "cache": cache}
+            rec["city_state"] = {"value": v["city_state"]["value"], "source": "site",
+                                 "ref": pt.clean_url(v["city_state"]["ref"]), "retrieved": r, "cache": cache}
         home = [p for p in e["pages"] if p["type"] == "home"] or e["pages"]
-        rec["website"] = {"value": home[0]["url"], "source": "site", "ref": home[0]["url"],
+        rec["website"] = {"value": pt.clean_url(home[0]["url"]), "source": "site", "ref": pt.clean_url(home[0]["url"]),
                           "retrieved": home[0]["retrieved"], "cache": home[0]["cache"]}
         out[e["domain"]] = rec
     # 2. Schools added from Google Places: their classification request read the same pages the same way
@@ -211,14 +211,14 @@ def cmd_report(a):
             for f, name in FIELDS.items():
                 c = r["contact"][f]
                 if c["value"]:
-                    rec[name] = {"value": c["value"], "source": "site", "ref": c["ref"],
+                    rec[name] = {"value": c["value"], "source": "site", "ref": pt.clean_url(c["ref"]),
                                  "retrieved": r["retrieved"].get(c["ref"], ""), "cache": "2026-11 google"}
             cs = r["contact"]["city_state"]
             if cs["value"]:
-                rec["city_state"] = {"value": cs["value"], "source": "site", "ref": cs["ref"],
+                rec["city_state"] = {"value": cs["value"], "source": "site", "ref": pt.clean_url(cs["ref"]),
                                      "retrieved": r["retrieved"].get(cs["ref"], ""), "cache": "2026-11 google"}
             first = next(iter(r["retrieved"]), "")
-            rec["website"] = {"value": first, "source": "site", "ref": first,
+            rec["website"] = {"value": pt.clean_url(first), "source": "site", "ref": pt.clean_url(first),
                               "retrieved": r["retrieved"].get(first, ""), "cache": "2026-11 google"}
             out[d] = rec
             how["google_added"] += 1
@@ -276,7 +276,7 @@ def cmd_sample(a):
             if f in ("phone", "address") and v["source"] == "site" and d in index]
     smp = random.Random(a.seed).sample(pool, a.n)
     for d, f, v in smp:
-        text = dict(_sent(index[d])).get(v["ref"], "")
+        text = {pt.clean_url(u): t for u, t in _sent(index[d])}.get(v["ref"], "")
         if f == "phone":
             p = pt.phone10(v["value"])
             m = next((m for m in pt.PHONE.finditer(text) if "".join(m.groups()) == p), None)

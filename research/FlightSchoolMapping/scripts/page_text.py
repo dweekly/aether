@@ -19,6 +19,18 @@ from bs4 import BeautifulSoup
 PHONE = re.compile(r"(?<!\d)(?:\+?1[\s.\-]*)?\(?([2-9]\d{2})\)?[\s.\-]*([2-9]\d{2})[\s.\-]*(\d{4})(?!\d)")
 
 
+def clean_url(url):
+    """A page URL without tracking parameters (utm_*, gclid, fbclid): Google's listing links append them,
+    and the URL we record as a reference should be the school's page, not the listing's."""
+    from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+    if not url:
+        return url
+    u = urlsplit(url)
+    q = [(k, v) for k, v in parse_qsl(u.query, keep_blank_values=True)
+         if not k.lower().startswith("utm_") and k.lower() not in ("gclid", "fbclid", "gbraid", "wbraid")]
+    return urlunsplit((u.scheme, u.netloc, u.path, urlencode(q), ""))
+
+
 def visible_text(raw_html):
     """Visible text of a raw HTML page (footer and header kept: that is where contact details live),
     then its JSON-LD blocks and tel:/mailto: link targets."""
