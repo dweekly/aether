@@ -39,6 +39,7 @@ Writes REC/march_vs_november.json and docs/hackers-2026-march-vs-november.md.
 
 import argparse
 import hashlib
+import html as htmllib
 import json
 import re
 import statistics
@@ -174,6 +175,58 @@ def november_attempts(rec):
              "final_domain": norm_domain(a.get("final_url", "")), "error": err,
              "kind": error_kind(err) if status == "unreachable" else ""})
     return att
+
+
+# ── 09a's cleaner emptying pages (both months share it) ─────────
+# Same measure as `extraction_audit.py body-loss` (docs/hackers-2026-extraction-audit.md, on
+# research-audit): a school counts when its raw pages hold at least 2,000 characters of visible
+# text and the cleaned pages 09b sent hold under 5% of that; the cause is a <body> class or id
+# matching clean_html's boilerplate filter, which deletes the whole body.
+BOILER = re.compile(r"(cookie|gdpr|consent|popup|modal|overlay|sidebar|widget|social|share|"
+                    r"newsletter|subscribe|banner|advertisement|ad-|advert)", re.I)
+
+
+def text_len(h):
+    h = re.sub(r"<(script|style|noscript)[^>]*>.*?</\1>", " ", h, flags=re.S | re.I)
+    return len(re.sub(r"\s+", " ", htmllib.unescape(re.sub(r"<[^>]+>", " ", h))).strip())
+
+
+def is_binary(t):
+    if not t:
+        return False
+    bad = sum(1 for ch in t[:5000] if ch == "\ufffd" or (ord(ch) < 32 and ch not in "\n\r\t"))
+    return bad / min(len(t), 5000) > 0.05
+
+
+def body_loss(index_path, html_dir, raw_dir, browser_domains):
+    n = lost = body_hit = rescued = 0
+    emptied = set()
+    for s in json.loads(Path(index_path).read_text()):
+        raw_t = clean_t = 0
+        body_match = False
+        for p in s.get("pages", []):
+            fc, fr = html_dir / p["html_path"], raw_dir / p["html_path"]
+            if not (fc.exists() and fr.exists()):
+                continue
+            rh = fr.read_text(encoding="utf-8", errors="replace")
+            if is_binary(rh):
+                continue
+            raw_t += text_len(rh)
+            clean_t += text_len(fc.read_text(encoding="utf-8", errors="replace"))
+            m = re.search(r"<body([^>]*)>", rh[:200_000], re.I)
+            if m and BOILER.search(" ".join(re.findall(r'(?:class|id)\s*=\s*["\']([^"\']*)', m.group(1)))):
+                body_match = True
+        if raw_t < 2000:
+            continue
+        n += 1
+        if clean_t < 0.05 * raw_t:
+            emptied.add(norm_domain(s.get("school_website", "")))
+            lost += 1
+            body_hit += body_match
+            rescued += norm_domain(s.get("school_website", "")) in browser_domains
+    return {"schools_with_raw_text": n, "kept_under_5pct": lost,
+            "share": round(lost / n, 3) if n else None, "body_matches_filter": body_hit,
+            "also_in_browser_pass": rescued}, emptied
 
 
 def best(attempts):
@@ -409,6 +462,19 @@ def main():
                   "redirect_away_new": len(redirected), "redirect_away_same_as_march": already,
                   "redirect_examples": red_examples}
 
+    # 09a's cleaner bug, measured the same way in both months.
+    mar_bdom = {norm_domain(sub.name) for sub in (a.march_out / "fleet_browser_text").iterdir()
+                if sub.is_dir() and any(sub.glob("*.txt"))}
+    nov_bdom = {norm_domain(x.get("domain", "")) for x in jsonl(a.recrawl / "crawl_attempts_browser.jsonl")
+                if x.get("pages")}
+    bl_m, emp_m = body_loss(a.march_out / "fleet_crawl_index.json", a.march_out / "fleet_html",
+                            a.march_out / "fleet_html_raw", mar_bdom)
+    bl_n, emp_n = body_loss(a.recrawl / "fleet_crawl_index.json", a.recrawl / "fleet_html",
+                            a.recrawl / "fleet_html_raw", nov_bdom)
+    emptied_either = emp_m | emp_n
+    bl_n["emptied_in_one_month_only"] = len(emp_m ^ emp_n)
+    R["cleaner_body_loss"] = {"march": bl_m, "november": bl_n}
+
     # ── 2-4. Extractions ──
     mar, mar_counts = load_month(a.march_runs, a.model)
     nov, nov_counts = load_month(a.nov_runs, a.model)
@@ -432,8 +498,14 @@ def main():
     pair_rows = []
     fields = {f: [] for f in NEW_FIELDS}
     fields_ctrl = {f: [] for f in NEW_FIELDS}
+    http_dropped = 0
     for d in sorted(both_domains):
         ps = [p for p in PASSES if d in mar[p] and d in nov[p]]
+        if "http" in ps and d in emptied_either:  # the cleaner emptied its HTTP pages in a month
+            ps.remove("http")
+            http_dropped += 1
+        if not ps:
+            continue
         identical = all(mar[p][d]["pages"] == nov[p][d]["pages"] for p in ps)
         tm = set().union(*(mar[p][d]["tails"] for p in ps))
         tn = set().union(*(nov[p][d]["tails"] for p in ps))
@@ -491,6 +563,7 @@ def main():
                 (fields_ctrl if identical else fields)[f].append((vm, vn))
                 break
 
+    fleet["http_pass_dropped_cleaner_emptied"] = http_dropped
     R["fleet"] = fleet
     R["fleet_control_identical_pages"] = control
     big = sorted(per_school, key=lambda r: -(r["added"] + r["removed"]))[:10]
@@ -565,6 +638,12 @@ def render(R):
         "  tails are undercounted there in both months alike; the control below bounds what that adds to",
         "  run-to-run churn. Re-running both sides at medium would have been about twice the budget.",
         "- **Pairing is by domain**, through each run's own `index.json`, never by March batch `custom_id`.",
+        "- **Both months share 09a's cleaner bug.** `clean_html` deletes any element whose class or id",
+        "  matches its boilerplate filter, and on many sites that is `<body>`, so the HTTP pass sees an",
+        "  empty page (found by the hand audit, `docs/hackers-2026-extraction-audit.md` on `research-audit`).",
+        "  The cleaner was not changed for November, so the loss is the same in kind both months; see",
+        "  *HTTP pages emptied by the cleaner* below for how much. Most of those sites are also in the",
+        "  browser pass, which does not use that cleaner.",
         "- **Same school, same tail.** A price change is the same well-formed N-number at the same school",
         "  domain, in the same crawl pass, with exactly one wet rate in each month. Tails with two different",
         "  rates in one month are skipped and counted.",
@@ -648,6 +727,21 @@ def render(R):
               "| Field | n | Up | Down | Flat (< $1) | Median change | Median % |", "|---|---|---|---|---|---|---|"]
     for k, v in R["new_fields"].items():
         lines.append(stat_row(f"`{k}`", v))
+    bl = R["cleaner_body_loss"]
+    lines += ["", "## HTTP pages emptied by the cleaner", "",
+              "Schools whose raw HTTP pages hold at least 2,000 characters of visible text, and how many of"
+              " them kept under 5% of it after 09a's `clean_html` (what the HTTP pass's model saw).", "",
+              "| Month | Schools with raw text | Kept under 5% | Share | `<body>` matches the filter |"
+              " Also in the browser pass |", "|---|---|---|---|---|---|"]
+    for m in ("march", "november"):
+        x = bl[m]
+        lines.append(f"| {m.title()} | {x['schools_with_raw_text']:,} | {x['kept_under_5pct']:,} | "
+                     f"{pct(x['share'])} | {x['body_matches_filter']:,} | {x['also_in_browser_pass']:,} |")
+    lines += ["", f"{bl['november']['emptied_in_one_month_only']:,} schools were emptied in one month but not the"
+              " other, or had enough raw text to measure in only one month (a site changed its `<body>` class,"
+              " say, or its pages); either would show up as tails appearing or vanishing. So every school emptied in either month is compared on its browser pass only:"
+              f" the HTTP pass was dropped for {R['fleet']['http_pass_dropped_cleaner_emptied']:,} schools in the"
+              " fleet, price and field comparisons."]
     cv, cost = R["crawl_volume"], R["november_extraction_cost"]
     lines += ["", "## Crawl and cost", "",
               f"- HTTP pages saved: {cv['march_http_pages']:,} in March, {cv['november_http_pages']:,} in November;"
