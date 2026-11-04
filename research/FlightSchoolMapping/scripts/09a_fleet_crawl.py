@@ -14,9 +14,16 @@ Usage:
     python 09a_fleet_crawl.py --limit 50        # first 50 (testing)
     python 09a_fleet_crawl.py --concurrency 300 # tune parallelism
 
-Input:  output/flight_schools_enriched.json (+ output/aopa_flight_schools.json)
+    python 09a_fleet_crawl.py --targets T.json --out-dir D  # re-crawl a fixed list
+
+Input:  output/flight_schools_enriched.json (+ output/aopa_flight_schools.json),
+        or --targets: a JSON list of school records (name, website, airport_code,
+        city, state_name), crawled as given with no AOPA merge or lookup
 Output: output/fleet_html/          — cleaned HTML files per page
         output/fleet_crawl_index.json — index mapping schools → pages
+        With --out-dir D, all of these go under D instead, plus
+        D/crawl_attempts_http.jsonl — one line per school attempted, reachable
+        or not (HTTP status, final URL, error, pages saved)
 """
 
 import asyncio
@@ -45,6 +52,9 @@ REQUEST_TIMEOUT = 20
 PER_SCHOOL_TIMEOUT = 120
 MAX_RETRIES = 2
 CONNECTOR_LIMIT = 300
+
+# Set by --out-dir: one JSON line per school attempted, success or failure.
+ATTEMPTS_PATH: Path | None = None
 
 USER_AGENT = "AetherResearch/1.0 (aviation research; contact: research@aether.aero)"
 
@@ -241,12 +251,15 @@ def merge_aopa_schools(enriched: list[dict]) -> list[dict]:
 
 async def fetch_html(
     session: aiohttp.ClientSession, url: str, *, capture_meta: bool = False,
+    meta_out: dict | None = None,
 ) -> str | dict | None:
     """Fetch raw HTML with retries.
 
     If capture_meta=False (default), returns HTML string or None.
     If capture_meta=True, returns {"html": str, "final_url": str, "status": int}
     or None on total failure.
+    If meta_out is given, the last HTTP status, final URL or exception seen
+    is written into it, so a failed fetch still says why.
     """
     for attempt in range(MAX_RETRIES):
         try:
@@ -255,6 +268,10 @@ async def fetch_html(
                 timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
                 allow_redirects=True,
             ) as resp:
+                if meta_out is not None:
+                    meta_out["status"] = resp.status
+                    meta_out["final_url"] = str(resp.url)
+                    meta_out.pop("error", None)
                 if resp.status == 200:
                     html = await resp.text(errors="replace")
                     if capture_meta:
@@ -268,7 +285,9 @@ async def fetch_html(
                     return {"html": "", "final_url": str(resp.url), "status": resp.status}
                 if resp.status == 429:
                     await asyncio.sleep(5 * (attempt + 1))
-        except (aiohttp.ClientError, asyncio.TimeoutError, RuntimeError):
+        except (aiohttp.ClientError, asyncio.TimeoutError, RuntimeError) as exc:
+            if meta_out is not None:
+                meta_out["error"] = f"{type(exc).__name__}: {str(exc)[:160]}"
             await asyncio.sleep(2 * (attempt + 1))
     return None
 
@@ -536,13 +555,44 @@ async def crawl_school(
 ) -> dict | None:
     """Crawl one school: discover fleet pages, save HTML."""
     async with semaphore:
+        attempt: dict = {"school_name": school.get("name", ""),
+                         "website": (school.get("website") or "").strip()}
+        result = None
         try:
-            return await asyncio.wait_for(
-                _crawl_school_inner(session, school),
+            result = await asyncio.wait_for(
+                _crawl_school_inner(session, school, attempt),
                 timeout=PER_SCHOOL_TIMEOUT,
             )
         except asyncio.TimeoutError:
-            return None
+            attempt["error"] = "school_timeout"
+        except Exception as exc:
+            attempt["error"] = f"{type(exc).__name__}: {str(exc)[:160]}"
+            raise
+        finally:
+            if ATTEMPTS_PATH is not None:
+                _log_attempt(attempt, result)
+        return result
+
+
+def _log_attempt(attempt: dict, result: dict | None) -> None:
+    """Append one line per school attempted to ATTEMPTS_PATH."""
+    website = attempt.get("website", "")
+    final_url = attempt.get("final_url", "")
+    rec = {
+        "school_name": attempt.get("school_name", ""),
+        "website": website,
+        "domain": urlparse(website).netloc.lower().replace("www.", "") if website else "",
+        "status": attempt.get("status"),
+        "final_url": final_url,
+        "final_domain": urlparse(final_url).netloc.lower().replace("www.", "") if final_url else "",
+        "error": attempt.get("error", ""),
+        "pages": len(result["pages"]) if result else 0,
+        "crawl_flags": result.get("crawl_flags", []) if result else [],
+        "redirect_domain": result.get("redirect_domain", "") if result else "",
+        "ts": datetime.now(timezone.utc).isoformat(),
+    }
+    with open(ATTEMPTS_PATH, "a") as f:
+        f.write(json.dumps(rec) + "\n")
 
 
 async def _resolve_website(session: aiohttp.ClientSession, school: dict) -> str | None:
@@ -557,17 +607,22 @@ async def _resolve_website(session: aiohttp.ClientSession, school: dict) -> str 
 async def _crawl_school_inner(
     session: aiohttp.ClientSession,
     school: dict,
+    attempt: dict | None = None,
 ) -> dict | None:
+    if attempt is None:
+        attempt = {}
     website = (school.get("website") or "").strip()
     if not website:
         website = await _resolve_website(session, school) or ""
     if not website:
+        attempt["error"] = "no_website"
         return None
     if not website.startswith("http"):
         website = "https://" + website
+    attempt["website"] = website
 
     # Fetch home page (with metadata to capture redirects and status)
-    home_result = await fetch_html(session, website, capture_meta=True)
+    home_result = await fetch_html(session, website, capture_meta=True, meta_out=attempt)
     if not home_result:
         return None
 
@@ -808,22 +863,29 @@ async def run_async(
     limit: int | None = None,
     concurrency: int = DEFAULT_CONCURRENCY,
     source_filter: str | None = None,
+    targets_path: str | None = None,
 ):
     print("=" * 60)
     print("Phase 9a: Fleet Page Crawl")
     print(f"  Concurrency: {concurrency} schools at once")
+    print(f"  Output dir: {OUTPUT_DIR}")
     print("=" * 60)
 
-    enriched_path = OUTPUT_DIR / "flight_schools_enriched.json"
-    if not enriched_path.exists():
-        print("  Error: Run Phase 8 (directory scraper) first.")
-        return None
-    with open(enriched_path) as f:
-        schools = json.load(f)
+    if targets_path:
+        with open(targets_path) as f:
+            schools = json.load(f)
+        print(f"  Targets from {targets_path}: {len(schools):,}")
+    else:
+        enriched_path = OUTPUT_DIR / "flight_schools_enriched.json"
+        if not enriched_path.exists():
+            print("  Error: Run Phase 8 (directory scraper) first.")
+            return None
+        with open(enriched_path) as f:
+            schools = json.load(f)
 
-    print(f"  Directory schools: {len(schools):,}")
-    schools = merge_aopa_schools(schools)
-    print(f"  Total schools: {len(schools):,}")
+        print(f"  Directory schools: {len(schools):,}")
+        schools = merge_aopa_schools(schools)
+        print(f"  Total schools: {len(schools):,}")
 
     if source_filter:
         schools = [s for s in schools if s.get("source") == source_filter]
@@ -941,8 +1003,21 @@ def main():
     parser.add_argument("--limit", type=int, help="Max schools to crawl (for testing)")
     parser.add_argument("--concurrency", type=int, default=DEFAULT_CONCURRENCY)
     parser.add_argument("--source", type=str, help="Filter by source field (e.g. cirrus_training_network)")
+    parser.add_argument("--targets", type=str,
+                        help="JSON list of school records to crawl as given (no AOPA merge or lookup)")
+    parser.add_argument("--out-dir", type=str,
+                        help="Write HTML, index and a per-school attempt log here instead of output/")
     args = parser.parse_args()
-    asyncio.run(run_async(limit=args.limit, concurrency=args.concurrency, source_filter=args.source))
+    if args.out_dir:
+        global OUTPUT_DIR, HTML_DIR, RAW_HTML_DIR, AOPA_CACHE_PATH, ATTEMPTS_PATH
+        OUTPUT_DIR = Path(args.out_dir).resolve()
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        HTML_DIR = OUTPUT_DIR / "fleet_html"
+        RAW_HTML_DIR = OUTPUT_DIR / "fleet_html_raw"
+        AOPA_CACHE_PATH = OUTPUT_DIR / "aopa_website_cache.json"
+        ATTEMPTS_PATH = OUTPUT_DIR / "crawl_attempts_http.jsonl"
+    asyncio.run(run_async(limit=args.limit, concurrency=args.concurrency,
+                          source_filter=args.source, targets_path=args.targets))
 
 
 if __name__ == "__main__":

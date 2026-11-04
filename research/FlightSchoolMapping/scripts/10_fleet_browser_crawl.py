@@ -29,6 +29,9 @@ Usage:
     python 10_fleet_browser_crawl.py --concurrency 10    # parallel browsers
     python 10_fleet_browser_crawl.py --crawl-only        # crawl without extraction
     python 10_fleet_browser_crawl.py --extract-only --batch  # extract from cache
+    python 10_fleet_browser_crawl.py --crawl-only --targets T.json --out-dir D --no-evasion
+        # re-crawl a fixed list into D (index, text, raw HTML, progress and
+        # D/crawl_attempts_browser.jsonl, one line per school attempted)
 """
 
 import argparse
@@ -74,6 +77,8 @@ MAX_FLEET_PAGES = 5          # max fleet pages to visit per school
 MAX_DETAIL_PAGES = 3         # max aircraft detail pages per school
 MAX_PDFS = 3                 # max PDFs to download per school
 SAVE_EVERY = 25              # save index every N schools
+ATTEMPTS_PATH: Path | None = None   # set by --out-dir
+NO_EVASION = False                  # set by --no-evasion
 
 # ── Stealth config ──────────────────────────────────────────────
 
@@ -464,16 +469,22 @@ async def crawl_school_browser(context: BrowserContext, school: dict) -> dict:
     page = await context.new_page()
     try:
         # --- Homepage ---
+        resp = None
         try:
-            await page.goto(website, wait_until='domcontentloaded', timeout=PAGE_TIMEOUT)
+            resp = await page.goto(website, wait_until='domcontentloaded', timeout=PAGE_TIMEOUT)
             await page.wait_for_timeout(2000)
-        except Exception:
+        except Exception as e:
+            result['home_error'] = f"{type(e).__name__}: {str(e)[:160]}"
             try:
-                await page.goto(website, wait_until='commit', timeout=PAGE_TIMEOUT)
+                resp = await page.goto(website, wait_until='commit', timeout=PAGE_TIMEOUT)
                 await page.wait_for_timeout(3000)
-            except Exception:
+            except Exception as e2:
+                result['home_error'] = f"{type(e2).__name__}: {str(e2)[:160]}"
                 result['crawl_flags'].append('homepage_failed')
                 return result
+        if resp is not None:
+            result['http_status'] = resp.status
+        result['final_url'] = page.url
 
         # --- Captcha/challenge detection and auto-resolve ---
         CAPTCHA_SIGNATURES = [
@@ -495,7 +506,10 @@ async def crawl_school_browser(context: BrowserContext, school: dict) -> dict:
             or len(first_text) < 300 and ('403' in first_text or 'forbidden' in first_lower)
         )
 
-        if is_challenge:
+        if is_challenge and NO_EVASION:
+            # Recorded, not worked around
+            result['crawl_flags'].append('captcha_challenge')
+        elif is_challenge:
             # Wait for auto-resolve (SiteGround sets _I_ cookie)
             await page.wait_for_timeout(5000)
             # Reload to pick up the cookie
@@ -831,6 +845,29 @@ def _save_progress(events: list[dict]):
 _events: list[dict] = []
 
 
+def _log_attempt(cr: dict) -> None:
+    """Append one line per school attempted to ATTEMPTS_PATH."""
+    website = cr.get('school_website', '')
+    final_url = cr.get('final_url', '')
+    rec = {
+        'school_name': cr.get('school_name', ''),
+        'website': website,
+        'domain': _domain_dir(website).lower() if website else '',
+        'status': cr.get('http_status'),
+        'final_url': final_url,
+        'final_domain': urlparse(final_url).netloc.lower().replace('www.', '') if final_url else '',
+        'error': cr.get('home_error', '') if 'homepage_failed' in cr.get('crawl_flags', []) else '',
+        'pages': len(cr.get('pages', [])),
+        'pdfs': len(cr.get('pdfs', [])),
+        'chars': sum(p.get('char_count', 0) for p in cr.get('pages', [])),
+        'crawl_flags': cr.get('crawl_flags', []),
+        'redirect_domain': cr.get('redirect_domain', ''),
+        'ts': datetime.now(timezone.utc).isoformat(),
+    }
+    with open(ATTEMPTS_PATH, 'a') as f:
+        f.write(json.dumps(rec) + '\n')
+
+
 
 
 
@@ -850,9 +887,28 @@ async def main():
                         help='Parallel browser tabs (default 1)')
     parser.add_argument('--targets', type=str, default='',
                         help='JSON file with custom target list (overrides default)')
+    parser.add_argument('--out-dir', type=str, default='',
+                        help='Write index, text, raw HTML, progress and an attempt log here')
+    parser.add_argument('--no-evasion', action='store_true',
+                        help='No stealth script, no automation-flag masking, no waiting out '
+                             'bot challenges (they are flagged captcha_challenge instead)')
     args = parser.parse_args()
 
-    client = anthropic.Anthropic()
+    global CRAWL_INDEX, BROWSER_INDEX, BROWSER_TEXT_DIR, BROWSER_RAW_HTML_DIR
+    global FLIGHT_LINE, PROGRESS_FILE, ATTEMPTS_PATH, NO_EVASION
+    NO_EVASION = args.no_evasion
+    if args.out_dir:
+        out = Path(args.out_dir).resolve()
+        out.mkdir(parents=True, exist_ok=True)
+        CRAWL_INDEX = out / "fleet_crawl_index.json"
+        BROWSER_INDEX = out / "fleet_browser_index.json"
+        BROWSER_TEXT_DIR = out / "fleet_browser_text"
+        BROWSER_RAW_HTML_DIR = out / "fleet_browser_html_raw"
+        FLIGHT_LINE = out / "flight_line.json"
+        PROGRESS_FILE = out / "fleet_browser_progress.json"
+        ATTEMPTS_PATH = out / "crawl_attempts_browser.jsonl"
+
+    client = None if args.crawl_only else anthropic.Anthropic()
 
     # --- Poll mode ---
     if args.poll:
@@ -1001,19 +1057,17 @@ async def main():
     async def browser_worker(worker_id: int, schools: list[dict]):
         """Each worker gets its own browser process."""
         async with async_playwright() as p:
-            browser = await p.chromium.launch(
-                headless=True,
-                args=[
-                    '--headless=new',
-                    '--disable-blink-features=AutomationControlled',
-                ],
-            )
+            launch_args = ['--headless=new']
+            if not NO_EVASION:
+                launch_args.append('--disable-blink-features=AutomationControlled')
+            browser = await p.chromium.launch(headless=True, args=launch_args)
             context = await browser.new_context(
                 user_agent=CHROME_UA,
                 viewport={'width': 1920, 'height': 1080},
                 locale='en-US',
             )
-            await context.add_init_script(STEALTH_JS)
+            if not NO_EVASION:
+                await context.add_init_script(STEALTH_JS)
             for school in schools:
                 name = school['school_name']
                 url = school['school_website']
@@ -1085,15 +1139,23 @@ async def main():
 
                 async with results_lock:
                     new_results.append(crawl_result)
+                    if ATTEMPTS_PATH is not None:
+                        _log_attempt(crawl_result)
+                    if len(new_results) % SAVE_EVERY == 0:
+                        with open(BROWSER_INDEX, 'w') as f:
+                            json.dump(list(existing_browser.values()) + new_results, f, indent=2)
 
             await context.close()
             await browser.close()
 
     # Run all workers concurrently — each is a separate browser process
-    await asyncio.gather(
+    worker_outcomes = await asyncio.gather(
         *[browser_worker(i, chunk) for i, chunk in enumerate(chunks)],
         return_exceptions=True,
     )
+    for i, outcome in enumerate(worker_outcomes):
+        if isinstance(outcome, BaseException):
+            print(f"Worker W{i} died: {type(outcome).__name__}: {str(outcome)[:300]}")
 
     browser_results = list(existing_browser.values()) + new_results
 
