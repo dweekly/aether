@@ -121,11 +121,24 @@ def search(a):
           f"{saturated_floor} tiles still saturated at the minimum size")
 
 
-def estimate(step, n):
+def ledger(out, step=None, add=0):
+    """Paid calls made per SKU per calendar month, so estimates count what this month already used."""
+    p = Path(out) / "billing_ledger.json"
+    L = json.loads(p.read_text()) if p.exists() else {}
+    month = time.strftime("%Y-%m")
+    if step:
+        L.setdefault(month, {}).setdefault(step, 0)
+        L[month][step] += add
+        p.write_text(json.dumps(L, indent=1))
+    return L.get(month, {})
+
+
+def estimate(step, n, out):
     free, per_k = PRICES[step]
-    usd = max(0, n - free) * per_k / 1000
-    print(f"{step}: {n:,} calls; {free:,} free a month, then ${per_k:.0f}/1,000 -> about ${usd:,.2f} "
-          f"(more if this billing account already used its free calls this month)")
+    used = ledger(out).get(step, 0)
+    usd = (max(0, used + n - free) - max(0, used - free)) * per_k / 1000
+    print(f"{step}: {n:,} calls; {used:,} already this month, {free:,} free a month, then ${per_k:.0f}/1,000 "
+          f"-> about ${usd:,.2f} (calls made outside this script on the same billing account are not counted)")
     return usd
 
 
@@ -136,6 +149,8 @@ def details(a):
     many = sorted(i for i, q in allids.items() if len(q) >= a.min_queries)
     rest = sorted(i for i, q in allids.items() if len(q) < a.min_queries)
     sample = random.Random(a.seed).sample(rest, min(a.sample_rest, len(rest)))
+    if (out / "details_selection.json").exists() and not (out / "details_selection_pass1.json").exists():
+        (out / "details_selection.json").rename(out / "details_selection_pass1.json")
     (out / "details_selection.json").write_text(json.dumps(
         {"min_queries": a.min_queries, "seed": a.seed, "many": len(many), "rest": len(rest), "sample": sample}))
     ids = many + sample
@@ -144,11 +159,12 @@ def details(a):
     det_p = out / "details.json"
     det = json.loads(det_p.read_text()) if det_p.exists() else {}
     todo = [i for i in ids if i not in det]
-    if estimate("details", len(todo)) > a.max_usd:
+    if estimate("details", len(todo), out) > a.max_usd:
         sys.exit(f"stopping: over --max-usd {a.max_usd}")
     key = api_key()
     for n, i in enumerate(todo, 1):
         det[i] = call("GET", f"/places/{i}", key, DETAIL_FIELDS)
+        ledger(out, "details", 1)
         if n % 200 == 0:
             det_p.write_text(json.dumps(det))
             print(f"  {n}/{len(todo)}", flush=True)
@@ -170,6 +186,52 @@ def is_school(d):
                       (d.get("primaryTypeDisplayName") or {}).get("text", "")])
     return bool(SCHOOL_LABEL.search(label)) and d.get("businessStatus", "OPERATIONAL") == "OPERATIONAL" \
         and comp(d, "country") in US_CODES
+
+
+_MX = None
+
+
+def _mx():
+    global _MX
+    if _MX is None:
+        spec = importlib.util.spec_from_file_location("mx", HERE / "probes" / "match_external_school_lists.py")
+        _MX = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(_MX)
+    return _MX
+
+
+def confirmed_match(r):
+    """The shared matcher's name, address and fuzzy rules are too loose for Google listings (hand check of
+    28, 2026-11-04: 1 of 8 exact, 2 of 8 address and 5 of 12 fuzzy were different businesses). Keep a match
+    if the websites agree, or if the names share a distinctive word and are nearly the same: similarity
+    >= 0.8, or one squashed name inside the other."""
+    if r["match_type"] == "domain":
+        return True
+    if r["match_type"] not in ("exact", "address", "fuzzy"):
+        return False
+    from difflib import SequenceMatcher
+    mx = _mx()
+
+    generic = mx.GENERIC - {"north", "south", "east", "west", "central", "northern", "southern", "eastern",
+                            "western", "county", "state", "international"}
+
+    def norm(n):
+        n = re.sub(r"\.(com|org|net|aero)\b", " ", (n or "").lower().replace("&", " and "))
+        n = re.sub(mx.LEGAL, " ", re.sub(r"[^a-z0-9 ]+", " ", n))
+        return n.split()
+
+    a, b = norm(r["name"]), norm(r["school_name"])
+    sa, sb = "".join(a), "".join(b)
+    if sa and sa == sb:  # the same name, even when every word is generic ("The Flight School, Inc.")
+        return True
+    da, db = set(a) - generic, set(b) - generic
+    if not da or not db:
+        return False
+    # every distinctive word of one name appears in the other (squashed, so FlyRight = Fly Right)
+    if not (all(t in sb for t in da) or all(t in sa for t in db)):
+        return False
+    short, long_ = sorted((sa, sb), key=len)
+    return SequenceMatcher(None, sa, sb).ratio() >= 0.8 or (len(short) >= 6 and short in long_)
 
 
 def run_matcher(rows, out, name):
@@ -246,11 +308,12 @@ def websites(a):
         un = [r for r in un if dist.get(r["place_id"], 1e9) > a.skip_near_km]
         print(f"skipping {len(near):,} unmatched places within {a.skip_near_km} km of an airport where we list a school")
     todo = [r["place_id"] for r in un if r["place_id"] not in web]
-    if estimate("websites", len(todo)) > a.max_usd:
+    if estimate("websites", len(todo), out) > a.max_usd:
         sys.exit(f"stopping: over --max-usd {a.max_usd}")
     key = api_key()
     for n, i in enumerate(todo, 1):
         web[i] = call("GET", f"/places/{i}", key, "websiteUri").get("websiteUri", "")
+        ledger(out, "websites", 1)
         if n % 200 == 0:
             web_p.write_text(json.dumps(web))
     web_p.write_text(json.dumps(web))
@@ -279,7 +342,10 @@ def report(a):
     cache_p = out / "site_checks.json"
     cache = json.loads(cache_p.read_text()) if cache_p.exists() else {}
     MATCHED = ("domain", "exact", "address", "fuzzy")
-    new = [r for r in m if r["match_type"] not in MATCHED]
+    for r in m:
+        r["confirmed"] = confirmed_match(r)
+    new = [r for r in m if not r["confirmed"]]
+    loose = sum(1 for r in m if r["match_type"] in MATCHED and not r["confirmed"])
     for r in new:
         r["site"] = fsai.check_site(r["website"], cache) if r["website"] else {}
     cache_p.write_text(json.dumps(cache, indent=1))
@@ -299,7 +365,8 @@ def report(a):
     L = ["# Google Places vs our flight-school list", "",
          "Generated by `research/FlightSchoolMapping/scripts/59_google_places.py`; do not edit by hand.", "",
          f"> **Headline.** Text searches tiling the US found {len(ids):,} places; {len(m):,} are operating US places "
-         f"Google labels as flight training. {sum(mt[k] for k in MATCHED):,} match a school in our list; of the "
+         f"Google labels as flight training. {sum(r['confirmed'] for r in m):,} match a school in our list "
+         f"(website, or a near-identical name: {loose:,} looser name or address matches were set aside as unmatched); of the "
          f"{len(new):,} that don't, {len(passed):,} have a live website that talks about flight training; "
          f"after dropping {len(excluded):,} model-aircraft, paragliding, simulator, high-school and social-page "
          f"entries and collapsing repeated websites, {len(confirmed):,} remain.", "",
@@ -314,7 +381,9 @@ def report(a):
          "training). Google content other than place IDs stays out of the repo.", "",
          "## Maps category labels of everything found", "", "| Label | Places |", "|---|---|"]
     L += [f"| {k or '(none)'} | {n:,} |" for k, n in labels.most_common(30)]
-    sel_p = out / "details_selection.json"
+    sel_p = out / "details_selection_pass1.json"
+    if not sel_p.exists():
+        sel_p = out / "details_selection.json"
     if sel_p.exists():
         sel = json.loads(sel_p.read_text())
         smp = [det[i] for i in sel["sample"] if i in det]
@@ -353,9 +422,63 @@ def report(a):
     print(f"report: {len(confirmed)} confirmed new -> {a.md}")
 
 
+def chart(a):
+    """Backdrop: every rectangle searched, for all queries (finer where Google's 60-result cap forced
+    splits, drawn brighter), with a dot for each place labelled as flight training. Lower 48 only."""
+    out = Path(a.out)
+    spec = importlib.util.spec_from_file_location("bd", HERE / "53_talk_backdrops.py")
+    bd = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(bd)
+    import matplotlib.patches as mp
+    bd.setup(Path(a.fonts))
+    cache = json.loads((out / "search_cache.json").read_text())
+    det = json.loads((out / "details.json").read_text())
+    tiles = {tuple(map(float, k.split("|", 1)[1].split(","))) for k in cache}
+    conus = [t for t in tiles if t[0] >= 24 and t[2] <= 50 and t[1] >= -125 and t[3] <= -65]
+    sch = [d["location"] for d in det.values() if is_school(d)]
+    k = math.cos(math.radians(38))
+    fig = bd.frame("Searching Google Maps one rectangle at a time",
+                   f"{len(cache):,} searches over {len(QUERIES)} phrases; a rectangle with 60 results (the cap) splits in four")
+    ax = fig.add_axes([0.04, 0.10, 0.92, 0.72])
+    for la0, lo0, la1, lo1 in sorted(conus, key=lambda t: -(t[2] - t[0])):
+        side = la1 - la0
+        col, lw, al = ((bd.GRID, 1.0, 1.0) if side >= 4 else (bd.MUTED, 0.8, 0.6) if side >= 1 else (bd.BUFF, 0.6, 0.8))
+        ax.add_patch(mp.Rectangle((lo0 * k, la0), (lo1 - lo0) * k, side, fill=False, edgecolor=col, linewidth=lw, alpha=al))
+    pts = [(p["latitude"], p["longitude"]) for p in sch if 24 <= p["latitude"] <= 50 and -125 <= p["longitude"] <= -65]
+    ax.scatter([lo * k for la, lo in pts], [la for la, lo in pts], s=9, color=bd.AMBER, alpha=0.75, linewidth=0, zorder=3)
+    ax.set_xlim(-125 * k, -65 * k)
+    ax.set_ylim(24, 50)
+    ax.set_aspect("equal")
+    ax.axis("off")
+    bd.footer(fig, f"{len(tiles):,} distinct rectangles; {len(pts):,} dots, places Google labels as flight training. "
+                   "Searches return IDs only, which is free.")
+    dest = Path(a.chart_out)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(dest)
+    print(f"chart: {len(tiles):,} tiles, {len(pts):,} dots -> {dest}")
+
+
+def placeids(a):
+    """Our schools that a Google place matched, with the place ID (which Google's terms let us keep),
+    for joining website, AOPA id, place ID and fleet. Several places can match one school (branches)."""
+    out = Path(a.out)
+    with open(out / "c_google_matched.csv") as f:
+        m = [r for r in csv.DictReader(f) if confirmed_match(r)]
+    rows = sorted(({"school_name": r["school_name"], "school_domain": r["school_domain"], "place_id": r["place_id"],
+                    "match_type": r["match_type"], "match_score": float(r["match_score"])} for r in m),
+                  key=lambda r: (r["school_domain"], r["school_name"], r["place_id"]))
+    dest = ROOT / "output" / "google_place_ids.json"
+    dest.write_text(json.dumps({"source": "Google Places API (New), text search + Place Details, 2026-11-04",
+                                "note": "place IDs only; match_type from probes/match_external_school_lists.py",
+                                "matches": rows}, indent=1) + "\n")
+    schools = {(r["school_domain"], r["school_name"]) for r in rows}
+    print(f"placeids: {len(rows):,} place matches for {len(schools):,} schools "
+          f"({dict(collections.Counter(r['match_type'] for r in rows))}) -> {dest}")
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("step", choices=["search", "details", "match", "websites", "report"])
+    ap.add_argument("step", choices=["search", "details", "match", "websites", "report", "chart", "placeids"])
     ap.add_argument("--out", default=str(ROOT / "data" / "research-2026-11" / "google"))
     ap.add_argument("--max-usd", type=float, default=0.0, help="refuse a paid step whose estimate exceeds this")
     ap.add_argument("--md", default=str(REPO / "docs" / "hackers-2026-google-places.md"))
@@ -364,6 +487,9 @@ def main():
     ap.add_argument("--seed", type=int, default=20261104)
     ap.add_argument("--skip-near-km", type=float, default=0.0,
                     help="websites: skip unmatched places this close to an airport where we list a school")
+    ap.add_argument("--fonts", help="chart: directory with the deck's TTFs (Archivo Narrow, JetBrains Mono)")
+    ap.add_argument("--chart-query", default="flight school")
+    ap.add_argument("--chart-out", default=str(REPO / "docs" / "hackers-2026-charts" / "backdrops" / "google_tiles.png"))
     ap.add_argument("--ipv4", action="store_true",
                     help="connect over IPv4 only (for a key restricted to an IPv4 address)")
     a = ap.parse_args()
@@ -371,7 +497,8 @@ def main():
         import socket
         orig = socket.getaddrinfo
         socket.getaddrinfo = lambda *x, **k: [r for r in orig(*x, **k) if r[0] == socket.AF_INET]
-    {"search": search, "details": details, "match": match, "websites": websites, "report": report}[a.step](a)
+    {"search": search, "details": details, "match": match, "websites": websites, "report": report,
+     "chart": chart, "placeids": placeids}[a.step](a)
 
 
 if __name__ == "__main__":

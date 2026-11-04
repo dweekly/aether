@@ -25,7 +25,6 @@ import sys
 from datetime import date
 from pathlib import Path
 
-import duckdb
 import matplotlib
 
 matplotlib.use("Agg")
@@ -123,6 +122,7 @@ def drones(a, out):
 def yearbuilt(a, out):
     fl = json.loads(a.flight_line.read_text())
     tails = {f["n_number"].strip().upper() for s in fl for f in (s.get("fleet") or []) if (f.get("n_number") or "").strip()}
+    import duckdb  # only this chart needs it; the styling helpers are imported by 59
     c = duckdb.connect()
     yrs = [r[0] for r in c.execute(f"""SELECT year_mfr FROM read_parquet('{a.aircraft}')
         WHERE n_number IN (SELECT unnest(?)) AND year_mfr BETWEEN 1930 AND 2026""", [sorted(tails)]).fetchall()]
