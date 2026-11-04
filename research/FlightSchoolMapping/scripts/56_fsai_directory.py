@@ -142,8 +142,7 @@ def collapse(rows):
     return out
 
 
-def run_matcher(csv_path, out_dir):
-    fl = ROOT / "output" / "flight_line.json"
+def run_matcher(csv_path, out_dir, fl):
     ap = f"{ROOT / 'output' / 'airports.csv'},{ROOT / 'data' / 'ourairports_airports.csv'}"
     p = subprocess.run([sys.executable, "-I", str(MATCHER), str(fl), ap, str(out_dir), str(csv_path)],
                        capture_output=True, text=True, check=True)
@@ -152,7 +151,7 @@ def run_matcher(csv_path, out_dir):
 
 
 TRAINING_TEXT = re.compile(r"flight training|flight school|flight lessons?|learn to fly|discovery flight|"
-                           r"intro(ductory)? flight|private pilot|instrument rating|flight instruct|cfi\\b|"
+                           r"intro(ductory)? flight|private pilot|instrument rating|flight instruct|\bcfi|"
                            r"pilot training|rental|ground school|checkride|part 141|part 61", re.I)
 
 
@@ -193,6 +192,10 @@ def main():
     ap.add_argument("raw")
     ap.add_argument("out_dir")
     ap.add_argument("--md", default=str(REPO / "docs" / "hackers-2026-fsai-directory.md"))
+    ap.add_argument("--flight-line", default=str(ROOT / "output" / "flight_line.json"),
+                    help="School list to match against. The doc compares with the March list as released in "
+                         "v0.3 (4,825 schools), before these schools were added: "
+                         "git show 569a7b6^:research/FlightSchoolMapping/output/flight_line.json")
     ap.add_argument("--labels", default=str(REPO / "docs" / "hackers-2026-fsai-labels.csv"),
                     help="Hand labels for the entries the matcher did not place, keyed by FSAI member id "
                          "(individuals' names are blanked)")
@@ -220,13 +223,13 @@ def main():
             w.writerow(["c_fsai", r["name"], r["city"], r["state"], r["website"],
                         f"{r['street']}, {r['city']}, {r['state']} {r['zip']}".strip(", "),
                         r["ids"][0], "tags" if r["kind"] == "training" else "name", "|".join(r["tags"])])
-    summary, matched = run_matcher(out / "c_fsai.csv", out)
+    summary, matched = run_matcher(out / "c_fsai.csv", out, a.flight_line)
 
     # The matcher compares names within a state; entries with no address get a nationwide exact-name check.
     spec = importlib.util.spec_from_file_location("mx", MATCHER)
     mx = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mx)
-    schools = mx.load_schools(str(ROOT / "output" / "flight_line.json"),
+    schools = mx.load_schools(str(a.flight_line),
                               f"{ROOT / 'output' / 'airports.csv'},{ROOT / 'data' / 'ourairports_airports.csv'}")
     by_variant = collections.defaultdict(list)
     for sc in schools:
@@ -337,6 +340,9 @@ def main():
     w("")
     w("## Matching against our 4,825 schools")
     w("")
+    w("Against the school list as released in v0.3, before 20 of these were added to it "
+      "(`docs/hackers-2026-added-schools.md`).")
+    w("")
     w(f"Matcher output: `{summary.splitlines()[-1]}`")
     w("")
     w("| Match rule | By tags | By name only |")
@@ -355,7 +361,11 @@ def main():
       f"(`docs/hackers-2026-fsai-labels.csv`). Members tick their own tags, so many entries tagged as flight "
       f"schools are examiners, insurers, vendors or one person. Entries labelled *school* had their homepage "
       f"fetched on {__import__('datetime').date.today().isoformat()}: *confirmed* means the site answered and "
-      f"mentions flight training (lessons, discovery flights, private pilot and the like).")
+      f"mentions flight training (lessons, discovery flights, private pilot and the like). That is a keyword "
+      f"check, so labels were corrected by hand where a site uses the words for something else (FTI in "
+      f"Denver sells simulator type ratings; Orient Flight School is our Pilot Training Center Homestead "
+      f"under a new name, both found when the schools were added, `docs/hackers-2026-added-schools.md`; "
+      f"Aviation Marine is an insurer whose menu offers CFI renter's insurance).")
     w("")
     w("| Label | Entries |")
     w("|---|---|")
@@ -402,7 +412,9 @@ def main():
       "`data/research-2026-11/fsai/`, then, from `research/FlightSchoolMapping/`:")
     w("")
     w("```")
-    w("python scripts/56_fsai_directory.py data/research-2026-11/fsai/fsai_raw.json data/research-2026-11/fsai")
+    w("git show 569a7b6^:research/FlightSchoolMapping/output/flight_line.json > /tmp/flight_line_v03.json")
+    w("python scripts/56_fsai_directory.py data/research-2026-11/fsai/fsai_raw.json data/research-2026-11/fsai \\")
+    w("    --flight-line /tmp/flight_line_v03.json")
     w("```")
     Path(a.md).write_text("\n".join(L) + "\n")
     print(summary)

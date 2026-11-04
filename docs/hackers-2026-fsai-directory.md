@@ -63,6 +63,8 @@ Most common tags:
 
 ## Matching against our 4,825 schools
 
+Against the school list as released in v0.3, before 20 of these were added to it (`docs/hackers-2026-added-schools.md`).
+
 Matcher output: `c_fsai 385 {'domain': 162, 'exact': 54, 'none': 150, 'address': 6, 'colocated': 6, 'fuzzy': 7}`
 
 | Match rule | By tags | By name only |
@@ -79,24 +81,24 @@ Matcher output: `c_fsai 385 {'domain': 162, 'exact': 54, 'none': 150, 'address':
 
 ### Not in our list, sorted by hand
 
-Each of the 144 unmatched entries was labelled by hand from its name, tags and website (`docs/hackers-2026-fsai-labels.csv`). Members tick their own tags, so many entries tagged as flight schools are examiners, insurers, vendors or one person. Entries labelled *school* had their homepage fetched on 2026-11-04: *confirmed* means the site answered and mentions flight training (lessons, discovery flights, private pilot and the like).
+Each of the 144 unmatched entries was labelled by hand from its name, tags and website (`docs/hackers-2026-fsai-labels.csv`). Members tick their own tags, so many entries tagged as flight schools are examiners, insurers, vendors or one person. Entries labelled *school* had their homepage fetched on 2026-11-04: *confirmed* means the site answered and mentions flight training (lessons, discovery flights, private pilot and the like). That is a keyword check, so labels were corrected by hand where a site uses the words for something else (FTI in Denver sells simulator type ratings; Orient Flight School is our Pilot Training Center Homestead under a new name, both found when the schools were added, `docs/hackers-2026-added-schools.md`; Aviation Marine is an insurer whose menu offers CFI renter's insurance).
 
 | Label | Entries |
 |---|---|
 | no_website | 49 |
-| school | 45 |
-| vendor | 19 |
+| school | 42 |
+| vendor | 20 |
 | individual | 8 |
+| insurer | 6 |
 | examiner | 6 |
-| insurer | 5 |
-| same_as_ours | 4 |
+| same_as_ours | 5 |
 | foreign | 4 |
 | duplicate | 3 |
 | airline | 1 |
 
-Of the 45 labelled school: 22 confirmed, 7 answered without training text on the homepage, 5 served a bot challenge or refusal (not circumvented) and 11 did not answer (most no longer resolve in DNS).
+Of the 42 labelled school: 20 confirmed, 6 answered without training text on the homepage, 5 served a bot challenge or refusal (not circumvented) and 11 did not answer (most no longer resolve in DNS).
 
-### 22 confirmed flight-training operations not in our list
+### 20 confirmed flight-training operations not in our list
 
 | Name | City | State | Website | FSAI tags |
 |---|---|---|---|---|
@@ -108,12 +110,10 @@ Of the 45 labelled school: 22 confirmed, 7 answered without training text on the
 | Golden State Flyers LLC | Fresno | CA | https://Www.goldenstateflyers.com | Flight School - Airplane, Flight School - Part 61, Part 61 |
 | Winging It Flight Services | San Jose | CA | https://www.wingingit.cloud | Flight School - Airplane, Flight School - International Students, Flight School - Multi Engine, Flight School - Part 141, Flight School - Part 61, Flight School - Part 61 and 141, Flight School - Seaplane, Flight School - Turbine, Accredited Flight School, Part 141, Part 61 |
 | American Flight Schools | Englewood | CO | https://www.americanflightschools.com | Flight School - Airplane, Flight School - Multi Engine, Flight School - Part 141, Flight School - Part 61, Flight School - Part 61 and 141, Flight School - Recreational, Part 141 |
-| Flight Training International, Inc | Denver | CO | https://www.ftiratings.com | Flight School - International Students, Flight School - Multi Engine, Accredited Flight School |
 | Aero Global Aviation Academy | KISSIMMEE | FL | https://www.aeroglobalaviation.com | Flight School - Airplane, Flight School - Multi Engine, Flight School - Part 61, Part 61 |
 | Alexander Aviation Associates, Inc. | ALTAMONTE SPRINGS | FL | https://www.AlexanderAviation.com |  |
 | FL Aviation Center, LLC | Tallahassee | FL | https://www.FLAviationCenter.com | Flight School - Airplane, Flight School - Part 141, Flight School - Part 61, Flight School - Part 61 and 141, Part 141, Part 61 |
 | Norton Aviation | Longboat Key | FL | https://www.NortonAviation.com | Flight School - Airplane, Flight School - Multi Engine, Flight School - Part 61, Flight School - Turbine, Part 61 |
-| Orient Flight School | Hometsead | FL | https://www.orientflightschool.net | Flight School - Airplane, Flight School - Multi Engine, Flight School - Part 61 and 141, Part 141, Part 61 |
 | Speedway Flight Training, LLC | Newnan | GA | https://speedwayft.com | Flight School - Airplane, Flight School - Part 61, Part 61 |
 | Air Conrad LLC | Martinsburg | PA | https://www.airconrad.net | Flight School - Part 61, Part 61 |
 | SunEx Aviation | Ceiba | PR | https://www.sunexair.com | Flight School - Airplane, Flight School - Multi Engine, Flight School - Part 61 and 141, Part 141, Part 61 |
@@ -140,7 +140,7 @@ Closest is the nearest same-state name in our list and its similarity, for readi
 | JPG Aviation Services, LLC | Phoenix | AZ | https://www.checkplease.info | tags | examiner | K & S Aviation Services, Inc. (0.78) |
 | American Aviation Academy, Inc. | El Cajon | CA | http://www.flyaaa.com | name | school (blocked) | Ascent Aviation Academy (0.83) |
 | Anywhere ATP | Hanford | CA |  | tags | no_website | VanFleet Aviation (0.48) |
-| Aviation Marine | Sausalito | CA | https://www.aviation-marine.com | tags | school (no training text) | Cuesta College - Aviation Maintenance Training (0.64) |
+| Aviation Marine | Sausalito | CA | https://www.aviation-marine.com | tags | insurer | Cuesta College - Aviation Maintenance Training (0.64) |
 | (individual) | | CA | | tags | individual | |
 | Echelon Sport Aviation | Riverside | CA | https://EchelonSportAviation.com | tags | school (confirmed) | California Sport Aviation (0.81) |
 | Flight Test Prep | Long Beach | CA | https://flighttestprep.com | tags | vendor | FLITEPRO INC (0.58) |
@@ -156,7 +156,7 @@ Closest is the nearest same-state name in our list and its similarity, for readi
 | World Wide Wings LLC | SAN BERNARDINO | CA | https://www.worldwidewings.net | tags | school (site down) | MYF HOLDINGS LLC (0.50) |
 | American Flight Schools | Englewood | CO | https://www.americanflightschools.com | tags | school (confirmed) | The Flying School (0.61) |
 | Bye Aerospace | Englewood | CO | https://www.byeaerospace.com | tags | vendor | Fly Aspen (0.55) |
-| Flight Training International, Inc | Denver | CO | https://www.ftiratings.com | tags | school (confirmed) | FlightSafety International (0.76) |
+| Flight Training International, Inc | Denver | CO | https://www.ftiratings.com | tags | vendor | FlightSafety International (0.76) |
 | Three Wing Flight School, LLC | STRATFORD | CT |  | tags | same_as_ours | Three Wing Aviation Group, LLC (0.57) |
 | AB Flight LLC - Evektor Aircraft Sales | Sebring | FL | https://www.abflight.com | tags | school (no training text) | Cams Flight (0.80) |
 | Aero Global Aviation Academy | KISSIMMEE | FL | https://www.aeroglobalaviation.com | tags | school (confirmed) | ROYAL AVIATION ACADEMY LLC (0.84) |
@@ -182,7 +182,7 @@ Closest is the nearest same-state name in our list and its similarity, for readi
 | Lockwood Aviation Supply | Sebring | FL | https://Lockwood.aero | tags | vendor | London Aviation Group (0.67) |
 | (individual) | | FL | | tags | individual | |
 | Norton Aviation | Longboat Key | FL | https://www.NortonAviation.com | tags | school (confirmed) | Preston Aviation - Tailwheel Training (0.84) |
-| Orient Flight School | Hometsead | FL | https://www.orientflightschool.net | tags | school (confirmed) | Pilot Training Center Homestead (0.35) |
+| Orient Flight School | Hometsead | FL | https://www.orientflightschool.net | tags | same_as_ours | Pilot Training Center Homestead (0.35) |
 | Panhandle Helicopter Academy | Panama City Beach | FL | https://www.panhandlehelicopter.com | tags | school (blocked) | Helicopter Academy (0.78) |
 | Skyline Aviation Academy | North Lauderdale | FL | https://www.fly-skyline.com | tags | school (site down) | SkyEagle Aviation Academy (0.90) |
 | Old Republic Aerospace, Inc. | Kennesaw | GA | http://www.phoenixaviationmgrs.com | name | insurer | MOORES AEROSPACE SOLUTIONS LLC (0.54) |
@@ -279,5 +279,7 @@ Closest is the nearest same-state name in our list and its similarity, for readi
 Open the directory page in a browser and run `scripts/probes/fsai_directory_pull.js` in its console; it pulls every entry and tag and saves `fsai_raw.json` as a download. Move that to `data/research-2026-11/fsai/`, then, from `research/FlightSchoolMapping/`:
 
 ```
-python scripts/56_fsai_directory.py data/research-2026-11/fsai/fsai_raw.json data/research-2026-11/fsai
+git show 569a7b6^:research/FlightSchoolMapping/output/flight_line.json > /tmp/flight_line_v03.json
+python scripts/56_fsai_directory.py data/research-2026-11/fsai/fsai_raw.json data/research-2026-11/fsai \
+    --flight-line /tmp/flight_line_v03.json
 ```

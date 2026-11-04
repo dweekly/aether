@@ -13,7 +13,7 @@ fsai_id,name,state,label
 3962056063,(individual),CA,individual
 1402838571,"American Aviation Academy, Inc.",CA,school
 3944348061,Anywhere ATP,CA,no_website
-1861708125,Aviation Marine,CA,school
+1861708125,Aviation Marine,CA,insurer
 4241240293,Echelon Sport Aviation,CA,school
 3311842083,Flight Test Prep,CA,vendor
 2587741095,Flight Ventures Aviation Academy,CA,school
@@ -26,7 +26,7 @@ fsai_id,name,state,label
 3497967347,World Wide Wings LLC,CA,school
 2225162697,American Flight Schools,CO,school
 1631846259,Bye Aerospace,CO,vendor
-1906700943,"Flight Training International, Inc",CO,school
+1906700943,"Flight Training International, Inc",CO,vendor
 1636458087,"Three Wing Flight School, LLC",CT,same_as_ours
 3949818955,(individual),FL,individual
 1781844315,AB Flight LLC - Evektor Aircraft Sales,FL,school
@@ -52,7 +52,7 @@ fsai_id,name,state,label
 3999137653,Levil Aviation,FL,vendor
 3591147291,Lockwood Aviation Supply,FL,vendor
 1701153211,Norton Aviation,FL,school
-3624067971,Orient Flight School,FL,school
+3624067971,Orient Flight School,FL,same_as_ours
 3562044139,Panhandle Helicopter Academy,FL,school
 1690920183,Skyline Aviation Academy,FL,school
 1403046311,"Old Republic Aerospace, Inc.",GA,insurer
