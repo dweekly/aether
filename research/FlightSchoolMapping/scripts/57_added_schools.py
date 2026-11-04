@@ -296,8 +296,21 @@ ADDED_FIELDS = ("field_sources", "public_contact", "google_place_ids")
 RELEASE_ADDED_FIELDS = ("google_place_ids", "contact")
 
 
+# Added to each school's fleet rows and listings after rc3: the school's own description of the aircraft.
+RELEASE_ADDED_ROW_FIELDS = ("description",)
+
+
 def strip(rec, fields):
     return {k: v for k, v in rec.items() if k not in fields}
+
+
+def strip_release(rec):
+    """A schools_full.json record without the fields added since the control releases."""
+    out = strip(rec, RELEASE_ADDED_FIELDS)
+    for k in ("fleet", "listings"):
+        if k in out:
+            out[k] = [strip(r, RELEASE_ADDED_ROW_FIELDS) for r in out[k]]
+    return out
 
 
 def key_of(s):
@@ -357,8 +370,8 @@ def cmd_release_check(a):
     rel = ROOT / "data" / "release"
     rc, ref = rel / a.release, rel / a.reference_release
     new_full = {s["key"]: s for s in json.loads((rc / "schools_full.json").read_text())["schools"]}
-    new = {k: strip(s, RELEASE_ADDED_FIELDS) for k, s in new_full.items()}
-    old = {s["key"]: strip(s, RELEASE_ADDED_FIELDS) for s in json.loads((ref / "schools_full.json").read_text())["schools"]}
+    new = {k: strip_release(s) for k, s in new_full.items()}
+    old = {s["key"]: strip_release(s) for s in json.loads((ref / "schools_full.json").read_text())["schools"]}
     fl = json.loads((OUT / "flight_line.json").read_text())
     want = {s["domain"] for s in fl if s.get("provenance") and s["domain"]
             and any(f.get("n_number") or f.get("display_name") for f in s["fleet"])} - set(old)
@@ -396,6 +409,9 @@ def cmd_release_check(a):
     t_diff, t_tie = [], []
     for n in set(t_new) | set(t_old):
         a_, b_ = dict(t_new.get(n) or {}), dict(t_old.get(n) or {})
+        for x in (a_, b_):  # sch rows may carry [listed_as, description] after the first six (35, after rc3)
+            if "sch" in x:
+                x["sch"] = [r[:6] for r in x["sch"]]
         if n in added_tails:  # its "sch" list may now name an added school; nothing else may change
             a_["sch"] = [x for x in a_.get("sch", []) if x[0] not in extra]
             b_.setdefault("sch", [])

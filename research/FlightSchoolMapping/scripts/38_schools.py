@@ -3,8 +3,10 @@
 
 Kept from output/flight_line.json:
   domain                 the school's own website
-  fleet[].n_number, display_name, wet_rate_hr, dry_rate_hr, airport_id,
-  source_url             extracted from the school's own pages (or PDF rate sheets)
+  fleet[].n_number, display_name, description, wet_rate_hr, dry_rate_hr, airport_id,
+  source_url             extracted from the school's own pages (or PDF rate sheets);
+                         display_name and description become "listed_as" and "description",
+                         the school's own words for the aircraft (e.g. "2025 Cirrus SR20 G7")
 Dropped: name, aopa_*, contact and location labels (AOPA's terms forbid
 republishing them) and every adsb field (OpenSky-derived; its terms forbid
 redistribution). Activity is recomputed from the adsb.lol archive.
@@ -155,12 +157,13 @@ def main():
             on_site = bool(src and domain and norm_domain(src).endswith(domain))
             if not re.fullmatch(r"N[0-9][0-9A-Z]{0,4}", n):
                 if f.get("display_name"):
-                    listings.append({"listed_as": f.get("display_name"), "wet": f.get("wet_rate_hr"),
+                    listings.append({"listed_as": f.get("display_name"), "description": f.get("description"),
+                                     "wet": f.get("wet_rate_hr"),
                                      "dry": f.get("dry_rate_hr"), "source_url": resolve_url(src, domain)})
                 continue
             ac = aircraft.get(n)
             fleet.append({
-                "n": n, "listed_as": f.get("display_name"),
+                "n": n, "listed_as": f.get("display_name"), "description": f.get("description"),
                 "wet": f.get("wet_rate_hr"), "dry": f.get("dry_rate_hr"),
                 "airport": canon(f.get("airport_id")), "source_url": src or None,
                 "evidence": "website" if on_site else "registry",
