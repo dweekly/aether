@@ -826,6 +826,7 @@ only when you intend to act on the results.
 | `demo_extract.py` | Talk demo: one school URL in, its fleet and rates out, each tail checked against a release (`demo_extract.tape` records it with VHS) |
 | `57_added_schools.py` | Add schools found on outside lists (FSAI directory, Michigan and Minnesota flight-school licenses, state education lists, SEVP, VA, IPEDS, the unlisted-operations pass) to `flight_schools_enriched.json` with a `provenance` list, from the hand dispositions in `docs/hackers-2026-added-schools.csv`; folds their extractions into `added_extract.jsonl`; `check` and `release-check` gate the rebuild (see `docs/hackers-2026-added-schools.md`) |
 | `56_fsai_directory.py` | Parse the FSAI (formerly FSANA) member directory pulled in a browser by `probes/fsai_directory_pull.js`, classify entries and match US training providers against `flight_line.json`; writes `docs/hackers-2026-fsai-directory.md` |
+| `58_airmen_llc_join.py` | Join the FAA releasable airmen file (fetched with `--download`) to LLC and corporation registrations by exact normalized address, with a shuffled-house-number control, surname validations and the Florida comparison; writes `docs/hackers-2026-airmen-llc.md` and exits 1 if a gate fails |
 | `59_google_places.py` | Find flight schools with Google Places (New): free IDs-only text searches over self-splitting US tiles, paid details only after a printed estimate under `--max-usd`, matched against `flight_line.json`, unmatched confirmed from each school's own site |
 
 ## Aircraft Provenance Model
