@@ -25,6 +25,8 @@ Steps, from research/FlightSchoolMapping/ (data under data/research-2026-11/, gi
   merge-extract  an extract_v2 run's results for the added domains -> output/added_extract.jsonl
                  (merged by domain and layout; other lines kept)
   check          gates on the rebuilt output/flight_line.json against the pre-change copy
+  release-check  gates on a release built from it against one built the same way from the
+                 pre-change flight_line.json
 
 Usage:
   57_added_schools.py candidates
@@ -32,6 +34,7 @@ Usage:
   57_added_schools.py ingest
   57_added_schools.py merge-extract --run RUN_DIR --model claude-haiku-5-5
   57_added_schools.py check --reference OLD_FLIGHT_LINE
+  57_added_schools.py release-check --release RC --reference-release CONTROL
 """
 
 import argparse
@@ -333,6 +336,71 @@ def cmd_check(a):
     print("PASS")
 
 
+def cmd_release_check(a):
+    """Gates on the release. 1: every school in the control release is in the candidate,
+    identical. 2: the candidate's other schools are exactly the added schools that have a
+    fleet row or listing, each named from its own site. 3: every tail record (web/t) is
+    unchanged except that a tail on an added school's fleet may name that school in "sch"
+    (its "recent" legs compared as a set: 35 does not order legs within a day)."""
+    rel = ROOT / "data" / "release"
+    rc, ref = rel / a.release, rel / a.reference_release
+    new = {s["key"]: s for s in json.loads((rc / "schools_full.json").read_text())["schools"]}
+    old = {s["key"]: s for s in json.loads((ref / "schools_full.json").read_text())["schools"]}
+    fl = json.loads((OUT / "flight_line.json").read_text())
+    want = {s["domain"] for s in fl if s.get("provenance") and s["domain"]
+            and any(f.get("n_number") or f.get("display_name") for f in s["fleet"])}
+    fails = []
+    changed = [k for k in old if json.dumps(old[k], sort_keys=True) != json.dumps(new.get(k), sort_keys=True)]
+    if changed:
+        fails.append(f"{len(changed)} control schools changed or missing, e.g. {changed[:3]}")
+    extra = set(new) - set(old)
+    if extra != want:
+        fails.append(f"new schools {sorted(extra - want)[:5]} not added; added {sorted(want - extra)[:5]} missing")
+    unnamed = sorted(k for k in extra if new[k]["name_source"] == "domain")
+    def tails(r):
+        """Every tail record in the shards index.json points at (35 does not delete shards an
+        earlier export split differently, so web/t can hold stale files the explorer never reads)."""
+        split = json.loads((r / "web" / "index.json").read_text()).get("split", {})
+        out, stale = {}, 0
+        for p in (r / "web" / "t").glob("*.json"):
+            key, _, part = p.stem.partition("-")
+            live = (key in split and part.isdigit() and int(part) < split[key]) or (key not in split and not part)
+            if live:
+                out.update(json.loads(p.read_text()))
+            else:
+                stale += 1
+        print(f"  {r.name}: {stale} stale shard files not read")
+        return out
+    t_new, t_old = tails(rc), tails(ref)
+    added_tails = {f["n"] for k in extra for f in new[k]["fleet"]}
+    t_diff = []
+    for n in set(t_new) | set(t_old):
+        a_, b_ = dict(t_new.get(n) or {}), dict(t_old.get(n) or {})
+        if n in added_tails:  # its "sch" list may now name an added school; nothing else may change
+            a_["sch"] = [x for x in a_.get("sch", []) if x[0] not in extra]
+            b_.setdefault("sch", [])
+            a_.setdefault("sch", [])
+        for x in (a_, b_):  # 35 orders a day's legs by day only, so ties can swap between runs
+            if "recent" in x:
+                x["recent"] = sorted(x["recent"], key=json.dumps)
+        if a_ != b_:
+            t_diff.append(n)
+    if t_diff:
+        fails.append(f"{len(t_diff)} tail records differ beyond an added school in their sch list, e.g. {sorted(t_diff)[:3]}")
+    print(f"control {len(old):,} schools, candidate {len(new):,}; control schools changed {len(changed)}; "
+          f"added schools in the release {len(extra)} of {len(want)} with a fleet row or listing "
+          f"({len(unnamed)} named only by domain: {unnamed[:5]}); tails {len(t_new):,} vs {len(t_old):,}, "
+          f"{len(added_tails)} on added fleets, differing otherwise {len(t_diff)}")
+    for k in sorted(extra):
+        s = new[k]
+        print(f"  {k:32} {s['name'][:36]:36} {s['airport'] or '-':5} fleet {s['fleet_listed']:2} flew {s['fleet_flew']:2} "
+              f"listings {s['listings_without_tail']:2} wet median {s['wet_rate_median']}")
+    if fails:
+        print("FAIL\n  " + "\n  ".join(fails))
+        sys.exit(1)
+    print("PASS")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -344,8 +412,11 @@ def main():
     m.add_argument("--model", default="claude-haiku-5-5")
     c = sub.add_parser("check")
     c.add_argument("--reference", required=True)
+    rc = sub.add_parser("release-check")
+    rc.add_argument("--release", required=True)
+    rc.add_argument("--reference-release", required=True)
     a = ap.parse_args()
-    {"candidates": cmd_candidates, "sitecheck": cmd_sitecheck, "ingest": cmd_ingest,
+    {"release-check": cmd_release_check, "candidates": cmd_candidates, "sitecheck": cmd_sitecheck, "ingest": cmd_ingest,
      "merge-extract": cmd_merge_extract, "check": cmd_check}[a.cmd](a)
 
 
