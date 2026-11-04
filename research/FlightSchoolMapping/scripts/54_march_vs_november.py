@@ -6,7 +6,7 @@ For the Hackers 2026 talk (docs/hackers-2026-research-plan.md, workstream 3). In
   March crawl     the production output/ dir: fleet_crawl_index.json, _aopa_extract_index.json,
                   fleet_browser_index.json, fleet_browser_text/, expansion_crawl.jsonl
   November crawl  data/research-2026-11/recrawl/: the same crawlers on the same target
-                  lists (50a_recrawl_targets.py), with one attempt line per site
+                  lists (54a_recrawl_targets.py), with one attempt line per site
                   (crawl_attempts_http.jsonl, crawl_attempts_browser.jsonl, expansion_crawl.jsonl)
                   and an optional retry of the sites that failed (retry/crawl_attempts_http.jsonl)
   Extractions     extract_v2.py run dirs (http/, browser/) for each month, same prompt and
@@ -32,7 +32,7 @@ same-school price pairs.
 
 Usage (on trogdor, from research/FlightSchoolMapping):
   PY=scripts/.venv/bin/python   # the production checkout's venv
-  $PY scripts/50_march_vs_november.py --march-out OUT --recrawl REC \\
+  $PY scripts/54_march_vs_november.py --march-out OUT --recrawl REC \\
       --march-runs RUNS_MARCH --nov-runs RUNS_NOV --model claude-haiku-5-5
 Writes REC/march_vs_november.json and docs/hackers-2026-march-vs-november.md.
 """
@@ -102,13 +102,15 @@ def error_kind(err):
 
 
 def http_kind(status):
-    if status in (401, 403, 429, 503):
+    """A served answer that is not the page: a challenge or refusal (blocked), or an error."""
+    if status < 400 or status in (401, 403, 429, 503):
         return "blocked"
     return "http_error"
 
 
-def march_status(out):
-    """domain -> best status any March crawler recorded."""
+def march_status(out, honest_only=False):
+    """domain -> best status any March crawler recorded. honest_only: only the HTTP and
+    expansion crawlers, which send the research user agent and no browser evasion."""
     st = {}
 
     def put(d, s):
@@ -122,15 +124,15 @@ def march_status(out):
                 put(d, "challenge" if "captcha_challenge" in flags else "ok")
             elif any(f_.startswith("http_") for f_ in flags):
                 put(d, "blocked")
-    for e in json.loads((out / "fleet_browser_index.json").read_text()):
+    for e in ([] if honest_only else json.loads((out / "fleet_browser_index.json").read_text())):
         d, flags = norm_domain(e.get("school_website", "")), e.get("crawl_flags", [])
-        if "homepage_failed" in flags:
+        if "homepage_failed" in flags or e.get("redirect_domain") == "chromewebdata":
             put(d, "unreachable")
         elif "captcha_challenge" in flags:
             put(d, "challenge")
         elif e.get("pages"):
             put(d, "ok")
-    for sub in (out / "fleet_browser_text").iterdir():  # the AOPA browser crawl wrote no index
+    for sub in ([] if honest_only else (out / "fleet_browser_text").iterdir()):  # the AOPA browser crawl wrote no index
         if sub.is_dir() and sum(f.stat().st_size for f in sub.glob("*.txt")) >= 200:
             put(norm_domain(sub.name), "ok")
     for e in jsonl(out / "expansion_crawl.jsonl"):
@@ -152,8 +154,9 @@ def november_attempts(rec):
                 s = "unreachable"
             elif code >= 400:
                 s = http_kind(code)
-            elif code != 200 and not a.get("pages"):
-                s = "blocked"  # e.g. a 202 WAF challenge with no content
+            elif a.get("final_domain") == "chromewebdata" or (code != 200 and (
+                    not a.get("pages") or (crawler == "browser" and a.get("chars", 0) < 200))):
+                s = "blocked"  # e.g. a 202 WAF challenge: no content, or Chrome's own error page
             elif "captcha_challenge" in flags:
                 s = "challenge"
             else:
@@ -319,13 +322,25 @@ def main():
     need += [a.recrawl / f for f in ("march_domains.json", "crawl_attempts_http.jsonl", "crawl_attempts_browser.jsonl",
                                      "expansion_crawl.jsonl")]
     for runs in (a.march_runs, a.nov_runs):
-        need += [runs / p / f for p in PASSES for f in ("index.json", "requests.jsonl", f"{a.model}/results.jsonl")]
+        need += [runs / p / f for p in PASSES
+                 for f in ("index.json", "requests.jsonl", f"{a.model}/results.jsonl", f"{a.model}/batches.json")]
     missing = [str(p) for p in need if not p.exists()]
     if missing:
         sys.exit("FAIL missing inputs:\n  " + "\n  ".join(missing))
 
     gates = {}
     R = {"model": a.model}
+
+    # Like for like: each pass ran with the same model, effort and prompt in both months.
+    settings, same = {}, True
+    for p in PASSES:
+        bm = json.loads((a.march_runs / p / a.model / "batches.json").read_text())
+        bn = json.loads((a.nov_runs / p / a.model / "batches.json").read_text())
+        keys = ("model", "effort", "thinking", "max_tokens", "prompt_fingerprint")
+        settings[p] = {"march": {k: bm.get(k) for k in keys}, "november": {k: bn.get(k) for k in keys}}
+        same &= settings[p]["march"] == settings[p]["november"]
+    gates["same_settings"] = {"pass": same, "settings": settings}
+    R["effort"] = sorted({settings[p][m]["effort"] for p in PASSES for m in ("march", "november")})
 
     # ── 1. Sites ──
     march_domains = json.loads((a.recrawl / "march_domains.json").read_text())
@@ -357,12 +372,17 @@ def main():
         died_kinds[kind] += 1
         if len(died_examples) < 12:
             died_examples.append({"domain": d, "why": kind})
+    honest = march_status(a.march_out, honest_only=True)
+    blocked_now = [d for d in alive_march if nst[d]["status"] in ("blocked", "challenge")]
+    newly_blocked = Counter(f"{nst[d]['status']}_{nst[d]['code']}" for d in blocked_now if honest.get(d) == "ok")
+    blocked_browser_only = sum(1 for d in blocked_now if honest.get(d) != "ok")
     redirected, red_examples = [], []
     march_redirects = {norm_domain(e.get("school_website", "")): e.get("redirect_domain", "")
                        for e in json.loads((a.march_out / "fleet_browser_index.json").read_text())}
     already = 0
     for d in alive_march:
-        oks = [x for x in att[d] if x["status"] == "ok" and x["final_domain"]]
+        oks = [x for x in att[d] if x["status"] == "ok" and x["final_domain"]
+               and x["final_domain"] != "chromewebdata"]
         if oks and all(site(x["final_domain"]) != site(d) for x in oks):
             to = oks[0]["final_domain"]
             if march_redirects.get(d) and site(march_redirects[d]) == site(to):
@@ -371,9 +391,21 @@ def main():
             redirected.append(d)
             if len(red_examples) < 12:
                 red_examples.append({"from": d, "to": to})
+    targets = json.loads((a.recrawl / "targets_http.json").read_text()) if (a.recrawl / "targets_http.json").exists() else []
+    logged = {x.get("website", "") for x in jsonl(a.recrawl / "crawl_attempts_http.jsonl")}
+    unlogged = [t["website"] for t in targets
+                if t["website"] not in logged and "https://" + t["website"] not in logged]
+    R["crawl_volume"] = {
+        "march_http_pages": sum(len(e.get("pages", [])) for e in json.loads((a.march_out / "fleet_crawl_index.json").read_text())),
+        "november_http_pages": sum(x.get("pages", 0) for x in jsonl(a.recrawl / "crawl_attempts_http.jsonl")),
+        "november_browser_pages": sum(x.get("pages", 0) for x in jsonl(a.recrawl / "crawl_attempts_browser.jsonl")),
+        "http_targets": len(targets), "http_targets_without_attempt_line": len(unlogged),
+        "http_targets_without_attempt_line_list": unlogged}
     R["sites"] = {"march_domains": len(march_domains), "attempted": len(attempted),
                   "alive_in_march": len(alive_march), "died": len(died), "died_by_reason": dict(died_kinds),
                   "died_examples": died_examples, "retried": len(retry),
+                  "newly_blocked": sum(newly_blocked.values()), "newly_blocked_by_code": dict(newly_blocked),
+                  "blocked_now_reached_in_march_only_by_stealth_browser": blocked_browser_only,
                   "redirect_away_new": len(redirected), "redirect_away_same_as_march": already,
                   "redirect_examples": red_examples}
 
@@ -470,6 +502,14 @@ def main():
     n_pairs = len(pairs)
     gates["matched_price_pairs"] = {"n": n_pairs, "min": MIN_PAIRS, "pass": n_pairs >= MIN_PAIRS}
     R["gates"] = gates
+    cost = {}
+    for p in PASSES:
+        u = a.nov_runs / p / a.model / "usage.json"
+        est = [json.loads(l) for l in (a.nov_runs / p / "log.jsonl").open() if '"estimate"' in l] \
+            if (a.nov_runs / p / "log.jsonl").exists() else []
+        cost[p] = {"recorded_usd": json.loads(u.read_text())["cost_usd_batch"] if u.exists() else None,
+                   "estimated_usd": est[-1]["est_cost_usd_batch"] if est else None}
+    R["november_extraction_cost"] = cost
     R["all_gates_pass"] = all(g["pass"] for g in gates.values())
 
     (a.recrawl / "march_vs_november.json").write_text(json.dumps(R, indent=2) + "\n")
@@ -502,21 +542,29 @@ def render(R):
     lines = [
         "# March vs November 2026: flight-school websites eight months apart",
         "",
-        "Generated by `research/FlightSchoolMapping/scripts/50_march_vs_november.py`; do not edit by hand.",
+        "Generated by `research/FlightSchoolMapping/scripts/54_march_vs_november.py`; do not edit by hand.",
         "Workstream 3 of [the research plan](hackers-2026-research-plan.md). Every number below comes from",
         f"that script's run, which {'passed' if R['all_gates_pass'] else '**failed**'} its gates.",
         "",
         "## Method",
         "",
         "- **Same sites.** The November crawl visited the March target lists, rebuilt from March's own",
-        "  indexes by `50a_recrawl_targets.py`, with the March crawlers (`09a`, `10`, `09f`) and their",
+        "  indexes by `54a_recrawl_targets.py`, with the March crawlers (`09a`, `10`, `09f`) and their",
         "  rate limits and headers, writing a new directory. One difference: the browser crawl ran with",
         "  `--no-evasion` (no stealth script, no automation-flag masking, no waiting out bot challenges),",
         "  so a site behind a challenge that March got through counts as challenged now, not as dead.",
+        "- **Different machine.** March's crawl ran on macOS (its error strings are macOS resolver",
+        "  messages); November's ran on trogdor (Linux). Some challenges (SiteGround's `sgcaptcha`, for",
+        "  one) key on the client IP, so part of the new blocking may be about who is asking, not the site.",
         f"- **Same extraction.** Both months were extracted by `extract_v2.py` with `{R['model']}`, the same",
         "  prompt (the March prompt plus the training-price block) and the same settings. The March side is",
         "  workstream 1's run over the March caches. The expansion crawl (`09f`) is counted for site",
         "  status only: it had its own prompt in March and `extract_v2` has no layout for it.",
+        f"- **Effort {', '.join(R['effort'])} in both months**, as the March-side run used. At low effort the",
+        "  model sometimes lists one entry per aircraft type instead of per tail on big fleet tables, so",
+        "  tails are undercounted there in both months alike; the control below bounds what that adds to",
+        "  run-to-run churn. Re-running both sides at medium would have been about twice the budget.",
+        "- **Pairing is by domain**, through each run's own `index.json`, never by March batch `custom_id`.",
         "- **Same school, same tail.** A price change is the same well-formed N-number at the same school",
         "  domain, in the same crawl pass, with exactly one wet rate in each month. Tails with two different",
         "  rates in one month are skipped and counted.",
@@ -532,6 +580,10 @@ def render(R):
         f"({g['coverage']['share'] * 100:.1f}%) | ≥ {MIN_COVERAGE * 100:.0f}% | {'pass' if g['coverage']['pass'] else 'FAIL'} |",
         f"| Same-tail, same-school price pairs | {g['matched_price_pairs']['n']:,} | ≥ {MIN_PAIRS} | "
         f"{'pass' if g['matched_price_pairs']['pass'] else 'FAIL'} |",
+        f"| Same model, effort and prompt fingerprint per pass, both months | "
+        + "; ".join(f"{p}: {v['november']['effort']}, `{v['november']['prompt_fingerprint']}`"
+                    for p, v in g["same_settings"]["settings"].items())
+        + f" | identical | {'pass' if g['same_settings']['pass'] else 'FAIL'} |",
         "",
         "## Sites",
         "",
@@ -539,7 +591,14 @@ def render(R):
         f" November by any crawler{' or on a retry' if s['retried'] else ''}, "
         f"**{s['redirect_away_new']:,}** now redirect to a different domain (another "
         f"{s['redirect_away_same_as_march']:,} already did in March), and **{s['newly_defunct']:,}** are now classed"
-        " defunct by the model (parked or closed) where March's pages were not.",
+        " defunct by the model (parked or closed) where March's pages were not. Another"
+        f" **{s['newly_blocked']:,}** answer but refuse the crawler (a 403 or similar, or a bot challenge):"
+        " each served a page to the same plain-HTTP crawler and user agent in March, so this is new"
+        " blocking, not new death (a further"
+        f" {s['blocked_now_reached_in_march_only_by_stealth_browser']:,} blocked now were reached in March only by"
+        " the stealth browser, so the change there may be ours)."
+        " By status: " + ", ".join(f"{k} {v:,}" for k, v in sorted(s["newly_blocked_by_code"].items(),
+                                                                   key=lambda kv: -kv[1])) + ".",
         "",
         "| Why unreachable | Domains |",
         "|---|---|",
@@ -564,7 +623,7 @@ def render(R):
         "",
         f"Control: on {c['schools_with_tails']:,} schools with tails and byte-identical pages, the model's"
         f" own churn was {c['added']:,} added and {c['removed']:,} removed against {c['kept']:,} kept"
-        f" ({c['changed']:,} schools). Read the change above against that floor.",
+        f" ({c['changed']:,} school{'s' if c['changed'] != 1 else ''} changed). Read the change above against that floor.",
         "",
         "## Prices: same tail, same school",
         "",
@@ -589,12 +648,40 @@ def render(R):
               "| Field | n | Up | Down | Flat (< $1) | Median change | Median % |", "|---|---|---|---|---|---|---|"]
     for k, v in R["new_fields"].items():
         lines.append(stat_row(f"`{k}`", v))
-    lines += ["", "## Extraction results", "",
+    cv, cost = R["crawl_volume"], R["november_extraction_cost"]
+    lines += ["", "## Crawl and cost", "",
+              f"- HTTP pages saved: {cv['march_http_pages']:,} in March, {cv['november_http_pages']:,} in November;"
+              f" browser pages in November: {cv['november_browser_pages']:,}.",
+              f"- {cv['http_targets_without_attempt_line']:,} of {cv['http_targets']:,} HTTP targets raised an"
+              " exception in the HTTP crawl that left no attempt line (they are not in the November HTTP pass): "
+              + (", ".join(f"`{w}`" for w in cv["http_targets_without_attempt_line_list"]) or "none") + ".",
+              "- November extraction at Message Batches prices: " + "; ".join(
+                  f"{p} estimated ${c['estimated_usd']}, recorded ${c['recorded_usd']}" for p, c in cost.items())
+              + f"; total recorded ${sum(c['recorded_usd'] or 0 for c in cost.values()):.2f}.",
+              "", "## Extraction results", "",
               "| Pass:result | March | November |", "|---|---|---|"]
     keys = sorted(set(R["results"]["march"]) | set(R["results"]["november"]))
     for k in keys:
         lines.append(f"| {k} | {R['results']['march'].get(k, 0):,} | {R['results']['november'].get(k, 0):,} |")
-    lines.append("")
+    lines += ["", "## Reproduce", "", "On trogdor, from `research/FlightSchoolMapping/` in a checkout of this branch,"
+              " with the production checkout's venv as `$PY`, its `output/` as `$OUT` and"
+              " `data/research-2026-11/recrawl` as `$REC` (`PLAYWRIGHT_BROWSERS_PATH=0` for the browser crawl):", "",
+              "```",
+              "$PY scripts/54a_recrawl_targets.py --march $OUT --out $REC",
+              "$PY scripts/09a_fleet_crawl.py --targets $REC/targets_http.json --out-dir $REC",
+              "$PY scripts/09f_corpus_expansion.py --crawl-only --targets $REC/targets_expansion.json --out-dir $REC",
+              "$PY scripts/10_fleet_browser_crawl.py --crawl-only --no-evasion --concurrency 8 \\",
+              "    --targets $REC/targets_browser.json --out-dir $REC",
+              "$PY scripts/54a_recrawl_targets.py --retry-from $REC",
+              "$PY scripts/09a_fleet_crawl.py --targets $REC/retry/targets_http.json --out-dir $REC/retry",
+              "$PY scripts/extract_v2.py build --layout http --index $REC/fleet_crawl_index.json \\",
+              "    --pages-dir $REC/fleet_html --run $REC/extract/http",
+              "$PY scripts/extract_v2.py build --layout browser --pages-dir $REC/fleet_browser_text \\",
+              "    --meta-index $OUT/fleet_crawl_index.json --meta-index $OUT/fleet_browser_index.json --run $REC/extract/browser",
+              "# then for each run: extract_v2.py estimate | submit | fetch --wait, --model claude-haiku-5-5",
+              "$PY scripts/54_march_vs_november.py --march-out $OUT --recrawl $REC \\",
+              "    --march-runs data/research-2026-11/model-rerun --nov-runs $REC/extract --model claude-haiku-5-5",
+              "```", ""]
     return "\n".join(lines)
 
 

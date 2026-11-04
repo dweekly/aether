@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-50a_recrawl_targets.py — the March 2026 crawl's target lists, for a re-crawl.
+54a_recrawl_targets.py — the March 2026 crawl's target lists, for a re-crawl.
 
 Rebuilds, from the March crawl's own indexes and caches, the list of sites each
 March crawler visited, in the input format each crawler takes, so a re-crawl
@@ -24,8 +24,8 @@ visits the same sites:
   later 09a pass that tells a transient outage from a dead site.
 
 Usage:
-    python 50a_recrawl_targets.py --march ../output --out ../data/research-2026-11/recrawl
-    python 50a_recrawl_targets.py --retry-from ../data/research-2026-11/recrawl
+    python 54a_recrawl_targets.py --march ../output --out ../data/research-2026-11/recrawl
+    python 54a_recrawl_targets.py --retry-from ../data/research-2026-11/recrawl
 
 Exits non-zero if a March input is missing or a list comes out empty.
 """
