@@ -85,6 +85,10 @@ For each of the ~3,965 flight schools with known websites:
    - Level 2: Parent path discovery from fleet page URLs
    - Level 3: Internal links from fleet pages with path-prefix filtering
    - Saves cleaned HTML to `output/fleet_html/`; outputs `fleet_crawl_index.json`
+   - The cleaner drops elements whose class or id looks like boilerplate (sidebar, widget,
+     modal...). Since 2026-11-04 it never drops `<html>` or `<body>`: themes put those words
+     on `<body>`, which emptied about 40% of the March HTTP pages. Crawls before that date
+     (all of March) carry the loss; Elementor sites are still emptied (ROADMAP)
    - Flags JS-rendered sites returning thin content for browser re-crawl
 
 2. **LLM extraction** (`09b_fleet_extract.py`) — Anthropic Message Batches API
@@ -141,7 +145,7 @@ For schools with fleet descriptions but 0 N-numbers:
 
 ## Output Schemas
 
-### `output/flight_line.json` — Primary Output (4,825 schools)
+### `output/flight_line.json` — Primary Output (4,892 schools: 4,825 from the March build plus 67 added 2026-11-04)
 
 The canonical dataset. Each entry is a school/club keyed by normalized domain,
 with fleet, locations, contact info, and ADS-B cross-references.
@@ -204,7 +208,14 @@ with fleet, locations, contact info, and ADS-B cross-references.
   "extraction_sources": ["browser", "http_recovered"],  // which pipelines contributed
   "fleet_count": 37,
   "n_number_count": 37,
-  "adsb_active_count": 28
+  "adsb_active_count": 28,
+
+  // Only on schools added late from outside lists (57_added_schools.py): one entry per
+  // list row that named it. Such a school's name is the one set by hand from the list.
+  "provenance": [
+    {"list": "mi_mdot", "record_id": "row38", "list_date": "2026-05",
+     "pulled": "2026-11-03", "name_on_list": "Kalamazoo Flight Instruction"}
+  ]
 }
 ```
 
@@ -212,7 +223,7 @@ with fleet, locations, contact info, and ADS-B cross-references.
 `"College/University"` (248), `""` (2,181 FAA-discovered entities).
 
 **`extraction_sources` values:** `browser`, `http_recovered`, `expansion`,
-`faa_registry`, `pdf_rate_sheet`.
+`faa_registry`, `pdf_rate_sheet`, `added` (late-added schools, `added_extract.jsonl`).
 
 ---
 
@@ -720,7 +731,9 @@ STAGE 4 — Assembly (deterministic rebuild, no API calls, ~60s)   [make]
     Reads: expansion_extract.jsonl, fleet_browser_extract_results.jsonl,
            fleet_extract_results.jsonl, aopa_flight_schools.json,
            faa_discovered_schools.json, faa_master.csv, ACFTREF.txt,
-           adsb_activity.csv
+           adsb_activity.csv, and the late-added schools: flight_schools_enriched.json
+           entries with a "provenance" list plus added_extract.jsonl (57_added_schools.py).
+           Those join after HTTP recovery and their records carry "provenance".
 
 STAGE 4b — PDF Rate Sheet Overlay                                [make]
   22_pdf_rate_sheets.py        → flight_line.json, pdf_extraction_diagnostics.json
@@ -811,6 +824,7 @@ only when you intend to act on the results.
 | `09f_corpus_expansion.py` | Crawl + extract new AOPA domains (clubs, universities) |
 | `49_scrape_facts.py` | Check the raw model output of 09b/09c against the registry and a release's flight data; cost from recorded usage; exits 1 if the shuffled-airport control fails |
 | `demo_extract.py` | Talk demo: one school URL in, its fleet and rates out, each tail checked against a release (`demo_extract.tape` records it with VHS) |
+| `57_added_schools.py` | Add schools found on outside lists (FSAI directory, Michigan and Minnesota flight-school licenses, state education lists, SEVP, VA, IPEDS, the unlisted-operations pass) to `flight_schools_enriched.json` with a `provenance` list, from the hand dispositions in `docs/hackers-2026-added-schools.csv`; folds their extractions into `added_extract.jsonl`; `check` and `release-check` gate the rebuild (see `docs/hackers-2026-added-schools.md`) |
 | `56_fsai_directory.py` | Parse the FSAI (formerly FSANA) member directory pulled in a browser by `probes/fsai_directory_pull.js`, classify entries and match US training providers against `flight_line.json`; writes `docs/hackers-2026-fsai-directory.md` |
 | `59_google_places.py` | Find flight schools with Google Places (New): free IDs-only text searches over self-splitting US tiles, paid details only after a printed estimate under `--max-usd`, matched against `flight_line.json`, unmatched confirmed from each school's own site |
 
