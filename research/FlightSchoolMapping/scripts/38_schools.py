@@ -10,7 +10,9 @@ republishing them) and every adsb field (OpenSky-derived; its terms forbid
 redistribution). Activity is recomputed from the adsb.lol archive.
 
 School name comes from the school's own cached pages (og:site_name, else the
-<title> segment that best matches the domain), else the domain itself. Schools
+<title> segment that best matches the domain), else the domain itself. Schools added
+late from public lists (57_added_schools.py; they carry a provenance) keep the name set
+from that list, and their record says which list ("added_from"). Schools
 with no website were discovered from the FAA registry; their key is
 "faa-<slug>" and their name is the FAA registrant name (public domain). Entries
 with no website and an AOPA-sourced name are named after the registrant that
@@ -145,7 +147,11 @@ def main():
             })
         if not fleet and not listings:
             continue
-        if domain:
+        if domain and s.get("provenance"):
+            # Added late from an outside list (57_added_schools.py): the name is the one we set
+            # from that list by hand, since page titles of small sites are often unusable ("MA").
+            key, name, name_src = domain, s["name"], "added_list"
+        elif domain:
             key = domain
             name, name_src = site_name(domain)
         elif not s.get("aopa_id") and s.get("name"):
@@ -168,6 +174,8 @@ def main():
         else:
             raw[key] = {"name": name, "name_source": name_src, "domain": domain or None,
                         "fleet": fleet, "listings": listings}
+            if s.get("provenance"):  # which public list it came from; record ids stay internal
+                raw[key]["added_from"] = [{"list": p["list"], "pulled": p["pulled"]} for p in s["provenance"]]
 
     hex_school = defaultdict(set)
     schools = []
@@ -198,6 +206,7 @@ def main():
                         if fleet else ("website" if r["domain"] else "registry"),
             "fleet": sorted(fleet, key=lambda f: (-(f["hrs"] or 0), f["n"])),
             "listings": listings,
+            **({"added_from": r["added_from"]} if r.get("added_from") else {}),
         })
 
     # Daily fleet hours per school, for the activity chart.
