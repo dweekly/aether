@@ -2,7 +2,7 @@
 
 David supplied two CSVs on 2026-11-04 (provenance: Antigravity session 81a6f59f-d642-4f01-bc50-7eb6e038c55e, a Part 61 enumeration run outside this repo; its transcript is not on monster4, so how it collected the AOPA listings is not known here): `us_flight_schools_master.csv` (4,957 entities) and `unmatched_faa_instr_airports.csv` (594 airports whose FAA 5010 record flags instruction or rental with no school matched). Working copies, with their emails and phones, are in the git-ignored `research/FlightSchoolMapping/data/research-2026-11/external/`; this doc holds counts only.
 
-> **Headline.** About a quarter of the outside list is not in ours (1,315 of 4,957), and a seeded hand check of 30 suggests about half are real training operations we lack, mostly flying clubs. But 704 of the 1,315 came only through AOPA's private API, which this project doesn't use; the usable leads are the 564 from public directory pages (Tach & Go, BestAviation), so perhaps 250-350 additions after checking.
+> **Headline.** About a quarter of the outside list is not in ours (1,315 of 4,957), and a seeded hand check of 30 suggests about half are real training operations we lack, mostly flying clubs. 704 of the 1,315 came only through AOPA's private API and 564 also appear on public directory pages (Tach & Go, BestAviation); all are kept as leads, so perhaps 600-800 additions after checking, each confirmed on the operator's own site.
 
 ## Method
 
@@ -25,7 +25,7 @@ Hand check, 30 drawn with seed 66: 15 plausibly real and new (11 flying clubs, 4
 
 ## How the outside list was collected
 
-From the Antigravity session's own log (pasted by David, 2026-11-04): its AOPA rows came from AOPA's `AirportsAPI` (schools, rental, clubs, universities, FBOs), called with an OAuth client credential belonging to AOPA's own web app. Its 150th Aero / Tach & Go rows came from 150thaero.org's public directory pages, its BestAviation rows from bestaviation.net's public listing pages, and its airport spine from FAA NASR. This project does not use AOPA's API or credentials (the same rule as for ScheduleMaster's sequential IDs), so **rows whose only sources are AOPA are not used, not even as leads**: 704 of the 1,315 unmatched. The session's proposed next step of enumerating FlightCircle and ScheduleMaster tenants is likewise out of bounds here.
+From the Antigravity session's own log (pasted by David, 2026-11-04): its AOPA rows came from AOPA's `AirportsAPI` (schools, rental, clubs, universities, FBOs), called with an OAuth client credential belonging to AOPA's own web app. Its 150th Aero / Tach & Go rows came from 150thaero.org's public directory pages, its BestAviation rows from bestaviation.net's public listing pages, and its airport spine from FAA NASR. This project does not call AOPA's API or use its credentials itself (the same rule as for ScheduleMaster's sequential IDs). The rows this outside session collected are kept (David, 2026-11-04): AOPA-only rows (704 of the 1,315 unmatched) stay in the data and the analysis as leads and are counted separately by source; anything added to the release is confirmed on the operator's own site, and AOPA-derived fields stay out of public outputs. The session's proposed next step of enumerating FlightCircle and ScheduleMaster tenants is likewise out of bounds here.
 
 Its pipeline script (`build_dataset.py`, read 2026-11-04, not run here and not copied into this repo, because it embeds the credential) also shows:
 
@@ -33,7 +33,7 @@ Its pipeline script (`build_dataset.py`, read 2026-11-04, not run here and not c
 - "Confirmed Part 61" means a directory said so; "Implied Part 61" is a blanket assumption for any school, club, FBO trainer or rental entry, not evidence.
 - The airport file is "unmatched" against that script's own directory list, not ours. Its airport rows are FAA NASR and usable; its `on_field_fbos_candidates` column mixes AOPA's FBO endpoint with Tach & Go FBO listings, so only the Tach & Go half can be used.
 
-What remains usable as leads: 564 unmatched entries with a Tach & Go or BestAviation source (321 flight schools, 125 flying clubs, 118 FBOs), checked against each operator's own site before anything is added. The credential itself appears in that session's log and is not recorded anywhere in this repo.
+Of the 1,315 unmatched, 564 also have a Tach & Go or BestAviation source (321 flight schools, 125 flying clubs, 118 FBOs) and 704 are AOPA-only; all are leads, each checked against the operator's own site before anything is added. The credential itself appears in that session's log and is not recorded anywhere in this repo.
 
 ## Constraints
 
