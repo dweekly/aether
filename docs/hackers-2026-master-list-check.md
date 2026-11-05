@@ -1,6 +1,6 @@
 # Hackers 2026: an outside "US flight schools master" list against ours
 
-David supplied two CSVs on 2026-11-04 (provenance: another agent's Part 61 enumeration; not built in this repo): `us_flight_schools_master.csv` (4,957 entities) and `unmatched_faa_instr_airports.csv` (594 airports whose FAA 5010 record flags instruction or rental with no school matched). Working copies, with their emails and phones, are in the git-ignored `research/FlightSchoolMapping/data/research-2026-11/external/`; this doc holds counts only.
+David supplied two CSVs on 2026-11-04 (provenance: Antigravity session 81a6f59f-d642-4f01-bc50-7eb6e038c55e, a Part 61 enumeration run outside this repo; its transcript is not on monster4, so how it collected the AOPA listings is not known here): `us_flight_schools_master.csv` (4,957 entities) and `unmatched_faa_instr_airports.csv` (594 airports whose FAA 5010 record flags instruction or rental with no school matched). Working copies, with their emails and phones, are in the git-ignored `research/FlightSchoolMapping/data/research-2026-11/external/`; this doc holds counts only.
 
 > **Headline.** About a quarter of the outside list is not in ours (1,315 of 4,957), and a seeded hand check of 30 suggests about half of those are real training operations we lack, mostly flying clubs. So roughly 600-800 additions, after removing skydiving operators, airports, jet FBOs and duplicates under other names.
 
