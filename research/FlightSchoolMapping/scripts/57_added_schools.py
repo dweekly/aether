@@ -294,6 +294,8 @@ def cmd_merge_extract(a):
 # pre-existing records with these removed: "unchanged except added fields".
 ADDED_FIELDS = ("field_sources", "public_contact", "google_place_ids", "inferred_locations")
 RELEASE_ADDED_FIELDS = ("google_place_ids", "contact", "aopa_url", "listed_airports", "inferred_airports")
+# Added to tail records (web/t) after rc3: NTSB records of the same airframe (35, from 63 --tails).
+RELEASE_ADDED_TAIL_FIELDS = ("ntsb",)
 
 
 # Added to each school's fleet rows and listings after rc3: the school's own description of the aircraft.
@@ -415,6 +417,8 @@ def cmd_release_check(a):
         for x in (a_, b_):  # sch rows may carry [listed_as, description] after the first six (35, after rc3)
             if "sch" in x:
                 x["sch"] = [r[:6] for r in x["sch"]]
+            for f in RELEASE_ADDED_TAIL_FIELDS:
+                x.pop(f, None)
         if n in added_tails:  # its "sch" list may now name an added school; nothing else may change
             a_["sch"] = [x for x in a_.get("sch", []) if x[0] not in extra]
             b_.setdefault("sch", [])
