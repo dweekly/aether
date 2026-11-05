@@ -24,6 +24,10 @@ import csv
 import json
 import time
 from pathlib import Path
+import os
+import sys
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).resolve().parents[3] / ".env")  # AOPA web-app keys live in .env, not in the repo
 
 import requests
 from tqdm import tqdm
@@ -31,7 +35,7 @@ from tqdm import tqdm
 OUTPUT_DIR = Path(__file__).parent.parent / "output"
 
 COVEO_ENDPOINT = "https://aopa9nc4vnbc.org.coveo.com/rest/search/v2"
-COVEO_TOKEN = "AOPA_PUBLIC_TOKEN_REDACTED"
+COVEO_TOKEN = os.environ.get("AOPA_COVEO_TOKEN") or sys.exit("AOPA_COVEO_TOKEN not set (.env)")
 PAGE_SIZE = 200
 DELAY_BETWEEN_REQUESTS = 1.0  # be polite
 

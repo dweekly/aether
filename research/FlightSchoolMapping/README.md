@@ -310,7 +310,7 @@ Merged from Coveo search API (`08b_aopa_directory.py`) + Airports REST API enric
 POST https://authapi.aopa.org/identity/connect/token
   grant_type=client_credentials
   client_id=AOPAAirports
-  client_secret=AOPA_PUBLIC_TOKEN_REDACTED
+  client_secret=$AOPA_CLIENT_SECRET   # from .env; the value is in AOPA's public web app
   scope=AirportsAPI
 
 GET https://webapp.aopa.org/AirportsAPI/businesses/{business_id}

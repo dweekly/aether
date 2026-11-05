@@ -34,6 +34,9 @@ import time
 import warnings
 from datetime import datetime, timezone
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).resolve().parents[3] / ".env")  # AOPA web-app keys live in .env, not in the repo
 from urllib.parse import urljoin, urlparse
 
 import aiohttp
@@ -74,7 +77,7 @@ LOCATION_LINK_PATTERNS = re.compile(
 # ── AOPA helpers (reused from 09_fleet_scraper_parallel) ─────────
 
 AOPA_API_BASE = "https://webapp.aopa.org/AirportsAPI/businesses"
-AOPA_API_TOKEN = "AOPA_PUBLIC_TOKEN_REDACTED"
+AOPA_API_TOKEN = os.environ.get("AOPA_API_TOKEN", "")  # needed only to fetch AOPA records not already cached
 AOPA_CACHE_PATH = OUTPUT_DIR / "aopa_website_cache.json"
 
 
@@ -130,6 +133,8 @@ async def _resolve_aopa_websites(
 
     if ids_to_fetch:
         print(f"    Cache: {len(results):,} hits, {len(ids_to_fetch):,} to fetch from AOPA API")
+        if not AOPA_API_TOKEN:
+            raise SystemExit("AOPA_API_TOKEN not set (.env); needed to fetch uncached AOPA records")
         headers = {
             "Accept": "application/json",
             "Authorization": f"Bearer {AOPA_API_TOKEN}",
