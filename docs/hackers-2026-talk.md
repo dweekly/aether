@@ -9,7 +9,9 @@ Title: **Scrape. Join. Interrogate.** (David, 2026-11-04). Nobody cares about a 
 1. **Public, in theory.** What data exists about aviation (airplanes, flights, pilots, crashes, schools, prices, owners, drones), and how hard each is to get: some are a bulk download tonight; some are public but scattered over thousands of places; some aren't public at all. "Hard" doesn't mean secret. Example of hard: "What does a Cessna 172 rent for, wet?" Everyone asks it, no agency collects it, and the answer sits on thousands of school websites in prose, PDFs and photos. With the dataset it's one query: $177 an hour, half between $160 and $195, the typical plane built in 1978 (the published story on aether-flight.com says $176 on March data).
 2. **Scrape it.** Why no list exists (Part 61 needs no FAA approval; TSA knows 13,000 providers and doesn't publish them), how a model read 32,462 pages for $100 and how the same job costs $15 now, the demo, one row traced, and how it was checked (registry, flights, a shuffled control, hand reads of random samples). The web keeps moving: eight months later 157 sites are gone and 207 refuse robots. Every list we could find, with what each added, its time and its cost.
 3. **Join it.** What the joins show: where learning to fly is cheap or dear, the 1986 production cliff and Cirrus's rise, who's behind an aircraft LLC in three free joins, and (pending) which training aircraft have an accident history.
-4. **Build your own.** Datasets we wish existed; the recipe and what each step caught; steal this (explorer, downloads with per-field sources, scripts).
+4. **Build your own.** Datasets we wish existed; practical tips for getting data cheaply and making it joinable (each with the number from this project); steal this (explorer, downloads with per-field sources, scripts).
+
+Audience (David, 2026-11-05): Hackers attendees know code and websites well, aviation modestly, and AI anywhere from expert to hostile. Define aviation terms on the slide; give AI experts the model, cost and effort specifics; tell skeptics plainly that blocks were respected and names aren't published. Nobody cares how wrong the AI was; they want practical tips for building, curating and normalizing datasets with AI.
 
 ## Facts, by section
 
@@ -110,25 +112,23 @@ Backdrops only: one number, chart, image or record each.
 |---|---|---|---|
 | 1 |  | `cover` | Scrape. Join. Interrogate. |
 | 2 | 1 | `landscape` | What's public about aviation, and how hard it is to get |
-| 3 | 1 | `ask172` | "What does a Cessna 172 rent for, wet?" |
+| 3 | 1 | `ask172` | "What does a Cessna 172 rent for, wet?" (172 = the Honda Civic of trainers; wet = fuel included) |
 | 4 | 1 | `answer172` | $177/h wet, half $160 to $195; typical plane 1978 |
-| 5 | 2 | `nolist` | ~9,000 Part 61 providers (TSA); nobody publishes the list; so we assembled 5,458 |
-| 6 | 2 | `schoolsmap` | Map: 4,185 placed (3,581 listed airport, 604 where their planes are based) |
+| 5 | 2 | `nolist` | ~9,000 Part 61 providers; nobody publishes the list; we assembled 5,458 |
+| 6 | 2 | `schoolsmap` | Map: 4,185 placed |
 | 7 | 2 | `readcost` | What it costs to read 32,462 pages: person ~$11,000, Sonnet 4.6 $100, Sonnet 5.5 ~$120, Haiku 5.5 $15 |
 | 8 | 2 | `demo` | Demo recording |
-| 9 | 2 | `checked` | Consistency checks, not accuracy |
-| 10 | 2 | `misreads` | 81 bad tails, whose fault |
-| 11 | 2 | `audit` | 40 random pages read by hand |
-| 12 | 2 | `eightmonths` | Eight months later: 157 gone, 207 refuse, prices up |
-| 13 | 2 | `blocked` | Most schools didn't lock us out; their platforms did |
-| 14 | 2 | `everylist` | Every list we could find: added, time, cost |
-| 15 | 3 | `pickschool` | Pick the school, not the city (metro medians $157-$190; within a metro $39 apart) |
-| 16 | 3 | `cliff` | The industry nearly stopped building small planes; Cirrus is the new generation |
-| 17 | 3 | `hidden` | Who's behind the LLC? Three free joins |
-| 18 | 3 | `ntsb` | Flight-school aircraft have a past: 15.6% vs 11.8% |
-| 19 | 4 | `wish` | Datasets we wish existed |
-| 20 | 4 | `recipe` | The recipe, and what each step caught |
-| 21 | 4 | `getit` | Steal this |
+| 9 | 2 | `eightmonths` | Eight months later: 157 gone, 207 refuse, prices up |
+| 10 | 2 | `blocked` | Most schools didn't lock us out; their platforms did (and we didn't get around any block) |
+| 11 | 2 | `everylist` | Every list we could find: added, time, cost |
+| 12 | 3 | `pickschool` | Pick the school, not the city |
+| 13 | 3 | `cliff` | The industry nearly stopped building small planes |
+| 14 | 3 | `hidden` | Who's behind the LLC? Three free joins (counts, never names) |
+| 15 | 3 | `ntsb` | Flight-school aircraft have a past |
+| 16 | 4 | `wish` | Datasets we wish existed |
+| 17 | 4 | `tipsget` | Tips: getting the data |
+| 18 | 4 | `tipsjoin` | Tips: making it joinable |
+| 19 | 4 | `getit` | Steal this |
 
 The deck is https://claude.ai/artifact/KUkKop9nCZBpYwrHGcuBtW (private to David). Cut 2026-11-04 after David's review (code fixes, joins table, never-flew, rate-vs-hours, the 372 funnel and the Google tiles slide): kept as files in the session scratchpad only. Being reworked: eightmonths (are the new blocks anti-AI defenses?), learntofly (a cost map), yearbuilt (the 1986 cliff and Cirrus).
 
