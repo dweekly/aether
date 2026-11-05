@@ -910,8 +910,8 @@ def chart(a):
     era = s["era"]
     before = era.get("before current registration", 0)
     tot = sum(era.values())
-    fig = bd.frame("Flight-school aircraft have a past",
-                   "Share with an NTSB accident or incident record on the same airframe (N-number and serial or model)")
+    fig = bd.frame("1 in 6 school aircraft has an NTSB accident record",
+                   "Matched on the same airframe: the N-number and the serial number (or model) agree.")
     # legend as text, top left, out of the bars' way
     from matplotlib.patches import Rectangle
     fig.add_artist(Rectangle((0.08, 0.752), 0.012, 0.026, color=bd.AMBER, transform=fig.transFigure))

@@ -122,8 +122,8 @@ def yearbuilt_make(a, fl, out):
     cs = res["share_built_2010_on"]["school"]
     cf = res["share_built_2010_on"]["flew"]
 
-    fig = B.frame("The industry nearly stopped building small planes",
-                  "So schools fly 1970s airplanes. Of the four-seaters built since 2010, half are Cirrus.")
+    fig = B.frame("Small-plane production collapsed after 1979",
+                  "So most training planes date from the 1970s. Of four-seaters built since 2010 that fly, half are Cirrus.")
     x0, w = 0.075, 0.68
     axes = [fig.add_axes([x0, 0.605, w, 0.175]), fig.add_axes([x0, 0.365, w, 0.17]), fig.add_axes([x0, 0.125, w, 0.17])]
     years = list(range(1945, 2027))
@@ -318,7 +318,7 @@ def wetrate_map(a, fl, out):
 
     k = math.cos(math.radians(38))
     lo_m, hi_m = mt_ok[cheap[0]], mt_ok[dear[-1]]
-    fig = B.frame("Where you live barely changes the price",
+    fig = B.frame("Median 172 rental rate by state and metro",
                   f"Cessna 172 with fuel, median posted hourly rate by state ({mn}+ schools) and metro")
     ax = fig.add_axes([0.015, 0.10, 0.725, 0.72])
     for rec, geom in states:
@@ -385,8 +385,8 @@ def blocked(a, out):
     rows = ["SiteGround", "Cloudflare", "WordPress.com", "Other hosts and firewalls", "Moved or for sale", "Unreachable now"]
     shown = {"Moved or for sale": "Domain sold or renamed", "Unreachable now": "Unreachable now"}
     both, ua = "#c98500", "#3987e5"  # validated pair (dark surface); never next to red
-    fig = B.frame("Most schools didn't lock us out. Their platforms did.",
-                  f"The {total} school sites that served our crawler in March and refused it in November, by who answered")
+    fig = B.frame("Two hosting companies account for most of the blocking",
+                  f"{total} school sites let our crawler in during March and refused it in November. This is who answered.")
     ax = fig.add_axes([0.255, 0.25, 0.45, 0.56])
     for i, name in enumerate(rows):
         y = len(rows) - 1 - i
@@ -449,9 +449,9 @@ def short_metro(name):
 def spread(res, by_metro, ranked, bay, out):
     """Alternative slide: every school's rate in each metro with 10+ schools, so the spread
     inside a metro can be compared with the spread between metros."""
-    fig = B.frame("Pick the school, not the city",
-                  "Cessna 172 rental with fuel, one dot per school, metros with at least "
-                  f"{res['min_schools']} schools posting a rate")
+    fig = B.frame("172 prices vary more by school than by city",
+                  "Each dot is one school's posted hourly rate with fuel. Only metros with at least "
+                  f"{res['min_schools']} schools posting a rate.")
     ax = fig.add_axes([0.20, 0.12, 0.74, 0.70])
     import random
     rnd = random.Random(7)

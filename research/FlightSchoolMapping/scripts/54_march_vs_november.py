@@ -376,6 +376,7 @@ def main():
     ap.add_argument("--nov-runs", required=True, type=Path)
     ap.add_argument("--model", default="claude-haiku-5-5")
     ap.add_argument("--md", type=Path, default=DEFAULT_MD)
+    ap.add_argument("--dump-sites", type=Path, help="also write per-domain site outcomes (JSON) here")
     a = ap.parse_args()
 
     need = [a.march_out / f for f in ("fleet_crawl_index.json", "_aopa_extract_index.json", "fleet_browser_index.json",
@@ -506,6 +507,10 @@ def main():
     newly_defunct = sorted(d for d in both_domains if "defunct" in types(nov, d) and "defunct" not in types(mar, d))
     R["sites"]["newly_defunct"] = len(newly_defunct)
     R["sites"]["newly_defunct_examples"] = newly_defunct[:12]
+    if a.dump_sites:  # per-domain outcomes, for joins such as turnover (fleet still flying?)
+        a.dump_sites.write_text(json.dumps({
+            "alive_in_march": alive_march, "died": died, "redirected": redirected, "newly_defunct": newly_defunct,
+            "newly_blocked": [d for d in blocked_now if honest.get(d) == "ok"]}, indent=1))
 
     # Fleets, per school, over the passes the school has in both months.
     fleet = {"schools": 0, "schools_with_tails": 0, "unchanged": 0, "changed": 0, "added": 0, "removed": 0,
