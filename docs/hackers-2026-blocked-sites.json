@@ -96,11 +96,11 @@
     "Other hosts and firewalls: serves a browser user agent": 8
   },
   "siteground_archive_last_2026": {
-    "none": 74,
-    "200": 25,
+    "none": 64,
+    "200": 35,
     "202": 3
   },
-  "timeline_sites": 156,
+  "timeline_sites": 207,
   "platform_share": {
     "SiteGround": {
       "refuse": 102,
@@ -154,16 +154,16 @@
   "robots_control": {
     "sites": 2651,
     "robots_now_readable": 1995,
-    "robots_then_readable": 37,
-    "robots_both_readable": 30,
+    "robots_then_readable": 165,
+    "robots_both_readable": 146,
     "ai_full_block_now": 103,
-    "ai_full_block_then_of_both": 1,
-    "ai_full_block_now_of_both": 4,
-    "ai_full_block_added_of_both": 3,
-    "ai_full_block_removed_of_both": 0,
-    "ai_any_named_added_of_both": 5,
+    "ai_full_block_then_of_both": 3,
+    "ai_full_block_now_of_both": 6,
+    "ai_full_block_added_of_both": 5,
+    "ai_full_block_removed_of_both": 2,
+    "ai_any_named_added_of_both": 13,
     "cf_managed_now": 67,
-    "cf_managed_added_of_both": 3,
+    "cf_managed_added_of_both": 4,
     "content_signal_now": 111,
     "wildcard_full_now": 28,
     "host_from_robots_answer": {
@@ -179,7 +179,9 @@
     "added_examples": [
       "51as.org",
       "acronaviation.com",
-      "aeroatlanta.com"
+      "aeroatlanta.com",
+      "avelflightschool.com",
+      "birddogflightservices.com"
     ]
   },
   "gates": {

@@ -366,7 +366,7 @@ def wetrate_map(a, fl, out):
                                                         color=c, figure=fig))
         fig.text(lx + 0.026, yy, lab, fontsize=19, color=INK)
     fig.text(lx, y - 5 * 0.031, f"no fill: under {mn} schools", fontsize=19, color=MUTED)
-    B.footer(fig, f"Rates posted on {len(lower48)} school websites (median per school), March 2026 crawl. "
+    B.footer(fig, f"Rates posted on {len(lower48)} school websites (median per school), crawled March and November 2026. "
                   "Metros: Census combined areas. Map: US Census Bureau.")
     fig.savefig(out / "wetrate_map.png")
     plt.close(fig)
@@ -473,7 +473,7 @@ def spread(res, by_metro, ranked, bay, out):
     ax.tick_params(labelsize=22, length=0)
     ax.grid(axis="y", visible=False)
     ax.text(262, len(ranked) - 0.45, "median (n)", fontsize=20, color=MUTED, va="center")
-    B.footer(fig, "Bar: metro median. Rates posted on school websites, March 2026 crawl; one median per school. "
+    B.footer(fig, "Bar: metro median. Rates posted on school websites, crawled March and November 2026; one median per school. "
                   "Metros: Census combined areas.")
     fig.savefig(out / "wetrate_spread.png")
     plt.close(fig)

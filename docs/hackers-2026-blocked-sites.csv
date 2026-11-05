@@ -155,57 +155,57 @@ ripilot.com,blocked,False,False,,,,,0,1,,,False,False,False,False,browser_ua_ser
 rocky.edu,blocked,False,False,,,,,0,520,200,20261027024648,False,False,False,False,challenge,,rocky.edu,WordPress.com,page,False,200,WordPress.com,serves a browser user agent,403,http,challenge,WordPress.com,WordPress.com,True,200,True,False,WordPress.com,WordPress.com,20260301004354,False,False
 saflite.com,blocked,False,False,,,,,0,5,,,False,False,False,False,error,"SSLError: HTTPSConnectionPool(host='www.saflite.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SS",,other,error,False,,none,error,200,browser,page,other,other,False,,False,False,Unreachable now,none,,False,False
 saratogaskydive.com,blocked,False,False,,,,,0,4,,,False,False,False,False,challenge,,saratogaskydive.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,SiteGround,False,202,True,True,SiteGround,SiteGround,20250714113010,False,False
-sawyeraviation.com,blocked,False,False,,,,,0,0,,,False,False,False,False,error,,sawyeraviation.com,Cloudflare,error,False,500,Cloudflare,error,403,http,block,other,Cloudflare,True,200,False,False,Unreachable now,Cloudflare,,False,False
-scanlonaviation.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,scanlonaviation.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,True,True,SiteGround,SiteGround,20250610190724,False,False
+sawyeraviation.com,blocked,False,False,,,,,0,23,200,20260712173618,False,False,False,False,error,,sawyeraviation.com,Cloudflare,error,False,500,Cloudflare,error,403,http,block,other,Cloudflare,True,200,False,False,Unreachable now,Cloudflare,,False,False
+scanlonaviation.com,blocked,False,False,,,,,0,19,200,20260123193553,False,False,False,False,challenge,,scanlonaviation.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,True,True,SiteGround,SiteGround,20250610190724,False,False
 scenicmountainflights.wordpress.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,scenicmountainflights.wordpress.com,WordPress.com,page,False,200,WordPress.com,serves a browser user agent,403,http,challenge,WordPress.com,WordPress.com,True,200,False,False,WordPress.com,WordPress.com,,False,False
-seaplane.com,blocked,False,False,,,,,0,0,,,False,False,False,False,block,,seaplane.com,Cloudflare,block,False,403,Cloudflare,refuses a browser user agent too,403,http,block,other,Cloudflare,True,200,True,False,Cloudflare,Cloudflare,20260103000523,False,False
-shortwingpiperclub.org,blocked,False,False,,,,,0,0,,,False,False,False,False,browser_ua_served,,shortwingpiperclub.org,other,page,False,200,other,serves a browser user agent,403,expansion,,,other,True,200,True,False,Other hosts and firewalls,other,20250504132400,False,False
-skydiveaz.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,skydiveaz.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,True,True,SiteGround,SiteGround,20260103071254,False,False
-skydivekentucky.com,blocked,False,False,,,,,0,0,,,False,False,False,False,browser_ua_served,,skydivekentucky.com,WordPress.com,page,False,200,WordPress.com,serves a browser user agent,403,http,,,WordPress.com,True,200,True,False,WordPress.com,WordPress.com,20250808093647,False,False
-skydivethefarm.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,skydivethefarm.com,Cloudflare,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,Cloudflare,True,200,True,True,SiteGround,SiteGround,20250817173110,False,False
+seaplane.com,blocked,False,False,,,,,0,38,200,20260616213903,False,False,False,False,block,,seaplane.com,Cloudflare,block,False,403,Cloudflare,refuses a browser user agent too,403,http,block,other,Cloudflare,True,200,True,False,Cloudflare,Cloudflare,20260103000523,False,False
+shortwingpiperclub.org,blocked,False,False,,,,,0,34,200,20260613212035,False,False,False,False,browser_ua_served,,shortwingpiperclub.org,other,page,False,200,other,serves a browser user agent,403,expansion,,,other,True,200,True,False,Other hosts and firewalls,other,20250504132400,False,False
+skydiveaz.com,blocked,False,False,,,,,5,43,200,20261012182601,False,False,False,False,challenge,,skydiveaz.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,True,True,SiteGround,SiteGround,20260103071254,False,False
+skydivekentucky.com,blocked,False,False,,,,,0,32,200,20260613064825,False,False,False,False,browser_ua_served,,skydivekentucky.com,WordPress.com,page,False,200,WordPress.com,serves a browser user agent,403,http,,,WordPress.com,True,200,True,False,WordPress.com,WordPress.com,20250808093647,False,False
+skydivethefarm.com,blocked,False,False,,,,,0,6,,,False,False,False,False,challenge,,skydivethefarm.com,Cloudflare,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,Cloudflare,True,200,True,True,SiteGround,SiteGround,20250817173110,False,False
 skydivetulsa.com,blocked,False,False,,,,,0,0,,,False,False,False,False,browser_ua_served,,hugedomains.com,Cloudflare,page,True,200,Cloudflare,serves a browser user agent,200,http,,,other,True,200,False,False,Moved or for sale,Cloudflare,,False,False
-snead.edu,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,snead.edu,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,True,True,SiteGround,SiteGround,20260301080944,False,False
-southernminnesotaskydiving.com,blocked,False,False,,,,,0,0,,,False,False,False,False,error,"SSLError: HTTPSConnectionPool(host='www.southernminnesotaskydiving.com', port=443): Max retries exceeded with url: / (Ca",,other,error,False,,none,error,200,browser,page,other,other,False,,False,False,Unreachable now,none,,False,False
-sowela.edu,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,sowela.edu,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,True,True,SiteGround,SiteGround,20260301220641,False,False
-spanaflight.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,spanaflight.com,Cloudflare,challenge,False,202,SiteGround,refuses a browser user agent too,403,http,block,other,Cloudflare,False,202,False,True,SiteGround,SiteGround,,False,False
-speedflysoboba.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,speedflysoboba.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,SiteGround,False,202,True,True,SiteGround,SiteGround,20250824041537,False,False
-sportaviationcenter.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,sportaviationcenter.com,WordPress.com,page,False,200,WordPress.com,serves a browser user agent,403,http,challenge,WordPress.com,WordPress.com,True,200,True,False,WordPress.com,WordPress.com,20250723062130,False,False
-squadron2.com,blocked,False,False,,,,,0,0,,,False,False,False,False,browser_ua_served,,squadron2.com,Cloudflare,page,False,200,Cloudflare,serves a browser user agent,403,http,,,Cloudflare,True,200,True,False,Cloudflare,Cloudflare,20250902212511,False,False
-srqaviation.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,srqlift.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,other,False,404,False,True,SiteGround,SiteGround,,False,False
+snead.edu,blocked,False,False,,,,,0,497,200,20260516014800,False,False,False,False,challenge,,snead.edu,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,True,True,SiteGround,SiteGround,20260301080944,False,False
+southernminnesotaskydiving.com,blocked,False,False,,,,,0,4,200,20260414090649,False,False,False,False,error,"SSLError: HTTPSConnectionPool(host='www.southernminnesotaskydiving.com', port=443): Max retries exceeded with url: / (Ca",,other,error,False,,none,error,200,browser,page,other,other,False,,False,False,Unreachable now,none,,False,False
+sowela.edu,blocked,False,False,,,,,3,494,200,20261018200026,False,False,False,False,challenge,,sowela.edu,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,True,True,SiteGround,SiteGround,20260301220641,False,False
+spanaflight.com,blocked,False,False,,,,,0,13,,,False,False,False,False,challenge,,spanaflight.com,Cloudflare,challenge,False,202,SiteGround,refuses a browser user agent too,403,http,block,other,Cloudflare,False,202,False,True,SiteGround,SiteGround,,False,False
+speedflysoboba.com,blocked,False,False,,,,,1,9,,,False,False,False,False,challenge,,speedflysoboba.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,SiteGround,False,202,True,True,SiteGround,SiteGround,20250824041537,False,False
+sportaviationcenter.com,blocked,False,False,,,,,0,18,,,False,False,False,False,challenge,,sportaviationcenter.com,WordPress.com,page,False,200,WordPress.com,serves a browser user agent,403,http,challenge,WordPress.com,WordPress.com,True,200,True,False,WordPress.com,WordPress.com,20250723062130,False,False
+squadron2.com,blocked,False,False,,,,,0,28,200,20260618074744,False,False,False,False,browser_ua_served,,squadron2.com,Cloudflare,page,False,200,Cloudflare,serves a browser user agent,403,http,,,Cloudflare,True,200,True,False,Cloudflare,Cloudflare,20250902212511,False,False
+srqaviation.com,blocked,False,False,,,,,0,2,,,False,False,False,False,challenge,,srqlift.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,other,False,404,False,True,SiteGround,SiteGround,,False,False
 srqlift.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,srqlift.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,,,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
-srtaviation.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,srtflightline.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,other,False,404,False,True,SiteGround,SiteGround,,False,False
-stallion51.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,stallion51.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,True,True,SiteGround,SiteGround,20260331032514,False,False
-statetechmo.edu,blocked,False,False,,,,,0,0,,,False,False,False,False,block,,statetechmo.edu,WordPress.com,block,False,429,other,refuses a browser user agent too,403,expansion,,,WordPress.com,False,429,True,False,Other hosts and firewalls,other,20260301114007,False,False
+srtaviation.com,blocked,False,False,,,,,0,3,,,False,False,False,False,challenge,,srtflightline.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,other,False,404,False,True,SiteGround,SiteGround,,False,False
+stallion51.com,blocked,False,False,,,,,0,37,200,20260611225130,False,False,False,False,challenge,,stallion51.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,True,True,SiteGround,SiteGround,20260331032514,False,False
+statetechmo.edu,blocked,False,False,,,,,0,503,200,20261005113458,False,False,False,False,block,,statetechmo.edu,WordPress.com,block,False,429,other,refuses a browser user agent too,403,expansion,,,WordPress.com,False,429,True,False,Other hosts and firewalls,other,20260301114007,False,False
 stickandrudderllc.wordpress.com,blocked,False,False,,,,,0,0,,,False,False,False,False,browser_ua_served,,stickandrudderllc.wordpress.com,WordPress.com,page,False,200,WordPress.com,serves a browser user agent,403,http,,,WordPress.com,True,200,False,False,WordPress.com,WordPress.com,,False,False
-summitaviationny.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,summitaviationny.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
-sunydutchess.edu,blocked,True,True,gptbot,gptbot,gptbot,gptbot,0,0,,,False,False,False,False,browser_ua_served,,sunydutchess.edu,other,page,False,200,other,serves a browser user agent,403,expansion,,,other,True,200,True,False,Other hosts and firewalls,other,20260301062624,False,False
-sweetaviation.com,blocked,True,False,ccbot;claudebot;google-extended;gptbot,,ccbot;claudebot;google-extended;gptbot,,0,0,,,False,False,True,False,browser_ua_served,,sweetaviation.com,Cloudflare,page,False,200,Cloudflare,serves a browser user agent,403,http,,,Cloudflare,True,200,True,False,Cloudflare,Cloudflare,20251202093516,False,False
-tailwheelacademy.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,tailwheelacademy.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
-tailwindsacademy.org,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,tailwindsacademy.org,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
-tamuct.edu,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,tamuct.edu,Cloudflare,challenge,False,403,Cloudflare,refuses a browser user agent too,403,expansion,,,Cloudflare,False,403,True,False,Cloudflare,Cloudflare,20260301071143,False,False
-tellyourideparagliding.com,blocked,False,False,,,,,0,0,,,False,False,False,False,error,"SSLError: HTTPSConnectionPool(host='tellyourideparagliding.com', port=443): Max retries exceeded with url: / (Caused by ",,other,error,False,,none,error,200,browser,page,other,other,False,,False,False,Unreachable now,none,,False,False
-thecavupilot.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,thecavupilot.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
-threewing.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,threewing.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,,,SiteGround,False,202,True,True,SiteGround,SiteGround,20260103072611,False,False
-tritonairways.com,blocked,False,False,,,,,0,0,,,False,False,False,False,browser_ua_served,,tritonairways.com,WordPress.com,page,False,200,WordPress.com,serves a browser user agent,403,http,,,WordPress.com,False,429,True,False,WordPress.com,WordPress.com,20250902015944,False,False
-truecourseflighttraining.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,truecourseflighttraining.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,,,SiteGround,False,202,True,True,SiteGround,SiteGround,20260103003250,False,False
-txflight.com,blocked,False,False,,,,,0,0,,,False,False,False,False,block,,txflight.com,WordPress.com,block,False,429,other,refuses a browser user agent too,403,http,,,WordPress.com,False,429,False,False,Other hosts and firewalls,other,,False,False
-unusualattitudes.org,blocked,False,False,,,,,0,0,,,False,False,False,False,error,"SSLError: HTTPSConnectionPool(host='unusualattitudes.org', port=443): Max retries exceeded with url: / (Caused by SSLErr",,other,error,False,,none,error,403,expansion,,,other,False,,False,False,Unreachable now,none,,False,False
-vantageair.com,blocked,False,False,,,,,0,0,,,False,False,False,False,browser_ua_served,,vantageair.com,Cloudflare,page,False,200,Cloudflare,serves a browser user agent,403,http,,,Cloudflare,True,200,True,False,Cloudflare,Cloudflare,20260310181636,False,False
-vermontflightacademy.com,blocked,False,False,,,,,0,0,,,False,False,False,False,block,,flyvfa.org,other,block,False,403,other,refuses a browser user agent too,403,http,block,other,other,False,404,False,False,Other hosts and firewalls,other,,False,False
-vintageairtours.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,vintageairtours.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
-viterbischool.usc.edu,blocked,False,False,,,,,0,0,,,False,False,False,False,browser_ua_served,,viterbischool.usc.edu,Cloudflare,page,False,200,Cloudflare,serves a browser user agent,403,expansion,,,Cloudflare,True,200,True,False,Cloudflare,Cloudflare,20260302140032,False,False
-wayman.edu,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,wayman.edu,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,True,True,SiteGround,SiteGround,20260204053927,False,False
-weflyhotair.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,weflyhotair.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
-wesleyflyers.com,blocked,True,False,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,0,0,,,False,False,False,False,block,,wesleyflyers.com,Squarespace,block,False,401,Squarespace,refuses a browser user agent too,401,expansion,,,Squarespace,True,200,False,False,Other hosts and firewalls,Squarespace,,True,False
-westernedgeaviation.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,westernedgeaviation.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
-westernplainsaviation.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,westernplainsaviation.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,,,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
-westwindflyers.org,blocked,False,False,,,,,0,0,,,False,False,False,False,browser_ua_served,,westwindflyers.org,WordPress.com,page,False,200,WordPress.com,serves a browser user agent,403,expansion,,,WordPress.com,True,200,False,False,WordPress.com,WordPress.com,,False,False
-windycitysoaring.org,blocked,False,False,,,,,0,0,,,False,False,False,False,browser_ua_served,,windycitysoaring.org,other,page,False,200,other,serves a browser user agent,403,http,,,other,True,200,True,False,Other hosts and firewalls,other,20250725231941,False,False
-wingsoverwaxhaw.org,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,wingsoverwaxhaw.org,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,expansion,,,SiteGround,False,202,True,True,SiteGround,SiteGround,20250502125447,False,False
-wncaviation.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,wncaviation.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
-worldskydivingcenter.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,worldskydivingcenter.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,True,True,SiteGround,SiteGround,20250724210903,False,False
-wvutech.edu,blocked,False,False,,,,,0,0,,,False,False,False,False,browser_ua_served,,wvutech.edu,CloudFront,page,False,200,CloudFront,serves a browser user agent,403,expansion,,,CloudFront,True,200,True,False,Other hosts and firewalls,CloudFront,20260301074309,False,False
-ytseraair.com,blocked,False,False,,,,,0,0,,,False,False,False,False,challenge,,ytseraair.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,SiteGround,False,202,True,True,SiteGround,SiteGround,20250403140204,False,False
+summitaviationny.com,blocked,False,False,,,,,1,5,,,False,False,False,False,challenge,,summitaviationny.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
+sunydutchess.edu,blocked,True,True,gptbot,gptbot,gptbot,gptbot,0,498,200,20261003072830,False,False,False,False,browser_ua_served,,sunydutchess.edu,other,page,False,200,other,serves a browser user agent,403,expansion,,,other,True,200,True,False,Other hosts and firewalls,other,20260301062624,False,False
+sweetaviation.com,blocked,True,False,ccbot;claudebot;google-extended;gptbot,,ccbot;claudebot;google-extended;gptbot,,0,36,200,20261026044556,False,False,True,False,browser_ua_served,,sweetaviation.com,Cloudflare,page,False,200,Cloudflare,serves a browser user agent,403,http,,,Cloudflare,True,200,True,False,Cloudflare,Cloudflare,20251202093516,False,False
+tailwheelacademy.com,blocked,False,False,,,,,2,4,,,False,False,False,False,challenge,,tailwheelacademy.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
+tailwindsacademy.org,blocked,False,False,,,,,0,3,,,False,False,False,False,challenge,,tailwindsacademy.org,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
+tamuct.edu,blocked,False,False,,,,,0,495,200,20261011055003,False,False,False,False,challenge,,tamuct.edu,Cloudflare,challenge,False,403,Cloudflare,refuses a browser user agent too,403,expansion,,,Cloudflare,False,403,True,False,Cloudflare,Cloudflare,20260301071143,False,False
+tellyourideparagliding.com,blocked,False,False,,,,,0,4,,,False,False,False,False,error,"SSLError: HTTPSConnectionPool(host='tellyourideparagliding.com', port=443): Max retries exceeded with url: / (Caused by ",,other,error,False,,none,error,200,browser,page,other,other,False,,False,False,Unreachable now,none,,False,False
+thecavupilot.com,blocked,False,False,,,,,1,6,,,False,False,False,False,challenge,,thecavupilot.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
+threewing.com,blocked,False,False,,,,,4,12,200,20260103072525,False,False,False,False,challenge,,threewing.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,,,SiteGround,False,202,True,True,SiteGround,SiteGround,20260103072611,False,False
+tritonairways.com,blocked,False,False,,,,,0,7,200,20260129015919,False,False,False,False,browser_ua_served,,tritonairways.com,WordPress.com,page,False,200,WordPress.com,serves a browser user agent,403,http,,,WordPress.com,False,429,True,False,WordPress.com,WordPress.com,20250902015944,False,False
+truecourseflighttraining.com,blocked,False,False,,,,,0,2,200,20260103003249,False,False,False,False,challenge,,truecourseflighttraining.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,,,SiteGround,False,202,True,True,SiteGround,SiteGround,20260103003250,False,False
+txflight.com,blocked,False,False,,,,,0,7,,,False,False,False,False,block,,txflight.com,WordPress.com,block,False,429,other,refuses a browser user agent too,403,http,,,WordPress.com,False,429,False,False,Other hosts and firewalls,other,,False,False
+unusualattitudes.org,blocked,False,False,,,,,0,1,,,False,False,False,False,error,"SSLError: HTTPSConnectionPool(host='unusualattitudes.org', port=443): Max retries exceeded with url: / (Caused by SSLErr",,other,error,False,,none,error,403,expansion,,,other,False,,False,False,Unreachable now,none,,False,False
+vantageair.com,blocked,False,False,,,,,0,27,200,20260718135153,False,False,False,False,browser_ua_served,,vantageair.com,Cloudflare,page,False,200,Cloudflare,serves a browser user agent,403,http,,,Cloudflare,True,200,True,False,Cloudflare,Cloudflare,20260310181636,False,False
+vermontflightacademy.com,blocked,False,False,,,,,0,2,,,False,False,False,False,block,,flyvfa.org,other,block,False,403,other,refuses a browser user agent too,403,http,block,other,other,False,404,False,False,Other hosts and firewalls,other,,False,False
+vintageairtours.com,blocked,False,False,,,,,0,23,200,20260517025553,False,False,False,False,challenge,,vintageairtours.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
+viterbischool.usc.edu,blocked,False,False,,,,,0,235,200,20261015081613,False,False,False,False,browser_ua_served,,viterbischool.usc.edu,Cloudflare,page,False,200,Cloudflare,serves a browser user agent,403,expansion,,,Cloudflare,True,200,True,False,Cloudflare,Cloudflare,20260302140032,False,False
+wayman.edu,blocked,False,False,,,,,1,21,200,20260507171954,False,False,False,False,challenge,,wayman.edu,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,True,True,SiteGround,SiteGround,20260204053927,False,False
+weflyhotair.com,blocked,False,False,,,,,1,5,200,20260219041909,False,False,False,False,challenge,,weflyhotair.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
+wesleyflyers.com,blocked,True,False,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,0,4,,,False,False,False,False,block,,wesleyflyers.com,Squarespace,block,False,401,Squarespace,refuses a browser user agent too,401,expansion,,,Squarespace,True,200,False,False,Other hosts and firewalls,Squarespace,,True,False
+westernedgeaviation.com,blocked,False,False,,,,,0,2,,,False,False,False,False,challenge,,westernedgeaviation.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
+westernplainsaviation.com,blocked,False,False,,,,,1,6,,,False,False,False,False,challenge,,westernplainsaviation.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,,,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
+westwindflyers.org,blocked,False,False,,,,,0,3,,,False,False,False,False,browser_ua_served,,westwindflyers.org,WordPress.com,page,False,200,WordPress.com,serves a browser user agent,403,expansion,,,WordPress.com,True,200,False,False,WordPress.com,WordPress.com,,False,False
+windycitysoaring.org,blocked,False,False,,,,,0,23,200,20260613161020,False,False,False,False,browser_ua_served,,windycitysoaring.org,other,page,False,200,other,serves a browser user agent,403,http,,,other,True,200,True,False,Other hosts and firewalls,other,20250725231941,False,False
+wingsoverwaxhaw.org,blocked,False,False,,,,,1,5,,,False,False,False,False,challenge,,wingsoverwaxhaw.org,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,expansion,,,SiteGround,False,202,True,True,SiteGround,SiteGround,20250502125447,False,False
+wncaviation.com,blocked,False,False,,,,,0,4,,,False,False,False,False,challenge,,wncaviation.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,SiteGround,False,202,False,True,SiteGround,SiteGround,,False,False
+worldskydivingcenter.com,blocked,False,False,,,,,0,5,,,False,False,False,False,challenge,,worldskydivingcenter.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,challenge,SiteGround,SiteGround,False,202,True,True,SiteGround,SiteGround,20250724210903,False,False
+wvutech.edu,blocked,False,False,,,,,0,506,200,20261014175136,False,False,False,False,browser_ua_served,,wvutech.edu,CloudFront,page,False,200,CloudFront,serves a browser user agent,403,expansion,,,CloudFront,True,200,True,False,Other hosts and firewalls,CloudFront,20260301074309,False,False
+ytseraair.com,blocked,False,False,,,,,2,4,,,False,False,False,False,challenge,,ytseraair.com,SiteGround,challenge,False,202,SiteGround,refuses a browser user agent too,202,http,block,other,SiteGround,False,202,True,True,SiteGround,SiteGround,20250403140204,False,False
 100ll.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,200,True,False,,,20250811102233,False,False
 10gllc.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
 14daypilot.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260120010530,False,False
@@ -300,44 +300,44 @@ aeromania.net,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,o
 aeromt.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
 aeronationalinc.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,False,200,True,False,,,20251110163102,False,False
 aeronauticsacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-aeroproinflight.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
+aeroproinflight.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,True,False,,,20250724181901,False,False
 aeroservicesgrd.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 aerosimaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 aerosmithflightschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 aerosoaring.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 aerospacenext.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Wix,True,200,False,False,,,,False,False
 aerospaceoperations.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
-aerostartyperatings.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+aerostartyperatings.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260103011543,False,False
 aerostarworld.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 aerotechaviation.net,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 aerotechservices.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 aerovalkaria.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
-aerovalley.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+aerovalley.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20251018005837,False,False
 aeroventure.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-aeroventure.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+aeroventure.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250818131443,False,False
 aeroventureinstitute.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 aeroventures.org,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
 aerowood-aviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-afafaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+afafaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250805195542,False,False
 afc-cbe.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
-afit-info.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+afit-info.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250818124451,False,False
 aftcenter.com,control,False,False,,,,,,,,,False,False,True,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 aftl.aero,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,False,403,False,False,,,,False,False
 agcsc.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
 ahsflying.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 aiaflight.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,False,200,False,False,,,,False,False
-aiaviationacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+aiaviationacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20251218003544,False,False
 aileronaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-aims.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-air-galore.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-air-venture.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot;perplexitybot,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-airaddict.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+aims.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260301024633,False,False
+air-galore.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250916044522,False,False
+air-venture.com,control,True,True,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot;perplexitybot,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot;perplexitybot,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot;perplexitybot,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250823182956,False,False
+airaddict.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250830065644,False,False
 airags.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,200,False,False,,,,False,False
 airalabama.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,200,False,False,,,,False,False
-airamericafc.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+airamericafc.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250805130854,False,False
 airborneheat.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Google,False,404,False,False,,,,False,False
-aircapitaldropzone.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-aircraftsimulatortraining.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+aircapitaldropzone.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250817090812,False,False
+aircraftsimulatortraining.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250820014748,False,False
 airdirectairways.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 aireservicesguam.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 airflairinc.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
@@ -346,51 +346,51 @@ airflightacademy.com,control,True,False,anthropic-ai;bytespider;ccbot;claudebot;
 airgyro.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 airheadsflyingclub.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 airidaho.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-airindianaskydivingcenter.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+airindianaskydivingcenter.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260120204408,False,False
 airlakeaero.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
-airlinems.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+airlinems.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250712010721,False,False
 airlinepilot.training,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 airlinetravelcareers.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
-airlinkflightschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+airlinkflightschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250119004449,False,False
 airmarion.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
 airmenacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-airmodsflightacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-airmodsflightcenter.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+airmodsflightacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250208013856,False,False
+airmodsflightcenter.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20251017161109,False,False
 airmotiveservice.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 airnoss.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 airplanes4rent.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,True,False
 airplanesandattitude.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
-airquestaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+airquestaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250830043608,False,False
 airreldan.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-airrichelieu.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+airrichelieu.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260228021035,False,False
 airservice.net,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 airserviceenterpriseinc.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Google,False,404,False,False,,,,False,False
 airshasta.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 airspacers.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
-airsportster.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+airsportster.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250820171124,False,False
 airtimeabove.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-airtreknorth.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+airtreknorth.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250919143326,False,False
 airventures.net,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 airventuresri.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 airwaysaviationcenter.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 airworkslv.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 airworthyhelicopter.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-ak.angelaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+ak.angelaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260313103402,False,False
 akcfi.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
-alameda.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-alamo.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-alamohelicoptertours.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Vercel,True,200,False,False,,,,False,False
-alaschools.org,control,True,False,,,claudebot;google-extended;gptbot;perplexitybot,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-alasdesanmiguel.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-alaskafloatratings.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+alameda.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260202175345,False,False
+alamo.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260307174425,False,False
+alamohelicoptertours.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Vercel,True,200,True,False,,,20250714055836,False,False
+alaschools.org,control,True,False,,,claudebot;google-extended;gptbot;perplexitybot,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260301095837,False,False
+alasdesanmiguel.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250304104156,False,False
+alaskafloatratings.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250802152405,False,False
 alaskafloats.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-alaskafloattraining.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
-albemarle.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+alaskafloattraining.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,True,False,,,20250716142425,False,False
+albemarle.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260301052159,False,False
 alexandriaaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
 alexflyclub.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
 all2flyaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
 allaircrafttraining.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-allencountyairport.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+allencountyairport.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250821165029,False,False
 allianceflighttraining.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 allmondaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 allsportsaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
@@ -399,7 +399,7 @@ aloft-aviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,
 aloftaviationservices.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
 alpha-1.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 alphaaironline.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
-alphaaviation.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,200,False,False,,,,False,False
+alphaaviation.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,200,True,False,,,20251203130217,False,False
 alphaflt.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 alphakiloaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 alphaoneairservice.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
@@ -407,46 +407,46 @@ alphatangoflightschool.com,control,False,False,,,,,,,,,False,False,False,False,,
 alpineflightservices.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 alpineflighttraining.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 alternateair.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-altoflight.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-alyeskahelicopters.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+altoflight.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250419071109,False,False
+alyeskahelicopters.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260313030159,False,False
 americanaeroclub.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 americanaflighttraining.us,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 americanaviationinc.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 americanaviationvny.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-americanaviationwest.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-americanflyers.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+americanaviationwest.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250809153659,False,False
+americanflyers.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260211154747,False,False
 americanmadeaviation.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
-americanwinds.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+americanwinds.edu,control,False,True,,bytespider;ccbot;claudebot;google-extended;gptbot,,bytespider;ccbot;claudebot;google-extended;gptbot,,,,,False,True,False,True,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260208110450,False,False
 americanwingsflightacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 amosaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-amsflightschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+amsflightschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20251121062037,False,False
 amtinst.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
 anatolianpilot.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Google,False,404,False,False,,,,False,False
-anc.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+anc.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260301140058,False,False
 andersonaviationtx.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-andoverflight.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-andrews.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-angelaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+andoverflight.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250819015446,False,False
+andrews.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260311000322,False,False
+angelaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250822012910,False,False
 angelcityflyers.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-angelo.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,CloudFront,True,200,False,False,,,,False,False
+angelo.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,CloudFront,True,200,True,False,,,20260301001508,False,False
 annarborflyers.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
-ansonair.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
+ansonair.com,control,True,True,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,anthropic-ai;ccbot;claudebot;google-extended;gptbot;perplexitybot,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,True,False,,,20250722145001,False,False
 antelopevalleysoaringclub.org,control,True,False,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,True,False,True,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-anthelionhelicopters.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-apexaerocenter.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
+anthelionhelicopters.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20251009231158,False,False
+apexaerocenter.com,control,True,True,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,True,False,,,20251206203912,False,False
 apexheli.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 apischool.com,control,True,False,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,True,False,True,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 apolloaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-apstraining.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-apsu.edu,control,True,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+apstraining.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260301002137,False,False
+apsu.edu,control,True,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260311005049,False,False
 aqua-aero.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
-archer.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-arcticflyers.net,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+archer.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260312133944,False,False
+arcticflyers.net,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250825011335,False,False
 arhelicopters.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 arizona-flight-training-and-instruction.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 arizonaaerotech.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 arizonacloudbusters.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-arizonaflighttrainingcenter.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+arizonaflighttrainingcenter.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20251123124427,False,False
 arklamissaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 arlingtonflightservices.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
 arrowaviationllc.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
@@ -456,82 +456,82 @@ ascendaviationtraining.com,control,False,False,,,,,,,,,False,False,False,False,,
 ascentaa.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 ascskydiving.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 ashlandregionalairport.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-aspenflightacademy.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-aspenflyingclub.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-aspenparagliding.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-aspireaviation.net,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+aspenflightacademy.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20251004124515,False,False
+aspenflyingclub.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,True,False,,,20250808202457,False,False
+aspenparagliding.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250101172033,False,False
+aspireaviation.net,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250810022748,False,False
 associatedpilots.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
-asu-nvg.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-asumidsouth.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-ataflightschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+asu-nvg.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260104231611,False,False
+asumidsouth.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260201162812,False,False
+ataflightschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250521172655,False,False
 atheneair.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 atlanta.skydivespaceland.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,True,False
-atlantaairacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+atlantaairacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250504162457,False,False
 atlantaflyingclub.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
 atlantapilot.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-atlantatech.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+atlantatech.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260301073540,False,False
 atlantic-helicopters.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 atlantic.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 atlanticflyingclub.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
-atlasaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+atlasaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260102000927,False,False
 atmosphereaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-atomichelicopters.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
-atpflightschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-attitudeaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+atomichelicopters.com,control,True,True,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,anthropic-ai;ccbot;claudebot;google-extended;gptbot;perplexitybot,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,True,False,,,20250821055950,False,False
+atpflightschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260301034902,False,False
+attitudeaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250821105919,False,False
 atxaviators.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 auaviationservices.aero,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-auburn.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-augustaaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+auburn.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260331230406,False,False
+augustaaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250903163756,False,False
 augustaflyingclub.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-augustatech.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+augustatech.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260301091228,False,False
 auroraflighttraining.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 austinaeroflight.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 austinlsa.ch2v.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-av8flight.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+av8flight.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250819104231,False,False
 av8ir.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-avc.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+avc.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260304033504,False,False
 avcairport.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
-avcenter.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-avelflightschool.com,control,True,False,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,True,False,True,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-averett.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+avcenter.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250902014611,False,False
+avelflightschool.com,control,True,False,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,True,False,True,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250805010014,False,False
+averett.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260301013828,False,False
 aviaflightacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 avianflight.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
 aviateacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
-aviation.artsandsciences.baylor.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+aviation.artsandsciences.baylor.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260210152222,False,False
 aviation.eku.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,200,False,False,,,,False,False
-aviation.osu.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,False,403,False,False,,,,False,False
+aviation.osu.edu,control,False,True,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot;perplexitybot,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot;perplexitybot,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,False,403,True,False,,,20260306063346,False,False
 aviation.siu.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 aviation.usu.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-aviationacademyla.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-aviationadventures.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,200,False,False,,,,False,False
+aviationacademyla.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260126120335,False,False
+aviationadventures.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,200,True,False,,,20250604023033,False,False
 aviationcenter.aero,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-aviationexplorerpost352.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Wix,True,200,False,False,,,,False,False
-aviationnga.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+aviationexplorerpost352.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Wix,True,200,True,False,,,20250225012305,False,False
+aviationnga.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260117104848,False,False
 aviationservicescompany.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-aviator.nyc,control,True,False,,,claudebot;google-extended;gptbot;perplexitybot,,,,,,False,False,False,False,,,,,,,,,,,,,,Vercel,True,200,False,False,,,,False,False
-aviator.zone,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-aviatorair.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
+aviator.nyc,control,True,False,,,claudebot;google-extended;gptbot;perplexitybot,,,,,,False,False,False,False,,,,,,,,,,,,,,Vercel,True,200,True,False,,,20260301141651,False,False
+aviator.zone,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260305161103,False,False
+aviatorair.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,True,False,,,20250808204659,False,False
 aviatorpalmbeach.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-aviatorsinc.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+aviatorsinc.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250408204423,False,False
 aviatorzone.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 avserve.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,True,False
-avzflightacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-awaclub.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-ayersaviation.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
+avzflightacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20251206095205,False,False
+awaclub.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250714225344,False,False
+ayersaviation.com,control,True,True,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,anthropic-ai;ccbot;claudebot;google-extended;gptbot;perplexitybot,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,True,False,,,20250805065439,False,False
 azflyers.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,403,False,False,,,,False,False
-azsoaring.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-azureflightsupport.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+azsoaring.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20251231081408,False,False
+azureflightsupport.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250802033036,False,False
 bachmanaero.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-backcountryaeroclub.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-backcountryflyingexperience.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
+backcountryaeroclub.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250816224210,False,False
+backcountryflyingexperience.com,control,False,True,,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,True,False,,,20251104133310,False,False
 badattitudellc.net,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 badgerlandaero.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
-bakeraircraft.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
-bakersschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+bakeraircraft.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,20250902060747,False,False
+bakersschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250821074316,False,False
 baldeagleflyingclub.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
 balloonacyltd.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 balloonny.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-balloonride.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+balloonride.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20251121100857,False,False
 balloonsoveriowa.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 balloontherockies.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 ballouskiesaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
@@ -539,78 +539,78 @@ barioaviationservices.com,control,False,False,,,,,,,,,False,False,False,False,,,
 barker-aviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,True,False
 barnesaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 barstowairport.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-bartow-airport.com,control,True,False,,,bytespider;ccbot;claudebot;gptbot;perplexitybot,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+bartow-airport.com,control,True,True,,,bytespider;ccbot;claudebot;gptbot;perplexitybot,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260301161905,False,False
 base2finalaviation.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
 bassaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 batesfieldaero.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
 batesvilleaoa.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 bauerflightinstruction.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-bayareaaeroclub.org,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
+bayareaaeroclub.org,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,True,False,,,20250820204620,False,False
 bayareaflyingclub.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-bayaviationonline.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-bayflyingservices.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-beachbanners.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+bayaviationonline.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250605231850,False,False
+bayflyingservices.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250224232014,False,False
+beachbanners.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250503035454,False,False
 beachcitiesaviationacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-beaumonttexas.gov,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,False,403,False,False,,,,False,False
+beaumonttexas.gov,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,False,403,True,False,,,20260301152236,False,False
 beech45n.weebly.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 beechclub.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
 beechflyers.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
-beechjet.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
+beechjet.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,True,False,,,20250824224132,False,False
 beechtraining.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Google,False,404,False,False,,,,False,False
 beenflyin.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-befa.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+befa.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260313013227,False,False
 bellefonteairport.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-bellflight.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+bellflight.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260310223350,False,False
 bellflyingclub.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Wix,True,200,False,False,,,,False,False
-bellornithopters.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
+bellornithopters.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,True,False,,,20250905181826,False,False
 bemidjiaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 bendaircraft.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 benzaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Wix,True,200,False,False,,,,False,False
-bergen.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+bergen.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260301005253,False,False
 bergstromaircraft.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-berichiaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+berichiaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260116091241,False,False
 berkshireaviation.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
 bermudahighsoaring.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 bestinflight.net,control,True,False,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,True,False,True,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-beverlyflightcenter.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+beverlyflightcenter.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250826113635,False,False
 beyondaviationfs.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-bgsu.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+bgsu.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260301004709,False,False
 bhmflightcenter.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-bigbend.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-biggestlittleflightschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
-bighornairways.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-bigskyaviation.net,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+bigbend.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260301090511,False,False
+biggestlittleflightschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,True,False,,,20250505144449,False,False
+bighornairways.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260307135435,False,False
+bigskyaviation.net,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250825005332,False,False
 bijanair.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,CloudFront,False,200,False,False,,,,False,False
-birchcreekaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-birddogflightservices.com,control,True,False,ccbot;gptbot;perplexitybot,,ccbot;gptbot;perplexitybot,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+birchcreekaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260312182900,False,False
+birddogflightservices.com,control,True,False,ccbot;gptbot;perplexitybot,,ccbot;gptbot;perplexitybot,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260328180245,False,False
 birdmanacademy.net,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 bismarckaero.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 bismarckflightacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,200,False,False,,,,False,False
 bitterrootaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-blackhawk.edu,control,True,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+blackhawk.edu,control,True,True,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260302013253,False,False
 blackhawkflyingclub.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 blackhawksoaring.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
 blackhillsaero.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-blackhoundaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+blackhoundaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250726180209,False,False
 blacksheepaeronautical.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Wix,True,200,False,False,,,,False,False
 bladewingaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-blevinsenterprises.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+blevinsenterprises.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20251004053751,False,False
 bli-jet.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-bloomsburgpa.org,control,True,False,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,True,False,True,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-blue-airways.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
-blue-horizons.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+bloomsburgpa.org,control,True,False,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,True,False,True,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,20260303072906,False,False
+blue-airways.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,True,False,,,20250311105733,False,False
+blue-horizons.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250915220445,False,False
 blueashaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-bluegooseaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-bluehillhelicopters.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Sucuri,True,200,False,False,,,,False,False
-bluelineaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+bluegooseaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20251008103245,False,False
+bluehillhelicopters.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Sucuri,True,200,True,False,,,20250725055849,False,False
+bluelineaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20260120204958,False,False
 bluelineaviationllc.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,404,False,False,,,,False,False
-blueridgeaviation.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+blueridgeaviation.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250604023036,False,False
 blueridgeflyers.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 blueridgehelicopter.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-blueriveraviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+blueriveraviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260103164214,False,False
 blueskiesflightacademy.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 blueskiesflying.club,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Wix,True,200,False,False,,,,False,False
-blueskyaa.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+blueskyaa.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20250909232713,False,False
 blueskyaero.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
 blueskyflighttraining.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 blueskyflyers.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
@@ -625,16 +625,16 @@ bostonflightsimulator.com,control,False,False,,,,,,,,,False,False,False,False,,,
 boulderflyingclub.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 bowmaneagles.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
 boxaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
-bozemanparagliding.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
+bozemanparagliding.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,True,False,,,20250818054045,False,False
 bpaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 bradenaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 bradleyflying.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Google,False,404,False,False,,,,False,False
-bradycurtisfield.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
-brand.page,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,CloudFront,True,200,False,False,,,,False,False
-brandywineflightschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,False,False,,,,False,False
+bradycurtisfield.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,20250710230917,False,False
+brand.page,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,CloudFront,True,200,True,False,,,20260211011011,False,False
+brandywineflightschool.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,False,,True,False,,,20250805193236,False,False
 bravoflighttraining.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
 brbaviation.com,control,True,False,,,anthropic-ai;bytespider;ccbot;claudebot;google-extended;gptbot,,,,,,False,False,False,False,,,,,,,,,,,,,,Squarespace,True,200,False,False,,,,False,False
-brcc.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
+brcc.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,True,False,,,20260302042547,False,False
 brettaviation.com,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 bridgew.edu,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,other,True,200,False,False,,,,False,False
 brookingsflyingclub.org,control,False,False,,,,,,,,,False,False,False,False,,,,,,,,,,,,,,Cloudflare,True,200,False,False,,,,False,False
