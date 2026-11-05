@@ -55,6 +55,13 @@ R11 = ROOT / "data" / "research-2026-11"
 WORK = R11 / "added"
 DISPOSITIONS = REPO / "docs" / "hackers-2026-added-schools.csv"
 ENRICHED = OUT / "flight_schools_enriched.json"
+RC5 = OUT / "added_schools_rc5.json"  # 67_lead_schools.py's additions, in their own file
+
+
+def late_entries():
+    """Every late-added entry: 57's and 60's (in flight_schools_enriched.json) and 67's (added_schools_rc5.json)."""
+    out = [e for e in json.loads(ENRICHED.read_text()) if e.get("provenance")]
+    return out + ([e for e in json.loads(RC5.read_text()) if e.get("provenance")] if RC5.exists() else [])
 ADDED_EXTRACT = OUT / "added_extract.jsonl"
 SOURCE = "hackers_2026_added"
 
@@ -260,8 +267,7 @@ def cmd_merge_extract(a):
     run = Path(a.run)
     meta = json.loads((run / "run.json").read_text())
     index = {e["custom_id"]: e for e in json.loads((run / "index.json").read_text())}
-    added = {normalize_domain(e["website"]) for e in json.loads(ENRICHED.read_text())
-             if e.get("provenance") and e.get("website")}  # this script's schools and 60's (Google Places)
+    added = {normalize_domain(e["website"]) for e in late_entries() if e.get("website")}  # 57's, 60's and 67's
     new, skipped = {}, defaultdict(int)
     for line in (run / a.model / "results.jsonl").open():
         r = json.loads(line)
@@ -324,7 +330,7 @@ def cmd_check(a):
     reference is present and byte-identical (JSON), and nothing else is new."""
     new = [strip(s, ADDED_FIELDS) for s in json.loads((OUT / "flight_line.json").read_text())]
     ref = [strip(s, ADDED_FIELDS) for s in json.loads(Path(a.reference).read_text())]
-    entries = [e for e in json.loads(ENRICHED.read_text()) if e.get("provenance")]  # 57's and 60's
+    entries = late_entries()  # 57's, 60's and 67's
     fails = []
     nk = defaultdict(list)
     for s in new:
@@ -378,7 +384,13 @@ def cmd_release_check(a):
     want = {s["domain"] for s in fl if s.get("provenance") and s["domain"]
             and any(f.get("n_number") or f.get("display_name") for f in s["fleet"])} - set(old)
     fails = []
-    changed = [k for k in old if json.dumps(old[k], sort_keys=True) != json.dumps(new.get(k), sort_keys=True)]
+    # schools whose domain now serves unrelated content leave the release (67 domains, 38): they must be gone
+    lp = OUT / "lapsed_domains.json"
+    lapsed = {d["domain"] for d in json.loads(lp.read_text())["domains"]} if lp.exists() else set()
+    removed = [k for k in old if k in lapsed]
+    if any(k in new for k in removed):
+        fails.append(f"schools with a lapsed domain still in the release: {[k for k in removed if k in new][:5]}")
+    changed = [k for k in old if k not in lapsed and json.dumps(old[k], sort_keys=True) != json.dumps(new.get(k), sort_keys=True)]
     if changed:
         fails.append(f"{len(changed)} control schools changed or missing, e.g. {changed[:3]}")
     extra = set(new) - set(old)
@@ -419,6 +431,10 @@ def cmd_release_check(a):
                 x["sch"] = [r[:6] for r in x["sch"]]
             for f in RELEASE_ADDED_TAIL_FIELDS:
                 x.pop(f, None)
+        if lapsed and "sch" in b_:  # a school removed for its lapsed domain leaves its tails' sch lists
+            b_["sch"] = [x for x in b_["sch"] if x[0] not in lapsed]
+            if not b_["sch"] and "sch" not in a_:
+                b_.pop("sch")
         if n in added_tails:  # its "sch" list may now name an added school; nothing else may change
             a_["sch"] = [x for x in a_.get("sch", []) if x[0] not in extra]
             b_.setdefault("sch", [])
@@ -440,7 +456,8 @@ def cmd_release_check(a):
         print(f"  {len(t_tie)} tails differ only in the last of their recent legs (35's tie at the cut): {sorted(t_tie)[:5]}")
     if t_diff:
         fails.append(f"{len(t_diff)} tail records differ beyond an added school in their sch list, e.g. {sorted(t_diff)[:3]}")
-    print(f"control {len(old):,} schools, candidate {len(new):,}; control schools changed {len(changed)}; "
+    print(f"control {len(old):,} schools, candidate {len(new):,}; removed for a lapsed domain {len(removed)}; "
+          f"control schools changed {len(changed)}; "
           f"added schools in the release {len(extra)} of {len(want)} with a fleet row or listing "
           f"({len(unnamed)} named only by domain: {unnamed[:5]}); tails {len(t_new):,} vs {len(t_old):,}, "
           f"{len(added_tails)} on added fleets, differing otherwise {len(t_diff)}")

@@ -132,6 +132,14 @@ def google_added():
         return {r["school_key"] for r in csv.DictReader(f) if r["disposition"] == "added"}
 
 
+def rc5_added():
+    p = ROOT.parent.parent / "docs" / "hackers-2026-rc5-additions.csv"
+    if not p.exists():
+        return set()
+    with open(p) as f:
+        return {r["school_key"] for r in csv.DictReader(f) if r["disposition"] == "added" and r["site"]}
+
+
 def cmd_build(a):
     fl = json.loads((OUT / "flight_line.json").read_text())
     want = sorted({s["domain"] for s in fl if s["domain"]} - google_added())
@@ -199,10 +207,12 @@ def cmd_report(a):
         rec["website"] = {"value": pt.clean_url(home[0]["url"]), "source": "site", "ref": pt.clean_url(home[0]["url"]),
                           "retrieved": home[0]["retrieved"], "cache": home[0]["cache"]}
         out[e["domain"]] = rec
-    # 2. Schools added from Google Places: their classification request read the same pages the same way
-    gp = R11 / "google/schools/classified.json"
-    added = google_added()
-    if gp.exists():
+    # 2. Schools added from Google Places (60) and from the gap-source leads (67): their classification
+    # request read the same pages the same way
+    for gp, added, label in ((R11 / "google/schools/classified.json", google_added(), "2026-11 google"),
+                             (R11 / "rc5/classified.json", rc5_added(), "2026-11 rc5")):
+        if not gp.exists():
+            continue
         for r in json.loads(gp.read_text()):
             d = nd("https://" + r["site"])
             if d not in added or r.get("flight_instruction") != "yes":
@@ -212,16 +222,16 @@ def cmd_report(a):
                 c = r["contact"][f]
                 if c["value"]:
                     rec[name] = {"value": c["value"], "source": "site", "ref": pt.clean_url(c["ref"]),
-                                 "retrieved": r["retrieved"].get(c["ref"], ""), "cache": "2026-11 google"}
+                                 "retrieved": r["retrieved"].get(c["ref"], ""), "cache": label}
             cs = r["contact"]["city_state"]
             if cs["value"]:
                 rec["city_state"] = {"value": cs["value"], "source": "site", "ref": pt.clean_url(cs["ref"]),
-                                     "retrieved": r["retrieved"].get(cs["ref"], ""), "cache": "2026-11 google"}
+                                     "retrieved": r["retrieved"].get(cs["ref"], ""), "cache": label}
             first = next(iter(r["retrieved"]), "")
             rec["website"] = {"value": pt.clean_url(first), "source": "site", "ref": pt.clean_url(first),
-                              "retrieved": r["retrieved"].get(first, ""), "cache": "2026-11 google"}
+                              "retrieved": r["retrieved"].get(first, ""), "cache": label}
             out[d] = rec
-            how["google_added"] += 1
+            how["google_added" if label.endswith("google") else "rc5_added"] += 1
     # 3. FSAI listings matched to a school by website: street address and phone where the site gave none
     fsai = {x["id"]: x for x in json.loads((R11 / "fsai/fsai_listings.json").read_text())}
     with open(R11 / "fsai/c_fsai_matched.csv") as f:

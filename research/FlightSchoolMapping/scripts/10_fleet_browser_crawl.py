@@ -79,6 +79,7 @@ MAX_PDFS = 3                 # max PDFs to download per school
 SAVE_EVERY = 25              # save index every N schools
 ATTEMPTS_PATH: Path | None = None   # set by --out-dir
 NO_EVASION = False                  # set by --no-evasion
+USER_AGENT_OVERRIDE = ""            # set by --user-agent (an identified research UA instead of Chrome's)
 
 # ── Stealth config ──────────────────────────────────────────────
 
@@ -893,11 +894,15 @@ async def main():
     parser.add_argument('--no-evasion', action='store_true',
                         help='No stealth script, no automation-flag masking, no waiting out '
                              'bot challenges (they are flagged captcha_challenge instead)')
+    parser.add_argument('--user-agent', default='',
+                        help="send this user agent instead of a desktop Chrome one (e.g. 09a's identified UA)")
     args = parser.parse_args()
 
     global OUTPUT_DIR, CRAWL_INDEX, BROWSER_INDEX, BROWSER_TEXT_DIR, BROWSER_RAW_HTML_DIR
     global FLIGHT_LINE, PROGRESS_FILE, ATTEMPTS_PATH, NO_EVASION
     NO_EVASION = args.no_evasion
+    global USER_AGENT_OVERRIDE
+    USER_AGENT_OVERRIDE = args.user_agent
     if args.out_dir:
         out = Path(args.out_dir).resolve()
         out.mkdir(parents=True, exist_ok=True)
@@ -1064,7 +1069,7 @@ async def main():
                 launch_args.append('--disable-blink-features=AutomationControlled')
             browser = await p.chromium.launch(headless=True, args=launch_args)
             context = await browser.new_context(
-                user_agent=CHROME_UA,
+                user_agent=USER_AGENT_OVERRIDE or CHROME_UA,
                 viewport={'width': 1920, 'height': 1080},
                 locale='en-US',
             )

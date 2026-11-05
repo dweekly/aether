@@ -848,6 +848,7 @@ only when you intend to act on the results.
 | `page_text.py`, `haiku_batch.py` | Shared by 60 and 61: page text with JSON-LD and `tel:` links, the verbatim check, the prompt pieces; Message Batches run directories in extract_v2's layout |
 | `59_google_places.py` | Find flight schools with Google Places (New): free IDs-only text searches over self-splitting US tiles, paid details only after a printed estimate under `--max-usd`, matched against `flight_line.json`, unmatched confirmed from each school's own site |
 | `65_gap_sources.py` | Compare FAA NASR airports with INSTR/RNTL in OTHER_SERVICES, the Tach & Go directory (`fetch-tachgo`, one request per 4 s) and SBA PPP NAICS 611512 borrowers (`ppp-filter`) with `flight_line.json`: gap airports with ADS-B signals, strict matching, homepage checks, seeded hand checks; writes `docs/hackers-2026-gap-sources.md` and its CSVs |
+| `67_lead_schools.py` | Release rc5: pool the Tach & Go, PPP and outside master-list leads, drop out-of-scope names by rule, search the web for website-less leads (Haiku 5.5 with web search), crawl and classify each operator's own pages as 60 does, dedupe, add the confirmed schools to `output/added_schools_rc5.json` (merged by 21), and flag school domains that now serve gambling, parked or unrelated content (`output/lapsed_domains.json`, left out of the release by 38); writes `docs/hackers-2026-rc5-additions.md` and its CSVs. `build_rc5.sh` builds the release candidate |
 
 ## Aircraft Provenance Model
 

@@ -80,13 +80,31 @@ SEP = re.compile(r"\s*[|–—:·•]\s*|\s+-\s+")
 INDIVIDUALS_CSV = ROOT.parent.parent / "docs" / "hackers-2026-google-schools.csv"
 
 
+RC5_CSV = ROOT.parent.parent / "docs" / "hackers-2026-rc5-additions.csv"  # 67_lead_schools.py
+
+
 def individual_instructors():
     import csv
     if not INDIVIDUALS_CSV.exists():
         sys.exit(f"FAIL missing {INDIVIDUALS_CSV} (needed for the public contact policy)")
-    with open(INDIVIDUALS_CSV, newline="", encoding="utf-8") as f:
-        return {r["school_key"] for r in csv.DictReader(f)
-                if r["operation_type"] == "independent_instructor" and r["disposition"] == "added"}
+    out = set()
+    for p in (INDIVIDUALS_CSV, RC5_CSV):
+        if not p.exists():
+            continue
+        with open(p, newline="", encoding="utf-8") as f:
+            out |= {r["school_key"] for r in csv.DictReader(f)
+                    if r["operation_type"] == "independent_instructor" and r["disposition"] == "added"}
+    return out
+
+
+# School domains that now serve unrelated content (gambling, parked, for sale), found by 67_lead_schools.py
+# domains from the November re-crawl and checked by hand. Their schools stay in flight_line.json (internal) but
+# are left out of the release, so the explorer links to no gambling or parked page. Empty the file to undo.
+LAPSED = OUT / "lapsed_domains.json"
+
+
+def lapsed_domains():
+    return {d["domain"] for d in json.loads(LAPSED.read_text())["domains"]} if LAPSED.exists() else set()
 
 
 def public_contact(contact, domain, individuals):
@@ -183,9 +201,12 @@ def main():
     canon = lambda x: alias.get(x.upper(), x) if x else x  # noqa: E731
 
     fl = json.loads((OUT / "flight_line.json").read_text())
+    lapsed = lapsed_domains()
     raw = {}  # key -> {"name", "name_source", "domain", "fleet", "listings"}
     for s in fl:
         domain = norm_domain(s.get("domain") or "")
+        if domain and domain in lapsed:
+            continue
         fleet, listings = [], []
         for f in s.get("fleet") or []:
             n = (f.get("n_number") or "").upper()
@@ -220,7 +241,7 @@ def main():
             # from that list by hand, since page titles of small sites are often unusable ("MA").
             # Schools found through Google Places are named as their own pages name them (60).
             key, name = domain, s["name"]
-            name_src = "site_verified" if s["provenance"][0]["list"] == "google_places" else "added_list"
+            name_src = "site_verified" if s["provenance"][0]["list"] in ("google_places", "rc5_leads") else "added_list"
         elif domain:
             key = domain
             name, name_src = site_name(domain)

@@ -18,6 +18,7 @@ Data sources:
   - output/faa_master.csv                    (FAA registration database)
   - output/ACFTREF.txt                       (FAA aircraft type reference)
   - output/adsb_activity.csv                 (ADS-B surveillance activity)
+  - output/added_schools_rc5.json            (67_lead_schools.py: schools from the gap-source leads, same shape)
   - output/flight_schools_enriched.json      (only entries with a "provenance" list: schools
                                               added late from outside lists by
                                               57_added_schools.py; they join the directory
@@ -374,6 +375,8 @@ def add_late_schools(directory):
     """
     path = OUTPUT_DIR / "flight_schools_enriched.json"
     entries = [e for e in (json.loads(path.read_text()) if path.exists() else []) if e.get("provenance")]
+    rc5 = OUTPUT_DIR / "added_schools_rc5.json"  # 67_lead_schools.py's additions, kept in their own file
+    entries += [e for e in (json.loads(rc5.read_text()) if rc5.exists() else []) if e.get("provenance")]
     no_site = []
     for e in entries:
         domain = normalize_domain(e.get("website", ""))
@@ -383,7 +386,7 @@ def add_late_schools(directory):
             "aopa_type": "",
             "aopa_id": "",
             "locations": [{"airport_id": e["airport_code"], "airport_name": "", "lat": None, "lon": None,
-                           "label": ("from the school's site" if e["provenance"][0]["list"] == "google_places"
+                           "label": ("from the school's site" if e["provenance"][0]["list"] in ("google_places", "rc5_leads")
                                      else "listed by " + e["provenance"][0]["list"])}] if e.get("airport_code") else [],
             "contact": {"phone": e.get("phone", ""), "email": "", "website": e.get("website", ""),
                         "address": e.get("address") or ", ".join(x for x in (e.get("city", ""), e.get("state", "")) if x)},
