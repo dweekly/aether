@@ -79,6 +79,10 @@ From the fact sheet (`docs/hackers-2026-facts.md`, sections 2 and 4):
 
 - From the re-run's new price fields: median private pilot certificate $12,000 (151 schools, interquartile $9,060 to $15,000; 92 are estimates, not packages), instructor $70/h, wet airplane $175/h, simulator $75/h, club dues $50/month. Only 347 of 2,453 school sites post any training price. Hand check: 63 of 66 prices right; quote medians, not single schools.
 
+### Act 3. Accident history on the flight line
+
+- NTSB accident database joined to school fleets (`docs/hackers-2026-ntsb.md`, `63_ntsb_history.py`): 1,825 of 11,713 school aircraft (15.6%) have an NTSB accident or incident record on the same airframe (N-number plus serial, or make and model for pre-1982 records), against 11.8% for comparable private planes that flew last year (same make, model, build years). 77% of the records predate the current owner's registration; since then 3.8% vs 1.8%. Exposure explains most of it: school planes flew a median 181 hours last year, comparison planes 21. Shuffled serials match 0. 959 school aircraft would have been miscounted on a reused N-number alone.
+
 ### Act 3. Where ownership stops
 
 - Florida's free quarterly corporate file names at least one person as manager, member or officer for 82.5% of LLC aircraft with a Florida address (6,225 of 7,541). A named role is not ownership. Validation: where a pilot lives at the registry address, the pilot's surname is in an officer's name 67.5% of the time, against 0.2% for another aircraft's officers (`docs/hackers-2026-florida-owners.md`, `52_florida_owners.py`, PASS).
@@ -122,9 +126,10 @@ Backdrops only: one number, chart, image or record each.
 | 16 | 3 | `learntofly` | Cost to learn to fly (becoming a map) |
 | 17 | 3 | `yearbuilt` | Year built (becoming the 1986 cliff and Cirrus) |
 | 18 | 3 | `hidden` | Who's behind the LLC? Three free joins |
-| 19 | 4 | `wish` | Datasets we wish existed |
-| 20 | 4 | `recipe` | The recipe, and what each step caught |
-| 21 | 4 | `getit` | Steal this: explorer, data, scripts |
+| 19 | 3 | `ntsb` | Flight-school aircraft have a past: 15.6% have an NTSB record vs 11.8%; 77% before the current owner |
+| 20 | 4 | `wish` | Datasets we wish existed |
+| 21 | 4 | `recipe` | The recipe, and what each step caught |
+| 22 | 4 | `getit` | Steal this: explorer, data, scripts |
 
 The deck is https://claude.ai/artifact/KUkKop9nCZBpYwrHGcuBtW (private to David). Cut 2026-11-04 after David's review (code fixes, joins table, never-flew, rate-vs-hours, the 372 funnel and the Google tiles slide): kept as files in the session scratchpad only. Being reworked: eightmonths (are the new blocks anti-AI defenses?), learntofly (a cost map), yearbuilt (the 1986 cliff and Cirrus).
 
