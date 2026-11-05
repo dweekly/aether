@@ -58,7 +58,7 @@ Usage (trogdor, from research/FlightSchoolMapping):
   AETHER_DATA=/mnt/data/home/dew/dev/aether/research/FlightSchoolMapping/data \\
   scripts/.venv/bin/python -I scripts/63_ntsb_history.py --download --convert \\
       --ntsb data/research-2026-11/ntsb --mdbtools ~/.local/mdbtools/bin \\
-      --registry 2026-10-23 --release v0.3-20261023 --out ../../docs/hackers-2026-ntsb.md
+      --registry 2026-10-23 --release v0.3-20261023 --tails --out ../../docs/hackers-2026-ntsb.md
   scripts/.venv/bin/python -I scripts/63_ntsb_history.py --chart --summary data/research-2026-11/ntsb/summary.json \\
       --fonts FONTDIR --png ../../docs/hackers-2026-charts/backdrops/ntsb.png
 AETHER_DATA moves data/ (registry snapshot, release) when running outside the production checkout.
@@ -276,12 +276,12 @@ def load_ntsb(dest: Path):
                   filter (where injury_level <> 'TOTL' and try_cast(inj_person_count as int) > 0) lvl
               from {rd(db + '_injury.csv')} group by all)
             select e.ev_id, e.ev_type, e.ev_date, e.ev_highest_injury, a.Aircraft_Key, a.regis_no, a.acft_make, a.acft_model,
-                   a.acft_serial_no, a.damage, {tf}, a.owner_acft, inj.lvl, a.far_part
+                   a.acft_serial_no, a.damage, {tf}, a.owner_acft, inj.lvl, a.far_part, e.ntsb_no, e.ev_city, e.ev_state
             from {rd(db + '_events.csv')} e join {rd(db + '_aircraft.csv')} a using (ev_id)
             left join inj on inj.ev_id = a.ev_id and inj.Aircraft_Key = a.Aircraft_Key""").fetchall()
         dup = 0
         evs = set()
-        for (ev_id, ev_type, ev_date, hi, akey, reg, make, model, serial, dmg, tfly, owner, lvl, far) in rows:
+        for (ev_id, ev_type, ev_date, hi, akey, reg, make, model, serial, dmg, tfly, owner, lvl, far, ntsb_no, city, st) in rows:
             if ev_id in seen_ev:
                 dup += 1
                 continue
@@ -291,20 +291,24 @@ def load_ntsb(dest: Path):
                          "date": str(ev_date)[:10] if ev_date else None, "nkey": nkey(reg), "make": (make or "").strip(),
                          "model": (model or "").strip(), "serial": skey(serial),
                          "damage": dmg if dmg in DAMAGE else "UNK", "injury": injury,
-                         "instr": (tfly or "").strip() == "INST", "owner": (owner or "").strip(), "far": (far or "").strip()})
+                         "instr": (tfly or "").strip() == "INST", "owner": (owner or "").strip(), "far": (far or "").strip(),
+                         "ntsb_no": (ntsb_no or "").strip() or None, "city": (city or "").strip() or None, "state": (st or "").strip() or None})
         seen_ev |= evs
         stats[f"{db} duplicate aircraft rows already in a newer file"] = dup
     stats["PRE1982 records"] = c.sql(f"select count(*) from {rd('PRE1982_tblFirstHalf.csv')}").fetchall()[0][0]
-    rows = c.sql(f"""select RecNum, REGIST_NO, DATE_OCCURRENCE, ACFT_MAKE, ACFT_MODEL, ACC_INC_CLASS, ACFT_ADAMG, INJURY_INDEX
+    rows = c.sql(f"""select RecNum, REGIST_NO, DATE_OCCURRENCE, ACFT_MAKE, ACFT_MODEL, ACC_INC_CLASS, ACFT_ADAMG, INJURY_INDEX, LOCATION
                      from {rd('PRE1982_tblFirstHalf.csv')}""").fetchall()
     dates = [str(r[2])[:10] for r in rows if r[2]]
     stats["PRE1982 range"] = [min(dates), max(dates)]
     stats["PRE1982 classes"] = dict(Counter(r[5] for r in rows))
-    for (rec, reg, d, make, model, cls, dmg, inj) in rows:
+    for (rec, reg, d, make, model, cls, dmg, inj, loc) in rows:
+        loc = (loc or "").strip()
+        city, _, st = loc.rpartition(",") if "," in loc else (loc, "", "")
         recs.append({"src": "PRE1982", "ev_id": f"P82-{rec}", "akey": "1", "kind": "ACC" if cls in PRE82_ACC else "INC",
                      "date": str(d)[:10] if d else None, "nkey": nkey(reg), "make": (make or "").strip(), "model": (model or "").strip(),
                      "serial": None, "damage": PRE82_DAMAGE.get(dmg, "UNK"), "injury": PRE82_INJ.get(inj, "UNK"),
-                     "instr": None, "owner": "", "far": ""})
+                     "instr": None, "owner": "", "far": "",
+                     "ntsb_no": None, "city": city.strip() or None, "state": st.strip() or None})
     stats["records"] = len(recs)
     stats["records with a US N-number"] = sum(1 for r in recs if r["nkey"])
     stats["records with a serial"] = sum(1 for r in recs if r["serial"])
@@ -368,6 +372,53 @@ def test_pair(a, r, serial_override=None):
     return True, "make/model" + (" (no FAA serial)" if r["serial"] and not fs else "")
 
 
+# ---------------------------------------------------------------- per-registration records
+
+# CAROL's own case link for 1982-onward investigations (from my.ntsb.gov's bundle; verified without
+# login on CEN23LA393, WPR15CA100 and MKC88LA060). Each case page links the report PDF
+# (data.ntsb.gov/carol-repgen/api/Aviation/ReportMain/GenerateNewestReport/<mkey>/pdf) and the docket
+# (data.ntsb.gov/Docket?ProjectID=<mkey>); mkey is not in the MDB and cannot be derived from older ev_ids.
+CASE_URL = "https://web.ntsb.gov/investigations/?ntsbnumber={}"
+
+
+def case_url(r):
+    if r["ntsb_no"] and r["date"] and r["date"] >= "1982-01-01":
+        return CASE_URL.format(r["ntsb_no"])
+    return None
+
+
+def write_tails(acft, by_n, path):
+    """Every valid registration with an airframe-checked NTSB record or a strict-rule serial near-miss."""
+    out, counts = {}, Counter()
+    for k, v in sorted(acft.items()):
+        rows = []
+        for r in by_n.get(k, []):
+            ok, why = test_pair(v, r)
+            if not ok and why != "serial near-miss":
+                continue
+            rows.append({"ev_id": r["ev_id"], "ntsb_no": r["ntsb_no"], "date": r["date"],
+                         "kind": "accident" if r["kind"] == "ACC" else "incident",
+                         "damage": DAMAGE_LABEL[r["damage"]], "highest_injury": INJ_LABEL[r["injury"]],
+                         "city": r["city"], "state": r["state"], "source": r["src"],
+                         "match": why.split(" (")[0] if ok else "serial near-miss (rejected by the strict rule)",
+                         "near_miss": not ok, "url": case_url(r)})
+        if rows:
+            rows.sort(key=lambda x: x["date"] or "")
+            out[f"N{k}"] = rows
+            counts["registrations, any record or near-miss"] += 1
+            if any(not x["near_miss"] for x in rows):
+                counts["registrations with an accepted record"] += 1
+            else:
+                counts["registrations with only near-misses"] += 1
+            for x in rows:
+                counts[f"records: {x['match']}"] += 1
+                counts["records with a case URL" if x["url"] else "records without a case URL"] += 1
+            for p_ in {x["match"] for x in rows if not x["near_miss"]}:
+                counts[f"registrations with a {p_} match"] += 1
+    path.write_text(json.dumps(out, separators=(",", ":")))
+    return dict(counts)
+
+
 # ---------------------------------------------------------------- analysis
 
 def analyse(a):
@@ -385,6 +436,7 @@ def analyse(a):
             by_n[r["nkey"]].append(r)
 
     school = {k for k in school_tails if k in acft}
+    tails_counts = write_tails(acft, by_n, a.tails) if a.tails else None
     rng = random.Random(SEED)
     # Negative control: shuffle FAA serials within make/model code across all valid registrations.
     pools = defaultdict(list)
@@ -591,7 +643,7 @@ def analyse(a):
         "instr": dict(instr), "kinds": dict(kinds), "paths": dict(paths), "events_per": {str(k): v for k, v in sorted(events_per.items())},
         "src_count": dict(src_count), "recent": {"school": rec_school, "expected_airborne": rec_exp_act}, "grounded": grounded,
         "cert_old": cert_old, "cert_med": cert_med, "hours_school_median": med(hours_s), "hours_comp_median": med(hours_c),
-        "shuffled": len(shuffled), "real_serial_in_ctl": len(real_serial_in_ctl),
+        "shuffled": len(shuffled), "tails": tails_counts, "tails_path": str(a.tails) if a.tails else None, "real_serial_in_ctl": len(real_serial_in_ctl),
     }
     (a.ntsb / "summary.json").write_text(json.dumps(summary, indent=1, default=str))
     # internal only: matched school aircraft (git-ignored directory)
@@ -678,6 +730,19 @@ def write_doc(s, a):
     destroyed = ac["damage"].get("0", 0)
     fat = ac["injury"].get("0", 0)
 
+    tc = s.get("tails")
+    if tc:
+        tails_md = f"""## Every registration: records and NTSB links
+
+With `--tails`, the same airframe test is applied to every valid registration, school or not, and the result written to `{Path(s['tails_path']).name}` in the git-ignored NTSB data directory: a JSON object keyed by N-number, one entry per record with the event id, NTSB number, date, accident or incident, damage, highest injury aboard, city and state, source file, match path, a near-miss flag and a link. Strict-rule serial near-misses are included but flagged (`near_miss: true`), not merged.
+
+| Count | Value |
+|---|---|
+""" + "\n".join(f"| {k} | {v:,} |" for k, v in sorted(tc.items())) + f"""
+
+**Link pattern.** `{CASE_URL.format('<NTSB number>')}`, for records from 1982 on (the NTSB number is `ntsb_no` in the avall and Pre2008 events tables). It is the link the NTSB's own CAROL search uses for a case, found in the my.ntsb.gov page bundle, and it was checked without a login in a browser on 2026-11-05 on three real records: a 2023 accident from avall, a 2015 one from avall with an old-style event id, and a 1988 one from Pre2008; each page showed the matching investigation id, date and place. The page is rendered by script, so a plain HTTP fetch sees only a shell. Each case page links the report PDF, `https://data.ntsb.gov/carol-repgen/api/Aviation/ReportMain/GenerateNewestReport/<mkey>/pdf`, and the docket, `https://data.ntsb.gov/Docket?ProjectID=<mkey>`. The PDF fetches without a login; the 2023 accident's PDF names the same N-number, serial, model and town as the MDB. CAROL's `mkey` is not in the MDB. For the 2023 accident it equals the digits after the date in the event id (event id 20230905192994, mkey 192994), but the 2015 and 1988 records have mkeys 90701 and 34545, which cannot be derived from their event ids, so the case page is the only link built from the MDB alone. PRE1982 rows have neither an NTSB number nor an event id, so they get no link. The old `www.ntsb.gov/_layouts/ntsb.aviation/brief.aspx?ev_id=` links now redirect to the CAROL landing page."""
+    else:
+        tails_md = ""
     md = f"""# Hackers 2026: NTSB accident and incident history of flight-school aircraft
 
 Generated by `research/FlightSchoolMapping/scripts/63_ntsb_history.py --registry {s['registry']} --release {s['release']}`. Regenerate rather than edit.
@@ -740,7 +805,7 @@ Highest injury aboard that aircraft (the NTSB injury table for that aircraft; th
 
 {destroyed:,} school-listed aircraft, validly registered today, have a record that coded the aircraft as destroyed, and {fat:,} a record with a fatality aboard. "Destroyed" is the NTSB's damage category, not a statement that the airframe ceased to exist: these airframes were rebuilt and re-registered under the same N-number and serial, or the record is wrong. The airframe test cannot tell those apart.
 
-Records: {kinds.get('ACC', 0):,} accidents and {kinds.get('INC', 0):,} incidents; by source {', '.join(f'{k} {v:,}' for k, v in s['src_count'].items())}. Matched aircraft by number of records: {', '.join(f"{'4+' if k == '4' else k}: {v:,}" for k, v in ep.items())}. Of {ins_n:,} 1982-onward records with a purpose of flight, {ins.get('instructional', 0):,} ({pct(ins.get('instructional', 0), ins_n)}) were instructional flights.
+Records: {kinds.get('ACC', 0):,} accidents and {kinds.get('INC', 0):,} incidents; by source {', '.join(f'{k} {v:,}' for k, v in sorted(s['src_count'].items()))}. Matched aircraft by number of records: {', '.join(f"{'4+' if k == '4' else k}: {v:,}" for k, v in ep.items())}. Of {ins_n:,} 1982-onward records with a purpose of flight, {ins.get('instructional', 0):,} ({pct(ins.get('instructional', 0), ins_n)}) were instructional flights.
 
 ## Era
 
@@ -758,7 +823,7 @@ The certificate issue date is a proxy for when the current owner registered the 
 
 ## The airframe test
 
-A record counts only if the N-number agrees and either the serial numbers agree (letters and digits only, leading zeros dropped) or, where either side lacks a serial, the makes and models agree and the event year is on or after the FAA build year. Matched school records by path: {', '.join(f'{k} {v:,}' for k, v in paths.items())}. The make/model path is the weaker one: it accepts a different airframe of the same model that held the N-number earlier, and the shuffle control does not test it.
+A record counts only if the N-number agrees and either the serial numbers agree (letters and digits only, leading zeros dropped) or, where either side lacks a serial, the makes and models agree and the event year is on or after the FAA build year. Matched school records by path: {', '.join(f'{k} {v:,}' for k, v in sorted(paths.items(), key=lambda kv: -kv[1]))}. The make/model path is the weaker one: it accepts a different airframe of the same model that held the N-number earlier, and the shuffle control does not test it.
 
 {s['pairs']:,} NTSB aircraft records share an N-number with a valid registration today. The test rejected {rej_total:,} of those pairs; {s['nonly_aircraft']:,} registered aircraft ({s['nonly_aircraft_school']:,} on school lists) would have had a record on the N-number alone and have none after the test. Rejected pairs by reason:
 
@@ -775,6 +840,8 @@ FAA serial numbers shuffled at random (seed {SEED}) among valid registrations of
 | Cohort | Eligible aircraft | Real serial-path matches | Shuffled serial-path matches |
 |---|---|---|---|
 {ctl_rows}
+
+{tails_md}
 
 ## Caveats
 
@@ -794,7 +861,7 @@ cd research/FlightSchoolMapping
 AETHER_DATA=/mnt/data/home/dew/dev/aether/research/FlightSchoolMapping/data \\
 scripts/.venv/bin/python -I scripts/63_ntsb_history.py --download --convert \\
     --ntsb data/research-2026-11/ntsb --mdbtools ~/.local/mdbtools/bin \\
-    --registry {s['registry']} --release {s['release']} --out ../../docs/hackers-2026-ntsb.md
+    --registry {s['registry']} --release {s['release']} --tails --out ../../docs/hackers-2026-ntsb.md
 ```
 
 mdbtools 1.0.1 was built from its release tarball with `./configure --disable-glib --disable-man`.
@@ -884,6 +951,8 @@ def main():
     p.add_argument("--release", default="v0.3-20261023")
     p.add_argument("--flight-line", type=Path, default=ROOT / "output" / "flight_line.json")
     p.add_argument("--out", type=Path, default=ROOT.parent.parent / "docs" / "hackers-2026-ntsb.md")
+    p.add_argument("--tails", type=Path, nargs="?", const=ROOT / "data" / "research-2026-11" / "ntsb" / "tail_records.json",
+                   help="also write every valid registration's airframe-checked records (and near-misses) to this git-ignored JSON")
     p.add_argument("--chart", action="store_true", help="draw the slide PNG from --summary (no data needed)")
     p.add_argument("--summary", type=Path)
     p.add_argument("--fonts")

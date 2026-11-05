@@ -81,7 +81,7 @@ Highest injury aboard that aircraft (the NTSB injury table for that aircraft; th
 
 44 school-listed aircraft, validly registered today, have a record that coded the aircraft as destroyed, and 28 a record with a fatality aboard. "Destroyed" is the NTSB's damage category, not a statement that the airframe ceased to exist: these airframes were rebuilt and re-registered under the same N-number and serial, or the record is wrong. The airframe test cannot tell those apart.
 
-Records: 2,101 accidents and 26 incidents; by source PRE1982 559, avall 787, Pre2008 781. Matched aircraft by number of records: 1: 1,559, 2: 233, 3: 30, 4+: 3. Of 1,568 1982-onward records with a purpose of flight, 785 (50.1%) were instructional flights.
+Records: 2,101 accidents and 26 incidents; by source PRE1982 559, Pre2008 781, avall 787. Matched aircraft by number of records: 1: 1,559, 2: 233, 3: 30, 4+: 3. Of 1,568 1982-onward records with a purpose of flight, 785 (50.1%) were instructional flights.
 
 ## Era
 
@@ -105,7 +105,7 @@ The certificate issue date is a proxy for when the current owner registered the 
 
 ## The airframe test
 
-A record counts only if the N-number agrees and either the serial numbers agree (letters and digits only, leading zeros dropped) or, where either side lacks a serial, the makes and models agree and the event year is on or after the FAA build year. Matched school records by path: make/model 565, serial 1,562. The make/model path is the weaker one: it accepts a different airframe of the same model that held the N-number earlier, and the shuffle control does not test it.
+A record counts only if the N-number agrees and either the serial numbers agree (letters and digits only, leading zeros dropped) or, where either side lacks a serial, the makes and models agree and the event year is on or after the FAA build year. Matched school records by path: serial 1,562, make/model 565. The make/model path is the weaker one: it accepts a different airframe of the same model that held the N-number earlier, and the shuffle control does not test it.
 
 78,192 NTSB aircraft records share an N-number with a valid registration today. The test rejected 36,465 of those pairs; 28,189 registered aircraft (959 on school lists) would have had a record on the N-number alone and have none after the test. Rejected pairs by reason:
 
@@ -128,6 +128,25 @@ FAA serial numbers shuffled at random (seed 63) among valid registrations of the
 |---|---|---|---|
 | school | 11,657 | 1,372 (11.77%) | 0 (0.000%) |
 | all registered, non-school | 256,260 | 18,564 (7.24%) | 1 (0.000%) |
+
+## Every registration: records and NTSB links
+
+With `--tails`, the same airframe test is applied to every valid registration, school or not, and the result written to `tail_records.json` in the git-ignored NTSB data directory: a JSON object keyed by N-number, one entry per record with the event id, NTSB number, date, accident or incident, damage, highest injury aboard, city and state, source file, match path, a near-miss flag and a link. Strict-rule serial near-misses are included but flagged (`near_miss: true`), not merged.
+
+| Count | Value |
+|---|---|
+| records with a case URL | 26,030 |
+| records without a case URL | 16,569 |
+| records: make/model | 16,797 |
+| records: serial | 24,930 |
+| records: serial near-miss (rejected by the strict rule) | 872 |
+| registrations with a make/model match | 14,491 |
+| registrations with a serial match | 22,534 |
+| registrations with an accepted record | 35,376 |
+| registrations with only near-misses | 636 |
+| registrations, any record or near-miss | 36,012 |
+
+**Link pattern.** `https://web.ntsb.gov/investigations/?ntsbnumber=<NTSB number>`, for records from 1982 on (the NTSB number is `ntsb_no` in the avall and Pre2008 events tables). It is the link the NTSB's own CAROL search uses for a case, found in the my.ntsb.gov page bundle, and it was checked without a login in a browser on 2026-11-05 on three real records: a 2023 accident from avall, a 2015 one from avall with an old-style event id, and a 1988 one from Pre2008; each page showed the matching investigation id, date and place. The page is rendered by script, so a plain HTTP fetch sees only a shell. Each case page links the report PDF, `https://data.ntsb.gov/carol-repgen/api/Aviation/ReportMain/GenerateNewestReport/<mkey>/pdf`, and the docket, `https://data.ntsb.gov/Docket?ProjectID=<mkey>`. The PDF fetches without a login; the 2023 accident's PDF names the same N-number, serial, model and town as the MDB. CAROL's `mkey` is not in the MDB. For the 2023 accident it equals the digits after the date in the event id (event id 20230905192994, mkey 192994), but the 2015 and 1988 records have mkeys 90701 and 34545, which cannot be derived from their event ids, so the case page is the only link built from the MDB alone. PRE1982 rows have neither an NTSB number nor an event id, so they get no link. The old `www.ntsb.gov/_layouts/ntsb.aviation/brief.aspx?ev_id=` links now redirect to the CAROL landing page.
 
 ## Caveats
 
@@ -154,7 +173,7 @@ cd research/FlightSchoolMapping
 AETHER_DATA=/mnt/data/home/dew/dev/aether/research/FlightSchoolMapping/data \
 scripts/.venv/bin/python -I scripts/63_ntsb_history.py --download --convert \
     --ntsb data/research-2026-11/ntsb --mdbtools ~/.local/mdbtools/bin \
-    --registry 2026-10-23 --release v0.3-20261023 --out ../../docs/hackers-2026-ntsb.md
+    --registry 2026-10-23 --release v0.3-20261023 --tails --out ../../docs/hackers-2026-ntsb.md
 ```
 
 mdbtools 1.0.1 was built from its release tarball with `./configure --disable-glib --disable-man`.
