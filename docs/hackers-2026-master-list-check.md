@@ -27,6 +27,12 @@ Hand check, 30 drawn with seed 66: 15 plausibly real and new (11 flying clubs, 4
 
 From the Antigravity session's own log (pasted by David, 2026-11-04): its AOPA rows came from AOPA's `AirportsAPI` (schools, rental, clubs, universities, FBOs), called with an OAuth client credential belonging to AOPA's own web app. Its 150th Aero / Tach & Go rows came from 150thaero.org's public directory pages, its BestAviation rows from bestaviation.net's public listing pages, and its airport spine from FAA NASR. This project does not use AOPA's API or credentials (the same rule as for ScheduleMaster's sequential IDs), so **rows whose only sources are AOPA are not used, not even as leads**: 704 of the 1,315 unmatched. The session's proposed next step of enumerating FlightCircle and ScheduleMaster tenants is likewise out of bounds here.
 
+Its pipeline script (`build_dataset.py`, read 2026-11-04, not run here and not copied into this repo, because it embeds the credential) also shows:
+
+- Every request carried a Chrome browser user agent, with 12 to 20 parallel workers per source. This project crawls as itself and politely; the outside list's pages were fetched under different rules.
+- "Confirmed Part 61" means a directory said so; "Implied Part 61" is a blanket assumption for any school, club, FBO trainer or rental entry, not evidence.
+- The airport file is "unmatched" against that script's own directory list, not ours. Its airport rows are FAA NASR and usable; its `on_field_fbos_candidates` column mixes AOPA's FBO endpoint with Tach & Go FBO listings, so only the Tach & Go half can be used.
+
 What remains usable as leads: 564 unmatched entries with a Tach & Go or BestAviation source (321 flight schools, 125 flying clubs, 118 FBOs), checked against each operator's own site before anything is added. The credential itself appears in that session's log and is not recorded anywhere in this repo.
 
 ## Constraints
