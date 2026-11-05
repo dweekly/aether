@@ -119,7 +119,7 @@ def yearbuilt_make(a, fl, out):
     gama = {int(r["year"]): int(r["single_engine_piston_shipped"]) for r in csv.DictReader(a.gama.open())}
     res["gama"] = {"peak": max(gama.items(), key=lambda kv: kv[1]), "low": min(gama.items(), key=lambda kv: kv[1]),
                    "1986": gama[1986], "1997": gama[1997], "first": min(gama), "last": max(gama)}
-    cs = res["share_built_2010_on"]["school"]
+    cs = res["share_built_2010_on"]["school_web"]  # fleets read off schools' own websites
     cf = res["share_built_2010_on"]["flew"]
 
     fig = B.frame("Small-plane production collapsed after 1979",
@@ -140,9 +140,9 @@ def yearbuilt_make(a, fl, out):
     ax.set_yticks([0, 5000, 10000, 15000])
     ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v / 1000:.0f}k" if v else "0"))
     titles = [f"New US-built piston singles shipped each year (GAMA, {res['gama']['first']}–{res['gama']['last']})",
-              f"On flight-school fleets: {tot['school']:,} four-seat piston singles, by year built",
+              f"Listed on flight-school websites: {tot['school_web']:,} four-seat piston singles, by year built",
               f"Seen flying on ADS-B in the past year: {tot['flew']:,}, by year built"]
-    for ax_, pop in ((axes[1], "school"), (axes[2], "flew")):
+    for ax_, pop in ((axes[1], "school_web"), (axes[2], "flew")):
         bottom = [0] * len(years)
         for m in MAKES:
             vals = [pops[pop][m].get(y, 0) for y in years]
@@ -156,12 +156,13 @@ def yearbuilt_make(a, fl, out):
         ax_.set_xlim(1944.5, 2026.5)
         ax_.tick_params(labelsize=20, length=0)
         ax_.grid(axis="x", visible=False)
-        for xv in (1986.5, 1994.6):
+        for xv in (1986.5, 1994.6, 2008.5):
             ax_.axvline(xv, color=MUTED, lw=1.2, ls=(0, (3, 4)), zorder=0)
         if ax_ is not axes[2]:
             ax_.set_xticklabels([])
     axes[0].text(1987.2, 17800, "1986: Cessna stops building piston singles", fontsize=21, color=MUTED, va="top")
     axes[0].text(1995.2, 13300, "1994: liability reform (GARA)", fontsize=21, color=MUTED, va="top")
+    axes[0].text(2009.1, 4300, "2008: financial crisis", fontsize=21, color=MUTED, va="top")
     # Legend and the shares, right of the panels.
     lx = x0 + w + 0.035
     fig.text(lx, 0.765, "Make", fontsize=24, color=MUTED)
@@ -174,8 +175,8 @@ def yearbuilt_make(a, fl, out):
     fig.text(lx, 0.42, f"{cf['Cirrus']:.0f}%", fontsize=56, color=INK, fontweight="semibold", va="top")
     fig.text(lx, 0.345, "of those flying are Cirrus", fontsize=23, color=MUTED, va="top")
     fig.text(lx, 0.28, f"{cs['Cirrus']:.0f}%", fontsize=56, color=INK, fontweight="semibold", va="top")
-    fig.text(lx, 0.205, f"of school fleets are Cirrus;\n{cs['Piper']:.0f}% are Pipers", fontsize=23, color=MUTED,
-             va="top", linespacing=1.25)
+    fig.text(lx, 0.205, "of those on school\nwebsites are Cirrus", fontsize=23, color=MUTED,
+             va="top", linespacing=1.05)
     B.footer(fig, "GAMA Databooks 2016 and 2019. FAA registry 2026-10-23 (single-engine piston, 4–5 seats). "
                   "ADS-B: Oct 2025–Oct 2026.")
     fig.savefig(out / "yearbuilt_make.png")
