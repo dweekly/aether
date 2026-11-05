@@ -4,13 +4,12 @@ David's 7 minutes in the Aviation session, Saturday 16:00–17:00 (assumed 2026-
 
 ## Narrative
 
-Three acts (David, 2026-11-03):
+Title: **Scrape. Join. Interrogate.** (David, 2026-11-04). Nobody cares about a flight-school list for its own sake. The point is that using AI to scrape, join and interrogate public data now lets one person learn things that used to take a team and a budget, and that the audience can build on this work: the data, the method and the scripts are published so they can make their own scrapers and provenance-tracked datasets, in aviation or anywhere.
 
-Umbrella theme (David): which queryable datasets do we wish existed, and how does AI turn scattered, tedious sources into tidy, joinable ones? Along the way, point out where the federal government publishes well and where it doesn't, concretely enough for someone in the room to route a gripe.
-
-1. **What's out there.** A lot about aviation is public in theory: the FAA registry, flight tracking, state business filings, FCC radio licenses, accident reports, and every school's own website. Each source has its own access: bulk and free, one record at a time, paid, licensed, or not public at all.
-2. **Pulling it down.** In practice, turning that into structured data used to be the hard part. Worked example: there's no complete public list of US flight schools, so we built a first version in a week, with about $100 of recorded model cost for the extraction, by having a language model read their websites, then checked it for consistency against the registry and a year of flights.
-3. **Joining it.** Once the pieces are datasets, joining them on a tail number, a name or an airport shows things no single source does: planes on a rate sheet that never fly, prices that don't track use, schools nobody listed, and where ownership trails stop.
+1. **Public, in theory.** What data exists about aviation (airplanes, flights, pilots, crashes, schools, prices, owners, drones), and how hard each is to get: some are a bulk download tonight; some are public but scattered over thousands of places; some aren't public at all. "Hard" doesn't mean secret. Example of hard: "What does a Cessna 172 rent for, wet?" Everyone asks it, no agency collects it, and the answer sits on thousands of school websites in prose, PDFs and photos. With the dataset it's one query: $177 an hour, half between $160 and $195, the typical plane built in 1978 (the published story on aether-flight.com says $176 on March data).
+2. **Scrape it.** Why no list exists (Part 61 needs no FAA approval; TSA knows 13,000 providers and doesn't publish them), how a model read 32,462 pages for $100 and how the same job costs $15 now, the demo, one row traced, and how it was checked (registry, flights, a shuffled control, hand reads of random samples). The web keeps moving: eight months later 157 sites are gone and 207 refuse robots. Every list we could find, with what each added, its time and its cost.
+3. **Join it.** What the joins show: where learning to fly is cheap or dear, the 1986 production cliff and Cirrus's rise, who's behind an aircraft LLC in three free joins, and (pending) which training aircraft have an accident history.
+4. **Build your own.** Datasets we wish existed; the recipe and what each step caught; steal this (explorer, downloads with per-field sources, scripts).
 
 ## Facts, by section
 
@@ -105,27 +104,27 @@ Backdrops only: one number, chart, image or record each.
 
 | # | Act | Slide id | On it |
 |---|---|---|---|
-| 1 |  | `cover` | Title |
-| 2 | 1 | `sources` | Public, in theory: sources by access |
-| 3 | 1 | `faa` | What the FAA publishes |
-| 4 | 1 | `lampsonchart` | Lampson Field forecast, flat 37,000 for 28 years |
-| 5 | 1 | `droneschart` | Drone registrations halve overnight |
-| 6 | 2 | `nolist` | There is a list. You can't see it: 519 Part 141, 13,000 with TSA, 4,825 candidates |
-| 7 | 2 | `schoolsmap` | Map: 3,152 of 4,825 placed |
-| 8 | 2 | `build` | The build: 32,462 pages, 4,909 calls, $100 |
-| 9 | 2 | `costnow` | Same job now: $100 vs $15 |
-| 10 | 2 | `demo` | Demo recording |
-| 11 | 2 | `trace` | One row traced: N6860J |
-| 12 | 2 | `checked` | Consistency checks, not accuracy |
-| 13 | 2 | `misreads` | 81 bad tails, whose fault |
-| 14 | 2 | `audit` | 40 random pages read by hand |
-| 15 | 2 | `eightmonths` | Eight months later: 157 gone, 207 blocking, 26% of rates up |
-| 16 | 3 | `learntofly` | Cost to learn to fly: $12,000 median |
-| 17 | 3 | `yearbuilt` | Year built: median 1979 |
-| 18 | 3 | `everylist` | Every list we could find: source, schools added, machine time, cost |
-| 19 | 3 | `hidden` | Who's behind the LLC? Three free joins: registry 88,071 LLC aircraft → 20% have a pilot at the address → Florida 86% named; Delaware/Montana dead end |
-| 20 |  | `wish` | Datasets we wish existed |
-| 21 |  | `getit` | QR code, URL |
+| 1 |  | `cover` | Scrape. Join. Interrogate. Four acts; Skybound's flight line as strips |
+| 2 | 1 | `landscape` | What's public about aviation, and how hard it is to get |
+| 3 | 1 | `ask172` | "What does a Cessna 172 rent for, wet?" and why that's hard |
+| 4 | 1 | `answer172` | $177/h wet, half $160 to $195; typical plane 1978; post-1996 only $20 more |
+| 5 | 2 | `nolist` | There is a list. You can't see it. |
+| 6 | 2 | `schoolsmap` | Map of the schools |
+| 7 | 2 | `build` | One week in March: 32,462 pages, $100 |
+| 8 | 2 | `costnow` | Same job now: $15 |
+| 9 | 2 | `demo` | Demo recording |
+| 10 | 2 | `trace` | One row traced: N6860J |
+| 11 | 2 | `checked` | Consistency checks, not accuracy |
+| 12 | 2 | `misreads` | 81 bad tails, whose fault |
+| 13 | 2 | `audit` | 40 random pages read by hand |
+| 14 | 2 | `eightmonths` | Eight months later (being reworked: are the new blocks anti-AI?) |
+| 15 | 2 | `everylist` | Every list we could find: added, time, cost |
+| 16 | 3 | `learntofly` | Cost to learn to fly (becoming a map) |
+| 17 | 3 | `yearbuilt` | Year built (becoming the 1986 cliff and Cirrus) |
+| 18 | 3 | `hidden` | Who's behind the LLC? Three free joins |
+| 19 | 4 | `wish` | Datasets we wish existed |
+| 20 | 4 | `recipe` | The recipe, and what each step caught |
+| 21 | 4 | `getit` | Steal this: explorer, data, scripts |
 
 The deck is https://claude.ai/artifact/KUkKop9nCZBpYwrHGcuBtW (private to David). Cut 2026-11-04 after David's review (code fixes, joins table, never-flew, rate-vs-hours, the 372 funnel and the Google tiles slide): kept as files in the session scratchpad only. Being reworked: eightmonths (are the new blocks anti-AI defenses?), learntofly (a cost map), yearbuilt (the 1986 cliff and Cirrus).
 
