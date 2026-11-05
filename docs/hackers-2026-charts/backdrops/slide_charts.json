@@ -1,0 +1,4788 @@
+{
+  "yearbuilt_make": {
+    "tails": {
+      "school": 8447,
+      "school_web": 3811,
+      "flew": 62397
+    },
+    "share_all": {
+      "school": {
+        "Cessna": 54.1,
+        "Piper": 34.9,
+        "Diamond": 2.2,
+        "Cirrus": 7.6,
+        "Other": 1.1
+      },
+      "school_web": {
+        "Cessna": 60.8,
+        "Piper": 25.6,
+        "Diamond": 1.9,
+        "Cirrus": 9.4,
+        "Other": 2.3
+      },
+      "flew": {
+        "Cessna": 43.3,
+        "Piper": 22.6,
+        "Diamond": 1.4,
+        "Cirrus": 12.4,
+        "Other": 20.3
+      }
+    },
+    "share_built_2010_on": {
+      "school": {
+        "Cessna": 13.6,
+        "Piper": 49.6,
+        "Diamond": 4.7,
+        "Cirrus": 31.9,
+        "Other": 0.2
+      },
+      "school_web": {
+        "Cessna": 19.4,
+        "Piper": 14.7,
+        "Diamond": 2.9,
+        "Cirrus": 62.7,
+        "Other": 0.4
+      },
+      "flew": {
+        "Cessna": 19.7,
+        "Piper": 13.2,
+        "Diamond": 3.9,
+        "Cirrus": 51.3,
+        "Other": 11.9
+      }
+    },
+    "cirrus_share_by_era": {
+      "school": {
+        "1940-1986": [
+          0.0,
+          5208
+        ],
+        "1987-1996": [
+          0.0,
+          63
+        ],
+        "1997-2009": [
+          9.1,
+          1613
+        ],
+        "2010-2026": [
+          31.9,
+          1563
+        ]
+      },
+      "school_web": {
+        "1940-1986": [
+          0.0,
+          2549
+        ],
+        "1987-1996": [
+          0.0,
+          12
+        ],
+        "1997-2009": [
+          6.6,
+          760
+        ],
+        "2010-2026": [
+          62.7,
+          490
+        ]
+      },
+      "flew": {
+        "1940-1986": [
+          0.0,
+          42788
+        ],
+        "1987-1996": [
+          0.0,
+          1182
+        ],
+        "1997-2009": [
+          30.9,
+          8447
+        ],
+        "2010-2026": [
+          51.3,
+          9980
+        ]
+      }
+    },
+    "cessna_share_by_era": {
+      "school": {
+        "1940-1986": [
+          62.2,
+          5208
+        ],
+        "1987-1996": [
+          0.0,
+          63
+        ],
+        "1997-2009": [
+          69.4,
+          1613
+        ],
+        "2010-2026": [
+          13.6,
+          1563
+        ]
+      },
+      "school_web": {
+        "1940-1986": [
+          64.5,
+          2549
+        ],
+        "1987-1996": [
+          0.0,
+          12
+        ],
+        "1997-2009": [
+          76.2,
+          760
+        ],
+        "2010-2026": [
+          19.4,
+          490
+        ]
+      },
+      "flew": {
+        "1940-1986": [
+          50.6,
+          42788
+        ],
+        "1987-1996": [
+          0.3,
+          1182
+        ],
+        "1997-2009": [
+          40.3,
+          8447
+        ],
+        "2010-2026": [
+          19.7,
+          9980
+        ]
+      }
+    },
+    "built_1975_79_vs_1987_96": {
+      "school": [
+        2068,
+        63
+      ],
+      "school_web": [
+        1162,
+        12
+      ],
+      "flew": [
+        12345,
+        1182
+      ]
+    },
+    "share_built_1986_or_before": {
+      "school": 61.7,
+      "school_web": 66.9,
+      "flew": 68.6
+    },
+    "share_built_1970s": {
+      "school": 36.7,
+      "school_web": 43.8,
+      "flew": 30.4
+    },
+    "median_year": {
+      "school": 1979.0,
+      "school_web": 1979.0,
+      "flew": 1976.0
+    },
+    "top_models_built_2010_on_school": [
+      [
+        "Piper",
+        "PA-28-181",
+        735
+      ],
+      [
+        "Cirrus",
+        "SR20",
+        358
+      ],
+      [
+        "Cessna",
+        "172S",
+        194
+      ],
+      [
+        "Cirrus",
+        "SR22T",
+        83
+      ],
+      [
+        "Cirrus",
+        "SR22",
+        57
+      ],
+      [
+        "Diamond",
+        "DA 40 NG",
+        45
+      ]
+    ],
+    "gama": {
+      "peak": [
+        1978,
+        14398
+      ],
+      "low": [
+        1994,
+        444
+      ],
+      "1986": 985,
+      "1997": 898,
+      "first": 1959,
+      "last": 2019
+    }
+  },
+  "wetrate_map": {
+    "schools": 524,
+    "dropped": {
+      "no_airport": 20,
+      "seaplane_base": 1
+    },
+    "outside_lower48": 10,
+    "national_median": 170.0,
+    "min_schools": 10,
+    "club_median": 135.0,
+    "clubs": 66,
+    "states_shown": {
+      "MN": {
+        "n": 10,
+        "median": 127.25,
+        "p25": 83.75,
+        "p75": 175.0,
+        "lat": 45.38761048966,
+        "lon": -94.14374066692
+      },
+      "WI": {
+        "n": 13,
+        "median": 140.0,
+        "p25": 132.5,
+        "p75": 162.0,
+        "lat": 44.329171581458205,
+        "lon": -89.36716750576899
+      },
+      "OH": {
+        "n": 18,
+        "median": 159.5,
+        "p25": 143.25,
+        "p75": 168.5,
+        "lat": 40.001428588475555,
+        "lon": -83.62269661456551
+      },
+      "MI": {
+        "n": 20,
+        "median": 160.0,
+        "p25": 140.25,
+        "p75": 179.0,
+        "lat": 42.83556541008834,
+        "lon": -84.20504677352567
+      },
+      "FL": {
+        "n": 39,
+        "median": 165.0,
+        "p25": 152.5,
+        "p75": 188.1,
+        "lat": 28.27271403518308,
+        "lon": -81.89943501875429
+      },
+      "ID": {
+        "n": 12,
+        "median": 165.0,
+        "p25": 125.0,
+        "p75": 180.0,
+        "lat": 45.01869458986412,
+        "lon": -116.13554393465138
+      },
+      "CO": {
+        "n": 14,
+        "median": 167.5,
+        "p25": 152.25,
+        "p75": 198.0,
+        "lat": 39.69623321988486,
+        "lon": -105.17760476828572
+      },
+      "WA": {
+        "n": 22,
+        "median": 167.5,
+        "p25": 152.0,
+        "p75": 181.25,
+        "lat": 47.1658253792881,
+        "lon": -121.54825559351924
+      },
+      "AZ": {
+        "n": 16,
+        "median": 168.75,
+        "p25": 156.25,
+        "p75": 175.0,
+        "lat": 33.18937990703264,
+        "lon": -111.99923841522461
+      },
+      "CA": {
+        "n": 82,
+        "median": 173.75,
+        "p25": 151.75,
+        "p75": 195.0,
+        "lat": 35.54162701092192,
+        "lon": -119.4868298142737
+      },
+      "IL": {
+        "n": 16,
+        "median": 174.5,
+        "p25": 152.25,
+        "p75": 193.75,
+        "lat": 41.319764916381246,
+        "lon": -88.55246537638125
+      },
+      "NC": {
+        "n": 16,
+        "median": 175.0,
+        "p25": 155.0,
+        "p75": 197.4925,
+        "lat": 35.331854215625,
+        "lon": -79.991201441875
+      },
+      "NY": {
+        "n": 12,
+        "median": 177.5,
+        "p25": 148.625,
+        "p75": 196.75,
+        "lat": 42.450325576049806,
+        "lon": -75.79296310961914
+      },
+      "VA": {
+        "n": 13,
+        "median": 180.0,
+        "p25": 157.5,
+        "p75": 185.0,
+        "lat": 37.718669030442456,
+        "lon": -78.08544759596604
+      },
+      "TX": {
+        "n": 35,
+        "median": 180.0,
+        "p25": 170.0,
+        "p75": 195.0,
+        "lat": 31.413146724933597,
+        "lon": -97.07578482834477
+      },
+      "GA": {
+        "n": 18,
+        "median": 182.5,
+        "p25": 151.125,
+        "p75": 204.25,
+        "lat": 33.48419174240858,
+        "lon": -83.91739331115886
+      },
+      "TN": {
+        "n": 15,
+        "median": 185,
+        "p25": 175.0,
+        "p75": 192.5,
+        "lat": 35.87656026618982,
+        "lon": -85.79636775963426
+      },
+      "PA": {
+        "n": 14,
+        "median": 185.0,
+        "p25": 155.0,
+        "p75": 222.5,
+        "lat": 40.554043962140376,
+        "lon": -77.02602264257555
+      },
+      "NJ": {
+        "n": 11,
+        "median": 190.0,
+        "p25": 164.0,
+        "p75": 207.0,
+        "lat": 40.76996862389368,
+        "lon": -74.5030220321
+      }
+    },
+    "metros_shown": {
+      "Detroit-Warren-Ann Arbor, MI": {
+        "n": 10,
+        "median": 157.0,
+        "p25": 128.865,
+        "p75": 183.5,
+        "lat": 42.43159933087668,
+        "lon": -83.50695982005132
+      },
+      "Boston-Worcester-Providence, MA-RI-NH": {
+        "n": 11,
+        "median": 161.0,
+        "p25": 155.0,
+        "p75": 180.0,
+        "lat": 42.5878439049174,
+        "lon": -71.14730646026726
+      },
+      "Phoenix-Mesa, AZ": {
+        "n": 10,
+        "median": 161.25,
+        "p25": 148.75,
+        "p75": 171.0,
+        "lat": 33.45738060425516,
+        "lon": -112.0797981591836
+      },
+      "Houston-Pasadena, TX": {
+        "n": 10,
+        "median": 170.0,
+        "p25": 158.25,
+        "p75": 194.875,
+        "lat": 29.9300800814,
+        "lon": -95.40310053366
+      },
+      "San Jose-San Francisco-Oakland, CA": {
+        "n": 20,
+        "median": 171.75,
+        "p25": 149.25,
+        "p75": 203.75,
+        "lat": 37.60354269379627,
+        "lon": -121.78824295698867
+      },
+      "Dallas-Fort Worth, TX-OK": {
+        "n": 12,
+        "median": 175.0,
+        "p25": 159.875,
+        "p75": 191.25,
+        "lat": 33.00687966666666,
+        "lon": -96.86417166666666
+      },
+      "Chicago-Naperville, IL-IN-WI": {
+        "n": 11,
+        "median": 175.0,
+        "p25": 159.0,
+        "p75": 205.0,
+        "lat": 41.93991796697273,
+        "lon": -88.05151116762727
+      },
+      "Los Angeles-Long Beach, CA": {
+        "n": 36,
+        "median": 175.0,
+        "p25": 161.25,
+        "p75": 193.75,
+        "lat": 33.99485072871589,
+        "lon": -118.09272735210195
+      },
+      "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA": {
+        "n": 12,
+        "median": 177.5,
+        "p25": 146.875,
+        "p75": 185.0,
+        "lat": 39.0790661862,
+        "lon": -77.276942700475
+      },
+      "Seattle-Tacoma, WA": {
+        "n": 11,
+        "median": 177.5,
+        "p25": 152.0,
+        "p75": 192.5,
+        "lat": 47.524541912975,
+        "lon": -122.28878303542272
+      },
+      "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL": {
+        "n": 14,
+        "median": 182.5,
+        "p25": 150.625,
+        "p75": 205.5,
+        "lat": 33.93748998714286,
+        "lon": -84.43775702428572
+      },
+      "New York-Newark, NY-NJ-CT-PA": {
+        "n": 15,
+        "median": 190.0,
+        "p25": 164.0,
+        "p75": 207.0,
+        "lat": 41.01105274806565,
+        "lon": -74.30898042686032
+      }
+    },
+    "bay_area": {
+      "San Jose-San Francisco-Oakland, CA": {
+        "n": 20,
+        "median": 171.75,
+        "p25": 149.25,
+        "p75": 203.75,
+        "lat": 37.60354269379627,
+        "lon": -121.78824295698867
+      }
+    },
+    "cheapest": [
+      "Detroit-Warren-Ann Arbor, MI",
+      "Boston-Worcester-Providence, MA-RI-NH",
+      "Phoenix-Mesa, AZ"
+    ],
+    "priciest": [
+      "Seattle-Tacoma, WA",
+      "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+      "New York-Newark, NY-NJ-CT-PA"
+    ],
+    "club_share_by_metro": {
+      "Detroit-Warren-Ann Arbor, MI": 0.2,
+      "Boston-Worcester-Providence, MA-RI-NH": 0.27,
+      "Phoenix-Mesa, AZ": 0.2,
+      "Houston-Pasadena, TX": 0.1,
+      "San Jose-San Francisco-Oakland, CA": 0.2,
+      "Dallas-Fort Worth, TX-OK": 0.08,
+      "Chicago-Naperville, IL-IN-WI": 0.0,
+      "Los Angeles-Long Beach, CA": 0.06,
+      "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA": 0.17,
+      "Seattle-Tacoma, WA": 0.18,
+      "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL": 0.14,
+      "New York-Newark, NY-NJ-CT-PA": 0.27
+    },
+    "bay_minus_cheapest_hr": 14.75,
+    "at_40_hours": 590.0,
+    "metro_median_range": [
+      157.0,
+      190.0
+    ],
+    "metro_iqr_width_median": 39.3125,
+    "bay_area_rates": [
+      130.0,
+      130,
+      134.0,
+      145.0,
+      149,
+      150,
+      157.5,
+      165,
+      169.0,
+      171.0,
+      172.5,
+      172.5,
+      182.0,
+      193,
+      200.0,
+      205.0,
+      209.0,
+      210.0,
+      214.0,
+      235.0
+    ],
+    "cheapest_to_priciest_at_40_hours": 1320.0,
+    "_schools": [
+      {
+        "domain": "plusoneflyers.org",
+        "rate": 149.0,
+        "tails": 15,
+        "st": "CA",
+        "metro": "San Diego-Chula Vista-Carlsbad, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "wvfc.org",
+        "rate": 235.0,
+        "tails": 23,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyjetaccess.com",
+        "rate": 210.0,
+        "tails": 6,
+        "st": "IN",
+        "metro": "Lafayette-West Lafayette-Frankfort, IN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "centennialflyers.com",
+        "rate": 144,
+        "tails": 9,
+        "st": "CO",
+        "metro": "Denver-Aurora-Greeley, CO",
+        "type": ""
+      },
+      {
+        "domain": "flyavit.com",
+        "rate": 183.0,
+        "tails": 16,
+        "st": "OH",
+        "metro": "Cleveland-Akron-Canton, OH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "louisvilleaviation.com",
+        "rate": 176,
+        "tails": 25,
+        "st": "IN",
+        "metro": "Louisville/Jefferson County--Elizabethtown, KY-IN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "a-centaviationfernandina.com",
+        "rate": 165,
+        "tails": 7,
+        "st": "FL",
+        "metro": "Jacksonville-Kingsland-Palatka, FL-GA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "aiaviationacademy.com",
+        "rate": 195.95,
+        "tails": 6,
+        "st": "CA",
+        "metro": "Sacramento-Roseville, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "a-centaviation.com",
+        "rate": 170.0,
+        "tails": 6,
+        "st": "FL",
+        "metro": "Jacksonville-Kingsland-Palatka, FL-GA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "aeflight.com",
+        "rate": 182.5,
+        "tails": 12,
+        "st": "VA",
+        "metro": "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "silverhawkaviation.net",
+        "rate": 230.0,
+        "tails": 1,
+        "st": "ID",
+        "metro": "Boise City-Mountain Home-Ontario, ID-OR",
+        "type": "Flight School"
+      },
+      {
+        "domain": "sweetaviation.com",
+        "rate": 195.0,
+        "tails": 2,
+        "st": "IN",
+        "metro": "Fort Wayne-Huntington-Auburn, IN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "aerodynamicaviation.com",
+        "rate": 134.0,
+        "tails": 12,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "learntoflydc.com",
+        "rate": 180.0,
+        "tails": 7,
+        "st": "MD",
+        "metro": "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "advanced-aviation-group.com",
+        "rate": 175.0,
+        "tails": 9,
+        "st": "MD",
+        "metro": "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "niceairaviation.com",
+        "rate": 130.0,
+        "tails": 10,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "pcflyers.org",
+        "rate": 185.0,
+        "tails": 8,
+        "st": "CA",
+        "metro": "San Diego-Chula Vista-Carlsbad, CA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "stpeteair.org",
+        "rate": 206.0,
+        "tails": 7,
+        "st": "FL",
+        "metro": "Tampa-St. Petersburg-Clearwater, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "longislandaviators.com",
+        "rate": 199.0,
+        "tails": 7,
+        "st": "NY",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "fortworthflightschool.com",
+        "rate": 175.0,
+        "tails": 1,
+        "st": "TX",
+        "metro": "Dallas-Fort Worth, TX-OK",
+        "type": ""
+      },
+      {
+        "domain": "sancarlosflight.com",
+        "rate": 210.0,
+        "tails": 12,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "stewartsaircraft.net",
+        "rate": 132.0,
+        "tails": 1,
+        "st": "OH",
+        "metro": "Cincinnati-Wilmington, OH-KY-IN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "unitedflight.com",
+        "rate": 184.0,
+        "tails": 12,
+        "st": "TX",
+        "metro": "Houston-Pasadena, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flywingsofeagles.com",
+        "rate": 195.0,
+        "tails": 17,
+        "st": "TN",
+        "metro": "Clarksville, TN-KY",
+        "type": "Flight School"
+      },
+      {
+        "domain": "chsflightschool.com",
+        "rate": 195.0,
+        "tails": 13,
+        "st": "SC",
+        "metro": "Charleston-North Charleston, SC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "inflightpilottraining.com",
+        "rate": 190.0,
+        "tails": 7,
+        "st": "MN",
+        "metro": "Minneapolis-St. Paul, MN-WI",
+        "type": ""
+      },
+      {
+        "domain": "jaflight.com",
+        "rate": 205.0,
+        "tails": 9,
+        "st": "IL",
+        "metro": "Chicago-Naperville, IL-IN-WI",
+        "type": ""
+      },
+      {
+        "domain": "myflighttime.com",
+        "rate": 100.0,
+        "tails": 7,
+        "st": "FL",
+        "metro": "Miami-Port St. Lucie-Fort Lauderdale, FL",
+        "type": ""
+      },
+      {
+        "domain": "faapilottraining.com",
+        "rate": 117.5,
+        "tails": 2,
+        "st": "FL",
+        "metro": "Miami-Port St. Lucie-Fort Lauderdale, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "gpapilot.com",
+        "rate": 155.0,
+        "tails": 8,
+        "st": "FL",
+        "metro": "Tampa-St. Petersburg-Clearwater, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "aerotechservices.com",
+        "rate": 219.0,
+        "tails": 9,
+        "st": "PA",
+        "metro": "Lancaster, PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "greenvilleaviation.com",
+        "rate": 173.0,
+        "tails": 5,
+        "st": "SC",
+        "metro": "Greenville-Spartanburg-Anderson, SC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "lbflying.com",
+        "rate": 142.0,
+        "tails": 5,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "purdueaviationllc.com",
+        "rate": 160.0,
+        "tails": 10,
+        "st": "IN",
+        "metro": "Lafayette-West Lafayette-Frankfort, IN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "alpha-1.com",
+        "rate": 161.0,
+        "tails": 4,
+        "st": "MA",
+        "metro": "Boston-Worcester-Providence, MA-RI-NH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "atlantapilot.com",
+        "rate": 151.5,
+        "tails": 2,
+        "st": "GA",
+        "metro": "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+        "type": ""
+      },
+      {
+        "domain": "cpaviation.com",
+        "rate": 165.0,
+        "tails": 6,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "firstflightcorp.net",
+        "rate": 90.0,
+        "tails": 10,
+        "st": "CA",
+        "metro": "San Diego-Chula Vista-Carlsbad, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "ataflightschool.com",
+        "rate": 175.0,
+        "tails": 4,
+        "st": "FL",
+        "metro": "Miami-Port St. Lucie-Fort Lauderdale, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "santamonicaflyers.com",
+        "rate": 205.0,
+        "tails": 6,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "savannahaviation.com",
+        "rate": 150.0,
+        "tails": 3,
+        "st": "GA",
+        "metro": "Savannah-Hinesville-Statesboro, GA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "specializedheli.com",
+        "rate": 172.5,
+        "tails": 2,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "uac.aero",
+        "rate": 207.5,
+        "tails": 6,
+        "st": "FL",
+        "metro": "Gainesville-Lake City, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flycarolina.com",
+        "rate": 157.0,
+        "tails": 4,
+        "st": "NC",
+        "metro": "Charlotte-Concord, NC-SC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "harfordair.com",
+        "rate": 175.0,
+        "tails": 7,
+        "st": "DE",
+        "metro": "Philadelphia-Reading-Camden, PA-NJ-DE-MD",
+        "type": "Flight School"
+      },
+      {
+        "domain": "ponderosaaero.org",
+        "rate": 149,
+        "tails": 5,
+        "st": "ID",
+        "metro": "Boise City-Mountain Home-Ontario, ID-OR",
+        "type": "Flight School"
+      },
+      {
+        "domain": "regionflyers.com",
+        "rate": 168.0,
+        "tails": 1,
+        "st": "IL",
+        "metro": "Chicago-Naperville, IL-IN-WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "stcharlesflyingservice.com",
+        "rate": 195.0,
+        "tails": 6,
+        "st": "MO",
+        "metro": "St. Louis-St. Charles-Farmington, MO-IL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "acepilot.com",
+        "rate": 275.0,
+        "tails": 1,
+        "st": "PA",
+        "metro": "Allentown-Bethlehem-East Stroudsburg, PA-NJ",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flights-inc.com",
+        "rate": 155.0,
+        "tails": 12,
+        "st": "CO",
+        "metro": "Denver-Aurora-Greeley, CO",
+        "type": "Flight School"
+      },
+      {
+        "domain": "leighnoraircraft.com",
+        "rate": 222.54000000000002,
+        "tails": 10,
+        "st": "AZ",
+        "metro": "Prescott Valley-Prescott, AZ",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flypavco.com",
+        "rate": 160,
+        "tails": 5,
+        "st": "WA",
+        "metro": "Seattle-Tacoma, WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "richaviationservices.com",
+        "rate": 180.0,
+        "tails": 7,
+        "st": "TX",
+        "metro": "Dallas-Fort Worth, TX-OK",
+        "type": "Flight School"
+      },
+      {
+        "domain": "tomwoodaviation.com",
+        "rate": 210.0,
+        "tails": 4,
+        "st": "IN",
+        "metro": "Indianapolis-Carmel-Muncie, IN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "lavion.aero",
+        "rate": 160.0,
+        "tails": 2,
+        "st": "MI",
+        "metro": "Grand Rapids-Wyoming, MI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "mooreaviation.com",
+        "rate": 190.0,
+        "tails": 8,
+        "st": "PA",
+        "metro": "Pittsburgh-Weirton-Steubenville, PA-OH-WV",
+        "type": "Flight School"
+      },
+      {
+        "domain": "rickaviation.com",
+        "rate": 180.0,
+        "tails": 10,
+        "st": "VA",
+        "metro": "Virginia Beach-Chesapeake, VA-NC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "sundowneraviation.com",
+        "rate": 165.0,
+        "tails": 9,
+        "st": "OH",
+        "metro": "Columbus-Marion-Zanesville, OH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "sunriseaviation.com",
+        "rate": 247.0,
+        "tails": 5,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "txflight.com",
+        "rate": 156,
+        "tails": 3,
+        "st": "TX",
+        "metro": "Houston-Pasadena, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "aceshighaviation.com",
+        "rate": 195.0,
+        "tails": 2,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "aeroluxeaviation.com",
+        "rate": 200.0,
+        "tails": 3,
+        "st": "TN",
+        "metro": "Nashville-Davidson--Murfreesboro, TN",
+        "type": ""
+      },
+      {
+        "domain": "biggestlittleflightschool.com",
+        "rate": 169.0,
+        "tails": 9,
+        "st": "NV",
+        "metro": "Reno-Carson City-Gardnerville Ranchos, NV-CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "californiaflightschool.com",
+        "rate": 160.0,
+        "tails": 4,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "capitalcityaviation.com",
+        "rate": 175.0,
+        "tails": 5,
+        "st": "OH",
+        "metro": "Columbus-Marion-Zanesville, OH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyefi.com",
+        "rate": 170.0,
+        "tails": 7,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "hightideaviation.com",
+        "rate": 195,
+        "tails": 7,
+        "st": "GA",
+        "metro": "Brunswick-St. Simons, GA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "tulsaflighttraining.com",
+        "rate": 180.0,
+        "tails": 4,
+        "st": "OK",
+        "metro": "Tulsa-Bartlesville-Muskogee, OK",
+        "type": ""
+      },
+      {
+        "domain": "wingsflightschool.com",
+        "rate": 171.0,
+        "tails": 9,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "aboveallsba.com",
+        "rate": 201.0,
+        "tails": 4,
+        "st": "CA",
+        "metro": "Santa Maria-Santa Barbara, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "chiaerospace.com",
+        "rate": 220.0,
+        "tails": 2,
+        "st": "NH",
+        "metro": "Boston-Worcester-Providence, MA-RI-NH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "camarilloflightinstruction.com",
+        "rate": 198.5,
+        "tails": 4,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flycfc.co",
+        "rate": 185.0,
+        "tails": 9,
+        "st": "VA",
+        "metro": "Charlottesville, VA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyeasthill.org",
+        "rate": 155.0,
+        "tails": 3,
+        "st": "NY",
+        "metro": "Ithaca-Cortland, NY",
+        "type": "Flight School"
+      },
+      {
+        "domain": "epixaviation.com",
+        "rate": 166.0,
+        "tails": 6,
+        "st": "VA",
+        "metro": "Virginia Beach-Chesapeake, VA-NC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "hawkinsflight.com",
+        "rate": 185,
+        "tails": 1,
+        "st": "TN",
+        "metro": "Nashville-Davidson--Murfreesboro, TN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "morristownflyingserviceinc.com",
+        "rate": 185.0,
+        "tails": 7,
+        "st": "TN",
+        "metro": "Knoxville-Morristown-Sevierville, TN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "ocfc.com",
+        "rate": 210.0,
+        "tails": 11,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyridgelinemt.com",
+        "rate": 184.0,
+        "tails": 7,
+        "st": "MT",
+        "metro": "Bozeman, MT",
+        "type": "Flight School"
+      },
+      {
+        "domain": "michiganflyers.org",
+        "rate": 137.0,
+        "tails": 7,
+        "st": "MI",
+        "metro": "Detroit-Warren-Ann Arbor, MI",
+        "type": ""
+      },
+      {
+        "domain": "flyvfa.org",
+        "rate": 205.0,
+        "tails": 10,
+        "st": "VT",
+        "metro": "Burlington-South Burlington-Barre, VT",
+        "type": "Flight School"
+      },
+      {
+        "domain": "aeromt.com",
+        "rate": 165.0,
+        "tails": 7,
+        "st": "WA",
+        "metro": "Portland-Vancouver-Salem, OR-WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "bravoflighttraining.com",
+        "rate": 185.0,
+        "tails": 6,
+        "st": "MD",
+        "metro": "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "coastalskies.com",
+        "rate": 174,
+        "tails": 7,
+        "st": "TX",
+        "metro": "Houston-Pasadena, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "easflighttraining.com",
+        "rate": 179.0,
+        "tails": 8,
+        "st": "MO",
+        "metro": "",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flymanspokane.com",
+        "rate": 170.0,
+        "tails": 2,
+        "st": "WA",
+        "metro": "Spokane-Spokane Valley-Coeur d'Alene, WA-ID",
+        "type": ""
+      },
+      {
+        "domain": "frequencychangeaviation.com",
+        "rate": 200.0,
+        "tails": 6,
+        "st": "AR",
+        "metro": "Fayetteville-Springdale-Rogers, AR",
+        "type": ""
+      },
+      {
+        "domain": "funoutside.com",
+        "rate": 180.0,
+        "tails": 7,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "genesis-aero.com",
+        "rate": 195.0,
+        "tails": 8,
+        "st": "TX",
+        "metro": "Austin-Round Rock-San Marcos, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "greatlakesairventures.com",
+        "rate": 175.0,
+        "tails": 2,
+        "st": "MI",
+        "metro": "Lansing-East Lansing-Owosso, MI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "jcfs.net",
+        "rate": 190.0,
+        "tails": 2,
+        "st": "MO",
+        "metro": "Columbia-Jefferson City-Moberly, MO",
+        "type": "Flight School"
+      },
+      {
+        "domain": "doylestownairport.com",
+        "rate": 182.0,
+        "tails": 6,
+        "st": "PA",
+        "metro": "Philadelphia-Reading-Camden, PA-NJ-DE-MD",
+        "type": "Flight School"
+      },
+      {
+        "domain": "mach5aviation.com",
+        "rate": 185.0,
+        "tails": 4,
+        "st": "CA",
+        "metro": "Sacramento-Roseville, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "oaklandflyers.com",
+        "rate": 193,
+        "tails": 3,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "pegasusflightschool.com",
+        "rate": 170.0,
+        "tails": 5,
+        "st": "TX",
+        "metro": "Waco, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "skytrailsaviation.com",
+        "rate": 210.0,
+        "tails": 3,
+        "st": "CA",
+        "metro": "Sacramento-Roseville, CA",
+        "type": ""
+      },
+      {
+        "domain": "flyuft.com",
+        "rate": 192.0,
+        "tails": 2,
+        "st": "FL",
+        "metro": "North Port-Bradenton, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "ascendaviationtraining.com",
+        "rate": 187.5,
+        "tails": 2,
+        "st": "UT",
+        "metro": "Salt Lake City-Provo-Orem, UT-ID",
+        "type": "Flight School"
+      },
+      {
+        "domain": "bergstromaircraft.com",
+        "rate": 201.0,
+        "tails": 6,
+        "st": "WA",
+        "metro": "Kennewick-Richland-Walla Walla, WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "brettaviation.com",
+        "rate": 195.0,
+        "tails": 8,
+        "st": "DE",
+        "metro": "Philadelphia-Reading-Camden, PA-NJ-DE-MD",
+        "type": "Flight School"
+      },
+      {
+        "domain": "cfi.com",
+        "rate": 230.0,
+        "tails": 6,
+        "st": "CA",
+        "metro": "Sacramento-Roseville, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "ciaflightschool.com",
+        "rate": 175,
+        "tails": 7,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flighttestprep.com",
+        "rate": 185,
+        "tails": 7,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": ""
+      },
+      {
+        "domain": "flykdsm.com",
+        "rate": 160.0,
+        "tails": 3,
+        "st": "IA",
+        "metro": "Des Moines-West Des Moines-Ames, IA",
+        "type": ""
+      },
+      {
+        "domain": "flyholidayairways.com",
+        "rate": 175.0,
+        "tails": 4,
+        "st": "IL",
+        "metro": "Chicago-Naperville, IL-IN-WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "illinoisaviation.com",
+        "rate": 205.075,
+        "tails": 2,
+        "st": "IL",
+        "metro": "Chicago-Naperville, IL-IN-WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flywithjeffair.com",
+        "rate": 185.0,
+        "tails": 7,
+        "st": "IN",
+        "metro": "Indianapolis-Carmel-Muncie, IN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "orlandiflightcenter.com",
+        "rate": 189.0,
+        "tails": 5,
+        "st": "NJ",
+        "metro": "Allentown-Bethlehem-East Stroudsburg, PA-NJ",
+        "type": "Flight School"
+      },
+      {
+        "domain": "pilotsmith.com",
+        "rate": 169.0,
+        "tails": 3,
+        "st": "WI",
+        "metro": "Green Bay-Shawano, WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "piston2jet.com",
+        "rate": 185,
+        "tails": 1,
+        "st": "VA",
+        "metro": "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "redskyaviation.com",
+        "rate": 145.0,
+        "tails": 3,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "skyviewaviation.com",
+        "rate": 169.0,
+        "tails": 7,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "sunairaviation.com",
+        "rate": 255.0,
+        "tails": 4,
+        "st": "FL",
+        "metro": "Orlando-Lakeland-Deltona, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "vistaair.com",
+        "rate": 175.0,
+        "tails": 8,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "wingsflighttraining.com",
+        "rate": 185.0,
+        "tails": 8,
+        "st": "KY",
+        "metro": "Danville, KY",
+        "type": "Flight School"
+      },
+      {
+        "domain": "airamericafc.com",
+        "rate": 173.0,
+        "tails": 6,
+        "st": "FL",
+        "metro": "Orlando-Lakeland-Deltona, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "capefearaviation.com",
+        "rate": 152.5,
+        "tails": 2,
+        "st": "NC",
+        "metro": "Fayetteville-Lumberton-Pinehurst, NC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flywithcaa.com",
+        "rate": 229,
+        "tails": 1,
+        "st": "GA",
+        "metro": "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "centralfloridaft.com",
+        "rate": 160.0,
+        "tails": 2,
+        "st": "FL",
+        "metro": "Tampa-St. Petersburg-Clearwater, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "code1flighttraining.com",
+        "rate": 187.5,
+        "tails": 4,
+        "st": "TX",
+        "metro": "",
+        "type": "Flight School"
+      },
+      {
+        "domain": "columbusflyingclub.org",
+        "rate": 149.0,
+        "tails": 4,
+        "st": "OH",
+        "metro": "Columbus-Marion-Zanesville, OH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "costanzoair.com",
+        "rate": 205.0,
+        "tails": 6,
+        "st": "NJ",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "execft.com",
+        "rate": 205,
+        "tails": 3,
+        "st": "NC",
+        "metro": "Raleigh-Durham-Cary, NC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyitacademy.com",
+        "rate": 165.0,
+        "tails": 4,
+        "st": "WA",
+        "metro": "Portland-Vancouver-Salem, OR-WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyinghighagainllc.com",
+        "rate": 205.0,
+        "tails": 4,
+        "st": "TN",
+        "metro": "Nashville-Davidson--Murfreesboro, TN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "frontrangeflightschool.com",
+        "rate": 139.0,
+        "tails": 10,
+        "st": "CO",
+        "metro": "Denver-Aurora-Greeley, CO",
+        "type": "Flight School"
+      },
+      {
+        "domain": "gulfcoastaviation.com",
+        "rate": 188.0,
+        "tails": 2,
+        "st": "MS",
+        "metro": "Gulfport-Biloxi, MS",
+        "type": "Flight School"
+      },
+      {
+        "domain": "laflightacademy.com",
+        "rate": 185.0,
+        "tails": 3,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flynewhorizons.com",
+        "rate": 169.0,
+        "tails": 3,
+        "st": "IN",
+        "metro": "South Bend-Elkhart-Mishawaka, IN-MI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "oracleaviation.com",
+        "rate": 180.0,
+        "tails": 6,
+        "st": "NE",
+        "metro": "Omaha-Fremont, NE-IA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "princetonflyingschool.com",
+        "rate": 190.0,
+        "tails": 10,
+        "st": "NJ",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyredarrow.com",
+        "rate": 167.5,
+        "tails": 6,
+        "st": "NM",
+        "metro": "El Paso-Las Cruces, TX-NM",
+        "type": "Flight School"
+      },
+      {
+        "domain": "my.rockymountainflight.com",
+        "rate": 166.0,
+        "tails": 2,
+        "st": "CO",
+        "metro": "Colorado Springs, CO",
+        "type": ""
+      },
+      {
+        "domain": "sierraacademy.com",
+        "rate": 182.0,
+        "tails": 4,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "skybnd.com",
+        "rate": 222.0,
+        "tails": 7,
+        "st": "GA",
+        "metro": "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "theflyingschool.com",
+        "rate": 192.5,
+        "tails": 8,
+        "st": "CO",
+        "metro": "Fort Collins-Loveland, CO",
+        "type": "Flight School"
+      },
+      {
+        "domain": "westhoustonairport.com",
+        "rate": 250.0,
+        "tails": 10,
+        "st": "TX",
+        "metro": "Houston-Pasadena, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "aero-sphere.com",
+        "rate": 165.0,
+        "tails": 3,
+        "st": "CO",
+        "metro": "Denver-Aurora-Greeley, CO",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyaafi.com",
+        "rate": 185.0,
+        "tails": 2,
+        "st": "GA",
+        "metro": "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+        "type": ""
+      },
+      {
+        "domain": "bendaircraft.com",
+        "rate": 205.0,
+        "tails": 7,
+        "st": "OR",
+        "metro": "Bend, OR",
+        "type": "Flight School"
+      },
+      {
+        "domain": "boraamaviation.com",
+        "rate": 145.0,
+        "tails": 4,
+        "st": "IL",
+        "metro": "Chicago-Naperville, IL-IN-WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "destinflightworks.com",
+        "rate": 226.0,
+        "tails": 7,
+        "st": "FL",
+        "metro": "Crestview-Fort Walton Beach-Destin, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flylugu.com",
+        "rate": 165.0,
+        "tails": 5,
+        "st": "MA",
+        "metro": "Springfield-Amherst Town-Northampton, MA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "jerrytrimblehelicopters.com",
+        "rate": 217.0,
+        "tails": 1,
+        "st": "OR",
+        "metro": "Portland-Vancouver-Salem, OR-WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "journeysaviation.com",
+        "rate": 169.0,
+        "tails": 3,
+        "st": "CO",
+        "metro": "Denver-Aurora-Greeley, CO",
+        "type": "Flight School"
+      },
+      {
+        "domain": "neuaviation.com",
+        "rate": 180.0,
+        "tails": 6,
+        "st": "LA",
+        "metro": "Shreveport-Bossier City-Minden, LA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyhere.aero",
+        "rate": 169.0,
+        "tails": 3,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "northcoastair.com",
+        "rate": 166,
+        "tails": 3,
+        "st": "CA",
+        "metro": "Santa Rosa-Petaluma, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "pacificairflightschool.com",
+        "rate": 199,
+        "tails": 9,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "pacificskies.com",
+        "rate": 190,
+        "tails": 5,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "platinumaviationut.com",
+        "rate": 165.0,
+        "tails": 3,
+        "st": "UT",
+        "metro": "Salt Lake City-Provo-Orem, UT-ID",
+        "type": "Flight School"
+      },
+      {
+        "domain": "skyeagle.aero",
+        "rate": 175.0,
+        "tails": 6,
+        "st": "FL",
+        "metro": "Miami-Port St. Lucie-Fort Lauderdale, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "socalflyingclub.com",
+        "rate": 175.0,
+        "tails": 1,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "spirit-aviation.com",
+        "rate": 217.0,
+        "tails": 5,
+        "st": "GA",
+        "metro": "Augusta-Richmond County, GA-SC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "topflightlessons.com",
+        "rate": 175.0,
+        "tails": 6,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "wallawalla.edu",
+        "rate": 145.0,
+        "tails": 1,
+        "st": "WA",
+        "metro": "Kennewick-Richland-Walla Walla, WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "avzflightacademy.net",
+        "rate": 175,
+        "tails": 5,
+        "st": "TN",
+        "metro": "Knoxville-Morristown-Sevierville, TN",
+        "type": ""
+      },
+      {
+        "domain": "aboveitallaviation.com",
+        "rate": 195.0,
+        "tails": 2,
+        "st": "TX",
+        "metro": "Dallas-Fort Worth, TX-OK",
+        "type": "Flight School"
+      },
+      {
+        "domain": "airplanesandattitude.com",
+        "rate": 195.0,
+        "tails": 6,
+        "st": "TX",
+        "metro": "Dallas-Fort Worth, TX-OK",
+        "type": "Flight School"
+      },
+      {
+        "domain": "aloft-aviation.com",
+        "rate": 175.0,
+        "tails": 4,
+        "st": "MN",
+        "metro": "Minneapolis-St. Paul, MN-WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "angelaviation.com",
+        "rate": 167.5,
+        "tails": 4,
+        "st": "AZ",
+        "metro": "Phoenix-Mesa, AZ",
+        "type": "Flight School"
+      },
+      {
+        "domain": "cavuflightschool.com",
+        "rate": 173.0,
+        "tails": 4,
+        "st": "SC",
+        "metro": "Greenville-Spartanburg-Anderson, SC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "cactusaviation.com",
+        "rate": 185.0,
+        "tails": 4,
+        "st": "NV",
+        "metro": "Las Vegas-Henderson, NV",
+        "type": "Flight School"
+      },
+      {
+        "domain": "californiaflightcenterreborne.com",
+        "rate": 190,
+        "tails": 5,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": ""
+      },
+      {
+        "domain": "capeaircharter.com",
+        "rate": 165.0,
+        "tails": 2,
+        "st": "MO",
+        "metro": "Cape Girardeau-Sikeston, MO-IL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "chicagoexecutiveflightschool.com",
+        "rate": 195.0,
+        "tails": 4,
+        "st": "IL",
+        "metro": "Chicago-Naperville, IL-IN-WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "chickashawings.com",
+        "rate": 190.0,
+        "tails": 2,
+        "st": "OK",
+        "metro": "Oklahoma City-Shawnee, OK",
+        "type": "Flight School"
+      },
+      {
+        "domain": "crosswindsaviation.com",
+        "rate": 194.0,
+        "tails": 2,
+        "st": "MI",
+        "metro": "Detroit-Warren-Ann Arbor, MI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "fcaflightcenter.com",
+        "rate": 175.0,
+        "tails": 3,
+        "st": "MA",
+        "metro": "Boston-Worcester-Providence, MA-RI-NH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flytimechd.com",
+        "rate": 160,
+        "tails": 1,
+        "st": "AZ",
+        "metro": "Phoenix-Mesa, AZ",
+        "type": "Flight School"
+      },
+      {
+        "domain": "academyflyers.com",
+        "rate": 209.0,
+        "tails": 4,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": ""
+      },
+      {
+        "domain": "flyingparticles.org",
+        "rate": 130,
+        "tails": 1,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "gibsonaviation.com",
+        "rate": 150.0,
+        "tails": 5,
+        "st": "WI",
+        "metro": "Eau Claire-Menomonie, WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "horizonflightcenter.com",
+        "rate": 279.0,
+        "tails": 3,
+        "st": "VA",
+        "metro": "Virginia Beach-Chesapeake, VA-NC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "kalamazooflightinstruction.com",
+        "rate": 165.0,
+        "tails": 4,
+        "st": "MI",
+        "metro": "Kalamazoo-Battle Creek-Portage, MI",
+        "type": ""
+      },
+      {
+        "domain": "otmaviation.com",
+        "rate": 180.0,
+        "tails": 4,
+        "st": "AL",
+        "metro": "Birmingham-Cullman-Talladega, AL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "pilotrise.com",
+        "rate": 162.5,
+        "tails": 4,
+        "st": "TX",
+        "metro": "Dallas-Fort Worth, TX-OK",
+        "type": "Flight School"
+      },
+      {
+        "domain": "sandhillsfliers.com",
+        "rate": 175.0,
+        "tails": 1,
+        "st": "NC",
+        "metro": "Fayetteville-Lumberton-Pinehurst, NC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "skywalkerflying.com",
+        "rate": 154.0,
+        "tails": 4,
+        "st": "MI",
+        "metro": "Detroit-Warren-Ann Arbor, MI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "westbendair.com",
+        "rate": 116.0,
+        "tails": 2,
+        "st": "WI",
+        "metro": "Milwaukee-Racine-Waukesha, WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "acesbvi.com",
+        "rate": 155.0,
+        "tails": 1,
+        "st": "PA",
+        "metro": "Pittsburgh-Weirton-Steubenville, PA-OH-WV",
+        "type": "Flight School"
+      },
+      {
+        "domain": "acceleratedflightschool.net",
+        "rate": 172.5,
+        "tails": 4,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": ""
+      },
+      {
+        "domain": "advancedaviation.com",
+        "rate": 189.0,
+        "tails": 3,
+        "st": "GA",
+        "metro": "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "amsflightschool.com",
+        "rate": 142.5,
+        "tails": 2,
+        "st": "FL",
+        "metro": "Pensacola-Ferry Pass-Brent, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "arizonaflighttrainingcenter.com",
+        "rate": 190.0,
+        "tails": 2,
+        "st": "AZ",
+        "metro": "Phoenix-Mesa, AZ",
+        "type": "Flight School"
+      },
+      {
+        "domain": "delandaviation.com",
+        "rate": 210.0,
+        "tails": 3,
+        "st": "FL",
+        "metro": "Orlando-Lakeland-Deltona, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "avianflight.com",
+        "rate": 211.0,
+        "tails": 5,
+        "st": "WA",
+        "metro": "Seattle-Tacoma, WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "cableairflight.com",
+        "rate": 151.0,
+        "tails": 6,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "capefearflyingclub.com",
+        "rate": 190,
+        "tails": 1,
+        "st": "NC",
+        "metro": "Wilmington, NC",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "cascadeair-nw.com",
+        "rate": 165.0,
+        "tails": 2,
+        "st": "WA",
+        "metro": "Portland-Vancouver-Salem, OR-WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flycascade.com",
+        "rate": 185.0,
+        "tails": 3,
+        "st": "WA",
+        "metro": "Seattle-Tacoma, WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyclassicaviation.com",
+        "rate": 160,
+        "tails": 1,
+        "st": "IA",
+        "metro": "Des Moines-West Des Moines-Ames, IA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "cloudaviationusa.com",
+        "rate": 185.0,
+        "tails": 5,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": ""
+      },
+      {
+        "domain": "daytonaviation.com",
+        "rate": 160,
+        "tails": 5,
+        "st": "OH",
+        "metro": "Dayton-Springfield-Kettering, OH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "dreamflightschool.com",
+        "rate": 199.0,
+        "tails": 2,
+        "st": "MD",
+        "metro": "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "eglinaeroclub.com",
+        "rate": 165.0,
+        "tails": 3,
+        "st": "FL",
+        "metro": "Crestview-Fort Walton Beach-Destin, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flytigers.net",
+        "rate": 227.5,
+        "tails": 4,
+        "st": "TX",
+        "metro": "Houston-Pasadena, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "foothillflyingclub.com",
+        "rate": 145.0,
+        "tails": 3,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "fundamentalsflight.com",
+        "rate": 230.0,
+        "tails": 2,
+        "st": "PA",
+        "metro": "Erie-Meadville, PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyhorizondreams.com",
+        "rate": 185.0,
+        "tails": 2,
+        "st": "GA",
+        "metro": "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "hubcityaviation.com",
+        "rate": 200.0,
+        "tails": 1,
+        "st": "TX",
+        "metro": "Lubbock-Plainview, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyjwa.com",
+        "rate": 174.0,
+        "tails": 2,
+        "st": "IL",
+        "metro": "Chicago-Naperville, IL-IN-WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "kcaeroacademy.com",
+        "rate": 155.0,
+        "tails": 4,
+        "st": "FL",
+        "metro": "Tampa-St. Petersburg-Clearwater, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "knoxflight.com",
+        "rate": 185.0,
+        "tails": 3,
+        "st": "TN",
+        "metro": "Knoxville-Morristown-Sevierville, TN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "mccormickaircenter.com",
+        "rate": 175.0,
+        "tails": 7,
+        "st": "WA",
+        "metro": "Yakima, WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "mrfti.com",
+        "rate": 146.0,
+        "tails": 5,
+        "st": "OH",
+        "metro": "Cincinnati-Wilmington, OH-KY-IN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "minotaerocenter.com",
+        "rate": 175.0,
+        "tails": 2,
+        "st": "ND",
+        "metro": "Minot, ND",
+        "type": "Flight School"
+      },
+      {
+        "domain": "nordic-aviation.com",
+        "rate": 175.0,
+        "tails": 2,
+        "st": "MN",
+        "metro": "Fergus Falls, MN",
+        "type": ""
+      },
+      {
+        "domain": "palmbeachflightclub.com",
+        "rate": 175,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Miami-Port St. Lucie-Fort Lauderdale, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "raider-aviation.com",
+        "rate": 185,
+        "tails": 3,
+        "st": "TX",
+        "metro": "Lubbock-Plainview, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "ssaviation-sc.com",
+        "rate": 152.5,
+        "tails": 6,
+        "st": "SC",
+        "metro": "Columbia-Sumter-Orangeburg, SC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyeca.com",
+        "rate": 168.0,
+        "tails": 3,
+        "st": "OH",
+        "metro": "Cincinnati-Wilmington, OH-KY-IN",
+        "type": ""
+      },
+      {
+        "domain": "flysunwest.com",
+        "rate": 200.0,
+        "tails": 3,
+        "st": "CA",
+        "metro": "San Luis Obispo-Paso Robles, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "sunshineflyers.com",
+        "rate": 195.0,
+        "tails": 3,
+        "st": "CA",
+        "metro": "Sacramento-Roseville, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "t-craft.org",
+        "rate": 83,
+        "tails": 3,
+        "st": "ID",
+        "metro": "Boise City-Mountain Home-Ontario, ID-OR",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "texinsflyingclub.org",
+        "rate": 159.0,
+        "tails": 2,
+        "st": "TX",
+        "metro": "Dallas-Fort Worth, TX-OK",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "theflightschoolinc.com",
+        "rate": 155.0,
+        "tails": 1,
+        "st": "TX",
+        "metro": "Houston-Pasadena, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "upperlimitaviation.com",
+        "rate": 175.0,
+        "tails": 5,
+        "st": "UT",
+        "metro": "Salt Lake City-Provo-Orem, UT-ID",
+        "type": ""
+      },
+      {
+        "domain": "westairflighttraining.com",
+        "rate": 160.0,
+        "tails": 5,
+        "st": "NV",
+        "metro": "Las Vegas-Henderson, NV",
+        "type": "Flight School"
+      },
+      {
+        "domain": "willametteair.com",
+        "rate": 203.0,
+        "tails": 1,
+        "st": "OR",
+        "metro": "Portland-Vancouver-Salem, OR-WA",
+        "type": ""
+      },
+      {
+        "domain": "aeronauticsacademy.com",
+        "rate": 159.0,
+        "tails": 1,
+        "st": "IL",
+        "metro": "Chicago-Naperville, IL-IN-WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "airspacers.com",
+        "rate": 122.5,
+        "tails": 2,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "yosemiteaviation.com",
+        "rate": 160.0,
+        "tails": 2,
+        "st": "CA",
+        "metro": "",
+        "type": "Flight School"
+      },
+      {
+        "domain": "aaavn.com",
+        "rate": 199.99,
+        "tails": 1,
+        "st": "NC",
+        "metro": "Wilmington, NC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "altoflight.com",
+        "rate": 209.0,
+        "tails": 2,
+        "st": "OK",
+        "metro": "Oklahoma City-Shawnee, OK",
+        "type": "Flight School"
+      },
+      {
+        "domain": "base2finalaviation.com",
+        "rate": 175.0,
+        "tails": 2,
+        "st": "TX",
+        "metro": "Dallas-Fort Worth, TX-OK",
+        "type": ""
+      },
+      {
+        "domain": "bayareaaeroclub.org",
+        "rate": 161.5,
+        "tails": 2,
+        "st": "TX",
+        "metro": "Houston-Pasadena, TX",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "belmaraviation.com",
+        "rate": 175.0,
+        "tails": 1,
+        "st": "KY",
+        "metro": "Lexington-Fayette--Richmond--Frankfort, KY",
+        "type": ""
+      },
+      {
+        "domain": "boxaviation.com",
+        "rate": 160.0,
+        "tails": 2,
+        "st": "AL",
+        "metro": "Montgomery-Selma, AL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "california-airways.com",
+        "rate": 205.0,
+        "tails": 5,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "cftar.org",
+        "rate": 175.0,
+        "tails": 2,
+        "st": "FL",
+        "metro": "Cape Coral-Fort Myers-Naples, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "centurionaviationllc.com",
+        "rate": 155.0,
+        "tails": 2,
+        "st": "WI",
+        "metro": "Milwaukee-Racine-Waukesha, WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "cornerstoneaviation.com",
+        "rate": 215.0,
+        "tails": 2,
+        "st": "UT",
+        "metro": "Salt Lake City-Provo-Orem, UT-ID",
+        "type": "Flight School"
+      },
+      {
+        "domain": "heritageairllc.com",
+        "rate": 190.0,
+        "tails": 2,
+        "st": "VA",
+        "metro": "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "hoganflyingservice.com",
+        "rate": 155.0,
+        "tails": 2,
+        "st": "OH",
+        "metro": "Cincinnati-Wilmington, OH-KY-IN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyintegrityaviation.com",
+        "rate": 165.0,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Orlando-Lakeland-Deltona, FL",
+        "type": ""
+      },
+      {
+        "domain": "leflighttraining.com",
+        "rate": 172.5,
+        "tails": 4,
+        "st": "CO",
+        "metro": "Fort Collins-Loveland, CO",
+        "type": "Flight School"
+      },
+      {
+        "domain": "midwestflyingservice.com",
+        "rate": 105.0,
+        "tails": 1,
+        "st": "IA",
+        "metro": "",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flynha.com",
+        "rate": 175.0,
+        "tails": 1,
+        "st": "MS",
+        "metro": "",
+        "type": ""
+      },
+      {
+        "domain": "northstarflyers.com",
+        "rate": 135,
+        "tails": 1,
+        "st": "MN",
+        "metro": "Minneapolis-St. Paul, MN-WI",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "oldschoolaircraft.com",
+        "rate": 170,
+        "tails": 1,
+        "st": "TN",
+        "metro": "Jackson, TN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "ortegaaviation.com",
+        "rate": 210.0,
+        "tails": 1,
+        "st": "KS",
+        "metro": "Wichita-Arkansas City-Winfield, KS",
+        "type": "Flight School"
+      },
+      {
+        "domain": "psaflight.com",
+        "rate": 214.0,
+        "tails": 2,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "cospilot.com",
+        "rate": 214.5,
+        "tails": 2,
+        "st": "CO",
+        "metro": "Colorado Springs, CO",
+        "type": "Flight School"
+      },
+      {
+        "domain": "fly-piedmont.com",
+        "rate": 170.0,
+        "tails": 3,
+        "st": "MD",
+        "metro": "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "primaryflightcontrol.com",
+        "rate": 160.0,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Jacksonville-Kingsland-Palatka, FL-GA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "rainierflightservice.com",
+        "rate": 199.0,
+        "tails": 1,
+        "st": "WA",
+        "metro": "Seattle-Tacoma, WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "rocksolidaviation.com",
+        "rate": 195.0,
+        "tails": 2,
+        "st": "LA",
+        "metro": "Lake Charles-DeRidder, LA",
+        "type": ""
+      },
+      {
+        "domain": "smlaviation.com",
+        "rate": 155.0,
+        "tails": 1,
+        "st": "VA",
+        "metro": "Lynchburg, VA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "saltairleasing.com",
+        "rate": 180.0,
+        "tails": 2,
+        "st": "NC",
+        "metro": "Charlotte-Concord, NC-SC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "sheboyganflyingclub.simdif.com",
+        "rate": 140.0,
+        "tails": 1,
+        "st": "WI",
+        "metro": "Sheboygan, WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "snakeriverflyers.com",
+        "rate": 165.0,
+        "tails": 2,
+        "st": "ID",
+        "metro": "Boise City-Mountain Home-Ontario, ID-OR",
+        "type": "Flight School"
+      },
+      {
+        "domain": "sportysacademy.com",
+        "rate": 163.0,
+        "tails": 3,
+        "st": "OH",
+        "metro": "Cincinnati-Wilmington, OH-KY-IN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "superiorflying.com",
+        "rate": 150.0,
+        "tails": 4,
+        "st": "WI",
+        "metro": "Duluth-Grand Rapids, MN-WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyingneutrons.com",
+        "rate": 135,
+        "tails": 3,
+        "st": "OH",
+        "metro": "Cincinnati-Wilmington, OH-KY-IN",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "theflyingservice.com",
+        "rate": 192.5,
+        "tails": 2,
+        "st": "TN",
+        "metro": "Johnson City-Kingsport-Bristol, TN-VA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "usflightco.com",
+        "rate": 160.0,
+        "tails": 2,
+        "st": "IA",
+        "metro": "Des Moines-West Des Moines-Ames, IA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "united-flight.com",
+        "rate": 172.5,
+        "tails": 4,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "wmflyingclub.org",
+        "rate": 120.0,
+        "tails": 2,
+        "st": "MI",
+        "metro": "Grand Rapids-Wyoming, MI",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "flywyo.com",
+        "rate": 180.0,
+        "tails": 4,
+        "st": "WY",
+        "metro": "",
+        "type": "Flight School"
+      },
+      {
+        "domain": "williamsburgflightcenter.com",
+        "rate": 150.0,
+        "tails": 5,
+        "st": "VA",
+        "metro": "Virginia Beach-Chesapeake, VA-NC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "wurtsboroairport.com",
+        "rate": 185.0,
+        "tails": 1,
+        "st": "NY",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "aeroatlanta.com",
+        "rate": 304.1,
+        "tails": 2,
+        "st": "GA",
+        "metro": "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "n07lincolnparkairport.com",
+        "rate": 217.5,
+        "tails": 2,
+        "st": "NJ",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "aircapitalaviators.club",
+        "rate": 140,
+        "tails": 3,
+        "st": "KS",
+        "metro": "Wichita-Arkansas City-Winfield, KS",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "all2flyaviation.com",
+        "rate": 165.0,
+        "tails": 3,
+        "st": "GA",
+        "metro": "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "arlingtonflightservices.com",
+        "rate": 152.0,
+        "tails": 3,
+        "st": "WA",
+        "metro": "Seattle-Tacoma, WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "aviationsalesinc.com",
+        "rate": 130.0,
+        "tails": 2,
+        "st": "OH",
+        "metro": "Dayton-Springfield-Kettering, OH",
+        "type": ""
+      },
+      {
+        "domain": "beachbanners.com",
+        "rate": 170.0,
+        "tails": 3,
+        "st": "FL",
+        "metro": "Jacksonville-Kingsland-Palatka, FL-GA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "bradleyflying.org",
+        "rate": 160.0,
+        "tails": 5,
+        "st": "IL",
+        "metro": "Peoria-Canton, IL",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "charlieblack.com",
+        "rate": 190.0,
+        "tails": 2,
+        "st": "TX",
+        "metro": "San Antonio-New Braunfels-Kerrville, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "chestercountyaviation.com",
+        "rate": 235.0,
+        "tails": 1,
+        "st": "DE",
+        "metro": "Philadelphia-Reading-Camden, PA-NJ-DE-MD",
+        "type": "Flight School"
+      },
+      {
+        "domain": "chickadeeaviation.com",
+        "rate": 210.0,
+        "tails": 3,
+        "st": "ME",
+        "metro": "Portland-Lewiston-South Portland, ME",
+        "type": "Flight School"
+      },
+      {
+        "domain": "commandaviation.net",
+        "rate": 155,
+        "tails": 1,
+        "st": "WA",
+        "metro": "Bellingham, WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "deervalleyskyhawks.com",
+        "rate": 174.0,
+        "tails": 3,
+        "st": "AZ",
+        "metro": "Phoenix-Mesa, AZ",
+        "type": "Flight School"
+      },
+      {
+        "domain": "desertflying.club",
+        "rate": 171.0,
+        "tails": 1,
+        "st": "NV",
+        "metro": "Las Vegas-Henderson, NV",
+        "type": "Flight School"
+      },
+      {
+        "domain": "eagleeastaviation.com",
+        "rate": 195.0,
+        "tails": 4,
+        "st": "MA",
+        "metro": "Boston-Worcester-Providence, MA-RI-NH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "enhancedaero.com",
+        "rate": 190.0,
+        "tails": 2,
+        "st": "IL",
+        "metro": "Carbondale-Marion-Herrin, IL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flygoodyear.com",
+        "rate": 155.0,
+        "tails": 3,
+        "st": "AZ",
+        "metro": "Phoenix-Mesa, AZ",
+        "type": "Flight School"
+      },
+      {
+        "domain": "falkoraviation.com",
+        "rate": 188.1,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Homosassa Springs, FL",
+        "type": ""
+      },
+      {
+        "domain": "flyglendale.com",
+        "rate": 145.0,
+        "tails": 5,
+        "st": "AZ",
+        "metro": "Phoenix-Mesa, AZ",
+        "type": ""
+      },
+      {
+        "domain": "flycorona.com",
+        "rate": 295.0,
+        "tails": 1,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": ""
+      },
+      {
+        "domain": "flyingcaviation.com",
+        "rate": 130.0,
+        "tails": 1,
+        "st": "AR",
+        "metro": "Little Rock-North Little Rock, AR",
+        "type": "Flight School"
+      },
+      {
+        "domain": "foxflying.com",
+        "rate": 150.0,
+        "tails": 1,
+        "st": "IL",
+        "metro": "Chicago-Naperville, IL-IN-WI",
+        "type": ""
+      },
+      {
+        "domain": "fredricksonaviation.com",
+        "rate": 210.0,
+        "tails": 3,
+        "st": "NC",
+        "metro": "Raleigh-Durham-Cary, NC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "galahaddavis.com",
+        "rate": 150,
+        "tails": 1,
+        "st": "AZ",
+        "metro": "Phoenix-Mesa, AZ",
+        "type": ""
+      },
+      {
+        "domain": "flygwa.com",
+        "rate": 179.0,
+        "tails": 1,
+        "st": "MI",
+        "metro": "Traverse City, MI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "greatlakesflightctr.com",
+        "rate": 200.05,
+        "tails": 2,
+        "st": "NY",
+        "metro": "Jamestown-Dunkirk, NY",
+        "type": "Flight School"
+      },
+      {
+        "domain": "greencastleaeroclub.com",
+        "rate": 130.0,
+        "tails": 3,
+        "st": "IA",
+        "metro": "Cedar Rapids-Iowa City, IA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "hixsonaviation.com",
+        "rate": 180.0,
+        "tails": 2,
+        "st": "TN",
+        "metro": "Chattanooga-Cleveland-Dalton, TN-GA-AL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "hbaflights.com",
+        "rate": 195.0,
+        "tails": 1,
+        "st": "NJ",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": ""
+      },
+      {
+        "domain": "knoxflyers.com",
+        "rate": 130,
+        "tails": 1,
+        "st": "TN",
+        "metro": "Knoxville-Morristown-Sevierville, TN",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "lgeflyingclub.org",
+        "rate": 148.0,
+        "tails": 2,
+        "st": "GA",
+        "metro": "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "ltfsd.com",
+        "rate": 180.0,
+        "tails": 2,
+        "st": "CA",
+        "metro": "San Diego-Chula Vista-Carlsbad, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "lexingtonflyingclub.org",
+        "rate": 150.5,
+        "tails": 3,
+        "st": "KY",
+        "metro": "Lexington-Fayette--Richmond--Frankfort, KY",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "mbthrillsquadron.com",
+        "rate": 152.5,
+        "tails": 2,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "mikesflyingservice.com",
+        "rate": 125.0,
+        "tails": 1,
+        "st": "TX",
+        "metro": "Dallas-Fort Worth, TX-OK",
+        "type": "Flight School"
+      },
+      {
+        "domain": "nwwafly.com",
+        "rate": 170.0,
+        "tails": 2,
+        "st": "OR",
+        "metro": "Portland-Vancouver-Salem, OR-WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "norcalflightcenter.com",
+        "rate": 192.0,
+        "tails": 4,
+        "st": "CA",
+        "metro": "Sacramento-Roseville, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "northernair.biz",
+        "rate": 185.0,
+        "tails": 2,
+        "st": "ID",
+        "metro": "",
+        "type": "Flight School"
+      },
+      {
+        "domain": "oxfordflyingclub.com",
+        "rate": 158.0,
+        "tails": 1,
+        "st": "CT",
+        "metro": "New Haven-Hartford-Waterbury, CT",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "pennyanflyingclub.com",
+        "rate": 135,
+        "tails": 1,
+        "st": "NY",
+        "metro": "",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "reigleairport.com",
+        "rate": 155.0,
+        "tails": 2,
+        "st": "PA",
+        "metro": "Harrisburg-York-Lebanon, PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "ritebros.com",
+        "rate": 152.0,
+        "tails": 3,
+        "st": "WA",
+        "metro": "Port Angeles, WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "rivertownaviation.com",
+        "rate": 165.0,
+        "tails": 4,
+        "st": "WV",
+        "metro": "Parkersburg-Marietta-Vienna, WV-OH",
+        "type": ""
+      },
+      {
+        "domain": "royalaviation.net",
+        "rate": 169,
+        "tails": 5,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "stlflight.com",
+        "rate": 185.0,
+        "tails": 3,
+        "st": "IL",
+        "metro": "St. Louis-St. Charles-Farmington, MO-IL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "smataviation.org",
+        "rate": 161.0,
+        "tails": 1,
+        "st": "MI",
+        "metro": "Lansing-East Lansing-Owosso, MI",
+        "type": ""
+      },
+      {
+        "domain": "sheridanpilots307.com",
+        "rate": 185.0,
+        "tails": 2,
+        "st": "WY",
+        "metro": "Sheridan, WY",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flysimplyaviation.com",
+        "rate": 230.0,
+        "tails": 2,
+        "st": "CO",
+        "metro": "Denver-Aurora-Greeley, CO",
+        "type": ""
+      },
+      {
+        "domain": "southbayaviation.com",
+        "rate": 199.95,
+        "tails": 1,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "spanaflight.com",
+        "rate": 115.0,
+        "tails": 2,
+        "st": "WA",
+        "metro": "Seattle-Tacoma, WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "letsgofly.com",
+        "rate": 139.0,
+        "tails": 2,
+        "st": "CA",
+        "metro": "Sonora, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "stcloudaviation.com",
+        "rate": 173.0,
+        "tails": 1,
+        "st": "MN",
+        "metro": "Minneapolis-St. Paul, MN-WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "summitflighttraining.com",
+        "rate": 235.0,
+        "tails": 3,
+        "st": "CO",
+        "metro": "Denver-Aurora-Greeley, CO",
+        "type": ""
+      },
+      {
+        "domain": "tailwindsacademy.org",
+        "rate": 235.0,
+        "tails": 4,
+        "st": "PA",
+        "metro": "Philadelphia-Reading-Camden, PA-NJ-DE-MD",
+        "type": "Flight School"
+      },
+      {
+        "domain": "taefc.org",
+        "rate": 99.0,
+        "tails": 1,
+        "st": "KS",
+        "metro": "Wichita-Arkansas City-Winfield, KS",
+        "type": "Flight School"
+      },
+      {
+        "domain": "threepointaviation.com",
+        "rate": 150.0,
+        "tails": 4,
+        "st": "MI",
+        "metro": "Mount Pleasant-Alma, MI",
+        "type": ""
+      },
+      {
+        "domain": "goflytopeka.com",
+        "rate": 164.95,
+        "tails": 2,
+        "st": "KS",
+        "metro": "Topeka, KS",
+        "type": ""
+      },
+      {
+        "domain": "vectorair.net",
+        "rate": 163.0,
+        "tails": 5,
+        "st": "CO",
+        "metro": "Denver-Aurora-Greeley, CO",
+        "type": "Flight School"
+      },
+      {
+        "domain": "visaliaflyers.com",
+        "rate": 170,
+        "tails": 3,
+        "st": "CA",
+        "metro": "Visalia, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "yjfc.org",
+        "rate": 135.0,
+        "tails": 4,
+        "st": "GA",
+        "metro": "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "yourflightcontrols.com",
+        "rate": 155.0,
+        "tails": 1,
+        "st": "NC",
+        "metro": "Charlotte-Concord, NC-SC",
+        "type": ""
+      },
+      {
+        "domain": "flyatlanticaviationinc.com",
+        "rate": 152.5,
+        "tails": 2,
+        "st": "FL",
+        "metro": "Jacksonville-Kingsland-Palatka, FL-GA",
+        "type": ""
+      },
+      {
+        "domain": "bayflyingservices.com",
+        "rate": 150.0,
+        "tails": 2,
+        "st": "MI",
+        "metro": "Saginaw-Midland-Bay City, MI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "blue-horizons.org",
+        "rate": 129.0,
+        "tails": 1,
+        "st": "OH",
+        "metro": "Toledo, OH",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "flyatbat.com",
+        "rate": 141.0,
+        "tails": 2,
+        "st": "NH",
+        "metro": "Boston-Worcester-Providence, MA-RI-NH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "certifiedflyers.com",
+        "rate": 207.0,
+        "tails": 3,
+        "st": "NJ",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "chiotaaviation.com",
+        "rate": 182.5,
+        "tails": 2,
+        "st": "TX",
+        "metro": "Waco, TX",
+        "type": ""
+      },
+      {
+        "domain": "clemsonflyingclub.org",
+        "rate": 157.5,
+        "tails": 2,
+        "st": "SC",
+        "metro": "Greenville-Spartanburg-Anderson, SC",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "flycoe.com",
+        "rate": 200.0,
+        "tails": 1,
+        "st": "ID",
+        "metro": "Spokane-Spokane Valley-Coeur d'Alene, WA-ID",
+        "type": "Flight School"
+      },
+      {
+        "domain": "crosswindaviationfbg.com",
+        "rate": 225.0,
+        "tails": 2,
+        "st": "TX",
+        "metro": "San Antonio-New Braunfels-Kerrville, TX",
+        "type": ""
+      },
+      {
+        "domain": "crosswindflightacademy.com",
+        "rate": 175.0,
+        "tails": 1,
+        "st": "NC",
+        "metro": "Charlotte-Concord, NC-SC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "eaglesnest.aero",
+        "rate": 175.0,
+        "tails": 2,
+        "st": "VA",
+        "metro": "Harrisonburg-Staunton-Stuarts Draft, VA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "empyreanaero.com",
+        "rate": 170,
+        "tails": 1,
+        "st": "KS",
+        "metro": "Kansas City-Overland Park-Kansas City, MO-KS",
+        "type": "Flight School"
+      },
+      {
+        "domain": "e-flighttraining.com",
+        "rate": 222.5,
+        "tails": 2,
+        "st": "FL",
+        "metro": "Miami-Port St. Lucie-Fort Lauderdale, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "learntoflysacramento.com",
+        "rate": 130.0,
+        "tails": 3,
+        "st": "CA",
+        "metro": "Sacramento-Roseville, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "finalapproachaviation.com",
+        "rate": 162.5,
+        "tails": 2,
+        "st": "KY",
+        "metro": "Murray, KY",
+        "type": ""
+      },
+      {
+        "domain": "fivexfiveflight.com",
+        "rate": 170.0,
+        "tails": 1,
+        "st": "TX",
+        "metro": "Houston-Pasadena, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flightcenterinternational.com",
+        "rate": 160.0,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Miami-Port St. Lucie-Fort Lauderdale, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flightlineairservice.com",
+        "rate": 150.5,
+        "tails": 2,
+        "st": "LA",
+        "metro": "Alexandria, LA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyonpt.com",
+        "rate": 175.0,
+        "tails": 3,
+        "st": "AZ",
+        "metro": "Tucson-Nogales, AZ",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flywithrachel.com",
+        "rate": 155.0,
+        "tails": 1,
+        "st": "NC",
+        "metro": "Charlotte-Concord, NC-SC",
+        "type": ""
+      },
+      {
+        "domain": "fly928.com",
+        "rate": 175.0,
+        "tails": 3,
+        "st": "AZ",
+        "metro": "Yuma, AZ",
+        "type": ""
+      },
+      {
+        "domain": "furyiousaviation.com",
+        "rate": 165.0,
+        "tails": 2,
+        "st": "LA",
+        "metro": "Shreveport-Bossier City-Minden, LA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "gfpa.org",
+        "rate": 125.46,
+        "tails": 1,
+        "st": "MI",
+        "metro": "Detroit-Warren-Ann Arbor, MI",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "hangaroneflightcompany.com",
+        "rate": 165.0,
+        "tails": 1,
+        "st": "KY",
+        "metro": "Clarksville, TN-KY",
+        "type": ""
+      },
+      {
+        "domain": "iflyflightschool.wixsite.com",
+        "rate": 175.0,
+        "tails": 3,
+        "st": "AZ",
+        "metro": "Tucson-Nogales, AZ",
+        "type": ""
+      },
+      {
+        "domain": "flywithjb.com",
+        "rate": 175.0,
+        "tails": 4,
+        "st": "IL",
+        "metro": "Chicago-Naperville, IL-IN-WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "mhaviation.com",
+        "rate": 170,
+        "tails": 3,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "mesquiteaviation.com",
+        "rate": 175.0,
+        "tails": 4,
+        "st": "TX",
+        "metro": "Dallas-Fort Worth, TX-OK",
+        "type": "Flight School"
+      },
+      {
+        "domain": "monarchair.com",
+        "rate": 225.0,
+        "tails": 1,
+        "st": "TX",
+        "metro": "Dallas-Fort Worth, TX-OK",
+        "type": "Flight School"
+      },
+      {
+        "domain": "moyeraviation.com",
+        "rate": 188.0,
+        "tails": 2,
+        "st": "PA",
+        "metro": "Allentown-Bethlehem-East Stroudsburg, PA-NJ",
+        "type": "Flight School"
+      },
+      {
+        "domain": "nriflyingclub.com",
+        "rate": 150,
+        "tails": 1,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "nsaeroclub.com",
+        "rate": 150,
+        "tails": 1,
+        "st": "MA",
+        "metro": "Boston-Worcester-Providence, MA-RI-NH",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "columbusnorthwestflyers.com",
+        "rate": 159.0,
+        "tails": 1,
+        "st": "OH",
+        "metro": "Columbus-Marion-Zanesville, OH",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "oakridgeflyers.com",
+        "rate": 135.0,
+        "tails": 1,
+        "st": "TN",
+        "metro": "Knoxville-Morristown-Sevierville, TN",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "flyingclub.org",
+        "rate": 150,
+        "tails": 1,
+        "st": "NJ",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "planesimple.net",
+        "rate": 145.0,
+        "tails": 2,
+        "st": "LA",
+        "metro": "Lake Charles-DeRidder, LA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "premierair.net",
+        "rate": 155.0,
+        "tails": 2,
+        "st": "NC",
+        "metro": "Charlotte-Concord, NC-SC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "proavaircraft.com",
+        "rate": 170.0,
+        "tails": 2,
+        "st": "OH",
+        "metro": "Cleveland-Akron-Canton, OH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "ramonaftc.com",
+        "rate": 150.0,
+        "tails": 2,
+        "st": "CA",
+        "metro": "San Diego-Chula Vista-Carlsbad, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "rebelaviation.com",
+        "rate": 132.0,
+        "tails": 1,
+        "st": "MO",
+        "metro": "Kansas City-Overland Park-Kansas City, MO-KS",
+        "type": "Flight School"
+      },
+      {
+        "domain": "rudysaviationservices.com",
+        "rate": 145.0,
+        "tails": 4,
+        "st": "TX",
+        "metro": "Dallas-Fort Worth, TX-OK",
+        "type": "Flight School"
+      },
+      {
+        "domain": "skyduoacademy.com",
+        "rate": 140.0,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Miami-Port St. Lucie-Fort Lauderdale, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "skyviewaviationhickory.com",
+        "rate": 175.0,
+        "tails": 3,
+        "st": "NC",
+        "metro": "Charlotte-Concord, NC-SC",
+        "type": ""
+      },
+      {
+        "domain": "smoketownflightcenter.com",
+        "rate": 170.0,
+        "tails": 2,
+        "st": "PA",
+        "metro": "Lancaster, PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "solbergairport.com",
+        "rate": 176.95,
+        "tails": 2,
+        "st": "NJ",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flysoundflight.com",
+        "rate": 180.0,
+        "tails": 2,
+        "st": "WA",
+        "metro": "Seattle-Tacoma, WA",
+        "type": ""
+      },
+      {
+        "domain": "splendidaviation.com",
+        "rate": 260,
+        "tails": 1,
+        "st": "TX",
+        "metro": "Corpus Christi-Kingsville-Alice, TX",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "suburbanaviation.com",
+        "rate": 179.0,
+        "tails": 2,
+        "st": "MI",
+        "metro": "Detroit-Warren-Ann Arbor, MI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "texasstickandrudder.com",
+        "rate": 170.0,
+        "tails": 3,
+        "st": "TX",
+        "metro": "Houston-Pasadena, TX",
+        "type": ""
+      },
+      {
+        "domain": "mentoneflyingclub.org",
+        "rate": 125.0,
+        "tails": 2,
+        "st": "NY",
+        "metro": "Buffalo-Cheektowaga-Olean, NY",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "valley-fliers.org",
+        "rate": 110,
+        "tails": 1,
+        "st": "WA",
+        "metro": "Seattle-Tacoma, WA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "victorsaviation.com",
+        "rate": 350,
+        "tails": 1,
+        "st": "MI",
+        "metro": "Detroit-Warren-Ann Arbor, MI",
+        "type": ""
+      },
+      {
+        "domain": "victorylaneaviation.com",
+        "rate": 200.0,
+        "tails": 2,
+        "st": "NC",
+        "metro": "Charlotte-Concord, NC-SC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "visionaryaviation.com",
+        "rate": 180.0,
+        "tails": 1,
+        "st": "TN",
+        "metro": "Memphis-Clarksdale-Forrest City, TN-MS-AR",
+        "type": ""
+      },
+      {
+        "domain": "wairaviation.com",
+        "rate": 215.0,
+        "tails": 3,
+        "st": "IL",
+        "metro": "Chicago-Naperville, IL-IN-WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flywausau.com",
+        "rate": 135.0,
+        "tails": 1,
+        "st": "WI",
+        "metro": "Wausau-Stevens Point-Wisconsin Rapids, WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "airconrad.net",
+        "rate": 174.99,
+        "tails": 1,
+        "st": "PA",
+        "metro": "Altoona-Huntingdon, PA",
+        "type": ""
+      },
+      {
+        "domain": "alphaaironline.com",
+        "rate": 170.0,
+        "tails": 1,
+        "st": "AZ",
+        "metro": "Tucson-Nogales, AZ",
+        "type": "Flight School"
+      },
+      {
+        "domain": "arizonacloudbusters.com",
+        "rate": 170,
+        "tails": 1,
+        "st": "AZ",
+        "metro": "Phoenix-Mesa, AZ",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "azflyers.org",
+        "rate": 160,
+        "tails": 1,
+        "st": "AZ",
+        "metro": "Tucson-Nogales, AZ",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "flyafac.com",
+        "rate": 159.0,
+        "tails": 2,
+        "st": "CA",
+        "metro": "San Diego-Chula Vista-Carlsbad, CA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "backcountryaeroclub.com",
+        "rate": 177.5,
+        "tails": 2,
+        "st": "WA",
+        "metro": "Seattle-Tacoma, WA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "flyblackriver.com",
+        "rate": 190.0,
+        "tails": 2,
+        "st": "NY",
+        "metro": "Watertown-Fort Drum, NY",
+        "type": ""
+      },
+      {
+        "domain": "blueskyaa.com",
+        "rate": 164.0,
+        "tails": 1,
+        "st": "NJ",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "cfiacademy.com",
+        "rate": 200.0,
+        "tails": 1,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "caaviationservices.com",
+        "rate": 196.0,
+        "tails": 1,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "clearviewflyingclub.club",
+        "rate": 125.0,
+        "tails": 2,
+        "st": "MD",
+        "metro": "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "colonial-air.com",
+        "rate": 160.0,
+        "tails": 2,
+        "st": "MA",
+        "metro": "Boston-Worcester-Providence, MA-RI-NH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "conleysflightschool.com",
+        "rate": 170.0,
+        "tails": 2,
+        "st": "NY",
+        "metro": "Watertown-Fort Drum, NY",
+        "type": "Flight School"
+      },
+      {
+        "domain": "ctflightclub.com",
+        "rate": 135,
+        "tails": 1,
+        "st": "CT",
+        "metro": "New Haven-Hartford-Waterbury, CT",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "cortezflyingservice.com",
+        "rate": 130.0,
+        "tails": 1,
+        "st": "CO",
+        "metro": "",
+        "type": "Flight School"
+      },
+      {
+        "domain": "cruiseairaviation.com",
+        "rate": 152,
+        "tails": 1,
+        "st": "CA",
+        "metro": "San Diego-Chula Vista-Carlsbad, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "daveairllc.com",
+        "rate": 50.0,
+        "tails": 1,
+        "st": "LA",
+        "metro": "Monroe-Ruston, LA",
+        "type": ""
+      },
+      {
+        "domain": "duffysaircraft.com",
+        "rate": 130.0,
+        "tails": 2,
+        "st": "WI",
+        "metro": "Wausau-Stevens Point-Wisconsin Rapids, WI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "elaero.com",
+        "rate": 155.0,
+        "tails": 1,
+        "st": "NV",
+        "metro": "Elko, NV",
+        "type": ""
+      },
+      {
+        "domain": "firstlandings.com",
+        "rate": 199.0,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Orlando-Lakeland-Deltona, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyingpanthers.org",
+        "rate": 150,
+        "tails": 1,
+        "st": "CA",
+        "metro": "Sacramento-Roseville, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flying20.com",
+        "rate": 149,
+        "tails": 1,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "flywellaviation.com",
+        "rate": 185.0,
+        "tails": 3,
+        "st": "KY",
+        "metro": "Bowling Green-Glasgow-Franklin, KY",
+        "type": "Flight School"
+      },
+      {
+        "domain": "gomezaviation.com",
+        "rate": 185,
+        "tails": 3,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": ""
+      },
+      {
+        "domain": "grasshopperflyingclub.com",
+        "rate": 146.5,
+        "tails": 3,
+        "st": "NY",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "hamptonairfield.com",
+        "rate": 180.0,
+        "tails": 1,
+        "st": "NH",
+        "metro": "Boston-Worcester-Providence, MA-RI-NH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "hangar913.com",
+        "rate": 172.0,
+        "tails": 3,
+        "st": "GA",
+        "metro": "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flywithjeremy.com",
+        "rate": 180.0,
+        "tails": 2,
+        "st": "FL",
+        "metro": "Orlando-Lakeland-Deltona, FL",
+        "type": ""
+      },
+      {
+        "domain": "lapeeraviation.com",
+        "rate": 130.0,
+        "tails": 1,
+        "st": "MI",
+        "metro": "Detroit-Warren-Ann Arbor, MI",
+        "type": ""
+      },
+      {
+        "domain": "luxairecenter.com",
+        "rate": 70.0,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Orlando-Lakeland-Deltona, FL",
+        "type": ""
+      },
+      {
+        "domain": "mangaero.org",
+        "rate": 125.0,
+        "tails": 1,
+        "st": "MI",
+        "metro": "Detroit-Warren-Ann Arbor, MI",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "marshflyingservices.com",
+        "rate": 138.0,
+        "tails": 2,
+        "st": "KS",
+        "metro": "Wichita-Arkansas City-Winfield, KS",
+        "type": "Flight School"
+      },
+      {
+        "domain": "mitiguyaviation.com",
+        "rate": 175.0,
+        "tails": 1,
+        "st": "MA",
+        "metro": "Boston-Worcester-Providence, MA-RI-NH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "newvisionaviation.org",
+        "rate": 175,
+        "tails": 1,
+        "st": "CA",
+        "metro": "Fresno-Hanford-Corcoran, CA",
+        "type": ""
+      },
+      {
+        "domain": "flypivotal.com",
+        "rate": 185.0,
+        "tails": 1,
+        "st": "SC",
+        "metro": "Greenville-Spartanburg-Anderson, SC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "reachforskiesllc.com",
+        "rate": 200,
+        "tails": 1,
+        "st": "TX",
+        "metro": "San Antonio-New Braunfels-Kerrville, TX",
+        "type": ""
+      },
+      {
+        "domain": "redcloudaviationllc.com",
+        "rate": 160.0,
+        "tails": 1,
+        "st": "OK",
+        "metro": "Oklahoma City-Shawnee, OK",
+        "type": "Flight School"
+      },
+      {
+        "domain": "riversidepilotsflyingclub.com",
+        "rate": 95,
+        "tails": 1,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "roadrunnerflightschool.com",
+        "rate": 150.0,
+        "tails": 2,
+        "st": "NM",
+        "metro": "Farmington, NM",
+        "type": "Flight School"
+      },
+      {
+        "domain": "santabarbaraflyingclub.org",
+        "rate": 155,
+        "tails": 1,
+        "st": "CA",
+        "metro": "Santa Maria-Santa Barbara, CA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "skyhavenflyingclub.org",
+        "rate": 155,
+        "tails": 1,
+        "st": "NH",
+        "metro": "Boston-Worcester-Providence, MA-RI-NH",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "skyhoundaviation.com",
+        "rate": 215.0,
+        "tails": 3,
+        "st": "MT",
+        "metro": "Bozeman, MT",
+        "type": ""
+      },
+      {
+        "domain": "sumteraviation.com",
+        "rate": 155.0,
+        "tails": 2,
+        "st": "SC",
+        "metro": "Columbia-Sumter-Orangeburg, SC",
+        "type": "Flight School"
+      },
+      {
+        "domain": "sundanceaviation.com",
+        "rate": 130,
+        "tails": 3,
+        "st": "WA",
+        "metro": "Kennewick-Richland-Walla Walla, WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "topflightofreading.com",
+        "rate": 220.0,
+        "tails": 1,
+        "st": "PA",
+        "metro": "Philadelphia-Reading-Camden, PA-NJ-DE-MD",
+        "type": "Flight School"
+      },
+      {
+        "domain": "truecourseflighttraining.com",
+        "rate": 185,
+        "tails": 3,
+        "st": "NY",
+        "metro": "Syracuse-Auburn, NY",
+        "type": "Flight School"
+      },
+      {
+        "domain": "westgaflightschool.com",
+        "rate": 135.0,
+        "tails": 2,
+        "st": "GA",
+        "metro": "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+        "type": ""
+      },
+      {
+        "domain": "wrennaviation.com",
+        "rate": 175.0,
+        "tails": 1,
+        "st": "OK",
+        "metro": "Enid, OK",
+        "type": ""
+      },
+      {
+        "domain": "wrightbase.com",
+        "rate": 185,
+        "tails": 1,
+        "st": "TN",
+        "metro": "Nashville-Davidson--Murfreesboro, TN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "7bflyingclub.com",
+        "rate": 119,
+        "tails": 1,
+        "st": "ID",
+        "metro": "Sandpoint, ID",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "bajulaz.com",
+        "rate": 179.0,
+        "tails": 1,
+        "st": "CA",
+        "metro": "Santa Maria-Santa Barbara, CA",
+        "type": ""
+      },
+      {
+        "domain": "pilottrainingpro.com",
+        "rate": 180.0,
+        "tails": 1,
+        "st": "GA",
+        "metro": "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+        "type": ""
+      },
+      {
+        "domain": "aoaaeronautics.com",
+        "rate": 135.0,
+        "tails": 1,
+        "st": "MT",
+        "metro": "",
+        "type": ""
+      },
+      {
+        "domain": "flyapollo.com",
+        "rate": 159.0,
+        "tails": 2,
+        "st": "MS",
+        "metro": "Gulfport-Biloxi, MS",
+        "type": "Flight School"
+      },
+      {
+        "domain": "arrowrockaviation.com",
+        "rate": 165.0,
+        "tails": 1,
+        "st": "ID",
+        "metro": "Boise City-Mountain Home-Ontario, ID-OR",
+        "type": ""
+      },
+      {
+        "domain": "rbartlett.net",
+        "rate": 300.0,
+        "tails": 1,
+        "st": "NJ",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "baldeagleflyingclub.org",
+        "rate": 155,
+        "tails": 1,
+        "st": "ME",
+        "metro": "Portland-Lewiston-South Portland, ME",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "bemidjiaviation.com",
+        "rate": 119.5,
+        "tails": 2,
+        "st": "MN",
+        "metro": "Bemidji, MN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "birddogflightservices.com",
+        "rate": 170.0,
+        "tails": 1,
+        "st": "TX",
+        "metro": "Dallas-Fort Worth, TX-OK",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flybloomsburg.com",
+        "rate": 150,
+        "tails": 1,
+        "st": "PA",
+        "metro": "Bloomsburg-Berwick-Sunbury, PA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "blufftonflyingservice.com",
+        "rate": 165.0,
+        "tails": 2,
+        "st": "OH",
+        "metro": "Findlay-Tiffin, OH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "cofieldaviation.com",
+        "rate": 200.0,
+        "tails": 1,
+        "st": "AL",
+        "metro": "Gadsden, AL",
+        "type": ""
+      },
+      {
+        "domain": "crestairpark.com",
+        "rate": 192.5,
+        "tails": 2,
+        "st": "WA",
+        "metro": "Seattle-Tacoma, WA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "customflighttraining.com",
+        "rate": 110.0,
+        "tails": 2,
+        "st": "CA",
+        "metro": "Sacramento-Roseville, CA",
+        "type": ""
+      },
+      {
+        "domain": "flydaviation.net",
+        "rate": 125.0,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Tampa-St. Petersburg-Clearwater, FL",
+        "type": ""
+      },
+      {
+        "domain": "deltaflying.org",
+        "rate": 75,
+        "tails": 1,
+        "st": "MN",
+        "metro": "Minneapolis-St. Paul, MN-WI",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "flydependable.com",
+        "rate": 200,
+        "tails": 1,
+        "st": "GA",
+        "metro": "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "dortonaviation.com",
+        "rate": 185.0,
+        "tails": 1,
+        "st": "VA",
+        "metro": "Johnson City-Kingsport-Bristol, TN-VA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "ezifr.com",
+        "rate": 185.0,
+        "tails": 1,
+        "st": "MS",
+        "metro": "Natchez, MS-LA",
+        "type": ""
+      },
+      {
+        "domain": "easternidahoflying.club",
+        "rate": 120,
+        "tails": 1,
+        "st": "ID",
+        "metro": "Idaho Falls-Rexburg-Blackfoot, ID",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "emporiaflyingclub.org",
+        "rate": 90.0,
+        "tails": 1,
+        "st": "KS",
+        "metro": "Emporia, KS",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "flighttrainingcenters.com",
+        "rate": 149.0,
+        "tails": 1,
+        "st": "IN",
+        "metro": "Indianapolis-Carmel-Muncie, IN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyswfl.com",
+        "rate": 105,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Cape Coral-Fort Myers-Naples, FL",
+        "type": ""
+      },
+      {
+        "domain": "flywithkate.com",
+        "rate": 235,
+        "tails": 1,
+        "st": "NY",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": ""
+      },
+      {
+        "domain": "fortmyersflyingclub.com",
+        "rate": 105,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Cape Coral-Fort Myers-Naples, FL",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "freewayaviation.com",
+        "rate": 142.5,
+        "tails": 2,
+        "st": "MD",
+        "metro": "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "fremontaviation.com",
+        "rate": 157.0,
+        "tails": 1,
+        "st": "NE",
+        "metro": "Omaha-Fremont, NE-IA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "frontroyalaviation.com",
+        "rate": 160.0,
+        "tails": 1,
+        "st": "VA",
+        "metro": "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "kcxofbo.com",
+        "rate": 159.0,
+        "tails": 1,
+        "st": "TX",
+        "metro": "Houston-Pasadena, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "glacierpeakaviators.com",
+        "rate": 176.0,
+        "tails": 2,
+        "st": "WA",
+        "metro": "Seattle-Tacoma, WA",
+        "type": ""
+      },
+      {
+        "domain": "goflykansas.com",
+        "rate": 155.0,
+        "tails": 1,
+        "st": "KS",
+        "metro": "Kansas City-Overland Park-Kansas City, MO-KS",
+        "type": ""
+      },
+      {
+        "domain": "goodtimesaviation.com",
+        "rate": 165.0,
+        "tails": 1,
+        "st": "ID",
+        "metro": "Boise City-Mountain Home-Ontario, ID-OR",
+        "type": ""
+      },
+      {
+        "domain": "gpeflightschool.org",
+        "rate": 155.0,
+        "tails": 1,
+        "st": "OH",
+        "metro": "Cincinnati-Wilmington, OH-KY-IN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "49fss.com",
+        "rate": 140.0,
+        "tails": 1,
+        "st": "NM",
+        "metro": "Alamogordo, NM",
+        "type": ""
+      },
+      {
+        "domain": "iyflying.org",
+        "rate": 110,
+        "tails": 1,
+        "st": "OR",
+        "metro": "Portland-Vancouver-Salem, OR-WA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "lakelandfbo.com",
+        "rate": 170.0,
+        "tails": 2,
+        "st": "WI",
+        "metro": "",
+        "type": "Flight School"
+      },
+      {
+        "domain": "laramieflyingclub.com",
+        "rate": 135.0,
+        "tails": 1,
+        "st": "WY",
+        "metro": "Laramie, WY",
+        "type": "Flight School"
+      },
+      {
+        "domain": "lytleaviation.com",
+        "rate": 195.0,
+        "tails": 1,
+        "st": "TX",
+        "metro": "Abilene-Sweetwater, TX",
+        "type": ""
+      },
+      {
+        "domain": "mosesaviation.com",
+        "rate": 175.0,
+        "tails": 2,
+        "st": "TX",
+        "metro": "Uvalde, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "my-flying-club.com",
+        "rate": 144.5,
+        "tails": 2,
+        "st": "CA",
+        "metro": "San Diego-Chula Vista-Carlsbad, CA",
+        "type": ""
+      },
+      {
+        "domain": "flyantigo.com",
+        "rate": 175.0,
+        "tails": 1,
+        "st": "WI",
+        "metro": "",
+        "type": ""
+      },
+      {
+        "domain": "oaklandft.com",
+        "rate": 160.0,
+        "tails": 2,
+        "st": "MI",
+        "metro": "Detroit-Warren-Ann Arbor, MI",
+        "type": "Flight School"
+      },
+      {
+        "domain": "orlandoaeroclub.com",
+        "rate": 160.0,
+        "tails": 2,
+        "st": "FL",
+        "metro": "Orlando-Lakeland-Deltona, FL",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "pactolaflying.club",
+        "rate": 100,
+        "tails": 1,
+        "st": "SD",
+        "metro": "Rapid City-Spearfish, SD",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "premierflightsolutions.com",
+        "rate": 199.0,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Orlando-Lakeland-Deltona, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "propflying.com",
+        "rate": 175.0,
+        "tails": 1,
+        "st": "WA",
+        "metro": "Wenatchee-East Wenatchee, WA",
+        "type": ""
+      },
+      {
+        "domain": "sites.google.com",
+        "rate": 150.0,
+        "tails": 1,
+        "st": "NC",
+        "metro": "Raleigh-Durham-Cary, NC",
+        "type": ""
+      },
+      {
+        "domain": "rangersflyingclub.org",
+        "rate": 80,
+        "tails": 1,
+        "st": "MN",
+        "metro": "Minneapolis-St. Paul, MN-WI",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "richmondpilots.org",
+        "rate": 147.5,
+        "tails": 2,
+        "st": "NJ",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "richmorflightschool.com",
+        "rate": 170.0,
+        "tails": 1,
+        "st": "NY",
+        "metro": "New York-Newark, NY-NJ-CT-PA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "sgflightschool.com",
+        "rate": 162.5,
+        "tails": 2,
+        "st": "AZ",
+        "metro": "Phoenix-Mesa, AZ",
+        "type": ""
+      },
+      {
+        "domain": "silvercityflyingclub.com",
+        "rate": 130.0,
+        "tails": 1,
+        "st": "CT",
+        "metro": "New Haven-Hartford-Waterbury, CT",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "skychiefsaviation.com",
+        "rate": 140.0,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Gainesville-Lake City, FL",
+        "type": "Flight School"
+      },
+      {
+        "domain": "skyborneadventures.com",
+        "rate": 140.0,
+        "tails": 1,
+        "st": "ID",
+        "metro": "Boise City-Mountain Home-Ontario, ID-OR",
+        "type": "Flight School"
+      },
+      {
+        "domain": "stowflyingclub.org",
+        "rate": 160,
+        "tails": 1,
+        "st": "MA",
+        "metro": "Boston-Worcester-Providence, MA-RI-NH",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "texarkanaflyingclub.com",
+        "rate": 129,
+        "tails": 1,
+        "st": "AR",
+        "metro": "Texarkana, TX-AR",
+        "type": "Flight School"
+      },
+      {
+        "domain": "throttleupflightacademy.com",
+        "rate": 135.0,
+        "tails": 2,
+        "st": "IL",
+        "metro": "Peoria-Canton, IL",
+        "type": ""
+      },
+      {
+        "domain": "tulsaaviationgroup.com",
+        "rate": 175.0,
+        "tails": 1,
+        "st": "OK",
+        "metro": "Tulsa-Bartlesville-Muskogee, OK",
+        "type": "Flight School"
+      },
+      {
+        "domain": "uwflyingclub.org",
+        "rate": 135.0,
+        "tails": 2,
+        "st": "WI",
+        "metro": "Madison-Janesville-Beloit, WI",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "unitedflyingclub.org",
+        "rate": 157.5,
+        "tails": 2,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "umaine.edu",
+        "rate": 180,
+        "tails": 1,
+        "st": "ME",
+        "metro": "Bangor, ME",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "uvflyingclub.org",
+        "rate": 85,
+        "tails": 1,
+        "st": "NH",
+        "metro": "Lebanon-Claremont, NH-VT",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "vfs.aero",
+        "rate": 155.0,
+        "tails": 2,
+        "st": "GA",
+        "metro": "Valdosta, GA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flyfreedom.com",
+        "rate": 155.0,
+        "tails": 2,
+        "st": "VA",
+        "metro": "Lynchburg, VA",
+        "type": ""
+      },
+      {
+        "domain": "wacoflight.com",
+        "rate": 185.0,
+        "tails": 1,
+        "st": "TX",
+        "metro": "Waco, TX",
+        "type": "Flight School"
+      },
+      {
+        "domain": "westmiflightacademy.org",
+        "rate": 150.0,
+        "tails": 1,
+        "st": "MI",
+        "metro": "Jackson, MI",
+        "type": ""
+      },
+      {
+        "domain": "yourpilotjourney.com",
+        "rate": 165.0,
+        "tails": 2,
+        "st": "MO",
+        "metro": "Cape Girardeau-Sikeston, MO-IL",
+        "type": ""
+      },
+      {
+        "domain": "airheadsflyingclub.org",
+        "rate": 85,
+        "tails": 1,
+        "st": "WV",
+        "metro": "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "allencountyairport.com",
+        "rate": 180.0,
+        "tails": 1,
+        "st": "OH",
+        "metro": "Lima-Van Wert-Celina, OH",
+        "type": "Flight School"
+      },
+      {
+        "domain": "austinaeroflight.com",
+        "rate": 105.0,
+        "tails": 1,
+        "st": "MN",
+        "metro": "Rochester-Austin-Winona, MN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "blackhawkflyingclub.org",
+        "rate": 141,
+        "tails": 1,
+        "st": "IL",
+        "metro": "Rockford-Freeport-Rochelle, IL",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "blueskiesflighttraining.com",
+        "rate": 160,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Gainesville-Lake City, FL",
+        "type": ""
+      },
+      {
+        "domain": "butterflyaviation.net",
+        "rate": 150.0,
+        "tails": 1,
+        "st": "KS",
+        "metro": "",
+        "type": "Flight School"
+      },
+      {
+        "domain": "californiaaviationservices.com",
+        "rate": 98.0,
+        "tails": 1,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": ""
+      },
+      {
+        "domain": "colschflightinstruction.com",
+        "rate": 150.0,
+        "tails": 1,
+        "st": "IA",
+        "metro": "",
+        "type": ""
+      },
+      {
+        "domain": "compassandprop.com",
+        "rate": 135.0,
+        "tails": 1,
+        "st": "WI",
+        "metro": "Appleton-Oshkosh-Neenah, WI",
+        "type": ""
+      },
+      {
+        "domain": "dustdevilflyingclub.com",
+        "rate": 125.0,
+        "tails": 1,
+        "st": "NM",
+        "metro": "El Paso-Las Cruces, TX-NM",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "flightlevelaviationtraining.com",
+        "rate": 165,
+        "tails": 1,
+        "st": "CA",
+        "metro": "San Jose-San Francisco-Oakland, CA",
+        "type": ""
+      },
+      {
+        "domain": "flycompton.com",
+        "rate": 155,
+        "tails": 1,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": "Flight School"
+      },
+      {
+        "domain": "flymaxaviation.com",
+        "rate": 110,
+        "tails": 1,
+        "st": "WI",
+        "metro": "Madison-Janesville-Beloit, WI",
+        "type": ""
+      },
+      {
+        "domain": "flyingten.com",
+        "rate": 115,
+        "tails": 1,
+        "st": "AZ",
+        "metro": "Phoenix-Mesa, AZ",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "funflighttraining.com",
+        "rate": 152,
+        "tails": 1,
+        "st": "WV",
+        "metro": "",
+        "type": ""
+      },
+      {
+        "domain": "huronaviation.com",
+        "rate": 180,
+        "tails": 1,
+        "st": "MI",
+        "metro": "Alpena, MI",
+        "type": ""
+      },
+      {
+        "domain": "sewardaviation.com",
+        "rate": 165,
+        "tails": 1,
+        "st": "NE",
+        "metro": "Lincoln-Beatrice, NE",
+        "type": "Flight School"
+      },
+      {
+        "domain": "mach1flighttraining.com",
+        "rate": 178.0,
+        "tails": 1,
+        "st": "CO",
+        "metro": "Fort Collins-Loveland, CO",
+        "type": ""
+      },
+      {
+        "domain": "pradhanaircraft.works",
+        "rate": 190,
+        "tails": 1,
+        "st": "CA",
+        "metro": "Los Angeles-Long Beach, CA",
+        "type": ""
+      },
+      {
+        "domain": "randraviation.com",
+        "rate": 150.0,
+        "tails": 1,
+        "st": "MO",
+        "metro": "St. Louis-St. Charles-Farmington, MO-IL",
+        "type": ""
+      },
+      {
+        "domain": "romeoflightinstruction.com",
+        "rate": 180.0,
+        "tails": 1,
+        "st": "MI",
+        "metro": "Detroit-Warren-Ann Arbor, MI",
+        "type": ""
+      },
+      {
+        "domain": "skeltonair.com",
+        "rate": 165.0,
+        "tails": 1,
+        "st": "ID",
+        "metro": "Lewiston, ID-WA",
+        "type": ""
+      },
+      {
+        "domain": "skycrewservices.com",
+        "rate": 85.0,
+        "tails": 1,
+        "st": "MN",
+        "metro": "Fergus Falls, MN",
+        "type": "Flight School"
+      },
+      {
+        "domain": "skytrekfly.com",
+        "rate": 169.0,
+        "tails": 1,
+        "st": "FL",
+        "metro": "Palm Bay-Melbourne-Titusville, FL",
+        "type": ""
+      },
+      {
+        "domain": "avi8rcfi.com",
+        "rate": 165.0,
+        "tails": 1,
+        "st": "NE",
+        "metro": "Lincoln-Beatrice, NE",
+        "type": ""
+      },
+      {
+        "domain": "flybrokenstraw.com",
+        "rate": 77.0,
+        "tails": 1,
+        "st": "PA",
+        "metro": "Harrisburg-York-Lebanon, PA",
+        "type": "Flying Club"
+      },
+      {
+        "domain": "wingmanflightacademy.com",
+        "rate": 175,
+        "tails": 1,
+        "st": "TN",
+        "metro": "Nashville-Davidson--Murfreesboro, TN",
+        "type": ""
+      },
+      {
+        "domain": "wingsoverwaxhaw.org",
+        "rate": 135,
+        "tails": 1,
+        "st": "NC",
+        "metro": "Charlotte-Concord, NC-SC",
+        "type": "Flying Club"
+      }
+    ]
+  },
+  "blocked": {
+    "groups": {
+      "SiteGround": 102,
+      "Cloudflare": 35,
+      "WordPress.com": 33,
+      "Other hosts and firewalls": 17,
+      "Moved or for sale": 11,
+      "Unreachable now": 9
+    },
+    "platform_share": {
+      "SiteGround": {
+        "refuse": 102,
+        "served": 1
+      },
+      "WordPress.com": {
+        "refuse": 33,
+        "served": 0
+      },
+      "Cloudflare": {
+        "refuse": 35,
+        "served": 772
+      }
+    }
+  }
+}
