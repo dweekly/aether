@@ -590,6 +590,24 @@ def cmd_classify_report(a):
             out.append(rec)
     (W / "classified_pages.json").write_text(json.dumps(out, indent=1) + "\n")
     cls = json.loads((W / "classified.json").read_text())
+    # crawl outcomes per site, by where its URL came from
+    via = {c["site"]: c["via"] for c in json.loads((W / "candidates.json").read_text())}
+    out_h = {}
+    for x in map(json.loads, (CRAWL / "crawl_attempts_http.jsonl").open()):
+        fl = set(x.get("crawl_flags") or [])
+        out_h[site_dom(x["website"])] = ("pages" if x.get("pages") else "challenge" if "captcha_challenge" in fl else
+                                        f"refused_{x['status']}" if x.get("status") in (401, 403, 429, 503) else
+                                        "dns_error" if "DNS" in (x.get("error") or "") else
+                                        f"http_{x['status']}" if x.get("status") not in (200, None, 0) else "no_answer")
+    bw = {site_dom(x["website"]) for x in map(json.loads, (CRAWL / "crawl_attempts_browser.jsonl").open()) if x.get("pages")}
+    with_text = {r["site"] for r in cls}
+    crawl = {}
+    for v in ("list", "search", "search_named"):
+        ds = [d for d, w in via.items() if w == v]
+        crawl[f"sites from {v}"] = (f"{len(ds)}: HTTP {dict(Counter(out_h.get(d, 'not_attempted') for d in ds))}; "
+                                    f"browser pages for {sum(1 for d in ds if d in bw)}; page text sent to the "
+                                    f"classifier for {sum(1 for d in ds if d in with_text)}")
+    stats(crawl=crawl)
     stats(classify={"sites": dict(Counter(r["flight_instruction"] for r in cls)),
                     "site_types_yes": dict(Counter(r.get("operation_type") for r in cls if r["flight_instruction"] == "yes")),
                     "pages": dict(st)})
@@ -680,6 +698,25 @@ def cmd_dedupe(a):
                 "directory_only": "only directory listings (no own site or page that describes it)"}[o["outcome"]])
             row["classification"] = o["outcome"]
         rows.append(row)
+    # the same phone as a school we already had (60's rules do not compare phones): a rename or a second domain
+    import page_text as pt
+    fl = json.loads((OUT / "flight_line.json").read_text())
+    by_phone = defaultdict(set)
+    for s in fl:
+        for p in ((s.get("contact") or {}).get("phone"), ((s.get("public_contact") or {}).get("phone") or {}).get("value")):
+            if pt.phone10(p or ""):
+                by_phone[pt.phone10(p)].add(s["domain"] or s["name"])
+    cls_by_cand = {r["candidate_id"]: r for r in json.loads((W / "classified.json").read_text())}
+    for r in rows:
+        if r["disposition"] != "added" or r["candidate_id"] in HAND or r["site"] in HAND:
+            continue
+        k = cls_by_cand.get(r["candidate_id"]) or pcls.get(r["candidate_id"]) or {}
+        ph = pt.phone10(((k.get("contact") or {}).get("phone") or {}).get("value", ""))
+        if ph and by_phone.get(ph):
+            r["disposition"] = "duplicate"
+            r["detail"] = f"{sorted(by_phone[ph])[0]} (same phone)"
+            r["school_key"] = ""
+            print(f"  same phone: {r['site'] or r['candidate_id']} {r['school_name']} -> {sorted(by_phone[ph])}")
     # leads that reach the same school by two routes (a site and a public page): keep the site
     added = [r for r in rows if r["disposition"] == "added"]
     for i, x in enumerate(added):
@@ -1245,7 +1282,7 @@ def cmd_report(a):
     for r in rows:
         if r["disposition"] in ("left_out", "rejected", "duplicate"):
             k = re.sub(r"\s*\(.*", "", r["detail"]) if r["disposition"] != "duplicate" else re.sub(
-                r".*\((domain|name|street|at the|another lead)[^)]*\).*", r"\1", r["detail"])
+                r".*\((domain|name|street|at the|another lead|same phone)[^)]*\).*", r"\1", r["detail"])
             det[(r["disposition"], k[:90])] += len(r["lead_ids"].split(";"))
     L.append(table(["Disposition", "Reason", "Leads"], [[d, k, v] for (d, k), v in sorted(det.items(), key=lambda x: (x[0][0], -x[1]))]))
     L.append("\n### Search (website-less leads)\n")
