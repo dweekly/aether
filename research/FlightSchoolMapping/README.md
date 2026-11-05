@@ -847,6 +847,7 @@ only when you intend to act on the results.
 | `61_contact_provenance.py` | Name, phone, street address and hours for every school website from its cached own pages (November re-crawl first), each kept only if found verbatim on its page, then FSAI and state-list fallbacks: `output/contact_sourced.json`, which 21 turns into `public_contact` |
 | `page_text.py`, `haiku_batch.py` | Shared by 60 and 61: page text with JSON-LD and `tel:` links, the verbatim check, the prompt pieces; Message Batches run directories in extract_v2's layout |
 | `59_google_places.py` | Find flight schools with Google Places (New): free IDs-only text searches over self-splitting US tiles, paid details only after a printed estimate under `--max-usd`, matched against `flight_line.json`, unmatched confirmed from each school's own site |
+| `65_gap_sources.py` | Compare FAA NASR airports with INSTR/RNTL in OTHER_SERVICES, the Tach & Go directory (`fetch-tachgo`, one request per 4 s) and SBA PPP NAICS 611512 borrowers (`ppp-filter`) with `flight_line.json`: gap airports with ADS-B signals, strict matching, homepage checks, seeded hand checks; writes `docs/hackers-2026-gap-sources.md` and its CSVs |
 
 ## Aircraft Provenance Model
 

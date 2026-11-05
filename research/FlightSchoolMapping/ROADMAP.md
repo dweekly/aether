@@ -39,6 +39,23 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
   with about 40 schools we lack (about 23 in MI, 17 in MN), plus Alaska ACPE's three. Same doc,
   sections 3 and 5.
 
+### Airport assignments and gap leads (found 2026-11-04, `docs/hackers-2026-gap-sources.md`)
+- **Wrong or missing school airports hide schools we already have.** Of 23 NASR INSTR/RNTL airports
+  with the strongest unlisted ADS-B training signal, 18 host a school that is in our list under another
+  airport or none: KPWT (Bremerton, WA) for Nationwide Aviation's Weatherford TX base (WEA), KAVL for
+  Dillons Aviation at Pitt-Greenville, Tucson only for Epic Flight Academy (main base EVB), K1R7 for
+  Hinds CC (JVW), K8A0 for Wallace State (CMD), KM66 for Hesston (EWK), K4C8 for Indian Hills (OTM),
+  KTZR for Aviation Works (VTA), KAMA for Coyote Flight (TDW), K9A5 for Phoenix Air (VPC); no airport
+  at all for Aces (UZA), Next Level (JCA), BRAG (MWL). 7.5% of listed airports are in a different state
+  from the school's address. Fix the identifiers, then rerun 65 to see the real gap.
+- **Dead or hijacked school domains in `flight_line.json`**: `iflycfc.com` (a second Coyote Flight
+  Centers record) serves a gambling page and `thunderboltair.com` redirects to an unrelated blog (checked
+  2026-11-04); drop or re-point them.
+- **New operations from the gap pass to confirm and add** (hand-checked, not yet in the list): rows with
+  verdict `new_training` in `docs/hackers-2026-gap-candidates.csv`.
+- **The matcher misses initials written with periods** ("FIT Aviation" vs "F.I.T. Aviation, LLC"): squash
+  single-letter runs in `variants()` in `probes/match_external_school_lists.py`.
+
 ### Story ideas
 - "Which training fleets are actually flying?" — ADS-B activity rates vs. fleet size
 - "The GA training fleet is old" — age distribution, regional differences

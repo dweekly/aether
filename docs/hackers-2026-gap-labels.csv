@@ -1,0 +1,84 @@
+source,id,name,verdict,website,org,evidence_url,note
+nasr,ORS,Orcas Island,new_training,https://airhawks.org,Airhawks Flying Club,https://airhawks.org,"Nonprofit club, two Sundowners at KORS, instruction and member rental; not in list."
+nasr,MKO,Muskogee-Davis Rgnl,new_training,https://davisfieldaviation.com,Davis Field Aviation,https://davisfieldaviation.com/?p=8,FBO lists in-house CFI flight school and aircraft rental; not in list.
+nasr,VTA,Licking County Rgnl,in_list_other_airport,https://newarkheathairport.com/,Aviation Works Flight Academy,https://www.flightaware.com/resources/airport/KVTA/services/Rental/Aviation_Works_Flight_Training,FBO The Aviation Works; list has newarkheathairport.com filed under KTZR.
+nasr,PGV,Pitt-Greenville,in_list_other_airport,http://www.dillonsaviation.com,Dillons Aviation,https://theflyingengineer.com/listing/dillons-aviation-inc-greenville/,"dillonsaviation.com filed under KAVL; HQ at PGV. Vann Aero also listed, no airport."
+nasr,JCA,Jackson County,in_list_other_airport,https://www.flynextlevel.com/,Next Level Aviation,https://www.flynextlevel.com/,"flynextlevel.com has no airport in list; 485 Lyle Field Rd, Jefferson; field tie inferred."
+nasr,OTM,Ottumwa Rgnl,in_list_other_airport,http://www.indianhills.edu,Indian Hills Community College,https://www.indianhills.edu/virtual-experience/ottumwa-north.php,Aviation pilot program at North Campus on airport; list files indianhills.edu under K4C8.
+nasr,PSN,Palestine Muni,none_found,,,https://www.cityofpalestinetx.com/210/Airport,"Only FBO Palestine Jet Center (fuel, hangars); no school or CFI found."
+nasr,UZA,Rock Hill/York County/Bryant Fld,in_list_other_airport,https://www.acesflightschool.com/,Aces Flight School,https://mytjnow.com/?p=10846,"acesflightschool.com in list with blank airport_ids; based at UZA, Winthrop partner."
+nasr,JVW,John Bell Williams,in_list_other_airport,http://www.hindscc.edu,Hinds Community College,https://www.hindscc.edu/pathways/acmt/commercial-aviation,"College owns JVW, flight program in its hangars; list files hindscc.edu under K1R7."
+nasr,EWK,Newton-City-County,in_list_other_airport,https://www.hesston.edu/aviation,Hesston College,https://www.hesston.edu/aviation,Part 141 program trains at KEWK; list files hesston.edu under KM66.
+nasr,MNV,Monroe County,unclear,,,https://www.airnav.com/airport/KMNV,County FBO lists flight training; no named school or instructor found online.
+nasr,EZS,Shawano Muni,in_list_other_airport,http://www.pilotsmith.com,Pilotsmith,https://wisconsindot.gov/Pages/doing-bus/aeronautics/education/aved-fly.aspx,WisDOT lists Pilotsmith at Shawano; list has KGRB/KMWC/KATW; own site omits Shawano.
+nasr,CMD,Cullman Rgnl/Folsom Fld,in_list_other_airport,http://www.wallacestate.edu,Wallace State Community College,https://news.wallacestate.edu/?p=17110,Airplane and helicopter flight program at Cullman airport; list files wallacestate.edu under K8A0.
+nasr,4N1,Greenwood Lake,in_list_other_airport,http://www.discovertheskies.com,"Sky Training, LLC",https://www.discovertheskies.com,Part 141 school at Greenwood Lake; list files under K12N. Jetlink (also K12N) domain lapsed.
+nasr,OXR,Oxnard,in_list_other_airport,https://calaero.edu/oxnard/,California Aeronautical University,https://calaero.edu/oxnard-flight-training/,CAU Oxnard Flight Training Center; list has calaero.edu only under KBFL.
+nasr,TDW,Tradewind,in_list_other_airport,http://www.coyoteflight.com,Coyote Flight Centers,http://www.coyoteflight.com,"Site gives 4107 Tradewind St, KTDW; list files coyoteflight.com under KAMA."
+nasr,50F,Bourland Fld,in_list_other_airport,,Harbour Aviation,https://theflyingengineer.com/listing/harbour-aviation/,"Directory-only school at 50F; list has HARBOUR AVIATION LLC registrant, no airport."
+nasr,VPC,Cartersville,in_list_other_airport,http://www.phoenixair.com,Phoenix Air,https://www.bestaviation.net/school/phoenix_air,Phoenix Air is VPC FBO with flight school; list files phoenixair.com under K9A5.
+nasr,O85,Benton Fld,new_training_weak,,Cardan Aircraft Services,https://airnav.com/airport/O85/CARDAN,FBO since ~2024 lists flight training; site dead. FlyBenton moved to KRDD.
+nasr,4B0,South Albany,in_list_other_airport,http://hewisonaviation.com,Hewison Aviation,https://www.aviationpros.com/airports/news/21283974/south-albany-airport-celebrates-75th-anniversary,"Hewison began at 4B0, Part 141 there; list omits 4B0. Schodack club also based."
+nasr,WEA,Parker County,in_list_other_airport,http://www.flynationwide.net,Nationwide Aviation,https://aviationacrossamerica.org/news/2019/11/30/parker-county-airport-houses-award-winning-flight-school,Hudson Oaks campus at KWEA; list files flynationwide.net under K52F/KPWT/KM54.
+nasr,EVB,New Smyrna Beach Muni (Jack Bolt Fld),in_list_other_airport,https://epicflightacademy.com,Epic Flight Academy,https://epicflightacademy.com/about-us/,Main campus at KEVB; list files epicflightacademy.com under KTUS.
+nasr,MWL,Mineral Wells Rgnl,in_list_other_airport,https://bragflight.com/,Brazos River Aviation Group,https://aviationviewmagazine.com/digital-magazines/jun-2024/90/,"bragflight.com has no airport in list. 2024 article also names Blue Skies Aero, unlisted."
+ppp,b2aa8aaca8,"Flyboy Flight Instruction, LLC",unclear,,,,No web trace of this Denver business found
+ppp,76bac0e747,CS Vertical Flight Solutions LLC,not_training,,,https://www.career.com/job/cs-vertical-flight-solutions/ah-64-aircraft-mechanic/j202510120524421237741,Army AH-64 maintenance subcontractor at Fort Rucker; no civilian flight school found
+ppp,dde05e16ab,"Air Resources Helicopters, Inc.",not_training,,,https://helijobs.net/2023/07/s70-uh-60-vrll-utility-fire-pic-utah/,Part 135 helicopter charter and wildland firefighting operator
+ppp,57803effdd,Abaris Training Resources Inc.,not_training,https://abaris.com,,https://www.compositesworld.com/news/abaris-reopens-reno-training-facility,Composite repair training for aerospace technicians; no flight training
+ppp,bffc05fccf,MTAviation Services LLC,unclear,,,,No web trace found in Gold River or Sacramento area
+ppp,c7fdb2447d,Phoenix Aicraft Certification Services,unclear,,,,"No web trace; name suggests certification consulting, unconfirmed"
+ppp,e1d7060240,Uninsured Texas Skydiving Company,not_training,,,https://www.kbtx.com/content/news/Skydiving-company-jumps-into-Madison-County-415376003.html,Skydiving operator at Madisonville Municipal Airport
+ppp,bbbc1ff710,"Air Flight Training, LLC",unclear,,,,No web trace of this Overland Park business found
+ppp,ee424d632b,AG Ventures LLC,unclear,,,,No web trace of this Madison MS business found
+ppp,8f0043df5e,TrikeSchool LLC,new_training,https://www.trikeschool.com,,https://www.trikeschool.com,"Weight-shift trike flight instruction, Scottsdale AZ and Spokane WA; site (c) 2026"
+ppp,b910c38e66,Fly Elite LLC,closed,,,https://airnav.com/airport/N47,Former N47 FBO and school; site redirects away; AirNav 2026 lists no operator
+ppp,596f21c4b8,Canyon Aero LLC,not_training,,,https://skyops-registry.vercel.app/operators/canyon-aero-llc-4cya,Part 135 charter operator listed at Wellsboro PA; no training found
+ppp,19e6fe6f4a,Galvin Flight Services Hawaii LLC,in_list,https://www.georgesaviation.com,,https://www.georgesaviation.com,Operates Part 141 school of George's Aviation (georgesaviation.com) at PHNL
+ppp,f35e545ebc,JoeBravo Aviation LLC,new_training,https://joebravoaviation.com,,https://joebravoaviation.com,"Flight school at Augusta KS; Sport to CFII, rentals; site (c) 2026"
+ppp,cc6266c444,"Gateway Flight Solutions, LLC",in_list,https://www.gatewayflight.com,,https://aeroexperience.blogspot.com/2022/05/gateway-flight-solutions-offers.html?m=1,Same Creve Coeur Airport operation as Gateway Flight Training (gatewayflight.com)
+ppp,6c456edd52,Bay Flight Training LLC,unclear,,,,No web trace in Midland MI; unrelated to Bay Flying Services
+ppp,4b3db45754,Aviation Seminars Inc,not_training,https://aviationseminars.com,,https://startpage.mapquest.com/us/california/aviation-seminars-435769956,FAA exam-prep seminars only; listing marked closed
+ppp,d0ab376c8f,BC Aviation LLC,unclear,,,,No web trace of this Morristown NJ business found
+ppp,1025953307,Gauntlet Aerospace LLC,not_training,,,https://www.wpafb.af.mil/News/Art/igphoto/2001950516/,Flight-test support; Alpha Jet chase aircraft for Edwards AFB
+ppp,67fc27fdea,"Av-Ed Flight School-Winchester, LLC",closed,,,https://www.aved.com,aved.com now redirects to unrelated battery firm; no current Winchester trace
+ppp,261be3e1ad,"GP Aviation Services, LLC",not_training,,,https://avbuyer.com/dealers/details/gp-aviation-services,Aircraft sales and management dealer
+ppp,3b129f2498,G & Z Enterprise Inc,unclear,,,,No web trace of this San Jose business found
+ppp,31fed4863f,FullThrottle Aviation LLC,not_training,https://www.fullthrottleaviationllc.com,,https://www.fullthrottleaviationllc.com,"Ferry pilot, DPE and insurance-checkout service; no fleet; now Erie CO"
+ppp,2e172f3e88,"Hyde Flight School, LLC",unclear,,,https://de.flightaware.com/resources/airport/KGDJ,"Listed at KGDJ only; no site, fleet or recent activity found"
+ppp,3248cc8307,Midwest Aero Club LLC,unclear,,,,No web trace of a Minneapolis Midwest Aero Club found
+ppp,94b12a61b0,R C Air LLC,unclear,,,,No web trace of this Portage MI business found
+ppp,9a887c7065,Bay Area Flying Club,in_list,https://www.bayareaflyingclub.com,,https://www.bayareaflyingclub.com,bayareaflyingclub.com in list; redirects to American Flight Schools (Englewood CO)
+ppp,f856ee141f,"Jackson Hole Paragliding, LLC",not_training,https://jhparagliding.com,,https://www.jacksonhole.com/paragliding,Tandem paragliding and paragliding instruction only
+ppp,9a30abbd22,Fly Legacy Aviation LLC,in_list,https://www.flylegacyaviation.com,,https://www.nbcphiladelphia.com/news/local/small-plane-crash-northeast-philadelpia-audio-pilot-officer-atc/4378810/?amp=1,"Fly Legacy Aviation (flylegacyaviation.com), Part 141 at KPNE; NY is registration"
+ppp,5ce3ed6f62,"Landergood Aviation, LLC",not_training,,,https://www.airnav.com/airport/0A3/LANDERGOOD,Maintenance shop at Smithville TN (0A3) per AirNav; no training listed
+tachgo,mn/darb-inc-8y4,DARB Inc,closed,,,https://registry.faa.gov/AircraftInquiry/Search/NNumberResult?nNumberTxt=32268,On 2022 MN club list; its only FAA aircraft deregistered; no web presence.
+tachgo,ks/high-planes-aviation-kcbk,High Planes Aviation,new_training_weak,https://www.highplanesaviation.com/,,https://www.highplanesaviation.com/other-services/,Aircraft broker; offers flight instruction to current pilots; site (c) 2026.
+tachgo,nc/warriors-to-wings-aero-club-kacz,Warriors to Wings Aero Club,closed,,,https://www.airnav.com/airport/KACZ,Veterans club founded 2012; no trace after 2013; no FAA aircraft; airport lists none.
+tachgo,wy/wind-river-fliers-kpna,Wind River Fliers,unclear,,,https://pinedaleonline.com/news/2021/04/WindRiverFliersnewfl.htm,Club founded 2021 at Pinedale with a C182; no later trace found.
+tachgo,id/clearwater-valley-aero-club-s73,Clearwater Valley Aero Club,new_training,,,https://registry.faa.gov/AircraftInquiry/Search/NNumberResult?nNumberTxt=3199Y,Club manages Kamiah airport; two aircraft registered to 2029; hosted 2025 fly-in.
+tachgo,mn/vikingland-flying-club-kaxn,Vikingland Flying Club,new_training,https://www.vikinglandflyingclub.com/,,https://www.vikinglandflyingclub.com/,"Club C150 at AXN for licensed members, FlightCircle scheduling; formed 2021."
+tachgo,mo/daniel-boone-flying-club-kver,Daniel Boone Flying Club,new_training,,,https://registry.faa.gov/AircraftInquiry/Search/NNumberResult?nNumberTxt=79957,"Club owns several Cessnas, registrations valid to 2027-2029; students train in club aircraft."
+tachgo,ne/hill-aviation-kggf,Hill Aviation,not_training,,,https://acukwik.com/Basic-Info/KGGF/HILL-AVIATION,Crop-dusting operator/self-serve fuel at Grant; instruction there is a different business.
+tachgo,mn/tel-air-flying-club-kane,Tel-Air Flying Club,unclear,,,https://www.dot.mn.gov/aero/documents/aviationbusinesses/flyingclubs.pdf,Only trace is 2022 MN flying-club registry; no aircraft under name.
+tachgo,nm/exile-aviation-kalm,Exile Aviation,new_training_weak,,,https://www.airnav.com/airport/kalm/exile,KALM FBO; AirNav lists flight training and maintenance; fuel updated Oct 2026.
+tachgo,md/tidewater-aviation-kesn,Tidewater Aviation,new_training,https://www.flytidewater.com/,,https://www.flytidewater.com/about,"Part 61 school at Easton ESN, PPL through CFII; founded 2025."
+tachgo,wi/ovation-cwa-kcwa,Ovation CWA,in_list,http://www.ovationfbo.com,,https://www.airnav.com/airport/KCWA/OVATION,"Rebrand of Central Wisconsin Aviation (cwa-fbo.com), same 400 CWA Dr address."
+tachgo,or/deschutes-flying-club-kbdn,Deschutes Flying Club,new_training,https://www.deschutesflyingclub.org/,,https://www.deschutesflyingclub.org/,"Club C150 at Bend, $105/hr wet, member checkouts; photo dated 2025."
+tachgo,mn/sky-crew-aviation-kffm,Sky Crew Aviation,in_list,https://skycrewservices.com/,,https://skycrewservices.com/,"Same operator as Sky Crew Services (skycrewservices.com), KFFM FBO."
+tachgo,id/northern-air-aviation-65s,Northern Air Aviation,in_list,https://www.northernairaviation.com/,,https://www.northernairaviation.com/,"Same as Northern Air, Inc. (northernair.biz) at 65S, est. 1997."
+tachgo,ca/cruiseair-f70,cruiseAIR,new_training,https://www.flycruiseair.com/,,https://forum.cirruspilots.org/t/private-pilot-ground-school/281817,Cirrus school at F70; 2025 ground school and SR20 rental; site blocked fetch.
+tachgo,nv/winnemucca-air-service-kwmc,Winnemucca Air Service,new_training_weak,,,https://airnav.com/airport/KWMC/WINNEMUCCA_AIR_SVC,KWMC FBO; AirNav lists flight training and aircraft rental; updated Oct 2026.
+tachgo,ms/red-panther-aero-llc-kckm,Red Panther Aero LLC,new_training_weak,,,https://www.airnav.com/airport/KCKM/RED_PANTHER_AERO,KCKM FBO; AirNav lists flight training; fuel updated Oct 2026; no own site.
+tachgo,in/pilots-club-inc-5i4,"Pilots Club, Inc.",in_list,http://indianapilotsclub.org/,,http://flighttrainingcenters.com,"Club arm of Flight Training Centers (flighttrainingcenters.com), linked from its site."
+tachgo,ia/central-iowa-flying-club-kdsm,Central Iowa Flying Club,new_training,https://www.centraliowaflyingclub.com/,,https://www.centraliowaflyingclub.com/,"Club with six aircraft at KDSM, online scheduling, instructors page; site (c) 2026."
+tachgo,pa/acorn-flying-club-klns,Acorn Flying Club,new_training,,,https://lancasterairport.com/flying-clubs/,Listed on Lancaster Airport clubs page with an IFR C172; site blocked fetch.
+tachgo,mt/happy-trails-flight-training-and-charter-khln,Happy Trails Flight Training and Charter,new_training_weak,,,https://helenaairport.com/flight-training-schools/,Listed by Helena Regional Airport as a flight school; phone only.
+tachgo,ok/davis-field-aviation-kmko,Davis Field Aviation,new_training,https://davisfieldaviation.com/,,https://davisfieldaviation.com/,Muskogee FBO with in-house flight school and rental; posts through 2025.
+tachgo,tn/athens-air-llc-kmmi,"Athens Air, LLC",new_training_weak,,,https://www.airnav.com/airport/KMMI,"KMMI FBO; AirNav lists flight training, fuel updated Oct 2026; old domain now spam."
+tachgo,ca/airesearch-flying-club-ktoa,AiResearch Flying Club,closed,,,https://torranceca.gov/government/city-departments/general-services/torrance-airport/flying-clubs,"Site down, city club page gone, club N-number now reserved; no recent trace."
+tachgo,in/central-indiana-soaring-society-i99,Central Indiana Soaring Society,in_list,https://www.soarindy.org/,,https://en.wikipedia.org/wiki/Alexandria_Airport_(Indiana),Same club as Soar Indy (soarindy.org) at I99; owns the airport.
+tachgo,co/fly-elite-aviation-klmo,Fly Elite Aviation,new_training_weak,http://www.flyeliteaero.com/,,https://airnav.com/airport/KLMO/ELITE,"KLMO FBO; AirNav lists flight training and rental, comment Sep 2026; site broken."
+tachgo,fl/suwannee-county-24j,Suwannee County,not_training,,,https://suwanneecountyfl.gov/airport/,County-run airport FBO; county page lists no training; AirNav checkbox only.
+tachgo,tx/rising-aviation-high-school-kads,Rising Aviation High School,new_training,https://www.risingaviation.com/,,https://www.risingaviation.com/,Private high school at KADS with private pilot program; 2026 checkrides.
+tachgo,fl/fit-aviation-kmlb,FIT Aviation,in_list,http://www.fitaviation.com,,http://www.fitaviation.com,"Same as F.I.T. Aviation, LLC (fitaviation.com) at KMLB."

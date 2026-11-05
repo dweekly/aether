@@ -407,13 +407,13 @@ def report(a):
     (raw / "tachgo" / "need_detail.txt").write_text("".join(f"{r['id']}\n" for r in sorted(tg_new, key=lambda r: r["id"])))
     tg_kind = lambda r: ("Flight school" if "school" in r["kind"].lower() else "Flying club" if "club" in r["kind"].lower()
                          else "FBO, filed under school" if "school" in r["tags"] else "FBO, filed under rental")
-    conf_ids = {r["id"]: r["school_domain"] or r["school_name"] for r in tg_m if r["confirmed"]}
+    conf_ids = {r["id"]: r["school_domain"] or "(a record without a website)" for r in tg_m if r["confirmed"]}
     # schools in our list whose contact address is in a gap airport's city: in our list, filed under another airport
     addr_city = collections.defaultdict(set)
     for s in fl:
         pa = m.parse_addr((s.get("contact") or {}).get("address") or "")
-        if pa:
-            addr_city[pa].add(s["domain"] or s["name"])
+        if pa:  # domains only: records without a website include FAA registrants named after people
+            addr_city[pa].add(s["domain"] or "(a record without a website)")
 
     gap = []
     for r in tr_ap:
@@ -550,6 +550,7 @@ def report(a):
           f"new aircraft, each searched for a training operation on the field: " +
           ", ".join(f"{k} {v}" for k, v in vc.most_common()) + ".", ""]
     nasr_new = vc.get("new_training", 0)
+    nasr_weak = vc.get("new_training_weak", 0)
 
     # ---------------- Tach & Go section
     L += ["## 2. Tach & Go directory", "",
@@ -565,6 +566,8 @@ def report(a):
           "| Kind | Listings | Matched (strict) | Loose match only | No match |", "|---|---|---|---|---|"]
     for k in ("Flight school", "Flying club", "FBO, filed under school", "FBO, filed under rental"):
         rs = [r for r in tg_m if tg_kind(r) == k]
+        if not rs:
+            continue
         L.append(f"| {k} | {len(rs):,} | {sum(r['confirmed'] for r in rs):,} | "
                  f"{sum(1 for r in rs if not r['confirmed'] and r['match_type'] in ('exact', 'address', 'fuzzy')):,} | "
                  f"{sum(1 for r in rs if r['match_type'] in ('none', 'colocated')):,} |")
@@ -614,13 +617,19 @@ def report(a):
     tg_lab = [labels.get(("tachgo", r["id"])) for r in tg_sample]
     tvc = collections.Counter((x or {}).get("verdict", "unlabeled") for x in tg_lab)
     tg_k = tvc.get("new_training", 0)
+    tg_w = tg_k + tvc.get("new_training_weak", 0)
     lo_, hi_ = wilson(tg_k, len(tg_sample))
+    wlo, whi = wilson(tg_w, len(tg_sample))
     L += ["", f"**Hand check** of {len(tg_sample)} drawn at random from the {len(tg_new):,} possibly new: " +
           ", ".join(f"{k} {v}" for k, v in tvc.most_common()) +
-          f". Precision of 'possibly new' as a genuinely new training operation: {tg_k}/{len(tg_sample)} "
-          f"({lo_:.0%}–{hi_:.0%}, 95% Wilson). Applied to all {len(tg_new):,}, that is about "
-          f"**{round(len(tg_new) * tg_k / max(1, len(tg_sample))):,}** new operations "
-          f"({round(len(tg_new) * lo_):,}–{round(len(tg_new) * hi_):,}).", ""]
+          f". *new_training_weak* means the only evidence of training is a self-reported service checkbox (AirNav) or a bare "
+          f"listing, with no site of its own. Precision of 'possibly new' as a genuinely new training operation: strict "
+          f"{tg_k}/{len(tg_sample)} ({lo_:.0%}–{hi_:.0%}, 95% Wilson); counting weak evidence {tg_w}/{len(tg_sample)} "
+          f"({wlo:.0%}–{whi:.0%}). Applied to all {len(tg_new):,}: about **{round(len(tg_new) * tg_k / max(1, len(tg_sample))):,}** "
+          f"new operations ({round(len(tg_new) * lo_):,}–{round(len(tg_new) * hi_):,}) on strict evidence, "
+          f"{round(len(tg_new) * tg_w / max(1, len(tg_sample))):,} counting weak. The strict ones by kind: " + ", ".join(
+              f"{k} {v}" for k, v in collections.Counter(tg_kind(r) for r, x in zip(tg_sample, tg_lab)
+                                                          if x and x["verdict"] == "new_training").most_common()) + ".", ""]
     L += ["| Listing | Kind | State | Homepage | Verdict | Note |", "|---|---|---|---|---|---|"]
     for r, lab in zip(tg_sample, tg_lab):
         L.append(f"| {r['name']} | {tg_kind(r)} | {r['state']} | {r['site']} | {(lab or {}).get('verdict', '')} | {(lab or {}).get('note', '')} |")
@@ -690,6 +699,70 @@ def report(a):
         L.append(f"| {b['name'].title()} | {b['state']} | {b['reg_aircraft']} | {(lab or {}).get('verdict', '')} | {(lab or {}).get('note', '')} |")
     L += [""]
 
+    # ---------------- cross-check with another agent's enumeration. Counts and source labels only: those files carry
+    # contact details and AOPA-derived rows, so no name or field from them is written here. AOPA-only rows are counted
+    # separately so the split stays visible.
+    if a.external:
+        ext = Path(a.external)
+        cm = list(csv.DictReader(open(ext / "c_master_matched.csv", newline="", encoding="utf-8", errors="replace")))
+        cls = lambda r: ("Tach & Go" if "150thAero" in r["sources"] else "BestAviation, no Tach & Go"
+                         if "BestAviation" in r["sources"] else "AOPA only" if all(x.startswith("AOPA") for x in r["sources"].split("|"))
+                         else "other")
+        nk = lambda n, st: ((m.variants(n) or [""])[0], (st or "").strip().upper())
+        their = {}
+        for r in cm:
+            if "150thAero" in r["sources"]:
+                their.setdefault(nk(r["name"], r["state"]), r)
+        mine = {nk(r["name"], r["state"]): r for r in tg_m}
+        allmine = {nk(r["name"], r["state"]) for r in tgr}
+        both = set(their) & set(mine)
+        xt = collections.Counter(("ours" if mine[k]["confirmed"] else "new", their[k]["verdict"]) for k in both)
+        t_only_new = [k for k, r in their.items() if r["verdict"] == "new" and r["sources"] == "150thAero"]
+        t_only_new_mine = collections.Counter(("possibly new" if not mine[k]["confirmed"] else "matched")
+                                              if k in mine else ("FBO left out" if k in allmine else "no name match")
+                                              for k in t_only_new)
+        my_new_keys = [nk(r["name"], r["state"]) for r in tg_new]
+        my_new_theirs = collections.Counter(("they match it to ours" if their[k]["verdict"] == "ours" else "they also call it new")
+                                            if k in their else "not in their Tach & Go rows" for k in my_new_keys)
+        by_cls = collections.Counter((cls(r), r["verdict"]) for r in cm)
+        L += ["## Cross-check with the Part 61 enumeration", "",
+              f"Another agent's merged list ({len(cm):,} entities, matched to our list in `docs/hackers-2026-master-list-check.md`). "
+              "Its AOPA rows came from AOPA's AirportsAPI, which this project does not otherwise use; they appear below only as "
+              "counts, kept separate. Compared by normalized name and state.", "",
+              "| Source of the entity | Entities | Matched to our list (theirs) | Unmatched |", "|---|---|---|---|"]
+        for c_ in ("Tach & Go", "BestAviation, no Tach & Go", "AOPA only", "other"):
+            n_ = by_cls[(c_, "ours")] + by_cls[(c_, "new")]
+            if n_:
+                L.append(f"| {c_} | {n_:,} | {by_cls[(c_, 'ours')]:,} | {by_cls[(c_, 'new')]:,} |")
+        L += ["",
+              f"- {len(their):,} distinct name-and-state pairs carry Tach & Go as a source; {len(both):,} pair with one of my "
+              f"{len(tg_m):,} training-relevant listings.",
+              "- Agreement on the paired ones (mine / theirs): " + ", ".join(f"{a_} / {b_} {v:,}" for (a_, b_), v in sorted(xt.items())) + ".",
+              f"- Their {len(t_only_new):,} unmatched Tach & Go-only entities, in my pass: " +
+              ", ".join(f"{k} {v:,}" for k, v in t_only_new_mine.most_common()) + ".",
+              f"- My {len(tg_new):,} possibly new listings, in theirs: " + ", ".join(f"{k} {v:,}" for k, v in my_new_theirs.most_common()) + "."]
+        ua = list(csv.DictReader(open(ext / "unmatched_faa_instr_airports.csv", newline="", encoding="utf-8", errors="replace")))
+        theirs_ap = {key(r["icao_id"] or r["faa_lid"]) for r in ua}
+        mine_ap = {g["key"] for g in gap}
+        t_only, m_only = theirs_ap - mine_ap, mine_ap - theirs_ap
+        lids, at_lid = collections.defaultdict(set), collections.defaultdict(list)
+        for r in cm:
+            if r["faa_lid"]:
+                at_lid[key(r["faa_lid"])].append(r)
+        for r in cm:
+            if r["faa_lid"]:
+                lids[key(r["faa_lid"])].add(cls(r))
+        m_only_cls = collections.Counter("a non-AOPA entity" if lids.get(k, set()) - {"AOPA only"} else
+                                         "an AOPA-only entity" if lids.get(k) else "no entity" for k in m_only)
+        L += [f"- NASR: their {len(theirs_ap):,} unmatched INSTR/RNTL airports (no school in *their* merged list, AOPA rows "
+              f"included) vs my {len(mine_ap):,} (no school in ours): {len(theirs_ap & mine_ap):,} in both. Of their {len(t_only):,} "
+              f"not in mine, {sum(1 for k in t_only if k in listed):,} have a school listed there in our list and "
+              f"{sum(1 for k in t_only if k in inferred and k not in listed):,} an inferred one. Of my {len(m_only):,} not in theirs, "
+              "their list has at the airport: " + ", ".join(f"{k} {v:,}" for k, v in m_only_cls.most_common()) + ".",
+              f"- My {len(gap):,} gap airports with an unmatched entity of theirs on the field: "
+              + ", ".join(f"{c_} {sum(1 for g in gap if any(cls(r) == c_ and r['verdict'] == 'new' for r in at_lid.get(g['key'], [])))}"
+                          for c_ in ("Tach & Go", "BestAviation, no Tach & Go", "AOPA only")) + ".", ""]
+
     # ---------------- staleness
     def closed_share(labs):
         lab = [x for x in labs if x]
@@ -703,28 +776,50 @@ def report(a):
           f"({sc_.get('down', 0)} down, {sc_.get('parked', 0)} parked, {sc_.get('closed_text', 0)} closed text); "
           f"hand check: {closed_share(tg_lab)[0]} of {closed_share(tg_lab)[1]} closed. The directory says each listing was checked "
           "(\"Last checked October 2026\").",
-          f"- **PPP** (loans of 2020–21): hand check {closed_share(pp_lab)[0]} of {closed_share(pp_lab)[1]} closed or with no trace of operating.",
+          f"- **PPP** (loans of 2020–21): hand check {closed_share(pp_lab)[0]} of {closed_share(pp_lab)[1]} closed, and "
+          f"{sum(1 for x in pp_lab if x and x['verdict'] == 'unclear')} more left no web trace at all.",
           f"- **NASR**: {sum(1 for g in gap if g['last_info'] and g['last_info'][:4] < '2020')} gap airports last answered the FAA "
           f"before 2020, so their flags may be old; hand check {closed_share(nasr_lab)[0]} of {closed_share(nasr_lab)[1]} closed.", ""]
 
     # ---------------- what each adds + headline
     adds = [("NASR", len(gap), nasr_new, len(nasr_sample)), ("Tach & Go", len(tg_new), tg_k, len(tg_sample)),
             ("PPP", len(pp_new), pp_k, len(pp_sample))]
+    from difflib import SequenceMatcher
+    tgv = [(r["state"], m.variants(r["name"])) for r in tg_new]
+    xover = 0
+    for b in pp_new:
+        bv = m.variants(b["name"])
+        xover += any(st_ == b["state"] and (set(bv) & set(tv) or max((SequenceMatcher(None, x, y).ratio()
+                     for x in bv for y in tv), default=0) >= 0.9) for st_, tv in tgv)
     L += ["## What each would add to the 5,458", "",
           "| Source | Entries | Matched to our list | Possibly new | Hand-check precision | Estimated new operations |", "|---|---|---|---|---|---|",
           f"| NASR INSTR/RNTL airports | {len(tr_ap):,} airports | {len(covered):,} | {len(gap):,} airports | "
-          f"{nasr_new}/{len(nasr_sample)} of strong-signal airports | at least {nasr_new} found by hand; airports are leads, not schools |",
-          f"| Tach & Go (training-relevant) | {len(rel_rows):,} | {conf:,} | {len(tg_new):,} | {tg_k}/{len(tg_sample)} | "
-          f"~{round(len(tg_new) * tg_k / max(1, len(tg_sample))):,} ({round(len(tg_new) * lo_):,}–{round(len(tg_new) * hi_):,}) |",
+          f"{nasr_new}/{len(nasr_sample)} strict, {nasr_new + nasr_weak} with weak (strong-signal airports) | {nasr_new}–{nasr_new + nasr_weak} found by hand; airports are leads, not schools |",
+          f"| Tach & Go (training-relevant) | {len(rel_rows):,} | {conf:,} | {len(tg_new):,} | {tg_k}/{len(tg_sample)} strict, {tg_w}/{len(tg_sample)} with weak | "
+          f"~{round(len(tg_new) * tg_k / max(1, len(tg_sample))):,} ({round(len(tg_new) * lo_):,}–{round(len(tg_new) * hi_):,}); "
+          f"~{round(len(tg_new) * tg_w / max(1, len(tg_sample))):,} with weak |",
           f"| PPP NAICS 611512 (organizations) | {len(org):,} | {sum(b['confirmed'] for b in org):,} | {len(pp_new):,} | {pp_k}/{len(pp_sample)} | "
           f"~{round(len(pp_new) * pp_k / max(1, len(pp_sample))):,} ({round(len(pp_new) * plo):,}–{round(len(pp_new) * phi):,}) |", "",
+          f"The estimates barely overlap: {xover} of the unmatched PPP organizations are also unmatched Tach & Go listings "
+          "(same state, same or nearly the same name). They are not de-duplicated against the outside master list's additions.", "",
           "Nothing here has been added to `flight_line.json`. Candidates are in `docs/hackers-2026-gap-candidates.csv` "
           "(organizations only), the gap airports in `docs/hackers-2026-gap-airports.csv`.", ""]
-    headline = (f"> **Headline.** Tach & Go adds the most: {len(tg_new):,} of its {len(rel_rows):,} training-relevant listings "
-                f"are not in our list, and a hand check puts {tg_k} of {len(tg_sample)} of those as real training operations we lack. "
-                f"PPP's {len(pp_new):,} unmatched flight-training borrowers yield {pp_k} of {len(pp_sample)}. NASR's INSTR/RNTL flag marks "
-                f"{len(gap):,} airports with no school in our list, but the flag is missing at "
-                f"{1 - sch_instr / max(1, len(sch_in_nasr)):.0%} of airports where we do list one, so it is a lead list, not a census.")
+    est = {"Tach & Go": round(len(tg_new) * tg_k / max(1, len(tg_sample))), "PPP": round(len(pp_new) * pp_k / max(1, len(pp_sample)))}
+    mis = vc.get("in_list_other_airport", 0)
+    tg_west = round(len(tg_new) * tg_w / max(1, len(tg_sample)))
+    headline = (f"> **Headline.** Together the three point to about {est['Tach & Go'] + est['PPP'] + nasr_new:,} training "
+                f"operations missing from our {len(fl):,} on strict evidence (about {tg_west + est['PPP'] + nasr_new + nasr_weak:,} "
+                f"counting weak evidence), most of them from Tach & Go. Tach & Go: {conf:,} of its {len(rel_rows):,} "
+                f"training-relevant listings are already in our list; of the {len(tg_new):,} that are not, a hand check finds "
+                f"{tg_k} of {len(tg_sample)} to be real training operations we lack on their own evidence (another {tg_w - tg_k} only "
+                f"by an AirNav checkbox or bare listing), so about {est['Tach & Go']:,} "
+                f"({round(len(tg_new) * lo_):,}–{round(len(tg_new) * hi_):,}). PPP NAICS 611512: {len(pp_new):,} unmatched "
+                f"organizations, {pp_k} of {len(pp_sample)} new and operating, so about {est['PPP']:,}. NASR: {len(gap):,} airports "
+                f"flag instruction or rental with no school of ours, but at {mis} of the {len(nasr_sample)} with the strongest ADS-B "
+                f"training signal the school *is* in our list, filed under the wrong airport or none; {nasr_new} were new ({nasr_weak} more on weak evidence).\n\n"
+                f"> **Correction to a working assumption.** The NASR gap measures our airport assignments as much as our coverage: "
+                f"wrong or missing `locations` (KPWT for Weatherford TX, KAVL for Greenville NC, Tucson only for Epic Flight Academy's "
+                f"New Smyrna Beach main base) hide schools we already have.")
     L[head_idx:head_idx] = [headline, ""]
     Path(a.md).write_text("\n".join(L) + "\n")
 
@@ -745,8 +840,8 @@ def report(a):
         for r in sorted(tg_new, key=lambda r: r["id"]):
             lab = labels.get(("tachgo", r["id"]))
             ev = f"{tg_kind(r)} at {r['airport_id']}; homepage {r['site']}; matcher {r['match_type']}"
-            if r["match_type"] != "none" and r.get("school_name"):
-                ev += f" (nearest: {r['school_name']})"
+            if r["match_type"] != "none" and r.get("school_domain"):
+                ev += f" (nearest: {r['school_domain']})"
             w.writerow(["tachgo", r["id"], r["name"], r["city"], r["state"], r["website"], ev,
                         (lab or {}).get("verdict", "unchecked")])
         for b in sorted(pp_new, key=lambda b: b["id"]):
@@ -789,6 +884,7 @@ def main():
     r.add_argument("--raw", default=str(RAW))
     r.add_argument("--release", required=True, help="release directory with aircraft.parquet, training.json, training_scores.parquet")
     r.add_argument("--check-sites", action="store_true", help="fetch homepages not yet in the cache")
+    r.add_argument("--external", help="directory with another agent's c_master_matched.csv and unmatched_faa_instr_airports.csv (counts only)")
     r.add_argument("--labels", default=str(REPO / "docs" / "hackers-2026-gap-labels.csv"))
     r.add_argument("--md", default=str(REPO / "docs" / "hackers-2026-gap-sources.md"))
     r.add_argument("--candidates-csv", default=str(REPO / "docs" / "hackers-2026-gap-candidates.csv"))
