@@ -56,3 +56,28 @@ def test_aopa_link_from_numeric_id_only():
     assert schools.aopa_url(29699) == "https://www.aopa.org/destinations/business/29699"
     assert schools.aopa_url("") is None and schools.aopa_url(None) is None
     assert schools.aopa_url("../x") is None
+
+
+def test_listed_airports_skip_aopa_sourced_locations():
+    canon = {"MYF": "KMYF", "KSEE": "KSEE", "PAO": "KPAO"}.get
+    locs = [{"airport_id": "MYF", "label": "Main base"}, {"airport_id": "KSEE", "label": "AOPA listed"},
+            {"airport_id": "PAO", "label": "Known airport per prior records"}, {"airport_id": "MYF", "label": "Satellite"},
+            {"airport_id": "", "label": "Main base"}]
+    assert schools.public_listed_airports(locs, lambda x: canon(x, x)) == ["KMYF"]
+
+
+def test_inferred_airports_from_release_home_bases():
+    fleet = [{"home": "KPAO"}, {"home": "KPAO"}, {"home": "KSQL"}, {"home": None}]
+    assert schools.inferred_airports(fleet, ["KSQL"]) == [{"id": "KPAO", "tails": 2, "of": 3, "listed": False}]
+    assert schools.inferred_airports([{"home": "KHWD"}], []) == [{"id": "KHWD", "tails": 1, "of": 1, "listed": False}]
+    assert schools.inferred_airports([{"home": "KPAO"}, {"home": "KPAO"}], ["PAO"])[0]["listed"] is True
+
+
+def test_download_holds_out_descriptions_and_aopa_link():
+    pkg = _load("package", "42_package_release.py")
+    full = {"days": [], "schools": [{"key": "a", "aopa_url": "https://www.aopa.org/destinations/business/1",
+                                     "fleet": [{"n": "N1", "description": "x", "listed_as": "y"}],
+                                     "listings": [{"listed_as": "z", "description": "w"}]}]}
+    out = pkg.download_schools(full)["schools"][0]
+    assert "aopa_url" not in out and out["fleet"] == [{"n": "N1", "listed_as": "y"}] and out["listings"] == [{"listed_as": "z"}]
+    assert full["schools"][0]["fleet"][0]["description"] == "x"  # the site's copy is untouched

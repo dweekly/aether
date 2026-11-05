@@ -22,6 +22,11 @@ with no website were discovered from the FAA registry; their key is
 with no website and an AOPA-sourced name are named after the registrant that
 holds most of their fleet, or dropped if none is known.
 Fleet rows without an N-number (a model and a rate) are kept as listings.
+Added in rc4: "listed_airports" (canonical ids from flight_line's locations, except those that came
+from AOPA's directory: see public_listed_airports) and "inferred_airports" ([{"id", "tails", "of",
+"listed"}]: airports home to 2+ of the school's tails, or its only based tail, by infer_airports.py's
+rule applied to this release's adsb.lol home bases, not flight_line's inferred_locations, which come
+from the OpenSky-derived adsb fields this script drops).
 Added in rc2: "google_place_ids" (place IDs only, best match first: Google's terms let us keep and
 publish them) and "contact" (flight_line's public_contact: name, website, phone, address, hours,
 city/state from the school's own pages, the FAA registry or a public list, each with source, ref and
@@ -50,6 +55,7 @@ import duckdb
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from airport_index import canonical_ids  # noqa: E402
+from infer_airports import infer as infer_from_homes  # noqa: E402
 from release_window import day_view, included_days  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -88,6 +94,30 @@ def public_contact(contact, domain, individuals):
     if domain in individuals:
         out.pop("address", None)
     return out
+
+
+# Listed airports whose location label says they came from AOPA's directory, or echo the "Known
+# airport" hint the extraction prompt was given from it, stay out of the public record (AOPA's terms
+# forbid republication). To publish them anyway, empty this tuple.
+PRIVATE_LOCATION_LABELS = ("AOPA listed", "Known ")
+
+
+def public_listed_airports(locations, canon):
+    out = []
+    for loc in locations or []:
+        label = loc.get("label") or ""
+        if loc.get("airport_id") and not label.startswith(PRIVATE_LOCATION_LABELS):
+            a = canon(loc["airport_id"].strip())
+            if a and a not in out:
+                out.append(a)
+    return out
+
+
+def inferred_airports(fleet, listed):
+    """infer_airports.py's rule on this release's home bases (each fleet row's "home")."""
+    rows = infer_from_homes({"fleet": [{"adsb": {"home_airport": f["home"]}} for f in fleet if f["home"]],
+                             "locations": [{"airport_id": a} for a in listed]})
+    return [{"id": x["airport_id"], "tails": x["tails"], "of": x["of"], "listed": x["listed"]} for x in rows]
 
 
 def aopa_url(aopa_id):
@@ -212,6 +242,8 @@ def main():
             raw[key]["fleet"] += [f for f in fleet if f["n"] not in seen]
             raw[key]["listings"] += listings
             raw[key]["aopa_url"] = raw[key]["aopa_url"] or aopa_url(s.get("aopa_id"))
+            raw[key]["listed_airports"] += [x for x in public_listed_airports(s.get("locations"), canon)
+                                            if x not in raw[key]["listed_airports"]]
             raw[key]["google_place_ids"] += [g["place_id"] for g in s.get("google_place_ids") or []
                                              if g["place_id"] not in raw[key]["google_place_ids"]]
         else:
@@ -220,7 +252,8 @@ def main():
                         "google_place_ids": [g["place_id"] for g in sorted(
                             s.get("google_place_ids") or [], key=lambda g: (MATCH_RANK.get(g["match"], 9), g["place_id"]))],
                         "contact": public_contact(s.get("public_contact"), domain, individuals),
-                        "aopa_url": aopa_url(s.get("aopa_id"))}
+                        "aopa_url": aopa_url(s.get("aopa_id")),
+                        "listed_airports": public_listed_airports(s.get("locations"), canon)}
             if s.get("provenance"):  # which public list it came from; record ids stay internal
                 raw[key]["added_from"] = [{"list": p["list"], "pulled": p["pulled"]} for p in s["provenance"]]
 
@@ -257,6 +290,8 @@ def main():
             "google_place_ids": r["google_place_ids"],
             "contact": r["contact"],
             "aopa_url": r["aopa_url"],
+            "listed_airports": r["listed_airports"],
+            "inferred_airports": inferred_airports(fleet, r["listed_airports"]),
         })
 
     # Daily fleet hours per school, for the activity chart.

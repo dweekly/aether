@@ -57,12 +57,22 @@ def main():
             SELECT arr FROM legs WHERE arr IS NOT NULL AND (airborne_min > 0 OR max_alt_ft IS NOT NULL))
         GROUP BY apt""").fetchall())
 
+    # A school counts at every airport it lists, or, when it lists none, at the airports its fleet is
+    # based at (38's inferred_airports); "how" says which. Releases before rc4 have neither field,
+    # so they fall back to the school's primary airport from its fleet.
     schools = json.loads((rel / "schools_full.json").read_text())["schools"]
     at_airport = defaultdict(list)
     for s in schools:
-        if s["airport"]:
-            at_airport[alias.get(s["airport"].upper(), s["airport"])].append({"key": s["key"], "name": s["name"], "fleet": s["fleet_listed"],
-                                             "flew": s["fleet_flew"]})
+        if "listed_airports" in s:
+            places = [(a, "listed", None) for a in s["listed_airports"]] or \
+                     [(x["id"], "inferred", f"{x['tails']} of {x['of']}") for x in s["inferred_airports"]]
+        else:
+            places = [(s["airport"], "fleet", None)] if s["airport"] else []
+        for apt, how, share in places:
+            row = {"key": s["key"], "name": s["name"], "fleet": s["fleet_listed"], "flew": s["fleet_flew"], "how": how}
+            if share:
+                row["based"] = share
+            at_airport[alias.get(apt.upper(), apt)].append(row)
 
     airports = []
     for apt, acs in based.items():

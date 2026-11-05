@@ -293,7 +293,7 @@ def cmd_merge_extract(a):
 # Fields 21 adds to every record (provenance per field, public contact, place IDs). The gates compare
 # pre-existing records with these removed: "unchanged except added fields".
 ADDED_FIELDS = ("field_sources", "public_contact", "google_place_ids", "inferred_locations")
-RELEASE_ADDED_FIELDS = ("google_place_ids", "contact", "aopa_url")
+RELEASE_ADDED_FIELDS = ("google_place_ids", "contact", "aopa_url", "listed_airports", "inferred_airports")
 
 
 # Added to each school's fleet rows and listings after rc3: the school's own description of the aircraft.
