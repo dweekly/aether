@@ -9,7 +9,9 @@ Kept from output/flight_line.json:
                          the school's own words for the aircraft (e.g. "2025 Cirrus SR20 G7")
 Dropped: name, aopa_*, contact and location labels (AOPA's terms forbid
 republishing them) and every adsb field (OpenSky-derived; its terms forbid
-redistribution). Activity is recomputed from the adsb.lol archive.
+redistribution). Kept from aopa_id: only "aopa_url", a link to the school's public
+page on AOPA Airports (https://www.aopa.org/destinations/business/<id>, no login;
+checked 2026-11-04 for Plus One Flyers 29699 and JATO Aviation 34887), none of its content. Activity is recomputed from the adsb.lol archive.
 
 School name comes from the school's own cached pages (og:site_name, else the
 <title> segment that best matches the domain), else the domain itself. Schools added
@@ -86,6 +88,11 @@ def public_contact(contact, domain, individuals):
     if domain in individuals:
         out.pop("address", None)
     return out
+
+
+def aopa_url(aopa_id):
+    """A link to the school's public AOPA Airports page; AOPA's own content is never copied."""
+    return f"https://www.aopa.org/destinations/business/{aopa_id}" if str(aopa_id or "").isdigit() else None
 
 
 def resolve_url(src, domain):
@@ -204,6 +211,7 @@ def main():
             seen = {f["n"] for f in raw[key]["fleet"]}
             raw[key]["fleet"] += [f for f in fleet if f["n"] not in seen]
             raw[key]["listings"] += listings
+            raw[key]["aopa_url"] = raw[key]["aopa_url"] or aopa_url(s.get("aopa_id"))
             raw[key]["google_place_ids"] += [g["place_id"] for g in s.get("google_place_ids") or []
                                              if g["place_id"] not in raw[key]["google_place_ids"]]
         else:
@@ -211,7 +219,8 @@ def main():
                         "fleet": fleet, "listings": listings,
                         "google_place_ids": [g["place_id"] for g in sorted(
                             s.get("google_place_ids") or [], key=lambda g: (MATCH_RANK.get(g["match"], 9), g["place_id"]))],
-                        "contact": public_contact(s.get("public_contact"), domain, individuals)}
+                        "contact": public_contact(s.get("public_contact"), domain, individuals),
+                        "aopa_url": aopa_url(s.get("aopa_id"))}
             if s.get("provenance"):  # which public list it came from; record ids stay internal
                 raw[key]["added_from"] = [{"list": p["list"], "pulled": p["pulled"]} for p in s["provenance"]]
 
@@ -247,6 +256,7 @@ def main():
             **({"added_from": r["added_from"]} if r.get("added_from") else {}),
             "google_place_ids": r["google_place_ids"],
             "contact": r["contact"],
+            "aopa_url": r["aopa_url"],
         })
 
     # Daily fleet hours per school, for the activity chart.

@@ -49,3 +49,10 @@ def test_airport_aliases_match_local_and_gps_codes():
     assert privacy.same_airport("PALH", "KLHD", alias)      # Lake Hood: GPS code vs K + local code
     assert privacy.same_airport("KPAO", "PAO", alias)
     assert not privacy.same_airport("KPAO", "KSQL", alias)
+
+
+def test_aopa_link_from_numeric_id_only():
+    assert schools.aopa_url("29699") == "https://www.aopa.org/destinations/business/29699"
+    assert schools.aopa_url(29699) == "https://www.aopa.org/destinations/business/29699"
+    assert schools.aopa_url("") is None and schools.aopa_url(None) is None
+    assert schools.aopa_url("../x") is None

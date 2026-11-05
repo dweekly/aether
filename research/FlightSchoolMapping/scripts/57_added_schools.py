@@ -293,7 +293,7 @@ def cmd_merge_extract(a):
 # Fields 21 adds to every record (provenance per field, public contact, place IDs). The gates compare
 # pre-existing records with these removed: "unchanged except added fields".
 ADDED_FIELDS = ("field_sources", "public_contact", "google_place_ids")
-RELEASE_ADDED_FIELDS = ("google_place_ids", "contact")
+RELEASE_ADDED_FIELDS = ("google_place_ids", "contact", "aopa_url")
 
 
 # Added to each school's fleet rows and listings after rc3: the school's own description of the aircraft.
@@ -387,6 +387,9 @@ def cmd_release_check(a):
     for k, x in new_full.items():
         bad = [f for f, v in (x.get("contact") or {}).items()
                if not (v.get("value") and v.get("source") and v.get("ref")) or v["source"] in ("aopa", "google_places")]
+        if x.get("aopa_url") and not re.fullmatch(r"https://www\.aopa\.org/destinations/business/\d+", x["aopa_url"]):
+            fails.append(f"{k}: aopa_url is not a bare AOPA Airports business link: {x['aopa_url']}")
+            break
         if bad or not all(isinstance(g, str) and g for g in x.get("google_place_ids", [])):
             fails.append(f"{k}: contact fields without provenance or from AOPA/Google {bad}, or bad place IDs")
             break
