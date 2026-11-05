@@ -143,6 +143,8 @@ def yearbuilt(a, out):
 
 
 def schools(a, out):
+    """One dot per school at its first listed airport, or (buff) at its main inferred airport when it
+    lists none: inferred_locations, where its fleet is based (scripts/infer_airports.py)."""
     pos = {}
     for r in csv.DictReader(a.airports.open(encoding="utf-8")):
         if r["iso_country"] != "US":
@@ -152,28 +154,40 @@ def schools(a, out):
             if code:
                 pos.setdefault(code.upper(), ll)
     fl = json.loads(a.flight_line.read_text())
-    pts, missing = [], 0
+    listed, inferred, missing = [], [], 0
     for s in fl:
         ids = [l.get("airport_id") for l in (s.get("locations") or []) if l.get("airport_id")]
         ll = next((pos[i.upper()] for i in ids if i.upper() in pos), None)
         if ll:
-            pts.append(ll)
+            listed.append(ll)
+            continue
+        inf = [x["airport_id"] for x in (s.get("inferred_locations") or [])]
+        ll = next((pos[i.upper()] for i in inf if i and i.upper() in pos), None)
+        if ll:
+            inferred.append(ll)
         else:
             missing += 1
-    conus = [(la, lo) for la, lo in pts if 24 <= la <= 50 and -125 <= lo <= -66]
-    if len(conus) < 3000:
-        sys.exit(f"FAIL schools: only {len(conus)} placed")
-    fig = frame("Flight schools, clubs and university programs", f"{len(pts):,} of the {len(fl):,} we found have a known airport")
+    lower48 = lambda pts: [(la, lo) for la, lo in pts if 24 <= la <= 50 and -125 <= lo <= -66]  # noqa: E731
+    cl, ci = lower48(listed), lower48(inferred)
+    if len(cl) < 3000:
+        sys.exit(f"FAIL schools: only {len(cl)} placed")
+    placed = len(listed) + len(inferred)
+    fig = frame("Flight schools, clubs and instructors",
+                f"{placed:,} of the {len(fl):,} we found, placed at an airport")
     ax = fig.add_axes([0.04, 0.10, 0.92, 0.72])
     import math
     k = math.cos(math.radians(38))
-    ax.scatter([lo * k for la, lo in conus], [la for la, lo in conus], s=26, color=AMBER, alpha=0.55, linewidth=0)
+    ax.scatter([lo * k for la, lo in cl], [la for la, lo in cl], s=26, color=AMBER, alpha=0.55, linewidth=0)
+    ax.scatter([lo * k for la, lo in ci], [la for la, lo in ci], s=26, facecolors="none", edgecolors=BUFF,
+               linewidth=1.4, alpha=0.9)
     ax.set_aspect("equal")
     ax.axis("off")
-    footer(fig, f"One dot per school at its first listed airport: {len(conus):,} in the lower 48, {len(pts) - len(conus)} elsewhere. {missing:,} have no airport on file yet.")
+    footer(fig, f"Filled: the airport the school lists ({len(listed):,}). Ring: where its planes are based, when it lists "
+                f"none ({len(inferred):,}). {missing:,} not placed yet.")
     fig.savefig(out / "schools.png")
     plt.close(fig)
-    return {"schools": len(fl), "placed": len(pts), "conus": len(conus), "missing": missing}
+    return {"schools": len(fl), "listed": len(listed), "inferred": len(inferred), "missing": missing,
+            "conus_listed": len(cl), "conus_inferred": len(ci)}
 
 
 def main():

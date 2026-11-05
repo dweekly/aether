@@ -108,28 +108,27 @@ Backdrops only: one number, chart, image or record each.
 
 | # | Act | Slide id | On it |
 |---|---|---|---|
-| 1 |  | `cover` | Scrape. Join. Interrogate. Four acts; Skybound's flight line as strips |
+| 1 |  | `cover` | Scrape. Join. Interrogate. |
 | 2 | 1 | `landscape` | What's public about aviation, and how hard it is to get |
-| 3 | 1 | `ask172` | "What does a Cessna 172 rent for, wet?" and why that's hard |
-| 4 | 1 | `answer172` | $177/h wet, half $160 to $195; typical plane 1978; post-1996 only $20 more |
-| 5 | 2 | `nolist` | There is a list. You can't see it. |
-| 6 | 2 | `schoolsmap` | Map of the schools |
-| 7 | 2 | `build` | One week in March: 32,462 pages, $100 |
-| 8 | 2 | `costnow` | Same job now: $15 |
-| 9 | 2 | `demo` | Demo recording |
-| 10 | 2 | `trace` | One row traced: N6860J |
-| 11 | 2 | `checked` | Consistency checks, not accuracy |
-| 12 | 2 | `misreads` | 81 bad tails, whose fault |
-| 13 | 2 | `audit` | 40 random pages read by hand |
-| 14 | 2 | `eightmonths` | Eight months later (being reworked: are the new blocks anti-AI?) |
-| 15 | 2 | `everylist` | Every list we could find: added, time, cost |
-| 16 | 3 | `learntofly` | Cost to learn to fly (becoming a map) |
-| 17 | 3 | `yearbuilt` | Year built (becoming the 1986 cliff and Cirrus) |
-| 18 | 3 | `hidden` | Who's behind the LLC? Three free joins |
-| 19 | 3 | `ntsb` | Flight-school aircraft have a past: 15.6% have an NTSB record vs 11.8%; 77% before the current owner |
-| 20 | 4 | `wish` | Datasets we wish existed |
-| 21 | 4 | `recipe` | The recipe, and what each step caught |
-| 22 | 4 | `getit` | Steal this: explorer, data, scripts |
+| 3 | 1 | `ask172` | "What does a Cessna 172 rent for, wet?" |
+| 4 | 1 | `answer172` | $177/h wet, half $160 to $195; typical plane 1978 |
+| 5 | 2 | `nolist` | ~9,000 Part 61 providers (TSA); nobody publishes the list; so we assembled 5,458 |
+| 6 | 2 | `schoolsmap` | Map: 4,185 placed (3,581 listed airport, 604 where their planes are based) |
+| 7 | 2 | `readcost` | What it costs to read 32,462 pages: person ~$11,000, Sonnet 4.6 $100, Sonnet 5.5 ~$120, Haiku 5.5 $15 |
+| 8 | 2 | `demo` | Demo recording |
+| 9 | 2 | `checked` | Consistency checks, not accuracy |
+| 10 | 2 | `misreads` | 81 bad tails, whose fault |
+| 11 | 2 | `audit` | 40 random pages read by hand |
+| 12 | 2 | `eightmonths` | Eight months later: 157 gone, 207 refuse, prices up |
+| 13 | 2 | `blocked` | Most schools didn't lock us out; their platforms did |
+| 14 | 2 | `everylist` | Every list we could find: added, time, cost |
+| 15 | 3 | `pickschool` | Pick the school, not the city (metro medians $157-$190; within a metro $39 apart) |
+| 16 | 3 | `cliff` | The industry nearly stopped building small planes; Cirrus is the new generation |
+| 17 | 3 | `hidden` | Who's behind the LLC? Three free joins |
+| 18 | 3 | `ntsb` | Flight-school aircraft have a past: 15.6% vs 11.8% |
+| 19 | 4 | `wish` | Datasets we wish existed |
+| 20 | 4 | `recipe` | The recipe, and what each step caught |
+| 21 | 4 | `getit` | Steal this |
 
 The deck is https://claude.ai/artifact/KUkKop9nCZBpYwrHGcuBtW (private to David). Cut 2026-11-04 after David's review (code fixes, joins table, never-flew, rate-vs-hours, the 372 funnel and the Google tiles slide): kept as files in the session scratchpad only. Being reworked: eightmonths (are the new blocks anti-AI defenses?), learntofly (a cost map), yearbuilt (the 1986 cliff and Cirrus).
 
