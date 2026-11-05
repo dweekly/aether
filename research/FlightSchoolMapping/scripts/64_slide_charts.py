@@ -123,19 +123,19 @@ def yearbuilt_make(a, fl, out):
     cf = res["share_built_2010_on"]["flew"]
 
     fig = B.frame("Small-plane production collapsed after 1979",
-                  "So most training planes date from the 1970s. Of four-seaters built since 2010 that fly, half are Cirrus.")
+                  "So most training planes were built before 1987. Of four-seaters built since 2010 that fly, half are Cirrus.")
     x0, w = 0.075, 0.68
     axes = [fig.add_axes([x0, 0.605, w, 0.175]), fig.add_axes([x0, 0.365, w, 0.17]), fig.add_axes([x0, 0.125, w, 0.17])]
     years = list(range(1945, 2027))
     ax = axes[0]
     gy = sorted(gama)
     ax.fill_between(gy, [gama[y] for y in gy], color=BUFF, alpha=0.22, lw=0, step="mid")
-    ax.step(gy, [gama[y] for y in gy], where="mid", color=BUFF, lw=2.5)
+    ax.step(gy, [gama[y] for y in gy], where="mid", color=BUFF, lw=2.5, zorder=6)
     py, pv = res["gama"]["peak"]
     ly, lv = res["gama"]["low"]
     ax.text(py - 0.8, pv + 600, f"{pv:,} in {py}", fontsize=24, color=INK, ha="right", va="bottom")
-    ax.annotate(f"{lv:,} in {ly}", xy=(ly, lv), xytext=(ly + 6.5, 6200), fontsize=24, color=INK,
-                arrowprops=dict(arrowstyle="-", color=MUTED, lw=1.5))
+    ax.annotate(f"{lv:,} in {ly}", xy=(ly, lv), xytext=(ly + 6.5, 6200), fontsize=24, color=INK, zorder=5,
+                bbox=dict(facecolor=BG, edgecolor="none", pad=1), arrowprops=dict(arrowstyle="-", color=MUTED, lw=1.5))
     ax.set_ylim(0, 18500)
     ax.set_yticks([0, 5000, 10000, 15000])
     ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v / 1000:.0f}k" if v else "0"))
@@ -160,9 +160,9 @@ def yearbuilt_make(a, fl, out):
             ax_.axvline(xv, color=MUTED, lw=1.2, ls=(0, (3, 4)), zorder=0)
         if ax_ is not axes[2]:
             ax_.set_xticklabels([])
-    axes[0].text(1987.2, 17800, "1986: Cessna stops building piston singles", fontsize=21, color=MUTED, va="top")
-    axes[0].text(1995.2, 13300, "1994: liability reform (GARA)", fontsize=21, color=MUTED, va="top")
-    axes[0].text(2009.1, 4300, "2008: financial crisis", fontsize=21, color=MUTED, va="top")
+    axes[0].text(1987.2, 17800, "1986: Cessna stops building piston singles", fontsize=21, color=MUTED, va="top", zorder=5, bbox=dict(facecolor=BG, edgecolor="none", pad=1))
+    axes[0].text(1995.2, 13300, "1994: liability reform (GARA)", fontsize=21, color=MUTED, va="top", zorder=5, bbox=dict(facecolor=BG, edgecolor="none", pad=1))
+    axes[0].text(2009.1, 4300, "2008: financial crisis", fontsize=21, color=MUTED, va="top", zorder=5, bbox=dict(facecolor=BG, edgecolor="none", pad=1))
     # Legend and the shares, right of the panels.
     lx = x0 + w + 0.035
     fig.text(lx, 0.765, "Make", fontsize=24, color=MUTED)
