@@ -48,11 +48,13 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
   KTZR for Aviation Works (VTA), KAMA for Coyote Flight (TDW), K9A5 for Phoenix Air (VPC); no airport
   at all for Aces (UZA), Next Level (JCA), BRAG (MWL). 7.5% of listed airports are in a different state
   from the school's address. Fix the identifiers, then rerun 65 to see the real gap.
-- **Dead or hijacked school domains in `flight_line.json`**: `iflycfc.com` (a second Coyote Flight
-  Centers record) serves a gambling page and `thunderboltair.com` redirects to an unrelated blog (checked
-  2026-11-04); drop or re-point them.
-- **New operations from the gap pass to confirm and add** (hand-checked, not yet in the list): rows with
-  verdict `new_training` in `docs/hackers-2026-gap-candidates.csv`.
+- **Lapsed school domains** (140 in `output/lapsed_domains.json`, `docs/hackers-2026-rc5-additions.md`):
+  38 leaves those schools out of the release from rc5 on; their records stay in `flight_line.json`.
+  Look for each operation's current site (several may have moved) and re-point or retire the record.
+- **rc5 additions with no airport** (105 of 156): pages name airports in words; map names to NASR
+  identifiers in `67 ingest` so those schools get a location.
+- **One flying-club rule for sites and public pages**: 60's site prompt rejects clubs that describe
+  aircraft access but no instruction; 67's public-page prompt accepts them. Pick one and re-run both.
 - **The matcher misses initials written with periods** ("FIT Aviation" vs "F.I.T. Aviation, LLC"): squash
   single-letter runs in `variants()` in `probes/match_external_school_lists.py`.
 

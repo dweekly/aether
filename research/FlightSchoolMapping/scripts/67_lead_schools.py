@@ -1182,7 +1182,109 @@ def n(x):
     return f"{x:,}" if isinstance(x, int) else str(x)
 
 
-NOTES = {}  # narrative sections of the report (gates, staged files, publish, rollback, findings); filled below
+NOTES = {  # narrative sections of the report; the numbers in them were measured on the runs named
+    "gates": {"records_before": 5458, "list": [
+        {"gate": "Every lead has exactly one disposition", "command": "$PY scripts/67_lead_schools.py dedupe",
+         "result": "1,402 leads in 1,392 rows (exits 1 otherwise)"},
+        {"gate": "Every rc5 school is in the rebuilt flight line with provenance; its name, phone and address are found "
+                 "again on the page named; no AOPA source and no AOPA-only lead value",
+         "command": "$PY scripts/67_lead_schools.py check", "result": "**PASS**: 156 schools, 5,458 to 5,614 records"},
+        {"gate": "Pre-existing records unchanged (airport assignments included); nothing else new",
+         "command": "$PY scripts/57_added_schools.py check --reference <rc4 flight_line.json>",
+         "result": "**PASS**: 0 of 5,458 changed or missing, 156 new. Negative control: one airport changed in the "
+                   "reference makes it FAIL on that school"},
+        {"gate": "Hand check of 30 seeded additions, at least 25 correct",
+         "command": "$PY scripts/67_lead_schools.py sample --n 30 --seed 20261106",
+         "result": "round 1: 25 of 30 (rule tightened); round 2: **29 of 30**"},
+        {"gate": "Release build's own checks and the release check against rc4 and v0.3",
+         "command": "research/FlightSchoolMapping/scripts/build_rc5.sh <commit>", "result": "**PASS**: pytest 29 passed; every stage ran, 42 wrote `v0.4-20261105-rc5: 33 files, 2354 MB`; "
+                   "against rc4: 2,836 to 2,911 school pages, 0 control schools changed, 13 removed for a lapsed domain, "
+                   "88 of 88 added schools with a fleet row or listing present, 317,972 tail records, 0 differing beyond "
+                   "an added school's name; against v0.3 the same, PASS"},
+    ]},
+    "release": {"schools": 2911, "reference_schools": 2836, "added": 88, "removed": 13},
+    "staged": [
+        "`research/FlightSchoolMapping/output/added_schools_rc5.json`: the 156 additions, merged by "
+        "`21_build_flight_line.py` (57's pattern: its own file, source `rc5_leads`).",
+        "`research/FlightSchoolMapping/output/flight_line.json` rebuilt by 61, 21 and 22 (5,614 records), committed.",
+        "`research/FlightSchoolMapping/output/lapsed_domains.json`: 140 domains whose schools 38 leaves out of the "
+        "release.",
+        "Release `v0.4-20261105-rc5` on trogdor in "
+        "`/mnt/data/home/dew/dev/aether-addschools/research/FlightSchoolMapping/data/release/`, built by "
+        "`scripts/build_rc5.sh` from a detached worktree (`aether-desc-build`) of the commit in its `BUILD.txt`. "
+        "Ready for `36_publish_r2.py`; nothing was uploaded, deployed or pointed at.",
+    ],
+    "publish": """REL=v0.4-20261105-rc5
+SRC=trogdor:/mnt/data/home/dew/dev/aether-addschools/research/FlightSchoolMapping/data/release/$REL
+W=$(mktemp -d) && /usr/bin/rsync -a "$SRC/download/" "$W/download/"
+python3 research/FlightSchoolMapping/scripts/36_publish_r2.py "$W/download" "$REL"
+git fetch origin && git worktree add "$W/site" origin/hackers-airports --detach
+cd "$W/site/website" && npm ci \\
+  && /usr/bin/rsync -a --delete "$SRC/web/" public/x/ \\
+  && /usr/bin/rsync -a "$SRC/schools_full.json" "$SRC/airports_full.json" src/data/explore/ \\
+  && npm run build \\
+  && npx -y wrangler@4 pages deploy dist --project-name aether-flight --branch main
+printf '{"release": "%s"}' "$REL" > "$W/latest.json" && npx -y wrangler@4 r2 object put aether-public/latest.json \\
+  --file "$W/latest.json" --content-type application/json --cache-control "public, max-age=60" --remote""",
+    "rollback": """# rc4's site deployment (33eb2273, listed by `cf pages deployments list --project-name aether-flight` on
+# 2026-11-05); re-check that it is still the one to return to before use
+cf pages deployments rollback 33eb2273-64ed-43b8-8551-f27666555260 && T=$(mktemp) \\
+  && printf '{"release": "v0.4-20261105-rc4"}' > "$T" && npx -y wrangler@4 r2 object put aether-public/latest.json \\
+  --file "$T" --content-type application/json --cache-control "public, max-age=60" --remote""",
+    "wrong": [
+        "**Most additions have no airport.** 105 of the 156 carry no airport identifier: pages name airports in words "
+        "(\"Falwell Airport\") and ingest keeps identifiers only, so those schools have no location in "
+        "`flight_line.json` and no airport in the explorer. Mapping names to NASR identifiers is a ROADMAP item; "
+        "existing schools' airports were not touched.",
+        "**Public-page schools carry almost nothing.** The 25 schools added from an airport or state page have a name "
+        "and provenance but no phone or street address (by rule) and usually no city: the page rarely says, and the "
+        "lead lists' states were not used for stored values.",
+        "**Tails shared with records we already had** (26): most are FAA registrant records that look like leasebacks "
+        "or owners (an LLC or a person); five are one tail shared with another school's website record "
+        "(phx-afc.com and maf-club.com, bakersfieldflyingclub.com and chickadeeaviation.com, flyathena.com and "
+        "savannahaviation.com, wetsuaviation.com and backcountryaviation.net, stuartflyingclub.org and "
+        "rightrudderaviation.com). Left for review, not merged.",
+        "**The web search was most of the spend.** $12.40 of the $13.51 went to 1,067 synchronous searches at "
+        "standard price (web search has no batch discount); 260 of the searched leads had no public source and 151 "
+        "only directory listings.",
+        "**Clubs are judged two ways.** The site prompt (60's) answers \"no\" for a flying club whose pages describe "
+        "aircraft access but no instruction, so such clubs were rejected (counted above); the public-page prompt "
+        "accepts a club whose members fly club aircraft. Some public-page clubs may therefore be included that the "
+        "site rule would have left out. One rule should be chosen for both.",
+        "**140 school domains have lapsed**, far more than the two known cases; five live school sites carry "
+        "injected gambling links and stay.",
+        "**`build_rc5.sh` named a build directory that no longer existed** (`aether-desc-build`); it was recreated as "
+        "a detached worktree of aether-addschools before the build.",
+    ],
+    "not_done": [
+        "Leads found only on Facebook (25) are left out: our identified crawler gets a login page.",
+        "No airport-name-to-identifier mapping for the additions (see above).",
+        "The 49 ambiguous name pairs `dedupe` prints were read; the five closest "
+        "(DoubleDay Aviation and Flight School of Greenville, FlyWaterloo and Fly There, McLaren Flight Academy and "
+        "3 Amigos Flying Club, Sierra Aero and Tahoe Flying Club, Accelerated Flight Academy and Accelerated Flight "
+        "School: four share an airport street address) have different phones and were kept as distinct; the rest are similar names in one state.",
+    ],
+    "commands": """# trogdor, /mnt/data/home/dew/dev/aether-addschools/research/FlightSchoolMapping
+PY=/mnt/data/home/dew/dev/aether/research/FlightSchoolMapping/scripts/.venv/bin/python
+S="$PY scripts/67_lead_schools.py"; R=data/research-2026-11/rc5
+$S leads && $S search --max-usd 12.9 && $S search-report && $S targets
+$PY scripts/09a_fleet_crawl.py --targets $R/targets.json --out-dir $R/crawl
+$S browser-targets
+$PY scripts/10_fleet_browser_crawl.py --crawl-only --no-evasion --user-agent "AetherResearch/1.0 (david@weekly.org)" ...
+$S pages && $S classify-build
+for r in classify classify_pages; do for c in estimate submit fetch; do $S $c --run $R/$r ...; done; done
+$S classify-report && $S domains --fetch && $S dedupe && $S sample --n 30 --seed 20261106 && $S ingest
+X="$PY scripts/extract_v2.py --env-file /mnt/data/home/dew/dev/aether/.env"
+$X build --layout http --index $R/extract/http_index.json --pages-dir $R/crawl/fleet_html --run $R/extract/http
+$X build --layout browser --pages-dir $R/extract/browser_text --meta-index $R/extract/browser_meta.json --run $R/extract/browser
+for r in http browser; do $X submit --run $R/extract/$r --model claude-haiku-5-5 --effort medium
+  $X fetch --run $R/extract/$r --model claude-haiku-5-5 --effort medium --wait
+  $PY scripts/57_added_schools.py merge-extract --run $R/extract/$r --model claude-haiku-5-5; done
+$PY scripts/61_contact_provenance.py report && $PY scripts/21_build_flight_line.py && $PY scripts/22_pdf_rate_sheets.py --offline
+$S check && $PY scripts/57_added_schools.py check --reference <rc4 flight_line.json>
+bash scripts/build_rc5.sh <hackers-talk commit>
+$S report""",
+}
 
 
 def batch_costs():
@@ -1286,7 +1388,7 @@ def cmd_report(a):
                                      "dealer named as a school, club or academy stays a lead",
                        "club_in_formation": "clubs listed as \"in formation\""}[k]] for k in sorted(drop_by)]))
     L.append(f"\nDe-duplication: rows with the same website domain, or the same normalized name in the same state, "
-             f"are one lead. {n(st.get('leads', {}).get('website', 0))} leads had a website on a list; the other "
+             f"are one lead. {n(sum(1 for l in leads.values() if l['website']))} leads had a website on a list; the other "
              f"{n(srch.get('leads', 0))} were searched for.\n")
     L.append("## Method\n")
     L.append("1. **Search** (`67 search`), website-less leads only: Claude Haiku 5.5 with Anthropic's web search tool, "
@@ -1325,13 +1427,23 @@ def cmd_report(a):
                     ("tachgo", "ppp", "master_public", "master_aopa")]))
     L.append("\nCounts are leads; a lead on two lists counts under both. *left_out*: no public source was found or "
              "readable (below).\n")
-    det = Counter()
+    det, kinds = Counter(), Counter()
     for r in rows:
         if r["disposition"] in ("left_out", "rejected", "duplicate"):
             k = re.sub(r"\s*\(.*", "", r["detail"]) if r["disposition"] != "duplicate" else re.sub(
                 r".*\((domain|name|street|at the|another lead|same phone)[^)]*\).*", r"\1", r["detail"])
+            k = k.replace("only a other page", "only an archive, registry or other unofficial page")
+            if r["disposition"] == "rejected" and k.startswith("not flight training:"):
+                kinds[k.split(":", 1)[1].strip()] += len(r["lead_ids"].split(";"))
+                continue
             det[(r["disposition"], k[:90])] += len(r["lead_ids"].split(";"))
+    club = sum(v for k, v in kinds.items() if "club" in k.lower())
+    det[("rejected", f"not flight training, by its own pages ({len(kinds)} kinds; flying clubs with no instruction "
+                     f"{club}; the rest mostly FBOs, charter, maintenance and avionics shops)")] = sum(kinds.values())
     L.append(table(["Disposition", "Reason", "Leads"], [[d, k, v] for (d, k), v in sorted(det.items(), key=lambda x: (x[0][0], -x[1]))]))
+    L.append("\n<details><summary>The kinds of business the rejected sites are</summary>\n")
+    L.append(table(["Kind (the classifier's words)", "Leads"], [[k, v] for k, v in kinds.most_common()]))
+    L.append("\n</details>\n")
     L.append("\n### Search (website-less leads)\n")
     oc = srch.get("outcomes", {})
     L.append(table(["Outcome", "Leads"], [[k, v] for k, v in sorted(oc.items(), key=lambda x: -x[1])]))
