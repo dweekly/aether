@@ -44,4 +44,4 @@ Everything fits in one Essential month at the doubled credits, except that the f
 
 ## Subscription
 
-Essential started 2026-11-06 ($90/month). The token is in `/Users/dew/dev/aether/.env` as `FR24_API_TOKEN`. **Cancel before the renewal around 2026-12-06** once the pulls are done; there's a Todoist reminder for 2026-11-30.
+Essential started 2026-11-06 ($90/month). The token is in `/Users/dew/dev/aether/.env` as `FR24_API_TOKEN`. **Cancel before the renewal around 2026-12-06** once the pulls are done; there's a Todoist reminder for 2026-11-22 (David is away from 2026-11-24 to 2027-01-04).

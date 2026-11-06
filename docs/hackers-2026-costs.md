@@ -11,7 +11,7 @@ Every recorded cash spend behind the dataset and the talk, so the cover's "a cou
 | 2026-11 | Model comparison rerun: Haiku 5.5 $15.15, Sonnet 5.5 $78.90 | $94.05 | readcost slide notes |
 | 2026-11-03 | Demo extraction, Claude Opus 5.5 | $0.02 | demo slide |
 | 2026-11-06 | rc5 additions (lead checks, airport matching) | $13.53 | hackers-2026-rc5-additions.md |
-| 2026-11-06 | Flightradar24 API, Essential plan, one month (internal analysis only; cancel by 2026-11-30) | $90.00 | fr24-api-plan.md |
+| 2026-11-06 | Flightradar24 API, Essential plan, one month (internal analysis only; cancel by 2026-11-22) | $90.00 | fr24-api-plan.md |
 | | **Total recorded** | **~$470** | |
 
 Of that, model tokens are about $238, Google Places about $142 and Flightradar24 $90. "A couple hundred dollars of AI tokens" is true of the tokens alone. For everything, say "a few hundred dollars".
