@@ -1,0 +1,61 @@
+round,candidate_id,operation_type,site,school_name,state,label,evidence_url,note
+1,S0571,university_program,westliberty.edu,West Liberty University,WV,correct,https://westliberty.edu/aviation/,"B.S. Aviation, Commercial Pilot; flight training at Wheeling-Ohio County Airport through a Marshall University partnership"
+1,L0549,flying_club,,Cane River Flying Club,LA,wrong,https://www.natchitochestimes.com/news/aviation-enthusiasts-share-plans-cane-river-flying-club,"a December 2023 news story about a club being formed, with no aircraft yet; not a current operation"
+1,L0757,flight_school,,"Cloud Nine Aviation, Inc.",MS,wrong,https://picayuneitem.com/2018/03/flight-lessons-still-available-at-picayunes-airport/,only a March 2018 news story; nothing shows it operates today
+1,L1302,flight_school,,"Voyager Aviation, Inc.",VA,correct,https://avcairport.com/voyager-aviation,"the airport's page (c) 2025 lists Voyager Aviation flight training, BFRs, IPCs; CFII named"
+1,S0137,flight_school,coloradospringsflightschool.com,The Flight School at Colorado Springs,CO,correct,https://coloradospringsflightschool.com/flight-training-colorado-springs,"own site: accelerated training, Discovery to CFII packages, Meadow Lake Airport"
+1,L0052,flight_school,,Gold Coast Helicopters,AZ,wrong,https://cronkitenewsonline.com/2013/04/funding-cuts-begin-at-four-arizona-airports-that-will-lose-control-towers/index.html,only a 2013 Cronkite News story quoting its chief pilot; nothing shows it operates today
+1,S0539,flight_school,totaltailwheel.com,"Total Tailwheel, LLC",MA,correct,https://www.totaltailwheel.com/,"own site: tailwheel endorsement training in a Cessna 170B at Minute Man Air Field, Stow"
+1,S0224,flying_club,flyleadville.com,Leadville Flying Club,CO,correct,https://flyleadville.com/services/rentals,own site: flying club at Leadville with club CFIs and member rental
+1,S0288,independent_instructor,,(independent instructor),OR,wrong,,a maintenance shop; the owner holds a CFI but the site offers no instruction
+1,S0178,flight_school,everheartair.com,Everheart Air,NJ,correct,https://everheartair.com,own site: discovery flights and a Private Pilot training program
+1,L0130,flight_school,,Flightime,CA,correct,https://www.cameronparkairport.org/aviation-businesses,"Cameron Park Airport District's business page: Flightime, Flight Training, with phone"
+1,L0409,flight_school,,Blind Squrriel Aviation,IA,correct,https://iowadot.gov/modes-travel/aviation/flight-schools,"Iowa DOT flight-school list: Cherokee, Blind Squrriel Aviation (their spelling)"
+1,L1008,flying_club,,Muskogee Airmen Flying Club,OK,wrong,https://generalaviationnews.com/2021/06/16/oklahoma-flying-club-launches-private-pilot-scholarship/,only a June 2021 General Aviation News story; nothing current
+1,S0116,flight_school,cfii.com,CFII,CA,correct,https://cfii.com,own site: flight school at Riverside and John Wayne airports
+1,S0172,flight_school,eastaviation.net,East Aviation LLC,AL,correct,https://www.eastaviation.net/home,own site: private pilot course with independent CFIs at several Alabama airports
+1,L1306,flight_school,,High Wind Aviation,VT,correct,https://vtrans.vermont.gov/aviation/airports/hartness,"VTrans Hartness State Airport page, under Flight Training: contact High Wind Aviation"
+1,S0030,independent_instructor,,(independent instructor),KS,correct,,own site: PA-46 initial and recurrent training
+1,S0208,flight_school,flyathena.com,"Athena Aircraft, LLC",OK,correct,https://flyathena.com/,"own site (c) 2026: now offering aircraft rental and flight instruction, Norman OK"
+1,S0500,flying_club,soaringtigers.org,Soaring Tigers,PA,correct,https://www.soaringtigers.org/,own site: glider club at Van Sant Airport with student pilot handouts
+1,S0580,flying_club,wisoar.org,Wisconsin Soaring Society,WI,correct,https://www.wisoar.org,"own site: soaring club, FAA certificated instruction scheduled for students"
+1,S0240,flight_school,flytangowhiskey.com,Tango Whiskey Aviation,NY,correct,https://www.flytangowhiskey.com/aerobatic-flight-school,"own site: aerobatic and tailwheel flight school, Rochester NY"
+1,L0031,independent_instructor,,(independent instructor),AR,correct,,a city airport's Pilot Training page names this instructor's business
+1,S0138,flying_club,congressionalflyingclub.com,Congressional Flying Club,MD,correct,https://congressionalflyingclub.com/aircraft/N20300,"own site: club with instructors and training, 4 aircraft"
+1,S0430,flight_school,pilotreza.com,Accelerated Flight Academy,CA,correct,https://www.pilotreza.com/,own site: one-on-one flight training at Van Nuys
+1,S0573,independent_instructor,,(independent instructor),CO,correct,,own site: tailwheel and specialized training
+1,L0647,flight_school,,Keweenaw Bay Aviation LLC,MI,correct,https://www.houghtoncounty.org/pilots.php,"Houghton County airport pilots page: Flight Instruction, contact Keweenaw Bay Aviation"
+1,S0495,independent_instructor,,(independent instructor),WV,correct,,own site: flight instruction and advanced training
+1,S0427,flying_club,phx-afc.com,Phoenix Area Flying Club,AZ,correct,https://phx-afc.com/,"own site: non-profit club, 12 aircraft, flight training in its Cessna 172s"
+1,S0396,flying_club,northernmaineflyingclub.org,Northern Maine Flying Club,ME,correct,https://northernmaineflyingclub.org/membership,own site: members receive instruction in the club's Cessna 172 from member CFIs
+1,S0439,flight_school,progressiveair.org,Progressive Air Inc.,WI,correct,http://www.progressiveair.org/,own site (c) 2024: flight instruction and pilot examinations at KJVL
+2,L0619,flight_school,,Morgan Aviation and Kennebec Seaplanes,ME,correct,https://seaplanepilotsassociation.org/flight-schools/morgan-aviation-and-kennebec-seaplanes/,"Seaplane Pilots Association flight-school listing: Morgan Aviation at KOWK and Kennebec Seaplanes, Norridgewock"
+2,L1345,flying_club,,Walla Walla Flying Club,WA,correct,https://www.uvaviation.com/wwfc-application,"the partner operator's page carrying the club's membership application, Martin Field S95"
+2,S0064,flight_school,aviatorsacademy.us,Aviators Academy,FL,correct,https://aviatorsacademy.us/,own site: pilot training and discovery flights at Daytona Beach International
+2,S0197,flight_school,floridashuttle.net,"Florida Shuttle, Inc.",FL,correct,http://www.floridashuttle.net/Index.htm,"own site: C172 training at KFXE or KHWO, private through CFI and multi add-on"
+2,L0130,flight_school,,Flightime,CA,correct,https://www.cameronparkairport.org/aviation-businesses,"Cameron Park Airport District's business page: Flightime, Flight Training, with phone"
+2,S0263,flight_school,gofastpilots.com,GoFastPilots LLC,NM,correct,https://www.gofastpilots.com/,"own site: certified flight training, single and multi-engine, Roswell NM (also sells IT services)"
+2,S0345,independent_instructor,,(independent instructor),NE,correct,,own site: CFIs available for private lessons
+2,S0240,flight_school,flytangowhiskey.com,Tango Whiskey Aviation,NY,correct,https://www.flytangowhiskey.com/aerobatic-flight-school,"own site: aerobatic and tailwheel flight school, Rochester NY"
+2,L0177,flight_school,,San Fernando Aviation LLC,CA,correct,https://www.iflyvny.com/business-directory/flight-training,"Van Nuys Airport's flight-training facilities list dated 2026-06-01: San Fernando Aviation LLC, fixed-wing"
+2,L0416,flight_school,,Forest City Aviation,IA,correct,https://iowadot.gov/modes-travel/aviation/flight-schools,Iowa DOT flight-school list: Forest City Aviation
+2,S0030,independent_instructor,,(independent instructor),KS,correct,,own site: PA-46 initial and recurrent training
+2,S0173,flight_school,easttexasflyingservice.com,East Texas Flying Service Inc,TX,correct,https://www.easttexasflyingservice.com,"own site: aircraft maintenance and flight training, Mineola TX"
+2,S0231,flight_school,flynextlevelft.com,Next Level Flight Training,GA,correct,https://www.flynextlevelft.com,own site: flight training near Newnan GA
+2,S0067,flying_club,bakersfieldflyingclub.com,Bakersfield Flying Club,CA,correct,https://bakersfieldflyingclub.com/learn-to-fly,own site: club with a Learn to Fly page and affiliated instructors
+2,S0127,flight_school,cierva.aero,Cierva Aero,CA,correct,https://www.cierva.aero,"own site: gyroplane instruction and introductory lessons, Petaluma"
+2,S0252,flight_school,forge.aero,AeroForge Flight Training LLC,OR,correct,https://forge.aero,"own site: flight training in an RV-12iS, Portland OR"
+2,S0584,flying_club,wvsc.org,Willamette Valley Soaring Club,OR,correct,https://www.wvsc.org/instruction,own site: glider club with an instruction page
+2,S0277,flight_school,happytrailsflight.com,Happy Trails Flight 1,MT,correct,https://happytrailsflight.com/,"own site: private, instrument, commercial and CFI instruction, Helena MT"
+2,L0031,independent_instructor,,(independent instructor),AR,correct,,a city airport's Pilot Training page names this instructor's business
+2,S0199,flight_school,fly-linkaviation.com,Link Aviation,KS,correct,https://www.fly-linkaviation.com/,"own site: a group of flight instructors in Great Bend KS, C172 and PA-28"
+2,S0486,independent_instructor,,(independent instructor),WA,correct,,own site: flight instruction among pilot services
+2,S0575,flying_club,windsairowosso.com,Winds Air Flying Club,MI,correct,https://www.windsairowosso.com/groundschool,own site: club aircraft at KRNP and a 2026 ground school
+2,L1188,flight_school,,Flying Aces Aviation,TX,correct,https://www.co.andrews.tx.us/303/Links,"Andrews County airport links page: Flight School, Flying Aces Aviation"
+2,S0479,university_program,seu.edu,Southeastern University,FL,correct,https://www.seu.edu/aviation/,the university's aviation page lists Private Pilot (Airplane); training at Lakeland Linder (our UA gets 403 now; crawled page text)
+2,S0463,flight_school,safeflightaviation.com,Safe Flight Aviation,VA,correct,https://safeflightaviation.com/,"own site: flight school, discovery flights and courses, Chesapeake VA"
+2,S0195,flying_club,flintriversoaring.com,Flint River Soaring,GA,correct,https://www.flintriversoaring.com/flight-training,own site (c) 2024-2026: glider club at 4J5 with flight training and discovery flights
+2,S0160,flight_school,destinyaviationservices.com,"Destiny Aviation Services, LLC",MD,wrong,https://destinyaviationservices.com,"a youth aviation-education nonprofit; newest content is 2014-2016 camps, no current flight-training offer"
+2,L1142,flying_club,,Memphis Navy Flying Club,TN,correct,https://www.navymwrmidsouth.com/flyingclub,the Navy MWR Mid-South page for its own flying club
+2,S0325,flight_school,kerrvilleaviation.com,Kerrville Aviation,TX,correct,https://www.kerrvilleaviation.com/,"own site: FBO that lists flight training among its services, Kerrville TX"
+2,S0383,flight_school,mu2b.com,"Howell Enterprises, Inc.",TN,correct,http://www.mu2b.com/,"own site: FAA-approved MU-2B ground and flight training school, Smyrna TN"

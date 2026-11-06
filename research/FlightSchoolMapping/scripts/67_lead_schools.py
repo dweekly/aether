@@ -616,7 +616,28 @@ def cmd_classify_report(a):
 
 # Hand decisions (site or lead id -> (disposition, detail)), from the hand check and the ambiguous pairs `dedupe`
 # prints; each was read against the pages or records named.
-HAND = {}
+HAND = {
+    "highdesertaviationllc.com": ("rejected", "an aircraft maintenance shop; the owner holds a CFI but the site offers "
+                                             "no instruction (hand check)"),
+    "destinyaviationservices.com": ("rejected", "a youth aviation-education nonprofit whose newest content is from "
+                                                "2014-2016; no current flight-training offer (second hand check)"),
+}
+
+# A school with no website is added from another public page only when that page is an airport's, a state list, an
+# association's or an EAA chapter's, or one of the official pages below. News stories, archives, registries and
+# accident reports show that an operation existed, not that it runs today: the first hand check found four of its
+# five misses there (a 2013, a 2018 and a 2021 story, and a 2023 story about a club still being formed).
+PAGE_KINDS_ADD = ("airport", "state_list", "association", "eaa")
+PAGE_OK = {  # evidence page -> why it counts (read by hand)
+    "navymwrmidsouth.com": "the Navy MWR page for its own flying club",
+    "cannonforce.com": "the Air Force base's page for its own aero club",
+    "uvaviation.com": "the operator's page carrying the club's application",
+}
+
+
+def page_kind(o, url):
+    """The kind search gave the public page a classification's evidence came from ('other' when not among them)."""
+    return next((p["kind"] for p in o["pages"] if p["url"] == url), "other")
 
 
 def cmd_dedupe(a):
@@ -682,6 +703,10 @@ def cmd_dedupe(a):
                 row["detail"] = f"public page: {r['flight_instruction']} ({r.get('not_training_kind', '')})"
             elif not name:
                 row["disposition"], row["detail"] = "rejected", "public page does not name it verbatim"
+            elif page_kind(o, row["evidence_url"]) not in PAGE_KINDS_ADD and site_dom(row["evidence_url"]) not in PAGE_OK:
+                row["disposition"] = "left_out"
+                row["detail"] = (f"only a {page_kind(o, row['evidence_url'])} page names it (news, archive or registry; "
+                                 f"not current confirmation)")
             elif hit:
                 row["disposition"], row["detail"] = "duplicate", f"{hit['key']} (name in {hit['state']})"
             else:
@@ -1157,8 +1182,28 @@ def n(x):
     return f"{x:,}" if isinstance(x, int) else str(x)
 
 
+NOTES = {}  # narrative sections of the report (gates, staged files, publish, rollback, findings); filled below
+
+
+def batch_costs():
+    """Message Batches spend, from each run's fetch events (batch prices, as haiku_batch and extract_v2 log them)."""
+    out = {}
+    for label, run in (("Classify sites (Message Batches, Haiku 5.5)", CLASSIFY_RUN),
+                       ("Classify public pages (Message Batches)", PAGE_RUN),
+                       ("Extract fleets and prices, HTTP pages (Message Batches)", EXTRACT / "http"),
+                       ("Extract fleets and prices, browser pages (Message Batches)", EXTRACT / "browser")):
+        log = run / "log.jsonl"
+        ev = [json.loads(x) for x in log.open()] if log.exists() else []
+        fetched = [e for e in ev if e.get("event") == "fetch"]
+        if fetched:
+            out[label] = fetched[-1]["cost_usd_batch"]
+    return out
+
+
 def cmd_report(a):
     st = json.loads((W / "stats.json").read_text())
+    for k, v in NOTES.items():
+        st.setdefault(k, v)
     leads = {l["lead_id"]: l for l in json.loads((W / "leads.json").read_text())}
     rows = list(csv.DictReader(DISPOSITIONS.open()))
     drops = list(csv.DictReader((W / "drops.csv").open()))
@@ -1185,9 +1230,10 @@ def cmd_report(a):
             added_by[b] += 1
     only_aopa = sum(1 for r in added if all(leads[l]["aopa_only"] for l in r["lead_ids"].split(";")))
     ck, ing, srch, cls, dom = st.get("check", {}), st.get("ingest", {}), st.get("search", {}), st.get("classify", {}), st.get("domains", {})
-    costs = st.get("costs", {})
+    costs = batch_costs()
     total_cost = round(srch.get("cost_usd", 0) + sum(costs.values()), 2)
-    hand_ok = sum(1 for h in hand if h["label"] == "correct")
+    hand_last = [h for h in hand if h["round"] == "2"] or hand
+    hand_ok = sum(1 for h in hand_last if h["label"] == "correct")
     fl_before, fl_after = gates.get("records_before", 5458), ck.get("flight_line_records", "?")
     L = []
     L.append("# Hackers 2026 rc5: flight schools from the gap-source leads, each confirmed on its own pages\n")
@@ -1205,7 +1251,8 @@ def cmd_report(a):
              f"release has **{n(rel.get('schools', '?'))} school pages** (rc4: {n(rel.get('reference_schools', '?'))}): "
              f"{n(rel.get('added', '?'))} added schools list a fleet or prices, and {n(rel.get('removed', '?'))} schools "
              f"whose domain now serves gambling, parking or other unrelated content were taken out. Hand check: "
-             f"**{hand_ok} of {len(hand)}** additions correct. Cost **${total_cost:.2f}** of the $15 cap. Nothing is "
+             f"**{hand_ok} of {len(hand_last)}** additions correct, after a first round at 25 of 30 tightened the rule "
+             f"for schools with no website. Cost **${total_cost:.2f}** of the $15 cap. Nothing is "
              f"published.\n")
     for note in st.get("callouts", []):
         L.append(f"> {note}\n")
@@ -1311,12 +1358,22 @@ def cmd_report(a):
                     ["tail rows", ck.get("tail_rows", "?")], ["tails shared with a school we already had", ck.get("shared_tails", "?")]]))
     L.append("\n## Hand check\n")
     if hand:
-        L.append(f"Seed 20261106, 30 of the {len(added)} additions, each read against the pages the classifier read "
-                 f"and the live site: **{hand_ok} of {len(hand)} correct** (gate: 25). Labels: "
-                 f"{dict(Counter(h['label'] for h in hand))}.\n")
-        bad = [h for h in hand if h["label"] != "correct"]
-        for h in bad:
-            L.append(f"- {h['site'] or h['candidate_id']}: {h['label']}, {h['note']}")
+        r1 = [h for h in hand if h["round"] == "1"]
+        r2 = [h for h in hand if h["round"] == "2"]
+        ok1, ok2 = (sum(1 for h in r if h["label"] == "correct") for r in (r1, r2))
+        L.append(f"Seed 20261106, 30 additions each round, read against the pages the classifier read and a live fetch "
+                 f"of the evidence page (our identified user agent). Gate: 25 of 30.\n")
+        L.append(f"- **Round 1** (180 additions): {ok1} of {len(r1)} correct, at the gate. Four of the five misses were "
+                 f"schools added from a news story (2013, 2018, 2021, and a 2023 story about a club still being "
+                 f"formed); the fifth a maintenance shop whose owner is a CFI. The rule was tightened instead of "
+                 f"shipping at the margin: a website-less school is added only from an airport, state-list, association "
+                 f"or EAA page, or an official page in `PAGE_OK`; news, archives, registries and accident reports leave "
+                 f"it out. The shop was rejected by hand.")
+        L.append(f"- **Round 2** (the tightened set, re-drawn with the same seed): **{ok2} of {len(r2)} correct**. "
+                 f"The miss, a youth aviation-education nonprofit with no current training offer, was rejected by hand.\n")
+        for h in hand:
+            if h["label"] != "correct":
+                L.append(f"- round {h['round']}, {h['site'] or h['school_name']}: {h['note']}")
         L.append("")
     L.append("## School domains that now serve unrelated content\n")
     L.append(f"Every website domain in `flight_line.json` ({n(dom.get('flight_line_domains', 0))}) was checked against "
