@@ -51,8 +51,9 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
 - **Lapsed school domains** (140 in `output/lapsed_domains.json`, `docs/hackers-2026-rc5-additions.md`):
   38 leaves those schools out of the release from rc5 on; their records stay in `flight_line.json`.
   Look for each operation's current site (several may have moved) and re-point or retire the record.
-- **rc5 additions with no airport** (105 of 156): pages name airports in words; map names to NASR
-  identifiers in `67 ingest` so those schools get a location.
+- **rc5 additions with no airport** (19 of 156 after `67 airports`): pages that name no airport or town that
+  identifies one. The fleet extraction's locations, for every school, carry no provenance and sometimes
+  malformed identifiers (`K3AU`); `67 airports`' matching could check them all.
 - **One flying-club rule for sites and public pages**: 60's site prompt rejects clubs that describe
   aircraft access but no instruction; 67's public-page prompt accepts them. Pick one and re-run both.
 - **The matcher misses initials written with periods** ("FIT Aviation" vs "F.I.T. Aviation, LLC"): squash

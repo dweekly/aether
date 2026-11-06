@@ -1510,7 +1510,8 @@ NOTES = {  # narrative sections of the report; the numbers in them were measured
          "command": "research/FlightSchoolMapping/scripts/build_rc5.sh <commit>", "result": "**PASS**: pytest 29 passed; every stage ran, 42 wrote `v0.4-20261105-rc5: 33 files, 2354 MB`; "
                    "against rc4: 2,836 to 2,911 school pages, 0 control schools changed, 13 removed for a lapsed domain, "
                    "88 of 88 added schools with a fleet row or listing present, 317,972 tail records, 0 differing beyond "
-                   "an added school's name; against v0.3 the same, PASS"},
+                   "an added school's name; against v0.3 the same, PASS. Rebuilt after `67 airports` from 6520af5 "
+                   "with the same results"},
     ]},
     "release": {"schools": 2911, "reference_schools": 2836, "added": 88, "removed": 13},
     "staged": [
@@ -1522,7 +1523,8 @@ NOTES = {  # narrative sections of the report; the numbers in them were measured
         "Release `v0.4-20261105-rc5` on trogdor in "
         "`/mnt/data/home/dew/dev/aether-addschools/research/FlightSchoolMapping/data/release/`, built by "
         "`scripts/build_rc5.sh` from a detached worktree (`aether-desc-build`) of the commit in its `BUILD.txt`. "
-        "Ready for `36_publish_r2.py`; nothing was uploaded, deployed or pointed at.",
+        "Ready for `36_publish_r2.py`; nothing was uploaded, deployed or pointed at. The first build (before "
+        "`67 airports`) is kept beside it as `v0.4-20261105-rc5-pre-airports`.",
     ],
     "publish": """REL=v0.4-20261105-rc5
 SRC=trogdor:/mnt/data/home/dew/dev/aether-addschools/research/FlightSchoolMapping/data/release/$REL
@@ -1542,8 +1544,12 @@ cf pages deployments rollback 33eb2273-64ed-43b8-8551-f27666555260 && T=$(mktemp
   && printf '{"release": "v0.4-20261105-rc4"}' > "$T" && npx -y wrangler@4 r2 object put aether-public/latest.json \\
   --file "$T" --content-type application/json --cache-control "public, max-age=60" --remote""",
     "wrong": [
-        "**Some additions still have no airport** (25 of 156, below): their pages name no airport, code or town "
-        "that identifies one, or no state is known. None was guessed.",
+        "**Correction: \"105 of 156 additions have no airport\" was wrong.** It counted the staged file's "
+        "`airport_code` only; 21 also takes airports from the fleet extraction, so the first rc5 build already had "
+        "a valid airport on 97 of the 156 records (none with provenance, some with malformed identifiers such as "
+        "`K3AU`). After `67 airports`: 137 of 156 have a valid airport, 131 of them with page-and-quote provenance "
+        "(6 only from the extraction); 19 have none. On the release's pages, 81 of the 88 added schools list an "
+        "airport (71 before).",
         "**Public-page schools carry almost nothing.** The 25 schools added from an airport or state page have a name "
         "and provenance but no phone or street address (by rule) and usually no city: the page rarely says, and the "
         "lead lists' states were not used for stored values.",
@@ -1788,9 +1794,12 @@ def cmd_report(a):
         L.append("\n## Airports for the additions\n")
         L.append(f"`67 airports` gives each addition the airport its cited pages name, recorded in the school's "
                  f"`locations` with provenance (the page, the quoted text, how it was matched, and the row it matched). "
-                 f"**{sum(hw.values())} of {ap.get('schools', 0)}** have an airport now (51 had one before, all "
-                 f"still the same airport); {ap.get('unmatched', 0)} have none. Existing schools' airports are "
-                 f"untouched (`57 check`).\n")
+                 f"**{sum(hw.values())} of {ap.get('schools', 0)}** are matched (51 had an `airport_code` in the staged "
+                 f"file before, all still the same airport); {ap.get('unmatched', 0)} are not. `21_build_flight_line.py` "
+                 f"puts the match on the record: on the fleet extraction's location when that names the same "
+                 f"airport, else first. In the rebuilt `flight_line.json`, 137 of the 156 records have a valid "
+                 f"airport (97 in the first rc5 build), 131 with this provenance and 6 only from the extraction; 19 "
+                 f"have none. Existing schools' airports are untouched (`57 check`).\n")
         L.append("Order of matching, each on text found again verbatim on a page the classifier read (no page was "
                  "refetched): (1) **code**, an identifier the pages give, alone or in parentheses after a name, found in "
                  "`output/airports.csv` and in the school's state; (2) **name**, an airport name the pages give whose "
@@ -1854,6 +1863,7 @@ def cmd_report(a):
              "`PY=/mnt/data/home/dew/dev/aether/research/FlightSchoolMapping/scripts/.venv/bin/python`.\n")
     L.append(table(["Gate", "Command", "Result"], [[g["gate"], f"`{g['command']}`", g["result"]] for g in gates.get("list", [])]))
     L.append("\n## Cost\n")
+    L.append("The airport step's model call had its own $1.50 cap; the rest counts against the $15 cap.\n")
     L.append(table(["Item", "Recorded usage"], [["Web search pass (Haiku 5.5, standard price, $10 per 1,000 searches)",
                                                   f"${srch.get('cost_usd', 0):.2f}"]] +
                    [[k, f"${v:.2f}"] for k, v in costs.items()] + [["**Total**", f"**${total_cost:.2f}** of the $15 cap"]]))
