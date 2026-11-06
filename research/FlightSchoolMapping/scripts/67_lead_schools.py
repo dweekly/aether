@@ -959,6 +959,313 @@ def cmd_sample(a):
     print(f"-> {W / f'sample_{a.seed}.txt'}")
 
 
+# ── Airports for the additions (67 airports) ──────────────────────────────
+
+NASR_BASE = GAPS / "gaps" / "nasr" / "x" / "APT_BASE.csv"  # FAA NASR 2026-10-29 (65), for public use and city
+AIRPORT_MATCH = W / "airport_match.json"
+AIRPORT_RUN = W / "airports_model"
+GENERIC_AP = {"airport", "airfield", "field", "international", "intl", "regional", "rgnl", "municipal", "muni",
+              "the", "airpark", "aerodrome", "apt", "arpt", "fld", "intl", "executive", "exec", "jetport", "air",
+              "park", "aero", "port"}
+AP_PHRASE = re.compile(r"\b(airport|airfield|field|airpark|aerodrome|jetport|airstrip)\b", re.I)
+
+
+def ap_core(name):
+    import page_text as pt
+    return " ".join(w for w in pt.norm(name).split() if w not in GENERIC_AP)
+
+
+def airport_tables():
+    """airports.csv rows (the ids flight_line uses) joined to NASR rows (public use, city, status)."""
+    rows = list(csv.DictReader((OUT / "airports.csv").open(newline="", encoding="utf-8")))
+    by_faa, by_id = {}, {}
+    for r in rows:
+        if r["faa_id"]:
+            by_faa.setdefault(r["faa_id"].upper(), r)
+        by_id[r["airport_id"].upper()] = r
+        if r["gps_code"]:
+            by_id.setdefault(r["gps_code"].upper(), r)
+    nasr = [r for r in csv.DictReader(NASR_BASE.open(newline="", encoding="utf-8", errors="replace"))
+            if r["COUNTRY_CODE"] == "US"]
+    return rows, by_faa, by_id, nasr
+
+
+def table_row(code, by_faa, by_id):
+    c = code.upper().strip()
+    return by_faa.get(c) or by_id.get(c) or (by_faa.get(c[1:]) if len(c) == 4 and c[0] == "K" else None)
+
+
+def entry_state(e, leads):
+    """The state the school's own page gives, else a public (non-AOPA) lead list's state, for matching only."""
+    if e["state"]:
+        return e["state"], "page"
+    lids = [l for l in leads.values() if l["lead_id"] in e["_lead_ids"] and not l["aopa_only"]]
+    return (lids[0]["state"], "public lead list") if lids and lids[0]["state"] else ("", "")
+
+
+def cmd_airports(a):
+    """Every rc5 addition: the airport its cited pages name -> airport_code plus airport_match (page, quoted text,
+    how matched) in added_schools_rc5.json. Order: an identifier the pages give, a full airport name in the
+    school's state, the school's city with a single open public-use airport; the rest go to --model-build."""
+    import page_text as pt
+    m = m60()
+    entries = json.loads(ADDED.read_text())
+    rows = {r["candidate_id"]: r for r in csv.DictReader(DISPOSITIONS.open()) if r["disposition"] == "added"}
+    leads = {l["lead_id"]: l for l in json.loads((W / "leads.json").read_text())}
+    cls = {r["candidate_id"]: r for r in json.loads((W / "classified.json").read_text())}
+    pcls = {r["lead_id"]: r for r in json.loads((W / "classified_pages.json").read_text())}
+    idx = {e["candidate_id"]: e for e in json.loads((CLASSIFY_RUN / "index.json").read_text())}
+    pidx = {e["lead_id"]: e for e in json.loads((PAGE_RUN / "index.json").read_text())}
+    rows_t, by_faa, by_id, nasr = airport_tables()
+    nasr_by_id = {r["ARPT_ID"]: r for r in nasr}
+    model = json.loads((W / "airport_model.json").read_text()) if (W / "airport_model.json").exists() else {}
+    out, how_n, why_n = {}, Counter(), Counter()
+    for e in entries:
+        rid = e["provenance"][0]["record_id"]
+        page = rid.startswith("L")
+        k = pcls[rid] if page else cls[rid]
+        ix = pidx.get(rid) if page else idx.get(rid)
+        sent = [(pt.clean_url(u), t) for u, t in (m.sent_pages(pt, ix) if ix else [])]
+        e["_lead_ids"] = rows[rid]["lead_ids"].split(";")
+        st, st_src = entry_state(e, leads)
+        e.pop("_lead_ids")
+
+        def where(q):
+            return next((u for u, t in sent if pt.on_page(q, t)), "")
+        res = None
+        reasons = []
+        # 1. identifiers and names the classifier copied from the pages (each found again verbatim)
+        for q in k.get("airports") or []:
+            url = where(q)
+            if not url:
+                reasons.append(f"{q!r} not found again on a page")
+                continue
+            qq = q.strip().upper()
+            paren = re.search(r"\(\s*([A-Z0-9]{3,4})\s*\)\s*$", qq)  # "Bend Airport (KBDN)": the code it gives
+            if paren and AIRPORT_ID.match(paren.group(1)):
+                qq = paren.group(1)
+            if AIRPORT_ID.match(qq):
+                r = table_row(qq, by_faa, by_id)
+                if r and (not st or r["state"] == st):
+                    res = {"how": "code", "row": r, "page": url, "quote": q}
+                    break
+                reasons.append(f"code {q!r} " + ("not in airports.csv" if not r else f"is in {r['state']}, not {st}"))
+                continue
+            core = ap_core(q)
+            if core and not st:  # no state: only a full name that is unique in the whole table
+                hits = {r["airport_id"] for r in rows_t if r["airport_type"] not in ("closed", "heliport")
+                        and pt.norm(r["airport_name"]) == pt.norm(q)}
+                if len(hits) == 1:
+                    res = {"how": "name", "row": by_id[hits.pop().upper()], "page": url, "quote": q}
+                    break
+                reasons.append(f"name {q!r} without a state ({len(hits)} airports of that exact name)")
+                continue
+            if not core:
+                reasons.append(f"name {q!r} is generic")
+                continue
+            hits = {r["airport_id"] for r in rows_t if r["state"] == st and r["airport_type"] not in ("closed", "heliport")
+                    and ap_core(r["airport_name"]) == core}
+            hits |= {table_row(n["ARPT_ID"], by_faa, by_id)["airport_id"] for n in nasr if n["STATE_CODE"] == st
+                     and n["SITE_TYPE_CODE"] == "A" and n["ARPT_STATUS"] == "O" and ap_core(n["ARPT_NAME"]) == core
+                     and table_row(n["ARPT_ID"], by_faa, by_id)}
+            if len(hits) == 1:
+                res = {"how": "name", "row": by_id[hits.pop().upper()], "page": url, "quote": q}
+                break
+            reasons.append(f"name {q!r}: {len(hits)} airports of that name in {st}")
+        # 2. a full airport name (with Airport, Field, ...) from the table, in the school's state, on the pages
+        if not res and st:
+            found = {}
+            for r in rows_t:
+                if r["state"] != st or r["airport_type"] in ("closed", "heliport") or not AP_PHRASE.search(r["airport_name"]) \
+                        or len(r["airport_name"]) < 12:
+                    continue
+                url = where(r["airport_name"])
+                if url:
+                    found[r["airport_id"]] = (r, url)
+            if len(found) == 1:
+                r, url = next(iter(found.values()))
+                res = {"how": "name", "row": r, "page": url, "quote": r["airport_name"]}
+            elif found:
+                reasons.append(f"{len(found)} airport names on the pages: {sorted(found)}")
+        # 3. the city the pages give, with exactly one open public-use airport there
+        if not res and e["city"] and st:
+            hits = [n for n in nasr if n["STATE_CODE"] == st and n["CITY"] == e["city"].upper() and n["SITE_TYPE_CODE"] == "A"
+                    and n["FACILITY_USE_CODE"] == "PU" and n["ARPT_STATUS"] == "O"]
+            cs = (e["field_sources"].get("contact.address") or {})
+            if len(hits) == 1 and table_row(hits[0]["ARPT_ID"], by_faa, by_id) and cs.get("ref"):
+                res = {"how": "city", "row": table_row(hits[0]["ARPT_ID"], by_faa, by_id), "page": cs["ref"],
+                       "quote": f"{e['city']}, {st}"}
+            else:
+                reasons.append(f"city {e['city']}, {st}: {len(hits)} public-use airports")
+        # 4. the model's pick (--model-build / fetch), checked: a listed candidate and a quote found on the page
+        if not res and rid in model:
+            x = model[rid]
+            r = by_id.get((x.get("airport_id") or "").upper())
+            url = where(x.get("quote") or "")
+            if r and url and x["airport_id"].upper() in x["_candidates"]:
+                res = {"how": "model", "row": r, "page": url, "quote": x["quote"]}
+            else:
+                reasons.append("model: " + ("none" if x.get("why") == "none" else f"pick failed the checks ({x.get('why')})"))
+        if not res and not reasons:
+            reasons.append("no airport, code, city or state on the pages" if not (k.get("airports") or e["city"])
+                           else "no state to match in")
+        rec = {"school": e["website"] or e["name"], "record_id": rid, "state": st, "state_from": st_src}
+        if res:
+            r = res["row"]
+            rec.update(airport_id=r["airport_id"], airport_name=r["airport_name"], how=res["how"], page=res["page"],
+                       quote=res["quote"], city=e["city"])
+            e["airport_code"] = r["airport_id"]
+            e["airport_match"] = {"source": "public_page" if page else "site", "ref": res["page"], "quote": res["quote"],
+                                  "how": res["how"], "matched": f"{r['airport_id']} {r['airport_name']}",
+                                  "faa_id": r["faa_id"],
+                                  "retrieved": k["retrieved"].get(res["page"], PULLED)}
+            how_n[res["how"]] += 1
+        else:
+            e["airport_code"] = ""
+            e.pop("airport_match", None)
+            rec["unmatched"] = reasons
+            why_n[reasons[-1].split(":")[0].split(" ")[0] if reasons else "?"] += 1
+        out[rid] = rec
+    ADDED.write_text(json.dumps(entries, indent=1) + "\n")
+    AIRPORT_MATCH.write_text(json.dumps(out, indent=1) + "\n")
+    unmatched = [r for r in out.values() if "unmatched" in r]
+    stats(airports={"schools": len(entries), "by_how": dict(how_n), "unmatched": len(unmatched),
+                    "unmatched_why": dict(Counter(classify_why(r["unmatched"]) for r in unmatched))})
+    print(f"{len(entries)} schools: matched {dict(how_n)}; unmatched {len(unmatched)} "
+          f"{dict(Counter(classify_why(r['unmatched']) for r in unmatched))}")
+
+
+AIRPORT_QUESTIONS = """Business: {who}
+
+The pages below are this business's own pages (or a public page that names it). Which airport does the business fly
+from, as the pages say? Choose airport_id from the candidate list below (the open airports, seaplane bases and
+gliderports in {state} from the FAA's airport file). Answer airport_id "" if the pages do not name an airport, an
+airport identifier, or a place that identifies exactly one candidate; do not guess from the business name.
+- airport_id: one candidate's identifier exactly as listed, or "".
+- quote: the shortest text copied exactly from the pages that names that airport (its name, its identifier, or the
+  town it is in), and quote_url, the page it is on.
+
+Candidates (identifier | name | city):
+{candidates}
+
+Web pages:
+{pages}"""
+AIRPORT_PROPS = {"airport_id": {"type": "string"}, "quote": {"type": "string"}, "quote_url": {"type": "string"}}
+
+
+def airport_candidates(st, nasr, by_faa, by_id):
+    out = {}
+    for n in nasr:
+        if n["STATE_CODE"] == st and n["ARPT_STATUS"] == "O" and n["SITE_TYPE_CODE"] in ("A", "C", "G"):
+            r = table_row(n["ARPT_ID"], by_faa, by_id)
+            if r:
+                out[r["airport_id"].upper()] = (n["ARPT_ID"], n["ICAO_ID"], n["ARPT_NAME"], n["CITY"])
+    return out
+
+
+def cmd_airports_model_build(a):
+    """The additions `airports` left unmatched that have a state: one request each (Message Batches)."""
+    import haiku_batch as hb
+    import page_text as pt
+    m = m60()
+    match = json.loads(AIRPORT_MATCH.read_text())
+    idx = {e["candidate_id"]: e for e in json.loads((CLASSIFY_RUN / "index.json").read_text())}
+    pidx = {e["lead_id"]: e for e in json.loads((PAGE_RUN / "index.json").read_text())}
+    _, by_faa, by_id, nasr = airport_tables()
+    reqs, index = [], []
+    for rid, r in sorted(match.items()):
+        if "unmatched" not in r or not r["state"]:
+            continue
+        ix = pidx.get(rid) if rid.startswith("L") else idx.get(rid)
+        pgs = [{**p, "text": pt.read_page(p)} for p in (ix or {}).get("pages", [])]
+        block, sent = pt.pages_block(pgs, m.CAPS)
+        if not sent:
+            continue
+        cands = airport_candidates(r["state"], nasr, by_faa, by_id)
+        lines = "\n".join(f"{k} | {v[2].title()} | {v[3].title()}" for k, v in sorted(cands.items()))
+        cid = f"a{len(reqs):04d}"
+        reqs.append({"custom_id": cid, "params": pt.params(AIRPORT_QUESTIONS.format(
+            who=r["school"], state=r["state"], candidates=lines, pages=block), AIRPORT_PROPS, "medium", 4000)})
+        index.append({"custom_id": cid, "record_id": rid, "state": r["state"], "pages": ix["pages"]})
+    hb.write_run(AIRPORT_RUN, reqs, index, {"what": "67 airports model", "prompt": AIRPORT_QUESTIONS, "caps": m.CAPS})
+    print(f"{len(reqs)} requests -> {AIRPORT_RUN}")
+
+
+def cmd_airports_model_report(a):
+    """Model answers -> airport_model.json, each kept only if the airport is a listed candidate and its quote is on the
+    page and names exactly one candidate (its identifier, a distinctive word of its name, or its city)."""
+    import haiku_batch as hb
+    import page_text as pt
+    m = m60()
+    ans = hb.answers(AIRPORT_RUN)
+    _, by_faa, by_id, nasr = airport_tables()
+    out, st = {}, Counter()
+    for e in json.loads((AIRPORT_RUN / "index.json").read_text()):
+        x = ans.get(e["custom_id"]) or {}
+        cands = airport_candidates(e["state"], nasr, by_faa, by_id)
+        pick = (x.get("airport_id") or "").strip().upper()
+        q = (x.get("quote") or "").strip()
+        sent = m.sent_pages(pt, e)
+        on = any(pt.on_page(q, t) for _, t in sent) if q else False
+
+        def names(k):
+            faa, icao, name, city = cands[k]
+            toks = {w for w in ap_core(name).split() if len(w) > 2} | {faa.lower(), icao.lower(), k.lower()} - {""}
+            return toks, pt.norm(city)
+        qn = f" {pt.norm(q)} "
+        hits = [k for k in cands if any(f" {t} " in qn for t in names(k)[0]) or f" {names(k)[1]} " in qn]
+        ok = bool(pick) and pick in cands and on and hits == [pick]
+        why = ("none" if not pick else "not a candidate" if pick not in cands else "quote not on page" if not on
+               else f"quote names {len(hits)} candidates" if hits != [pick] else "ok")
+        st[why] += 1
+        out[e["record_id"]] = {"airport_id": pick if ok else "", "quote": q, "why": why, "_candidates": [pick] if ok else []}
+    (W / "airport_model.json").write_text(json.dumps(out, indent=1) + "\n")
+    print(f"model answers: {dict(st)}")
+
+
+def cmd_airports_sample(a):
+    """A seeded random N of the new matches (additions that had no airport before this step), each with the text
+    around its quote, for the hand check (labels in docs/hackers-2026-rc5-airport-check.csv)."""
+    import page_text as pt
+    m = m60()
+    before = {e["provenance"][0]["record_id"] for e in json.loads(Path(a.before).read_text()) if e["airport_code"]}
+    match = json.loads(AIRPORT_MATCH.read_text())
+    new = sorted(rid for rid, r in match.items() if r.get("airport_id") and rid not in before)
+    smp = random.Random(a.seed).sample(new, min(a.n, len(new)))
+    idx = {e["candidate_id"]: e for e in json.loads((CLASSIFY_RUN / "index.json").read_text())}
+    pidx = {e["lead_id"]: e for e in json.loads((PAGE_RUN / "index.json").read_text())}
+    with open(W / f"airport_sample_{a.seed}.txt", "w") as f:
+        for rid in smp:
+            r = match[rid]
+            ix = pidx.get(rid) if rid.startswith("L") else idx.get(rid)
+            text = dict((pt.clean_url(u), t) for u, t in m.sent_pages(pt, ix)).get(r["page"], "")
+            flat = " ".join(text.split())
+            i = flat.lower().find(r["quote"].lower().split(",")[0])
+            f.write(f"\n{'=' * 90}\n{rid} {r['school']} | {r['how']} | {r['airport_id']} {r['airport_name']} | "
+                    f"state {r['state']} ({r['state_from']}) city {r.get('city')}\n  page {r['page']}\n  quote {r['quote']!r}\n"
+                    f"  context: {flat[max(0, i - 300):i + 300] if i >= 0 else '(quote not located)'}\n")
+    stats(airports={**json.loads((W / "stats.json").read_text()).get("airports", {}), "new_matches": len(new)})
+    print(f"{len(new)} new matches; sample of {len(smp)} -> {W / f'airport_sample_{a.seed}.txt'}")
+
+
+def classify_why(reasons):
+    t = " | ".join(reasons)
+    if "model: none" in t:
+        return "the model found none on the pages"
+    if "pick failed" in t:
+        return "the model's pick failed the checks"
+    if "airport names on the pages" in t or "airports of that name" in t:
+        return "ambiguous: several airports match"
+    if "not in airports.csv" in t or "is in" in t:
+        return "a code that is not in the table or is in another state"
+    if "public-use airports" in t:
+        return "city with no or several public-use airports"
+    if "without a state" in t or "no state" in t:
+        return "no state on the pages or public lists"
+    if "not found again" in t:
+        return "the copied airport text is not on the pages"
+    return "no airport, code or city on the pages"
+
 # ── School domains that now serve unrelated content ──────────────
 
 GAMBLING = re.compile(r"\b(slot gacor|slot online|situs slot|judi|togel|casino|poker online|sbobet|bandar|taruhan|"
@@ -1196,6 +1503,9 @@ NOTES = {  # narrative sections of the report; the numbers in them were measured
         {"gate": "Hand check of 30 seeded additions, at least 25 correct",
          "command": "$PY scripts/67_lead_schools.py sample --n 30 --seed 20261106",
          "result": "round 1: 25 of 30 (rule tightened); round 2: **29 of 30**"},
+        {"gate": "Airports for the additions: 20 seeded new matches read against their quotes, at least 18 correct",
+         "command": "$PY scripts/67_lead_schools.py airports-sample --n 20 --seed 20261106 --before <file>",
+         "result": "**20 of 20**"},
         {"gate": "Release build's own checks and the release check against rc4 and v0.3",
          "command": "research/FlightSchoolMapping/scripts/build_rc5.sh <commit>", "result": "**PASS**: pytest 29 passed; every stage ran, 42 wrote `v0.4-20261105-rc5: 33 files, 2354 MB`; "
                    "against rc4: 2,836 to 2,911 school pages, 0 control schools changed, 13 removed for a lapsed domain, "
@@ -1232,10 +1542,8 @@ cf pages deployments rollback 33eb2273-64ed-43b8-8551-f27666555260 && T=$(mktemp
   && printf '{"release": "v0.4-20261105-rc4"}' > "$T" && npx -y wrangler@4 r2 object put aether-public/latest.json \\
   --file "$T" --content-type application/json --cache-control "public, max-age=60" --remote""",
     "wrong": [
-        "**Most additions have no airport.** 105 of the 156 carry no airport identifier: pages name airports in words "
-        "(\"Falwell Airport\") and ingest keeps identifiers only, so those schools have no location in "
-        "`flight_line.json` and no airport in the explorer. Mapping names to NASR identifiers is a ROADMAP item; "
-        "existing schools' airports were not touched.",
+        "**Some additions still have no airport** (25 of 156, below): their pages name no airport, code or town "
+        "that identifies one, or no state is known. None was guessed.",
         "**Public-page schools carry almost nothing.** The 25 schools added from an airport or state page have a name "
         "and provenance but no phone or street address (by rule) and usually no city: the page rarely says, and the "
         "lead lists' states were not used for stored values.",
@@ -1258,7 +1566,6 @@ cf pages deployments rollback 33eb2273-64ed-43b8-8551-f27666555260 && T=$(mktemp
     ],
     "not_done": [
         "Leads found only on Facebook (25) are left out: our identified crawler gets a login page.",
-        "No airport-name-to-identifier mapping for the additions (see above).",
         "The 49 ambiguous name pairs `dedupe` prints were read; the five closest "
         "(DoubleDay Aviation and Flight School of Greenville, FlyWaterloo and Fly There, McLaren Flight Academy and "
         "3 Amigos Flying Club, Sierra Aero and Tahoe Flying Club, Accelerated Flight Academy and Accelerated Flight "
@@ -1281,6 +1588,10 @@ for r in http browser; do $X submit --run $R/extract/$r --model claude-haiku-5-5
   $X fetch --run $R/extract/$r --model claude-haiku-5-5 --effort medium --wait
   $PY scripts/57_added_schools.py merge-extract --run $R/extract/$r --model claude-haiku-5-5; done
 $PY scripts/61_contact_provenance.py report && $PY scripts/21_build_flight_line.py && $PY scripts/22_pdf_rate_sheets.py --offline
+$S airports && $S airports-model-build && $S submit --run $R/airports_model --max-usd 1.5 \
+  && $S fetch --run $R/airports_model && $S airports-model-report && $S airports
+$S airports-sample --n 20 --seed 20261106 --before <added_schools_rc5.json before airports>
+$PY scripts/21_build_flight_line.py && $PY scripts/22_pdf_rate_sheets.py --offline
 $S check && $PY scripts/57_added_schools.py check --reference <rc4 flight_line.json>
 bash scripts/build_rc5.sh <hackers-talk commit>
 $S report""",
@@ -1293,7 +1604,8 @@ def batch_costs():
     for label, run in (("Classify sites (Message Batches, Haiku 5.5)", CLASSIFY_RUN),
                        ("Classify public pages (Message Batches)", PAGE_RUN),
                        ("Extract fleets and prices, HTTP pages (Message Batches)", EXTRACT / "http"),
-                       ("Extract fleets and prices, browser pages (Message Batches)", EXTRACT / "browser")):
+                       ("Extract fleets and prices, browser pages (Message Batches)", EXTRACT / "browser"),
+                       ("Airports for the additions, model step (Message Batches; $1.50 cap)", AIRPORT_RUN)):
         log = run / "log.jsonl"
         ev = [json.loads(x) for x in log.open()] if log.exists() else []
         fetched = [e for e in ev if e.get("event") == "fetch"]
@@ -1468,6 +1780,39 @@ def cmd_report(a):
                    [[f"type: {k}", v] for k, v in sorted(ing.get("by_type", {}).items(), key=lambda x: -x[1])] +
                    [["list tails", ck.get("with_tails", "?")], ["list only makes and models", ck.get("models_only", "?")],
                     ["tail rows", ck.get("tail_rows", "?")], ["tails shared with a school we already had", ck.get("shared_tails", "?")]]))
+    ap = st.get("airports", {})
+    if ap:
+        hw = ap.get("by_how", {})
+        apc = list(csv.DictReader((REPO / "docs" / "hackers-2026-rc5-airport-check.csv").open())) \
+            if (REPO / "docs" / "hackers-2026-rc5-airport-check.csv").exists() else []
+        L.append("\n## Airports for the additions\n")
+        L.append(f"`67 airports` gives each addition the airport its cited pages name, recorded in the school's "
+                 f"`locations` with provenance (the page, the quoted text, how it was matched, and the row it matched). "
+                 f"**{sum(hw.values())} of {ap.get('schools', 0)}** have an airport now (51 had one before, all "
+                 f"still the same airport); {ap.get('unmatched', 0)} have none. Existing schools' airports are "
+                 f"untouched (`57 check`).\n")
+        L.append("Order of matching, each on text found again verbatim on a page the classifier read (no page was "
+                 "refetched): (1) **code**, an identifier the pages give, alone or in parentheses after a name, found in "
+                 "`output/airports.csv` and in the school's state; (2) **name**, an airport name the pages give whose "
+                 "words (less generic ones such as Airport, Field, Regional) equal exactly one airport's in the state, "
+                 "or a full airport name from the table for that state found on the pages when only one is; with no "
+                 "state, only an exact full name unique in the whole table; (3) **city**, the city and state the "
+                 "pages give with exactly one open public-use airport in FAA NASR (2026-10-29); (4) **model**, Haiku "
+                 "5.5 choosing from the state's open airports, seaplane bases and gliderports, kept only if its quote "
+                 "is on the page and names that candidate and no other. The state is the page's, else a public "
+                 "(non-AOPA) lead list's, used for matching only. Stored identifiers use `airports.csv`'s "
+                 "`airport_id` (Meadow Lake, FAA FLY, is `K00V`), as the rest of `flight_line.json` does.\n")
+        L.append(table(["How matched", "Schools"], [[k, v] for k, v in sorted(hw.items(), key=lambda x: -x[1])] +
+                       [["**none**", ap.get("unmatched", 0)]]))
+        L.append("\n" + table(["Why no airport", "Schools"],
+                               [[k, v] for k, v in sorted(ap.get("unmatched_why", {}).items(), key=lambda x: -x[1])]))
+        if apc:
+            ok = sum(1 for r in apc if r["label"] == "correct")
+            L.append(f"\nHand check (`67 airports-sample --n 20 --seed 20261106`, 20 of the "
+                     f"{ap.get('new_matches', '?')} schools that had no airport before, each quote read in context "
+                     f"against the airport matched; labels in "
+                     f"[`hackers-2026-rc5-airport-check.csv`](hackers-2026-rc5-airport-check.csv)): **{ok} of "
+                     f"{len(apc)} correct** (gate: 18).\n")
     L.append("\n## Hand check\n")
     if hand:
         r1 = [h for h in hand if h["round"] == "1"]
@@ -1542,11 +1887,15 @@ def main():
     sp.add_argument("--workers", type=int, default=6)
     sp.add_argument("--limit", type=int, default=0)
     for c in ("report", "search-report", "targets", "browser-targets", "pages", "classify-build", "classify-report", "dedupe",
-              "ingest", "check"):
+              "ingest", "check", "airports", "airports-model-build", "airports-model-report"):
         sub.add_parser(c)
     dm = sub.add_parser("domains")
     dm.add_argument("--fetch", action="store_true", help="a homepage GET for domains with no November text")
     dm.add_argument("--show", default="unrelated_candidate", help="which flags to print (or all)")
+    asm = sub.add_parser("airports-sample")
+    asm.add_argument("--n", type=int, default=20)
+    asm.add_argument("--seed", type=int, default=20261106)
+    asm.add_argument("--before", required=True, help="added_schools_rc5.json as it was before `airports`")
     sm = sub.add_parser("sample")
     sm.add_argument("--n", type=int, default=30)
     sm.add_argument("--seed", type=int, default=20261106)
@@ -1559,7 +1908,9 @@ def main():
     {"leads": cmd_leads, "search": cmd_search, "search-report": cmd_search_report, "targets": cmd_targets,
      "browser-targets": cmd_browser_targets, "pages": cmd_pages, "classify-build": cmd_classify_build,
      "classify-report": cmd_classify_report, "dedupe": cmd_dedupe, "ingest": cmd_ingest, "check": cmd_check,
-     "sample": cmd_sample, "domains": cmd_domains, "report": cmd_report}[a.cmd](a)
+     "sample": cmd_sample, "domains": cmd_domains, "report": cmd_report, "airports": cmd_airports,
+     "airports-model-build": cmd_airports_model_build, "airports-model-report": cmd_airports_model_report,
+     "airports-sample": cmd_airports_sample}[a.cmd](a)
 
 
 if __name__ == "__main__":

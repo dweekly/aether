@@ -387,7 +387,10 @@ def add_late_schools(directory):
             "aopa_id": "",
             "locations": [{"airport_id": e["airport_code"], "airport_name": "", "lat": None, "lon": None,
                            "label": ("from the school's site" if e["provenance"][0]["list"] in ("google_places", "rc5_leads")
-                                     else "listed by " + e["provenance"][0]["list"])}] if e.get("airport_code") else [],
+                                     else "listed by " + e["provenance"][0]["list"]),
+                           # 67 airports: the page, the quoted text and how it was matched to the identifier
+                           **({"provenance": e["airport_match"]} if e.get("airport_match") else {})}]
+                         if e.get("airport_code") else [],
             "contact": {"phone": e.get("phone", ""), "email": "", "website": e.get("website", ""),
                         "address": e.get("address") or ", ".join(x for x in (e.get("city", ""), e.get("state", "")) if x)},
             "faa_entities": [],
@@ -888,6 +891,27 @@ def write_json_atomic(path, obj):
     tmp.replace(path)
 
 
+
+def rc5_airport(locations, dir_entry):
+    """67_lead_schools.py airports: the airport a rc5 school's cited page names, with its provenance. If the fleet
+    extraction already lists that airport, the provenance goes on that location; otherwise it is listed first.
+    Only rc5 additions carry it, so no other school's locations change."""
+    lm = next((l for l in dir_entry.get("locations") or [] if l.get("provenance")), None)
+    if not lm or (dir_entry.get("provenance") or [{}])[0].get("list") != "rc5_leads":
+        return locations
+
+    def n(x):
+        x = (x or "").upper().strip()
+        return x[1:] if len(x) == 4 and x[0] == "K" else x
+    ids = {n(lm["airport_id"]), n(lm["provenance"].get("faa_id"))} - {""}
+    out = [dict(l) for l in locations]
+    same = [l for l in out if n(l.get("airport_id")) in ids]
+    if same:
+        same[0]["provenance"] = lm["provenance"]
+        same[0]["airport_id"] = lm["airport_id"]  # the table's identifier (an extraction can write "K3AU" for 3AU)
+        return out
+    return [lm] + out
+
 def build_flight_line(dry_run=False, diff=False, out_path=None):
     ts = datetime.now(timezone.utc).isoformat()
     print(f"=== Build flight_line.json — {ts} ===\n")
@@ -944,6 +968,7 @@ def build_flight_line(dry_run=False, diff=False, out_path=None):
         locations = rec.get("locations") or []
         if not locations and dir_entry.get("locations"):
             locations = dir_entry["locations"]
+        locations = rc5_airport(locations, dir_entry)
 
         contact = rec.get("contact", {})
         csrc = dict(rec.get("_contact_src") or {})
