@@ -42,6 +42,6 @@ Everything fits in one Essential month at the doubled credits, except that the f
 - Aggregates only. Never tails or owners for LLC findings. FR24 rows stay in a git-ignored `data/fr24/` cache.
 - Every finding states that FR24 was the source and where its coverage stops.
 
-## Blocked on David
+## Subscription
 
-FR24 account and Essential subscription ($90/month, cancel anytime), then `FR24_API_TOKEN` in `/Users/dew/dev/aether/.env`. I can't create the account or pay.
+Essential started 2026-11-06 ($90/month). The token is in `/Users/dew/dev/aether/.env` as `FR24_API_TOKEN`. **Cancel before the renewal around 2026-12-06** once the pulls are done; there's a Todoist reminder for 2026-11-30.
