@@ -169,3 +169,4 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
 - Deduplicate `src/data/` and `public/data/` in website (charts fetch from public/)
 - OG images for stories (screenshot a chart)
 - Mobile testing pass on all chart components
+- aether-flight.com serves its home page with status 200 for unknown paths (e.g. a removed school's page); serve a real 404 so removed pages drop out of search indexes.

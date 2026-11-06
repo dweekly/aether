@@ -488,7 +488,11 @@ The airport step's model call had its own $1.50 cap; the rest counts against the
 - `research/FlightSchoolMapping/output/lapsed_domains.json`: 140 domains whose schools 38 leaves out of the release.
 - Release `v0.4-20261105-rc5` on trogdor in `/mnt/data/home/dew/dev/aether-addschools/research/FlightSchoolMapping/data/release/`, built by `scripts/build_rc5.sh` from a detached worktree (`aether-desc-build`) of the commit in its `BUILD.txt`. Ready for `36_publish_r2.py`; nothing was uploaded, deployed or pointed at. The first build (before `67 airports`) is kept beside it as `v0.4-20261105-rc5-pre-airports`.
 
-## Publish (not run; David's call)
+## Published
+
+Published 2026-11-06 with David's go: downloads to R2 `v/v0.4-20261105-rc5/` (34 files; manifest checked), site deployment `477ae231` (2,911 school pages; new school pages and the removal of lapsed-domain schools checked live), then `latest.json` pointed at `v0.4-20261105-rc5`. Rollback to rc4 is the command below; its deployment id `33eb2273` was the live one before this publish.
+
+## Publish commands (as run)
 
 On monster4, from `/Users/dew/dev/aether-talk`. Downloads first, then the site, the pointer last, as for rc4:
 
