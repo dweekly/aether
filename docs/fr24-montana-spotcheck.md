@@ -22,6 +22,28 @@
 - With 22 aircraft the uncertainty is wide: 15 of 22 has a 95% interval of roughly 45% to 86%. Say "about two-thirds, maybe more" until the API run.
 - Our ADS-B home-base inference is biased wherever receiver coverage is thin, Montana included. That affects inferred school airports in rural states too.
 
+## Full run (Flightradar24 API, 2026-11-06)
+
+**Method.** Frame: all 2,829 valid FAA registrations with a Montana address and registrant type LLC (registry on trogdor, read-only). `fr24sdk` 0.3.1, flight summary light, 15 registrations per call, 26 fourteen-day windows from 2025-11-07 to 2026-11-06; 524,670 credits. A landing day is a date with a flight ending at a US airport, mapped to its state with `output/airports.csv`. Scripts and per-flight rows stay in the session scratchpad (`run_mt.py`, `analyze_mt.py`); FR24 data is not republished.
+
+| | Aircraft |
+|---|---|
+| In frame | 2,829 |
+| No FR24 flight in 12 months (grounded, untracked, or blocked) | 1,173 |
+| At least one landing seen | 1,656 |
+| Never landed in Montana | 1,142 (69%) |
+| Montana not the state with the most landing days | 1,325 (80%) |
+| Montana under 10% of landing days | 1,247 (75%) |
+| 90+ Montana landing days | 34 |
+| Flew regularly (20+ landing days) | 836 |
+| ... of which never landed in Montana | 535 (64%) |
+
+Median Montana landing days 0; median total landing days 20. Busiest state across the 1,656: Montana 331, Texas 159, California 145, Florida 132, Arizona 95, Utah 90, Colorado 62, Idaho 52. Among the 535 regular flyers that never landed in Montana: Texas 82, California 65, Florida 62, Arizona 43, Utah 35, Colorado 26.
+
+**Our inference against FR24.** Of 607 aircraft with an inferred home in our ADS-B table, our in-or-out-of-Montana call disagrees with FR24's busiest state for 58 (10%).
+
+**Limits.** Busiest state counts landing days, not where a plane is hangared. FR24's own Montana coverage is thin too, which would undercount Montana landings; that biases against the finding. The 1,173 unseen aircraft are excluded, not counted as absent from Montana.
+
 ## Next
 
-Run the Essential API over the full frame: flight summary light for 12 months, landing days by state (~100k credits for 776 aircraft). Re-check inferred home bases against FR24 in low-coverage states. See [fr24-api-plan.md](fr24-api-plan.md).
+Done for Montana (above). Remaining: re-check inferred home bases against FR24 in low-coverage states. See [fr24-api-plan.md](fr24-api-plan.md).
