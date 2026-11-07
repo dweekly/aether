@@ -1,0 +1,193 @@
+{
+  "blocked_sites": 207,
+  "control_sites": 2651,
+  "probed_live": 207,
+  "nov_code": {
+    "403": 99,
+    "202": 94,
+    "200": 10,
+    "401": 2,
+    "503": 1,
+    "429": 1
+  },
+  "nov_saved_page": 121,
+  "nov_saved_vendor": {
+    "other:block": 59,
+    "SiteGround:challenge": 35,
+    "WordPress.com:challenge": 18,
+    "Cloudflare:challenge": 4,
+    "other:page": 4,
+    "Akamai:block": 1
+  },
+  "live_status": {
+    "202": 102,
+    "200": 68,
+    "403": 21,
+    "None": 7,
+    "429": 5,
+    "401": 2,
+    "500": 2
+  },
+  "live_vendor_kind": {
+    "SiteGround:challenge": 102,
+    "WordPress.com:page": 35,
+    "Cloudflare:page": 24,
+    "Cloudflare:challenge": 14,
+    "other:page": 8,
+    "none:error": 7,
+    "other:block": 6,
+    "Cloudflare:block": 4,
+    "Squarespace:block": 2,
+    "Akamai:block": 1,
+    "Vercel:challenge": 1,
+    "other:error": 1,
+    "Cloudflare:error": 1,
+    "CloudFront:page": 1
+  },
+  "vendor_how": {
+    "SiteGround:challenge": 102,
+    "Cloudflare:browser_ua_served": 24,
+    "WordPress.com:browser_ua_served": 19,
+    "WordPress.com:challenge": 17,
+    "Cloudflare:challenge": 14,
+    "other:browser_ua_served": 7,
+    "none:error": 7,
+    "other:block": 6,
+    "Cloudflare:block": 4,
+    "Squarespace:block": 2,
+    "Akamai:block": 1,
+    "Vercel:challenge": 1,
+    "other:error": 1,
+    "Cloudflare:error": 1,
+    "CloudFront:browser_ua_served": 1
+  },
+  "vendor": {
+    "SiteGround": 102,
+    "Cloudflare": 43,
+    "WordPress.com": 36,
+    "other": 14,
+    "none": 7,
+    "Squarespace": 2,
+    "Akamai": 1,
+    "Vercel": 1,
+    "CloudFront": 1
+  },
+  "how": {
+    "challenge": 134,
+    "browser_ua_served": 51,
+    "block": 13,
+    "error": 9
+  },
+  "live_redirect_away": 16,
+  "slide_group": {
+    "SiteGround": 102,
+    "Cloudflare": 35,
+    "WordPress.com": 33,
+    "Other hosts and firewalls": 17,
+    "Moved or for sale": 11,
+    "Unreachable now": 9
+  },
+  "slide_group_mechanism": {
+    "SiteGround: refuses a browser user agent too": 102,
+    "WordPress.com: serves a browser user agent": 33,
+    "Cloudflare: refuses a browser user agent too": 18,
+    "Cloudflare: serves a browser user agent": 17,
+    "Other hosts and firewalls: refuses a browser user agent too": 9,
+    "Other hosts and firewalls: serves a browser user agent": 8
+  },
+  "siteground_archive_last_2026": {
+    "none": 64,
+    "200": 35,
+    "202": 3
+  },
+  "timeline_sites": 207,
+  "platform_share": {
+    "SiteGround": {
+      "refuse": 102,
+      "served": 1
+    },
+    "WordPress.com": {
+      "refuse": 33,
+      "served": 0
+    },
+    "Cloudflare": {
+      "refuse": 35,
+      "served": 772
+    }
+  },
+  "siteground_hosted": {
+    "blocked": 103,
+    "control": 1,
+    "blocked_challenged_now": 102
+  },
+  "robots_blocked": {
+    "sites": 207,
+    "robots_now_readable": 75,
+    "robots_then_readable": 116,
+    "robots_both_readable": 47,
+    "ai_full_block_now": 7,
+    "ai_full_block_then_of_both": 3,
+    "ai_full_block_now_of_both": 6,
+    "ai_full_block_added_of_both": 4,
+    "ai_full_block_removed_of_both": 1,
+    "ai_any_named_added_of_both": 4,
+    "cf_managed_now": 2,
+    "cf_managed_added_of_both": 2,
+    "content_signal_now": 4,
+    "wildcard_full_now": 4,
+    "host_from_robots_answer": {
+      "SiteGround": 92,
+      "Cloudflare": 44,
+      "WordPress.com": 38,
+      "other": 22,
+      "Squarespace": 2,
+      "Vercel": 1,
+      "CloudFront": 1
+    },
+    "added_examples": [
+      "enhancedaero.com",
+      "firstlandings.com",
+      "mlbflight.com",
+      "sweetaviation.com"
+    ]
+  },
+  "robots_control": {
+    "sites": 2651,
+    "robots_now_readable": 1995,
+    "robots_then_readable": 165,
+    "robots_both_readable": 146,
+    "ai_full_block_now": 103,
+    "ai_full_block_then_of_both": 3,
+    "ai_full_block_now_of_both": 6,
+    "ai_full_block_added_of_both": 5,
+    "ai_full_block_removed_of_both": 2,
+    "ai_any_named_added_of_both": 13,
+    "cf_managed_now": 67,
+    "cf_managed_added_of_both": 4,
+    "content_signal_now": 111,
+    "wildcard_full_now": 28,
+    "host_from_robots_answer": {
+      "other": 1292,
+      "Cloudflare": 772,
+      "Squarespace": 198,
+      "Wix": 82,
+      "Vercel": 26,
+      "Google": 24,
+      "CloudFront": 22,
+      "Sucuri": 17
+    },
+    "added_examples": [
+      "51as.org",
+      "acronaviation.com",
+      "aeroatlanta.com",
+      "avelflightschool.com",
+      "birddogflightservices.com"
+    ]
+  },
+  "gates": {
+    "blocked_rebuilt": true,
+    "probed_live_90pct": true,
+    "control_robots_answer_50pct": true
+  },
+  "all_gates_pass": true
+}

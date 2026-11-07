@@ -217,6 +217,8 @@ base_INPUTS = \
   $(OUT)/aopa_flight_schools.json \
   $(OUT)/faa_discovered_schools.json \
   $(OUT)/expansion_extract.jsonl \
+  $(OUT)/flight_schools_enriched.json \
+  $(OUT)/added_extract.jsonl \
   $(OUT)/fleet_browser_extract_results.jsonl \
   $(OUT)/fleet_browser_extract_index.json \
   $(OUT)/fleet_extract_results.jsonl \

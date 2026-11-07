@@ -66,6 +66,7 @@ def main():
     ap.add_argument("--release", required=True)
     ap.add_argument("--threshold", type=float, default=0.5)
     ap.add_argument("--op-threshold", type=float, default=0.7)
+    ap.add_argument("--seed", type=int, default=7, help="fold assignment and model seed")
     a = ap.parse_args()
     rel = RELEASES / a.release
     results = json.loads((rel / "results.json").read_text())
@@ -93,7 +94,8 @@ def main():
                median(l.airborne_min)                                               AS median_leg_min
         FROM legs l JOIN ac ON ac.hex = l.hex
         GROUP BY ALL HAVING count(*) >= {MIN_LEGS}
-    """).fetchall()
+        ORDER BY ac.n_number
+    """).fetchall()  # ordered: StratifiedKFold assigns folds by row position, and GROUP BY order is not stable
     cols = ["n", "hex", "home", "registrant", "mfr", "model", "type", "registrant_type", "legs",
             "same_airport_share", "short_share", "low_share", "legs_per_day", "days_share", "airports",
             "weekday_share", "lesson_share", "median_leg_min"]
@@ -118,8 +120,8 @@ def main():
         seen = Counter(mk[i] for i in train_idx)
         return np.array([pos[m] / seen[m] if seen[m] else 0.0 for m in mk])
 
-    model = HistGradientBoostingClassifier(max_iter=300, learning_rate=0.08, class_weight="balanced", random_state=7)
-    cv = StratifiedKFold(5, shuffle=True, random_state=7)
+    model = HistGradientBoostingClassifier(max_iter=300, learning_rate=0.08, class_weight="balanced", random_state=a.seed)
+    cv = StratifiedKFold(5, shuffle=True, random_state=a.seed)
     scores = np.zeros(len(data))
     for tr, te in cv.split(Xb, y):  # the label-derived prior is rebuilt inside every fold
         X = np.column_stack([Xb, model_prior(tr)])

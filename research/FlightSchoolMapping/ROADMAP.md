@@ -24,6 +24,41 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
 - Schools with PDF rate sheets not yet extracted (Phase 5 pipeline exists but incomplete)
 - Re-crawl schools whose websites have changed since initial scrape
 
+### Part 141 coverage gaps (found 2026-11-03)
+- **Some Part 141 certificate holders in `faa-141-flightschools.csv` never reach
+  `flight_line.json`.** `scripts/probes/match_external_school_lists.py` finds no match for 45
+  of 519 certificates; a spot check puts about 12 of those down to name misses, leaving up to
+  about 25 real gaps (e.g. JC Air Academy, Aero Tech Academy, Orlando Flight Academy, World
+  Wide Wings). SEVP's and VA's flight-school lists turned up the same schools. See
+  `docs/hackers-2026-state-registries.md` section 5.
+- **University of North Dakota has no Grand Forks location** (only its Mesa site and the
+  "UND AEROSPACE FOUNDATION" owner record).
+- **"Atp Flight Academy" at KA39 carries the domain `auburn.edu`**, so any domain join sends
+  Auburn records to ATP.
+- **Ingest the Michigan (MDOT) and Minnesota (MnDOT) state flight-school license lists**, free PDFs
+  with about 40 schools we lack (about 23 in MI, 17 in MN), plus Alaska ACPE's three. Same doc,
+  sections 3 and 5.
+
+### Airport assignments and gap leads (found 2026-11-04, `docs/hackers-2026-gap-sources.md`)
+- **Wrong or missing school airports hide schools we already have.** Of 23 NASR INSTR/RNTL airports
+  with the strongest unlisted ADS-B training signal, 18 host a school that is in our list under another
+  airport or none: KPWT (Bremerton, WA) for Nationwide Aviation's Weatherford TX base (WEA), KAVL for
+  Dillons Aviation at Pitt-Greenville, Tucson only for Epic Flight Academy (main base EVB), K1R7 for
+  Hinds CC (JVW), K8A0 for Wallace State (CMD), KM66 for Hesston (EWK), K4C8 for Indian Hills (OTM),
+  KTZR for Aviation Works (VTA), KAMA for Coyote Flight (TDW), K9A5 for Phoenix Air (VPC); no airport
+  at all for Aces (UZA), Next Level (JCA), BRAG (MWL). 7.5% of listed airports are in a different state
+  from the school's address. Fix the identifiers, then rerun 65 to see the real gap.
+- **Lapsed school domains** (140 in `output/lapsed_domains.json`, `docs/hackers-2026-rc5-additions.md`):
+  38 leaves those schools out of the release from rc5 on; their records stay in `flight_line.json`.
+  Look for each operation's current site (several may have moved) and re-point or retire the record.
+- **rc5 additions with no airport** (19 of 156 after `67 airports`): pages that name no airport or town that
+  identifies one. The fleet extraction's locations, for every school, carry no provenance and sometimes
+  malformed identifiers (`K3AU`); `67 airports`' matching could check them all.
+- **One flying-club rule for sites and public pages**: 60's site prompt rejects clubs that describe
+  aircraft access but no instruction; 67's public-page prompt accepts them. Pick one and re-run both.
+- **The matcher misses initials written with periods** ("FIT Aviation" vs "F.I.T. Aviation, LLC"): squash
+  single-letter runs in `variants()` in `probes/match_external_school_lists.py`.
+
 ### Story ideas
 - "Which training fleets are actually flying?" — ADS-B activity rates vs. fleet size
 - "The GA training fleet is old" — age distribution, regional differences
@@ -44,6 +79,34 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
   redistributed, so it must never be published wholesale.
 
 ## After the panel
+- Fleet extraction misses tails that sit in image file names, alt text and POH or checklist
+  links: of the 62 unlisted operations confirmed in November, 30 were found by a text match the
+  extraction missed, and in 21 of those the tail sat only in such places
+  (docs/hackers-2026-unlisted-operations.md). Feed image names and alt text to the extraction,
+  or add a deterministic N-number pass over raw HTML checked against the registry.
+- The 13 confirmed schools and clubs the March search missed went through
+  `57_added_schools.py` (docs/hackers-2026-added-schools.md): 5 added, 8 were already ours
+  under another domain or as FAA registrant records. Still open: the 40 known sites whose
+  tails March missed.
+- Attach the websites now known to FAA-registrant-only records (RD AIRE LLC, AEROLANDING LLC,
+  FLY VERMONT LLC, FMFA INC, GC AVIATION SERVICES-1 LLC dba First Flight Aviation), and move
+  schools whose domain changed (Lincoln Skyways to lincolnskyways.com, Nulton to
+  flynultonaviation.com; Pilot Training Center Homestead now calls itself Orient Flight
+  School; flightschooljackson.com redirects to Solo Aviation). These edit existing records,
+  so the added-schools pass left them alone. `38_schools.py` drops registrant-only records
+  whose names lack an operator word, which is why RD Aire, AeroLanding, Fly Vermont and FMFA
+  counted among the 372 "missing" operations although `flight_line.json` holds them.
+- 09a's `clean_html` still empties Elementor sites: Elementor marks every content block
+  `elementor-widget`, which the boilerplate filter deletes. The `<body>` fix un-empties 429 of
+  the 529 emptied March pages whose `<body>` matched; 100 stay emptied
+  (`scripts/probes/clean_html_body_fix.py --n 0`). Match whole class tokens, or never delete
+  an element holding most of the page's text. The browser pass covers these sites today.
+- `40_training_detect.py` is not deterministic: six runs on the v0.3 inputs gave 376, 372,
+  366, 360, 364 and 353 unlisted operations (2026-11-04). Unverified cause: the feature query
+  `GROUP BY`s without `ORDER BY`, and StratifiedKFold assigns folds by row position. Add an
+  `ORDER BY` and re-check that two runs match.
+- `56_fsai_directory.py`'s `TRAINING_TEXT` has `cfi\\b` inside a raw string, which matches a
+  literal backslash, so "CFI" never counts as training text.
 - Match the FAA Part 141 certificate list (`faa-141-flightschools.csv`, UTF-16, tab-separated)
   to school records, for a "Part 141" flag.
 - 2023 archive backfill (adsb.lol starts 2023-02-16) and the 2022-07 → 2023-02 gap, which no
@@ -67,11 +130,37 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
   yesterday?" also needs a position index (e.g. H3 cell × hour × hex) built during
   reduction, which the aircraft-day/leg tables do not keep.
 
+## Hardening
+- AOPA web-app keys (client secret, API token, Coveo token) moved to `.env` on 2026-11-05 but remain in git history (08b, 08c, 09, 09a, README since March). Before the repo goes public: publish a fresh-history copy or rewrite history; add a gitleaks pre-commit hook so keys can't come back.
+- Audit the 1,525 registry-only school records (FAA registrants added for operator words, no website): they hold 821 of the 900 post-2010 Pipers attributed to school fleets and include non-schools (Georgia Aviation Authority, 44 Pipers) and lessor LLCs. Figures that use all school fleets (the NTSB school rate, year-built shares) mix them in; the year-built slide now uses website-listed fleets only (2026-11-05).
+- Delete Google Places content by 2026-12-03 (`59_google_places.py purge`): the Places terms allow caching coordinates for at most 30 days and nothing else but place IDs; details.json, websites.json and the matcher CSVs hold names, addresses, labels, coordinates and websites from 2026-11-04. The trogdor clone `aether-addschools` holds copies (`data/research-2026-11/google/c_google_matched.csv`, `place_ids.json`, `site_checks.json`) and `google/schools/candidates.json` (Google names and addresses kept for 60's dedupe): delete those too.
+- Key schools on site-builder hosts by host and path: flight_line has a school whose domain is `sites.google.com`, which any other Google Sites school would collide with (60 skips the domain rule for that host; docs/hackers-2026-google-schools.md).
+- Link FAA-discovered registrant records to the website school that flies their tails: some are the same operation counted twice (myflighttime.com and FLY AVIATION CORP, 5starflight.com and CASH MANAGEMENT CONSULTING LLC, flydtpa.com and ROTORMATE LLC), others are leaseback owners listed as schools. `60 check` prints the shared tails.
+- 35 picks a tail's last 8 legs by `row_number()` over `start_ts`, which ties; add a tie-break so two runs agree (N4084H differs between identical runs).
+- Render `contact` (school's own name, phone, address, hours, each with its source link) on the explorer school page; rc2 carries it as data only.
+- 61 has no cached page text for 571 school websites (247 never crawled); fetching each one's contact page would fill phone, address and hours from its own site.
+- Remove or relabel non-training records found by the contact check: centralarkansasskydiving.com (skydiving), sundogparagliding.com (paragliding).
+- `58_airmen_llc_join.py` places addresses at ZIP centroids and takes airports from OurAirports
+  types; geocoded addresses and the FAA's public-use airport list would make the
+  "near an airport with no school" count exact.
+- 58's shuffled-address control mostly produces addresses that don't exist, so it is generous to
+  the real join; a control drawn from a real address list (OpenAddresses, county parcels) would
+  be a fair null. The surname checks carry the evidence meanwhile.
+- 58 normalizes street 1 only; a USPS CASS pass on both files would catch FIRST/1ST and units in
+  street 2.
+- `52_florida_owners.py`'s pilot validation counts remote-pilot-only airmen as pilots, keeps name
+  suffixes (JR, SR) in the surname it searches for, and uses the October airmen file; 58 measures
+  the same check with those fixed. 52 also breaks ties between same-named Florida entities
+  arbitrarily, so its counts move by a few aircraft between runs (6,220 in the probe, 6,225 in
+  the doc, 6,223 here); 58 adds a tie-break on document number. Port the fixes to 52.
+
 ## Tech Debt
 - `output/adsb_activity_summary.json` (55 MB) and `adsb_activity.csv` are committed and
   rewritten on every ADS-B fold, so each rebuild commit adds tens of MB to history. They
   are derived from the snapshots: move them to R2 with the other big blobs, out of git.
-- Website deploy path to Cloudflare is not recorded anywhere; write it down or script it.
+- Website deploy path to Cloudflare: the Pages project is `aether-flight` (production
+  deployments come from `main`, per `wrangler pages deployment list`); the staged-release
+  publish commands are in docs/hackers-2026-added-schools.md. Script it.
 - monster4 still holds a stale ~18 GB copy of `data/` and `output/` (a checksum-verified
   subset of trogdor's). Safe to delete once trogdor + R2 are the agreed home.
 - Stale remote branches `claude/adsb-data-snapshot-P5LM4`, `claude/update-night-flying-ads-2AKrz`,
@@ -80,3 +169,4 @@ The remaining 74% of the fleet is identified via FAA registry + ADS-B but lacks 
 - Deduplicate `src/data/` and `public/data/` in website (charts fetch from public/)
 - OG images for stories (screenshot a chart)
 - Mobile testing pass on all chart components
+- aether-flight.com serves its home page with status 200 for unknown paths (e.g. a removed school's page); serve a real 404 so removed pages drop out of search indexes.

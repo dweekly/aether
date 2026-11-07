@@ -23,6 +23,10 @@ import re
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
+import os
+import sys
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).resolve().parents[3] / ".env")  # AOPA web-app keys live in .env, not in the repo
 
 import requests
 from tqdm import tqdm
@@ -35,7 +39,7 @@ AUTH_URL = "https://authapi.aopa.org/identity/connect/token"
 AUTH_BODY = {
     "grant_type": "client_credentials",
     "client_id": "AOPAAirports",
-    "client_secret": "AOPA_PUBLIC_TOKEN_REDACTED",
+    "client_secret": os.environ.get("AOPA_CLIENT_SECRET") or sys.exit("AOPA_CLIENT_SECRET not set (.env)"),
     "scope": "AirportsAPI",
 }
 API_BASE = "https://webapp.aopa.org/AirportsAPI"

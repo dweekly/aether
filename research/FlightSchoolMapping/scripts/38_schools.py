@@ -3,19 +3,34 @@
 
 Kept from output/flight_line.json:
   domain                 the school's own website
-  fleet[].n_number, display_name, wet_rate_hr, dry_rate_hr, airport_id,
-  source_url             extracted from the school's own pages (or PDF rate sheets)
+  fleet[].n_number, display_name, description, wet_rate_hr, dry_rate_hr, airport_id,
+  source_url             extracted from the school's own pages (or PDF rate sheets);
+                         display_name and description become "listed_as" and "description",
+                         the school's own words for the aircraft (e.g. "2025 Cirrus SR20 G7")
 Dropped: name, aopa_*, contact and location labels (AOPA's terms forbid
 republishing them) and every adsb field (OpenSky-derived; its terms forbid
-redistribution). Activity is recomputed from the adsb.lol archive.
+redistribution). Kept from aopa_id: only "aopa_url", a link to the school's public
+page on AOPA Airports (https://www.aopa.org/destinations/business/<id>, no login;
+checked 2026-11-04 for Plus One Flyers 29699 and JATO Aviation 34887), none of its content. Activity is recomputed from the adsb.lol archive.
 
 School name comes from the school's own cached pages (og:site_name, else the
-<title> segment that best matches the domain), else the domain itself. Schools
+<title> segment that best matches the domain), else the domain itself. Schools added
+late from public lists (57_added_schools.py; they carry a provenance) keep the name set
+from that list, and their record says which list ("added_from"). Schools
 with no website were discovered from the FAA registry; their key is
 "faa-<slug>" and their name is the FAA registrant name (public domain). Entries
 with no website and an AOPA-sourced name are named after the registrant that
 holds most of their fleet, or dropped if none is known.
 Fleet rows without an N-number (a model and a rate) are kept as listings.
+Added in rc4: "listed_airports" (canonical ids from flight_line's locations, except those that came
+from AOPA's directory: see public_listed_airports) and "inferred_airports" ([{"id", "tails", "of",
+"listed"}]: airports home to 2+ of the school's tails, or its only based tail, by infer_airports.py's
+rule applied to this release's adsb.lol home bases, not flight_line's inferred_locations, which come
+from the OpenSky-derived adsb fields this script drops).
+Added in rc2: "google_place_ids" (place IDs only, best match first: Google's terms let us keep and
+publish them) and "contact" (flight_line's public_contact: name, website, phone, address, hours,
+city/state from the school's own pages, the FAA registry or a public list, each with source, ref and
+retrieved; never AOPA). Schools added from Google Places are named from their own pages.
 Fleet evidence per tail: "website" when the row's source_url is on the
 school's domain, else "registry" (matched by FAA registrant name).
 
@@ -40,6 +55,7 @@ import duckdb
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from airport_index import canonical_ids  # noqa: E402
+from infer_airports import infer as infer_from_homes  # noqa: E402
 from release_window import day_view, included_days  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -54,7 +70,77 @@ GENERIC = {"home", "welcome", "index", "about", "about us", "fleet", "our fleet"
 # FAA-discovered entities must look like an operator, not a private owner.
 OPERATOR_WORDS = re.compile(r"\b(FLIGHT|FLYING|FLYERS?|AVIATION|AERO|AIR|AIRWAYS|ACADEMY|SCHOOL|CLUB|COLLEGE|"
                             r"UNIVERSITY|PILOTS?|TRAINING|SOARING|GLIDING|HELICOPTERS?|WINGS|SKY|JET|AIRCRAFT)\b")
+MATCH_RANK = {"domain": 0, "added_from_google_places": 0, "exact": 1, "address": 2, "fuzzy": 3}
 SEP = re.compile(r"\s*[|–—:·•]\s*|\s+-\s+")
+
+
+# Public contact policy (David, 2026-11-04): no street address for a school that is one instructor
+# teaching alone (often a home; city/state, phone, website and hours stay), and no contact value whose
+# only source is the FSAI member directory. Internal data keeps everything with its provenance.
+INDIVIDUALS_CSV = ROOT.parent.parent / "docs" / "hackers-2026-google-schools.csv"
+
+
+RC5_CSV = ROOT.parent.parent / "docs" / "hackers-2026-rc5-additions.csv"  # 67_lead_schools.py
+
+
+def individual_instructors():
+    import csv
+    if not INDIVIDUALS_CSV.exists():
+        sys.exit(f"FAIL missing {INDIVIDUALS_CSV} (needed for the public contact policy)")
+    out = set()
+    for p in (INDIVIDUALS_CSV, RC5_CSV):
+        if not p.exists():
+            continue
+        with open(p, newline="", encoding="utf-8") as f:
+            out |= {r["school_key"] for r in csv.DictReader(f)
+                    if r["operation_type"] == "independent_instructor" and r["disposition"] == "added"}
+    return out
+
+
+# School domains that now serve unrelated content (gambling, parked, for sale), found by 67_lead_schools.py
+# domains from the November re-crawl and checked by hand. Their schools stay in flight_line.json (internal) but
+# are left out of the release, so the explorer links to no gambling or parked page. Empty the file to undo.
+LAPSED = OUT / "lapsed_domains.json"
+
+
+def lapsed_domains():
+    return {d["domain"] for d in json.loads(LAPSED.read_text())["domains"]} if LAPSED.exists() else set()
+
+
+def public_contact(contact, domain, individuals):
+    out = {k: v for k, v in (contact or {}).items() if not str(v.get("source", "")).startswith("fsai")}
+    if domain in individuals:
+        out.pop("address", None)
+    return out
+
+
+# Listed airports whose location label says they came from AOPA's directory, or echo the "Known
+# airport" hint the extraction prompt was given from it, stay out of the public record (AOPA's terms
+# forbid republication). To publish them anyway, empty this tuple.
+PRIVATE_LOCATION_LABELS = ("AOPA listed", "Known ")
+
+
+def public_listed_airports(locations, canon):
+    out = []
+    for loc in locations or []:
+        label = loc.get("label") or ""
+        if loc.get("airport_id") and not label.startswith(PRIVATE_LOCATION_LABELS):
+            a = canon(loc["airport_id"].strip())
+            if a and a not in out:
+                out.append(a)
+    return out
+
+
+def inferred_airports(fleet, listed):
+    """infer_airports.py's rule on this release's home bases (each fleet row's "home")."""
+    rows = infer_from_homes({"fleet": [{"adsb": {"home_airport": f["home"]}} for f in fleet if f["home"]],
+                             "locations": [{"airport_id": a} for a in listed]})
+    return [{"id": x["airport_id"], "tails": x["tails"], "of": x["of"], "listed": x["listed"]} for x in rows]
+
+
+def aopa_url(aopa_id):
+    """A link to the school's public AOPA Airports page; AOPA's own content is never copied."""
+    return f"https://www.aopa.org/destinations/business/{aopa_id}" if str(aopa_id or "").isdigit() else None
 
 
 def resolve_url(src, domain):
@@ -105,6 +191,7 @@ def main():
     ap.add_argument("--release", required=True)
     a = ap.parse_args()
     rel = RELEASES / a.release
+    individuals = individual_instructors()
     c = duckdb.connect()
     aircraft = {r[0]: r for r in c.execute(f"""
         SELECT n_number, hex, mfr, model, year_mfr, observed_class, days_airborne, airborne_hours,
@@ -114,9 +201,12 @@ def main():
     canon = lambda x: alias.get(x.upper(), x) if x else x  # noqa: E731
 
     fl = json.loads((OUT / "flight_line.json").read_text())
+    lapsed = lapsed_domains()
     raw = {}  # key -> {"name", "name_source", "domain", "fleet", "listings"}
     for s in fl:
         domain = norm_domain(s.get("domain") or "")
+        if domain and domain in lapsed:
+            continue
         fleet, listings = [], []
         for f in s.get("fleet") or []:
             n = (f.get("n_number") or "").upper()
@@ -125,12 +215,13 @@ def main():
             on_site = bool(src and domain and norm_domain(src).endswith(domain))
             if not re.fullmatch(r"N[0-9][0-9A-Z]{0,4}", n):
                 if f.get("display_name"):
-                    listings.append({"listed_as": f.get("display_name"), "wet": f.get("wet_rate_hr"),
+                    listings.append({"listed_as": f.get("display_name"), "description": f.get("description"),
+                                     "wet": f.get("wet_rate_hr"),
                                      "dry": f.get("dry_rate_hr"), "source_url": resolve_url(src, domain)})
                 continue
             ac = aircraft.get(n)
             fleet.append({
-                "n": n, "listed_as": f.get("display_name"),
+                "n": n, "listed_as": f.get("display_name"), "description": f.get("description"),
                 "wet": f.get("wet_rate_hr"), "dry": f.get("dry_rate_hr"),
                 "airport": canon(f.get("airport_id")), "source_url": src or None,
                 "evidence": "website" if on_site else "registry",
@@ -145,7 +236,13 @@ def main():
             })
         if not fleet and not listings:
             continue
-        if domain:
+        if domain and s.get("provenance"):
+            # Added late from an outside list (57_added_schools.py): the name is the one we set
+            # from that list by hand, since page titles of small sites are often unusable ("MA").
+            # Schools found through Google Places are named as their own pages name them (60).
+            key, name = domain, s["name"]
+            name_src = "site_verified" if s["provenance"][0]["list"] in ("google_places", "rc5_leads") else "added_list"
+        elif domain:
             key = domain
             name, name_src = site_name(domain)
         elif not s.get("aopa_id") and s.get("name"):
@@ -165,9 +262,21 @@ def main():
             seen = {f["n"] for f in raw[key]["fleet"]}
             raw[key]["fleet"] += [f for f in fleet if f["n"] not in seen]
             raw[key]["listings"] += listings
+            raw[key]["aopa_url"] = raw[key]["aopa_url"] or aopa_url(s.get("aopa_id"))
+            raw[key]["listed_airports"] += [x for x in public_listed_airports(s.get("locations"), canon)
+                                            if x not in raw[key]["listed_airports"]]
+            raw[key]["google_place_ids"] += [g["place_id"] for g in s.get("google_place_ids") or []
+                                             if g["place_id"] not in raw[key]["google_place_ids"]]
         else:
             raw[key] = {"name": name, "name_source": name_src, "domain": domain or None,
-                        "fleet": fleet, "listings": listings}
+                        "fleet": fleet, "listings": listings,
+                        "google_place_ids": [g["place_id"] for g in sorted(
+                            s.get("google_place_ids") or [], key=lambda g: (MATCH_RANK.get(g["match"], 9), g["place_id"]))],
+                        "contact": public_contact(s.get("public_contact"), domain, individuals),
+                        "aopa_url": aopa_url(s.get("aopa_id")),
+                        "listed_airports": public_listed_airports(s.get("locations"), canon)}
+            if s.get("provenance"):  # which public list it came from; record ids stay internal
+                raw[key]["added_from"] = [{"list": p["list"], "pulled": p["pulled"]} for p in s["provenance"]]
 
     hex_school = defaultdict(set)
     schools = []
@@ -198,6 +307,12 @@ def main():
                         if fleet else ("website" if r["domain"] else "registry"),
             "fleet": sorted(fleet, key=lambda f: (-(f["hrs"] or 0), f["n"])),
             "listings": listings,
+            **({"added_from": r["added_from"]} if r.get("added_from") else {}),
+            "google_place_ids": r["google_place_ids"],
+            "contact": r["contact"],
+            "aopa_url": r["aopa_url"],
+            "listed_airports": r["listed_airports"],
+            "inferred_airports": inferred_airports(fleet, r["listed_airports"]),
         })
 
     # Daily fleet hours per school, for the activity chart.

@@ -1,0 +1,29 @@
+{
+  "lampson": {
+    "flat_years": [
+      1997,
+      2024,
+      28
+    ],
+    "forecast_to": 2055
+  },
+  "drones": {
+    "captures": 30,
+    "drop": [
+      "2020-12-06",
+      1746248,
+      "2021-02-17",
+      875110
+    ]
+  },
+  "yearbuilt": {
+    "tails": 10130,
+    "median_year": 1979.0
+  },
+  "schools": {
+    "schools": 4825,
+    "placed": 3152,
+    "conus": 3109,
+    "missing": 1673
+  }
+}

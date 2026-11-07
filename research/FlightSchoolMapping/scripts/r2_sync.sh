@@ -114,6 +114,7 @@ CACHE_DIRS=(
 EXTRACT_FILES=(
   expansion_crawl.jsonl
   expansion_extract.jsonl
+  added_extract.jsonl
   fleet_browser_extract_results.jsonl
   fleet_browser_extract_index.json
   fleet_extract_results.jsonl

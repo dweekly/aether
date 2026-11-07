@@ -47,6 +47,25 @@ redistribution) and any field from AOPA's directory (its terms forbid republicat
 """
 
 
+# Fields held out of the downloadable schools.json; schools_full.json (the site's pages) keeps them.
+# Flipping either is a one-line change here.
+# description: each school's own words for its aircraft, held out pending David's call (2026-11-05).
+DOWNLOAD_HOLD_ROW_FIELDS = ("description",)
+# aopa_url: a link built from AOPA's directory id; the download carries no field from AOPA (LICENSES).
+DOWNLOAD_HOLD_SCHOOL_FIELDS = ("aopa_url",)
+
+
+def download_schools(full):
+    """schools_full.json as published: the held-out fields removed from each school and its rows."""
+    out = []
+    for s in full["schools"]:
+        s = {k: v for k, v in s.items() if k not in DOWNLOAD_HOLD_SCHOOL_FIELDS}
+        for k in ("fleet", "listings"):
+            s[k] = [{f: v for f, v in r.items() if f not in DOWNLOAD_HOLD_ROW_FIELDS} for r in s.get(k) or []]
+        out.append(s)
+    return {**full, "schools": out}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--release", required=True)
@@ -61,7 +80,8 @@ def main():
     for f in ("aircraft.parquet", "unmatched.parquet", "results.json", "training.json", "privacy.json"):
         if (rel / f).exists():
             shutil.copy(rel / f, out / f)
-    shutil.copy(rel / "schools_full.json", out / "schools.json")
+    (out / "schools.json").write_text(json.dumps(download_schools(json.loads((rel / "schools_full.json").read_text())),
+                                                 default=str))
 
     c = duckdb.connect()
     c.execute("SET threads TO 16")

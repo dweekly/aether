@@ -24,6 +24,9 @@ import time
 import warnings
 from datetime import datetime, timezone
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).resolve().parents[3] / ".env")  # AOPA web-app keys live in .env, not in the repo
 from urllib.parse import urljoin, urlparse
 
 import aiohttp
@@ -173,7 +176,7 @@ def _extract_aopa_business_id(aopa_url: str) -> str | None:
 # The AOPA Airports webapp exposes a public JSON API for business details.
 # The bearer token is a static public key embedded in their Angular app.
 AOPA_API_BASE = "https://webapp.aopa.org/AirportsAPI/businesses"
-AOPA_API_TOKEN = "AOPA_PUBLIC_TOKEN_REDACTED"
+AOPA_API_TOKEN = os.environ.get("AOPA_API_TOKEN", "")  # needed only to fetch AOPA records not already cached
 
 
 AOPA_CACHE_PATH = OUTPUT_DIR / "aopa_website_cache.json"

@@ -1,0 +1,21 @@
+record_id,school,how,airport_id,airport_name,page,quote,label,note
+L0594,ATC Flight Training,code,VKX,Potomac Airfield,https://www.potomac-airfield.com/,Potomac Airfield (VKX),correct,"the airfield's own page, Potomac Airfield (VKX)"
+L1306,High Wind Aviation,code,KVSF,Hartness State Airport,https://vtrans.vermont.gov/aviation/airports/hartness,Hartness State Airport - (VSF),correct,VTrans page for Hartness State Airport (VSF)
+S0031,https://www.airhawks.org/,code,KORS,Orcas Island Airport,https://www.airhawks.org/,Orcas Island Airport (KORS),correct,"contact block: Orcas Island Airport (KORS), Eastsound, WA"
+S0171,https://eaglevillesoaring.org/,code,50M,Puckett Gliderport,https://eaglevillesoaring.org/,Puckett Gliderport (50M),correct,home page: located at Puckett Gliderport (50M)
+L0031,(independent instructor),name,KFYV,Drake Field,,Drake Field,correct,city airport page names the business
+S0233,https://www.flynorthernflights.com,name,KCMX,Houghton County Memorial Airport,https://www.flynorthernflights.com,Houghton County Memorial Airport,correct,home page: operating out of Houghton County Memorial Airport
+S0326,https://www.kickstartaviation.com/,city,KM25,Mayfield Graves County Airport,https://www.kickstartaviation.com/,"Mayfield, KY",correct,"Mayfield, KY; the page's menu links the M25 METAR; one public-use airport in Mayfield"
+S0185,https://www.firsttakeaviation.com/,code,KVNY,Van Nuys Airport,https://www.firsttakeaviation.com/,Van Nuys Airport (KVNY),correct,footer: Van Nuys Airport (KVNY)
+L0407,Algona Aero Service Inc.,model,KAXA,Algona Municipal Airport,https://iowadot.gov/modes-travel/aviation/flight-schools,Algona,correct,Iowa DOT list row: city Algona; Algona Municipal is the one airport there
+L0415,Fairfield Flying Service,model,KFFL,Fairfield Municipal Airport,https://iowadot.gov/modes-travel/aviation/flight-schools,Fairfield,correct,Iowa DOT list row: city Fairfield; Fairfield Municipal is the one airport there
+S0008,https://aceflight-academy.com,name,KRMN,Stafford Regional Airport,https://aceflight-academy.com/discovery-flight,Stafford Regional Airport,correct,discovery-flight page: Location: Stafford Regional Airport
+S0145,(independent instructor),city,KCLS,Chehalis Centralia Airport,,"Chehalis, WA",correct,"Chehalis, WA; Chehalis-Centralia is the one public-use airport"
+S0181,https://falconflightusa.com/,code,KGPM,Grand Prairie Municipal Airport,https://falconflightusa.com/,Grand Prairie Municipal Airport (KGPM),correct,home page: Located at Grand Prairie Municipal Airport (KGPM)
+S0571,https://westliberty.edu/aviation/,name,KHLG,Wheeling Ohio County Airport,https://westliberty.edu/aviation/,Wheeling–Ohio County Airport,correct,flight training at Wheeling-Ohio County Airport
+S0097,https://www.brandywineaviation.com/,code,KOQN,Brandywine Regional Airport,https://www.brandywineaviation.com/,Brandywine Airport (KOQN),correct,"contact block: Brandywine Airport (KOQN), West Chester PA"
+S0224,https://flyleadville.com,city,KLXV,Lake County Airport,https://flyleadville.com,"Leadville, CO",correct,"Leadville, CO; Lake County Airport is Leadville's airport"
+S0486,(independent instructor),name,KORS,Orcas Island Airport,,Orcas Island Airport,correct,home page: based at Orcas Island Airport
+S0479,https://www.seu.edu/aviation/,name,KLAL,Lakeland Linder International Airport,https://www.seu.edu/aviation/,Lakeland Linder International Airport,correct,flight training on the property of Lakeland Linder International Airport
+S0383,http://www.mu2b.com/,name,KMQY,Smyrna Airport,https://mu2b.com/vendors,Smyrna Airport,correct,vendors page: the FBOs here at the Smyrna Airport
+S0251,https://foothillsaviationllc.com,code,KU03,Buhl Municipal Airport,https://foothillsaviationllc.com/company,Buhl Idaho Airport (U03),correct,company page: founded at the Buhl Idaho Airport (U03)

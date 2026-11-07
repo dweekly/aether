@@ -1243,6 +1243,10 @@ def merge_into_flight_line(
     # Always write the output — it is this stage's build artifact, so it has to
     # exist (and be newer than its input) even on a run that added nothing.
     fl_path = Path(out_path) if out_path else OUTPUT_DIR / "flight_line.json"
+    # Airports inferred from where each school's fleet is based (separate field; listed
+    # locations untouched). After the PDF pass so its tails count.
+    import infer_airports
+    infer_airports.apply(flight_line)
     if not dry_run:
         write_json_atomic(fl_path, flight_line)
         print(f"  Saved: {fl_path}")

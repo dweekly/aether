@@ -5,6 +5,8 @@ on their flight line (by make/model/type), their activity rates, and their conta
 information — using publicly available ADS-B telemetry, FAA registration data, and
 targeted web scraping?
 
+**Schools (Nov 4, 2026, branch `hackers-talk`):** 5,458 records in `flight_line.json`: the 4,825 of the March build, 67 added from public lists (`57_added_schools.py`) and 566 found through Google Places (`60_google_schools.py`); 18,040 fleet rows, 12,076 distinct tails. Every record carries `field_sources`, `public_contact` and `google_place_ids` (docs/hackers-2026-google-schools.md).
+
 **Status (Aug 2, 2026):** 4,825 schools/clubs, 16,881 aircraft, 11,749 unique N-numbers, 8,929 ADS-B active, 4,387 with rental rates. Built by `make` (`21_build_flight_line.py` → `22_pdf_rate_sheets.py`). ADS-B via 6,018 dual-source snapshots (OpenSky + adsb.lol, cron every 15 min), 146,235 unique transponders observed.
 
 Snapshot coverage has a gap from Apr 22 – Jul 17, 2026 (the collector broke when the repo moved from macOS to Linux and the venv's interpreter symlinks went dangling). Per-aircraft `total_sightings` are counted against a flat `n_snapshots` denominator spanning both windows, so activity *rates* derived from them understate aircraft that were only active in one window.
@@ -85,6 +87,10 @@ For each of the ~3,965 flight schools with known websites:
    - Level 2: Parent path discovery from fleet page URLs
    - Level 3: Internal links from fleet pages with path-prefix filtering
    - Saves cleaned HTML to `output/fleet_html/`; outputs `fleet_crawl_index.json`
+   - The cleaner drops elements whose class or id looks like boilerplate (sidebar, widget,
+     modal...). Since 2026-11-04 it never drops `<html>` or `<body>`: themes put those words
+     on `<body>`, which emptied about 40% of the March HTTP pages. Crawls before that date
+     (all of March) carry the loss; Elementor sites are still emptied (ROADMAP)
    - Flags JS-rendered sites returning thin content for browser re-crawl
 
 2. **LLM extraction** (`09b_fleet_extract.py`) — Anthropic Message Batches API
@@ -141,7 +147,7 @@ For schools with fleet descriptions but 0 N-numbers:
 
 ## Output Schemas
 
-### `output/flight_line.json` — Primary Output (4,825 schools)
+### `output/flight_line.json` — Primary Output (4,892 schools: 4,825 from the March build plus 67 added 2026-11-04)
 
 The canonical dataset. Each entry is a school/club keyed by normalized domain,
 with fleet, locations, contact info, and ADS-B cross-references.
@@ -204,7 +210,27 @@ with fleet, locations, contact info, and ADS-B cross-references.
   "extraction_sources": ["browser", "http_recovered"],  // which pipelines contributed
   "fleet_count": 37,
   "n_number_count": 37,
-  "adsb_active_count": 28
+  "adsb_active_count": 28,
+
+  // Only on schools added late from outside lists (57_added_schools.py): one entry per
+  // list row that named it. Such a school's name is the one set by hand from the list.
+  "provenance": [
+    {"list": "mi_mdot", "record_id": "row38", "list_date": "2026-05",
+     "pulled": "2026-11-03", "name_on_list": "Kalamazoo Flight Instruction"}
+  ],
+  // Schools found through Google Places (60_google_schools.py) have list "google_places", one
+  // entry per place ID, and no name_on_list (Google's names are not kept).
+
+  // On every record (docs/hackers-2026-google-schools.md):
+  // where each non-empty name and contact value came from
+  "field_sources": {"name": {"source": "aopa", "ref": "aopa:12345", "retrieved": "2026-03-11"},
+                    "contact.phone": {"source": "site_extraction", "ref": "https://example.com/",
+                                      "retrieved": "2026-03-07", "via": "http_recovered fleet extraction"}},
+  // contact details from permitted sources only (own pages, FAA registry, state lists, FSAI;
+  // never AOPA or Google), each verified verbatim on its page when the source is "site"
+  "public_contact": {"phone": {"value": "(555) 010-0000", "source": "site",
+                               "ref": "https://example.com/contact", "retrieved": "2026-11-02"}},
+  "google_place_ids": [{"place_id": "ChIJ...", "match": "exact"}]
 }
 ```
 
@@ -212,7 +238,7 @@ with fleet, locations, contact info, and ADS-B cross-references.
 `"College/University"` (248), `""` (2,181 FAA-discovered entities).
 
 **`extraction_sources` values:** `browser`, `http_recovered`, `expansion`,
-`faa_registry`, `pdf_rate_sheet`.
+`faa_registry`, `pdf_rate_sheet`, `added` (late-added schools, `added_extract.jsonl`).
 
 ---
 
@@ -284,7 +310,7 @@ Merged from Coveo search API (`08b_aopa_directory.py`) + Airports REST API enric
 POST https://authapi.aopa.org/identity/connect/token
   grant_type=client_credentials
   client_id=AOPAAirports
-  client_secret=AOPA_PUBLIC_TOKEN_REDACTED
+  client_secret=$AOPA_CLIENT_SECRET   # from .env; the value is in AOPA's public web app
   scope=AirportsAPI
 
 GET https://webapp.aopa.org/AirportsAPI/businesses/{business_id}
@@ -546,7 +572,7 @@ Legacy output from `11_school_aircraft_merge.py`. Strict exact-normalized-name m
 
 ## Data Sources
 
-All data is from public sources. 15 of 17 sources are free; only the Anthropic API (~$15 total) and ADS-B Exchange (~$10/mo, optional) are paid.
+All data is from public sources. 15 of 17 sources are free; only the Anthropic API (at least $100; see below) and ADS-B Exchange (~$10/mo, optional) are paid.
 
 ### Flight school directories
 
@@ -592,7 +618,7 @@ All data is from public sources. 15 of 17 sources are free; only the Anthropic A
 
 | Source | URL | Usage | Script | Auth | Cost |
 |--------|-----|-------|--------|------|------|
-| **Anthropic Claude API** | `api.anthropic.com/v1/messages/batches` (Sonnet 4.6) | ~5,000 batch requests | `09b_fleet_extract.py`, `09c_browser_extract.py`, `09f_corpus_expansion.py`, `22_pdf_rate_sheets.py` | API key | ~$25 total (batch pricing: $3/MTok input, $15/MTok output) |
+| **Anthropic Claude API** | `api.anthropic.com/v1/messages/batches` (Sonnet 4.6) | ~5,000 batch requests | `09b_fleet_extract.py`, `09c_browser_extract.py`, `09f_corpus_expansion.py`, `22_pdf_rate_sheets.py` | API key | At least $100: the HTTP and browser passes recorded 55.9M input and 2.2M output tokens, at Sonnet 4.6 batch prices of $1.50/$7.50 per MTok (half the $3/$15 list price). The expansion, PDF and photo passes recorded no usage. `49_scrape_facts.py` recomputes it. |
 
 ### Geocoding
 
@@ -617,7 +643,7 @@ make backup                       # push snapshots + caches + extracts to R2
 make r2-status                    # what is stored offsite
 
 make crawl      ALLOW_CRAWL=1     # HTTP + browser + expansion crawl (hours, free)
-make extract    ALLOW_SPEND=1     # Sonnet batch extraction (~$25)
+make extract    ALLOW_SPEND=1     # Sonnet batch extraction (about $100 for a full run)
 make pdf-online ALLOW_SPEND=1     # fetch new rate sheets + Sonnet fallback
 make discover                     # propose new FAA-registry crawl candidates
 make all        ALLOW_CRAWL=1 ALLOW_SPEND=1   # everything
@@ -658,7 +684,7 @@ Stages cache their own expensive work on top of that, so a full rebuild is
 |--------|----------|-----|
 | `adsb-snapshots/` | 10.8 GB | Irreplaceable — observations cannot be re-fetched |
 | `crawl-cache/` | ~10 GB | Re-crawlable in principle, but the web has moved on |
-| `extract/` | 27 MB | ~$25 of Sonnet; also committed to git, so R2 is the second copy |
+| `extract/` | 27 MB | at least $100 of Sonnet; also committed to git, so R2 is the second copy |
 
 Every build first runs `restore-inputs`, which pulls any missing extract file
 from R2. Without it, `21` would quietly
@@ -720,7 +746,9 @@ STAGE 4 — Assembly (deterministic rebuild, no API calls, ~60s)   [make]
     Reads: expansion_extract.jsonl, fleet_browser_extract_results.jsonl,
            fleet_extract_results.jsonl, aopa_flight_schools.json,
            faa_discovered_schools.json, faa_master.csv, ACFTREF.txt,
-           adsb_activity.csv
+           adsb_activity.csv, and the late-added schools: flight_schools_enriched.json
+           entries with a "provenance" list plus added_extract.jsonl (57_added_schools.py).
+           Those join after HTTP recovery and their records carry "provenance".
 
 STAGE 4b — PDF Rate Sheet Overlay                                [make]
   22_pdf_rate_sheets.py        → flight_line.json, pdf_extraction_diagnostics.json
@@ -809,6 +837,18 @@ only when you intend to act on the results.
 | `21_build_flight_line.py` | **Deterministic assembly** of flight_line.json from all extraction artifacts |
 | `22_pdf_rate_sheets.py` | Download PDF rate sheets, extract N-numbers via regex + Sonnet batch |
 | `09f_corpus_expansion.py` | Crawl + extract new AOPA domains (clubs, universities) |
+| `49_scrape_facts.py` | Check the raw model output of 09b/09c against the registry and a release's flight data; cost from recorded usage; exits 1 if the shuffled-airport control fails |
+| `demo_extract.py` | Talk demo: one school URL in, its fleet and rates out, each tail checked against a release (`demo_extract.tape` records it with VHS) |
+| `57_added_schools.py` | Add schools found on outside lists (FSAI directory, Michigan and Minnesota flight-school licenses, state education lists, SEVP, VA, IPEDS, the unlisted-operations pass) to `flight_schools_enriched.json` with a `provenance` list, from the hand dispositions in `docs/hackers-2026-added-schools.csv`; folds their extractions into `added_extract.jsonl`; `check` and `release-check` gate the rebuild (see `docs/hackers-2026-added-schools.md`) |
+| `56_fsai_directory.py` | Parse the FSAI (formerly FSANA) member directory pulled in a browser by `probes/fsai_directory_pull.js`, classify entries and match US training providers against `flight_line.json`; writes `docs/hackers-2026-fsai-directory.md` |
+| `58_airmen_llc_join.py` | Join the FAA releasable airmen file (fetched with `--download`) to LLC and corporation registrations by exact normalized address, with a shuffled-house-number control, surname validations and the Florida comparison; writes `docs/hackers-2026-airmen-llc.md` and exits 1 if a gate fails |
+| `63_ntsb_history.py` | Download the NTSB avdata MDBs (avall, Pre2008, PRE1982; `--download --convert`, needs mdbtools), match their aircraft records to valid registrations by N-number plus an airframe test (serial, or make, model and build year), and compare school-fleet aircraft with non-school aircraft of the same make/model and build years, with a shuffled-serial control; writes `docs/hackers-2026-ntsb.md`, `--chart` draws the slide, exits 1 if a gate fails |
+| `60_google_schools.py` | Classify the Google Places candidates from their own pages with Claude Haiku 5.5 (Message Batches), verify every returned value verbatim on its page, dedupe strictly against `flight_line.json`, add the schools (source `google_places`, place IDs as provenance) and check them; dispositions in `docs/hackers-2026-google-schools.csv` |
+| `61_contact_provenance.py` | Name, phone, street address and hours for every school website from its cached own pages (November re-crawl first), each kept only if found verbatim on its page, then FSAI and state-list fallbacks: `output/contact_sourced.json`, which 21 turns into `public_contact` |
+| `page_text.py`, `haiku_batch.py` | Shared by 60 and 61: page text with JSON-LD and `tel:` links, the verbatim check, the prompt pieces; Message Batches run directories in extract_v2's layout |
+| `59_google_places.py` | Find flight schools with Google Places (New): free IDs-only text searches over self-splitting US tiles, paid details only after a printed estimate under `--max-usd`, matched against `flight_line.json`, unmatched confirmed from each school's own site |
+| `65_gap_sources.py` | Compare FAA NASR airports with INSTR/RNTL in OTHER_SERVICES, the Tach & Go directory (`fetch-tachgo`, one request per 4 s) and SBA PPP NAICS 611512 borrowers (`ppp-filter`) with `flight_line.json`: gap airports with ADS-B signals, strict matching, homepage checks, seeded hand checks; writes `docs/hackers-2026-gap-sources.md` and its CSVs |
+| `67_lead_schools.py` | Release rc5: pool the Tach & Go, PPP and outside master-list leads, drop out-of-scope names by rule, search the web for website-less leads (Haiku 5.5 with web search), crawl and classify each operator's own pages as 60 does, dedupe, add the confirmed schools to `output/added_schools_rc5.json` (merged by 21), and flag school domains that now serve gambling, parked or unrelated content (`output/lapsed_domains.json`, left out of the release by 38); writes `docs/hackers-2026-rc5-additions.md` and its CSVs. `build_rc5.sh` builds the release candidate |
 
 ## Aircraft Provenance Model
 

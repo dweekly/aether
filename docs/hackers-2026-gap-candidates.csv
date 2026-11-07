@@ -1,0 +1,763 @@
+source,id,name,city,state,website,evidence,verdict
+tachgo,ak/jber-aero-club-paed,JBER Aero Club,Anchorage,AK,https://www.jberlife.com/aero-club,Flying club at PAED; homepage training; matcher none,unchecked
+tachgo,ak/northern-aviation-llc-paaq,"Northern Aviation, LLC",Palmer,AK,,Flight school at PAAQ; homepage no_website; matcher none,unchecked
+tachgo,ak/opportunity-flying-club-palh,Opportunity Flying Club,Anchorage,AK,,Flying club at PALH; homepage no_website; matcher none,unchecked
+tachgo,ak/wingnuts-aviation-paaq,Wingnuts Aviation,Palmer,AK,https://www.akwingnuts.com,Flight school at PAAQ; homepage parked; matcher none,unchecked
+tachgo,al/alair-jet-center-kanb,ALair Jet Center,Anniston,AL,https://www.alairjetcenter.com/,"FBO, filed under school at KANB; homepage training; matcher none",unchecked
+tachgo,al/coastal-soaring-association-0r1,Coastal Soaring Association,Atmore,AL,,Flying club at 0R1; homepage no_website; matcher fuzzy (nearest: coastalalabama.edu),unchecked
+tachgo,al/flightline-aircraft-rental-kplr,Flightline Aircraft Rental,Pell City,AL,https://426as.com/,Flight school at KPLR; homepage training; matcher none,unchecked
+tachgo,al/northeast-alabama-regional-aviation-kgad,Northeast Alabama Regional Aviation,Gadsden,AL,,"FBO, filed under school at KGAD; homepage no_website; matcher none",unchecked
+tachgo,ar/ross-executive-aviation-kfyv,Ross Executive Aviation,Fayetteville,AR,,Flight school at KFYV; homepage no_website; matcher none,unchecked
+tachgo,az/aviation-resource-group-kdvt,Aviation Resource Group,Phoenix,AZ,,Flight school at KDVT; homepage no_website; matcher none,unchecked
+tachgo,az/daxair-aviation-ksdl,Daxair Aviation,Scottsdale,AZ,https://flydaxair.com/,Flight school at KSDL; homepage no_training_text; matcher none,unchecked
+tachgo,az/falcon-aviation-services-kchd,Falcon Aviation Services,Chandler,AZ,https://www.falconaviationaz.com/,Flight school at KCHD; homepage no_training_text; matcher none,unchecked
+tachgo,az/fly-whiskey-tango-ksdl,Fly Whiskey Tango,Scottsdale,AZ,https://www.flywhiskeytango.com,Flight school at KSDL; homepage training; matcher none,unchecked
+tachgo,az/g-force-aviation-kgeu,G-Force Aviation,Glendale,AZ,,Flight school at KGEU; homepage no_website; matcher none,unchecked
+tachgo,az/noble-aire-aviation-kavq,Noble Aire Aviation,Marana,AZ,https://www.nobleaire.us/,Flight school at KAVQ; homepage training; matcher none,unchecked
+tachgo,az/north-aire-aviation-kprc,North-Aire Aviation,Prescott,AZ,https://www.northaire.com/,Flight school at KPRC; homepage down; matcher none,unchecked
+tachgo,az/payson-aero-club-kpan,Payson Aero Club,Payson,AZ,,Flying club at KPAN; homepage no_website; matcher none,unchecked
+tachgo,az/phoenix-area-flying-club-kffz,Phoenix Area Flying Club,Mesa,AZ,https://phx-afc.com/,Flying club at KFFZ; homepage training; matcher none,unchecked
+tachgo,az/plane-folks-llc-e95,"Plane Folks, LLC",Benson,AZ,,Flight school at E95; homepage no_website; matcher none,unchecked
+tachgo,az/prescott-area-flying-club-kprc,Prescott Area Flying Club,Prescott,AZ,https://prescottareaflyingclub.com/,Flying club at KPRC; homepage training; matcher none,unchecked
+tachgo,az/united-aviate-academy-kgyr,United Aviate Academy,Goodyear,AZ,https://unitedaviate.com/academy/,Flight school at KGYR; homepage blocked; matcher none,unchecked
+tachgo,az/velocity-air-kryn,Velocity Air,Tucson,AZ,http://www.velocityairinc.com/,"FBO, filed under school at KRYN; homepage training; matcher none",unchecked
+tachgo,ca/accelerated-flight-academy-kvny,Accelerated Flight Academy,Van Nuys,CA,,Flight school at KVNY; homepage no_website; matcher fuzzy (nearest: acceleratedflightschool.net),unchecked
+tachgo,ca/airesearch-flying-club-ktoa,AiResearch Flying Club,Torrance,CA,http://www.airesearchflyingclub.com,Flying club at KTOA; homepage down; matcher none,closed
+tachgo,ca/alliance-int-l-aviation-kcno,Alliance Int'l Aviation,Chino,CA,,Flight school at KCNO; homepage no_website; matcher none,unchecked
+tachgo,ca/apogee-air-khwd,Apogee Air,Hayward,CA,https://www.apogee-air.com,Flight school at KHWD; homepage training; matcher none,unchecked
+tachgo,ca/bakersfield-flying-club-kbfl,Bakersfield Flying Club,Bakersfield,CA,https://www.bakersfieldflyingclub.com,Flying club at KBFL; homepage training; matcher none,unchecked
+tachgo,ca/bay-area-soaring-associates-kcvh,Bay Area Soaring Associates,Hollister,CA,https://www.flybasa.org/,Flying club at KCVH; homepage training; matcher fuzzy (nearest: hollistersoaringcenter.com),unchecked
+tachgo,ca/best-aviation-l45,BEST Aviation,Bakersfield,CA,https://www.bestaviationllc.com/,"FBO, filed under school at L45; homepage training; matcher fuzzy",unchecked
+tachgo,ca/bsmith-air-o32,BSMITH Air,Reedley,CA,,"FBO, filed under school at O32; homepage no_website; matcher none",unchecked
+tachgo,ca/cardan-aircraft-services-o85,Cardan Aircraft Services,Redding,CA,,"FBO, filed under school at O85; homepage no_website; matcher none",unchecked
+tachgo,ca/cfi-sba-ksba,CFI SBA,Santa Barbara,CA,https://cfisba.com/,Flight school at KSBA; homepage training; matcher none,unchecked
+tachgo,ca/chuck-hall-aviation-krnm,Chuck Hall Aviation,Ramona,CA,http://chuckhallaviation.com/,"FBO, filed under school at KRNM; homepage blocked; matcher none",unchecked
+tachgo,ca/cierva-aero-o69,Cierva Aero,Petaluma,CA,https://www.cierva.aero,Flight school at O69; homepage no_training_text; matcher none,unchecked
+tachgo,ca/coast-air-center-kmyf,Coast Air Center,San Diego,CA,https://www.coastaircenter.com/,"FBO, filed under school at KMYF; homepage no_training_text; matcher fuzzy (nearest: iflycoast.com)",unchecked
+tachgo,ca/corporate-helicopters-of-san-diego-kmyf,Corporate Helicopters of San Diego,San Diego,CA,http://www.corporatehelicopters.com/,Flight school at KMYF; homepage training; matcher fuzzy (nearest: heliflighttraining.com),unchecked
+tachgo,ca/cruiseair-f70,cruiseAIR,Murrieta,CA,https://www.flycruiseair.com/,Flight school at F70; homepage blocked; matcher none,new_training
+tachgo,ca/first-take-aviation-kvny,First Take Aviation,Van Nuys,CA,https://www.firsttakeaviation.com/,Flight school at KVNY; homepage training; matcher none,unchecked
+tachgo,ca/flight-ventures-aviation-academy-f70,Flight Ventures Aviation Academy,Murrieta,CA,https://flightventuresaviationacademy.com/,Flight school at F70; homepage down; matcher none,unchecked
+tachgo,ca/hayward-flying-club-khwd,Hayward Flying Club,Hayward,CA,http://haywardflyingclub.org/,Flying club at KHWD; homepage training; matcher none,unchecked
+tachgo,ca/heli-air-kszp,Heli Air,Santa Paula,CA,https://www.facebook.com/pages/Heli-Air-Inc/1776400182577046,Flight school at KSZP; homepage parked; matcher none,unchecked
+tachgo,ca/hyra-flying-club-khwd,Hyra Flying Club,Hayward,CA,,Flying club at KHWD; homepage no_website; matcher none,unchecked
+tachgo,ca/k-m-air-kcno,K-M Air,Chino,CA,,Flight school at KCNO; homepage no_website; matcher none,unchecked
+tachgo,ca/kern-aviation-kmit,Kern Aviation,Shafter,CA,https://www.kernaviation.com/,Flight school at KMIT; homepage training; matcher none,unchecked
+tachgo,ca/lite-flight-helicopters-kbur,Lite Flight Helicopters,Burbank,CA,https://www.liteflighthelicopters.com/,Flight school at KBUR; homepage training; matcher none,unchecked
+tachgo,ca/mother-lode-flying-club-kcpu,Mother Lode Flying Club,San Andreas,CA,,Flying club at KCPU; homepage no_website; matcher none,unchecked
+tachgo,ca/petaluma-pilots-o69,Petaluma Pilots,Petaluma,CA,https://www.petalumapilots.com,Flight school at O69; homepage training; matcher none,unchecked
+tachgo,ca/pine-mountain-lake-aero-club-e45,Pine Mountain Lake Aero Club,Groveland,CA,,Flying club at E45; homepage no_website; matcher none,unchecked
+tachgo,ca/redding-jet-center-krdd,Redding Jet Center,Redding,CA,,"FBO, filed under school at KRDD; homepage no_website; matcher none",unchecked
+tachgo,ca/san-diego-flight-training-international-kmyf,San Diego Flight Training International,San Diego,CA,,Flight school at KMYF; homepage no_website; matcher none,unchecked
+tachgo,ca/san-fernando-aviation-llc-kvny,San Fernando Aviation LLC,Van Nuys,CA,,Flight school at KVNY; homepage no_website; matcher none,unchecked
+tachgo,ca/sierra-aero-ktrk,Sierra Aero,Truckee,CA,https://www.flytruckee.com/,Flight school at KTRK; homepage training; matcher fuzzy (nearest: highsierrapilots.club),unchecked
+tachgo,ca/sonoma-skypark-flying-club-0q9,Sonoma Skypark Flying Club,Sonoma,CA,,Flying club at 0Q9; homepage no_website; matcher none,unchecked
+tachgo,ca/strawberry-aviation-kwvi,Strawberry Aviation,Watsonville,CA,,Flight school at KWVI; homepage no_website; matcher none,unchecked
+tachgo,ca/time-to-climb-flight-school-khmt,Time to Climb Flight School,Hemet,CA,http://hemetflightschool.com/,Flight school at KHMT; homepage training; matcher none,unchecked
+tachgo,ca/west-end-flyers-ktoa,West End Flyers,Torrance,CA,https://www.torrance.com/westendflyers,Flying club at KTOA; homepage down; matcher none,unchecked
+tachgo,ca/wolfe-aviation-ksck,Wolfe Aviation,Stockton,CA,,Flight school at KSCK; homepage no_website; matcher none,unchecked
+tachgo,co/fly-elite-aviation-klmo,Fly Elite Aviation,Longmont,CO,http://www.flyeliteaero.com/,"FBO, filed under school at KLMO; homepage no_training_text; matcher none",new_training_weak
+tachgo,co/greeley-flight-school-kgxy,Greeley Flight School,Greeley,CO,https://greeleyflightschool.com/,Flight school at KGXY; homepage no_training_text; matcher none,unchecked
+tachgo,co/leadville-flying-club-klxv,Leadville Flying Club,Leadville,CO,https://flyleadville.com,Flying club at KLXV; homepage training; matcher none,unchecked
+tachgo,co/meadow-lake-flyers-kfly,Meadow Lake Flyers,Colorado Springs,CO,,Flying club at KFLY; homepage no_website; matcher none,unchecked
+tachgo,co/peterson-sfb-aero-club-kcos,Peterson SFB Aero Club,Colorado Springs,CO,https://21fss.com/aero-club/,Flying club at KCOS; homepage training; matcher none,unchecked
+tachgo,co/steamboat-springs-flying-club-ksbs,Steamboat Springs Flying Club,Steamboat Springs,CO,https://www.steamboatflyingclub.com/,Flying club at KSBS; homepage training; matcher none,unchecked
+tachgo,co/steamboat-springs-soaring-association-1cd4,Steamboat Springs Soaring Association,Steamboat Springs,CO,https://soarsteamboat.org/,Flying club at 1CD4; homepage training; matcher none,unchecked
+tachgo,co/the-dead-reckoning-society-kfly,The Dead Reckoning Society,Colorado Springs,CO,http://deadreckoningsociety.org,Flying club at KFLY; homepage training; matcher none,unchecked
+tachgo,co/the-flight-school-at-colorado-springs-kfly,The Flight School at Colorado Springs,Colorado Springs,CO,https://coloradospringsflightschool.com/,Flight school at KFLY; homepage training; matcher none,unchecked
+tachgo,fl/908-flying-club-inc-kfpr,908 Flying Club Inc,Fort Pierce,FL,,Flying club at KFPR; homepage no_website; matcher none,unchecked
+tachgo,fl/eagle-sport-aviation-club-2j8,Eagle Sport Aviation Club,Pierson,FL,http://eaglesport.org,Flying club at 2J8; homepage blocked; matcher none,unchecked
+tachgo,fl/epic-flight-academy-kevb,Epic Flight Academy,New Smyrna Beach,FL,,"FBO, filed under school at KEVB; homepage no_website; matcher fuzzy",unchecked
+tachgo,fl/fit-aviation-kmlb,FIT Aviation,Melbourne,FL,,"FBO, filed under school at KMLB; homepage no_website; matcher none",in_list
+tachgo,fl/hangar-7-aviation-komn,Hangar 7 Aviation,Ormond Beach,FL,,Flight school at KOMN; homepage no_website; matcher none,unchecked
+tachgo,fl/international-flight-center-ktmb,International Flight Center,Miami,FL,http://www.ifctmb.com/,"FBO, filed under school at KTMB; homepage down; matcher none",unchecked
+tachgo,fl/jax-navy-flying-club-kvqq,Jax Navy Flying Club,Jacksonville,FL,https://www.jaxnfc.com,Flying club at KVQQ; homepage training; matcher none,unchecked
+tachgo,fl/kiss-the-sky-flying-club-kism,Kiss the Sky Flying Club,Kissimmee,FL,,Flying club at KISM; homepage no_website; matcher none,unchecked
+tachgo,fl/lakeland-aero-club-klal,Lakeland Aero Club,Lakeland,FL,https://www.lakelandaeroclub.org,Flying club at KLAL; homepage training; matcher none,unchecked
+tachgo,fl/low-and-slow-aviation-komn,Low and Slow Aviation,Ormond Beach,FL,https://www.cubflying.com/,Flight school at KOMN; homepage parked; matcher none,unchecked
+tachgo,fl/miami-flight-center-kfxe,Miami Flight Center,Fort Lauderdale,FL,https://www.miamiflightcenter.com/,Flight school at KFXE; homepage down; matcher fuzzy (nearest: miamiflightacademy.com),unchecked
+tachgo,fl/north-perry-flying-club-khwo,North Perry Flying Club,Hollywood,FL,http://www.northperryflyingclub.com,Flying club at KHWO; homepage training; matcher fuzzy (nearest: ataflightschool.com),unchecked
+tachgo,fl/orlando-aviators-flying-club-korl,Orlando Aviators Flying Club,Orlando,FL,https://www.orlandoaviators.com,Flying club at KORL; homepage down; matcher none,unchecked
+tachgo,fl/southeastern-university-klal,Southeastern University,Lakeland,FL,https://www.seu.edu/aviation/,Flight school at KLAL; homepage blocked; matcher none,unchecked
+tachgo,fl/sport-flying-usa-ksef,Sport Flying USA,Sebring,FL,https://www.sportflyingusa.com/,Flight school at KSEF; homepage training; matcher none,unchecked
+tachgo,fl/suwannee-county-24j,Suwannee County,Live Oak,FL,,"FBO, filed under school at 24J; homepage no_website; matcher none",not_training
+tachgo,fl/tampa-bay-flying-club-48x,Tampa Bay Flying Club,Palmetto,FL,https://www.tampabayflyingclub.com,Flying club at 48X; homepage training; matcher none,unchecked
+tachgo,fl/tampa-north-flight-center-x39,Tampa North Flight Center,Tampa,FL,,"FBO, filed under school at X39; homepage no_website; matcher none",unchecked
+tachgo,fl/treasure-coast-soaring-club-x52,Treasure Coast Soaring Club,Vero Beach,FL,,Flying club at X52; homepage no_website; matcher fuzzy (nearest: flytcs.com),unchecked
+tachgo,fl/unusual-attitude-training-kism,Unusual Attitude Training,Kissimmee,FL,https://www.jetuat.com/,Flight school at KISM; homepage blocked; matcher none,unchecked
+tachgo,fl/werns-flying-club-florida-kfpr,Werns Flying Club Florida,Fort Pierce,FL,https://wernsflying.com,Flying club at KFPR; homepage no_training_text; matcher none,unchecked
+tachgo,ga/flight-school-of-gwinnett-klzu,Flight School of Gwinnett,Lawrenceville,GA,,Flight school at KLZU; homepage no_website; matcher none,unchecked
+tachgo,ga/flint-river-soaring-4j5,Flint River Soaring,Quitman,GA,https://www.flintriversoaring.com,Flying club at 4J5; homepage training; matcher none,unchecked
+tachgo,ga/robins-aero-club-kwrb,Robins Aero Club,Warner Robins,GA,,Flying club at KWRB; homepage no_website; matcher none,unchecked
+tachgo,ga/statesboro-bulloch-county-airport-ktbr,Statesboro-Bulloch County Airport,Statesboro,GA,,"FBO, filed under school at KTBR; homepage no_website; matcher none",unchecked
+tachgo,ga/the-flying-club-at-peach-state-aerodrome-ga2,The Flying Club at Peach State Aerodrome,Williamson,GA,https://www.peachstateaero.com/flying/flying-club/,Flying club at GA2; homepage down; matcher none,unchecked
+tachgo,ga/thomasville-regional-airport-ktvi,Thomasville Regional Airport,Thomasville,GA,,"FBO, filed under school at KTVI; homepage no_website; matcher none",unchecked
+tachgo,ia/air-advantage-keok,Air Advantage,Keokuk,IA,,Flight school at KEOK; homepage no_website; matcher none,unchecked
+tachgo,ia/air-advantage-kmpz,Air Advantage,Mount Pleasant,IA,,"FBO, filed under school at KMPZ; homepage no_website; matcher none",unchecked
+tachgo,ia/airworks-kaio,Airworks,Atlantic,IA,,"FBO, filed under school at KAIO; homepage no_website; matcher none",unchecked
+tachgo,ia/algona-aero-service-kaxa,Algona Aero Service,Algona,IA,,"FBO, filed under school at KAXA; homepage no_website; matcher none",unchecked
+tachgo,ia/ascension-fbo-ksux,Ascension FBO,Sioux City,IA,https://ascensionfbo.com/location/sioux-city/,"FBO, filed under school at KSUX; homepage training; matcher none",unchecked
+tachgo,ia/bart-s-flying-service-kslb,Bart's Flying Service,Storm Lake,IA,,"FBO, filed under school at KSLB; homepage no_website; matcher none",unchecked
+tachgo,ia/blind-squirrel-aviation-kckp,Blind Squirrel Aviation,Cherokee,IA,,Flight school at KCKP; homepage no_website; matcher none,unchecked
+tachgo,ia/central-iowa-flying-club-kdsm,Central Iowa Flying Club,Des Moines,IA,https://www.centraliowaflyingclub.com/,Flying club at KDSM; homepage training; matcher none,new_training
+tachgo,ia/city-of-ottumwa-kotm,City of Ottumwa,Ottumwa,IA,http://www.ottumwa.us/departments/airport/,"FBO, filed under school at KOTM; homepage training; matcher none",unchecked
+tachgo,ia/connell-flying-service-kdeh,Connell Flying Service,Decorah,IA,https://www.connellflyingservice.com/,"FBO, filed under school at KDEH; homepage down; matcher none",unchecked
+tachgo,ia/fairfield-flying-service-kffl,Fairfield Flying Service,Fairfield,IA,,"FBO, filed under school at KFFL; homepage no_website; matcher none",unchecked
+tachgo,ia/forest-city-aviation-kfxy,Forest City Aviation,Forest City,IA,,"FBO, filed under school at KFXY; homepage no_website; matcher none",unchecked
+tachgo,ia/harlan-flying-service-khnr,Harlan Flying Service,Harlan,IA,,"FBO, filed under school at KHNR; homepage no_website; matcher none",unchecked
+tachgo,ia/knoxville-aviation-koxv,Knoxville Aviation,Knoxville,IA,https://www.knoxvilleaviation.com/,"FBO, filed under school at KOXV; homepage training; matcher none",unchecked
+tachgo,ia/lowry-flying-service-kggi,Lowry Flying Service,Grinnell,IA,,"FBO, filed under school at KGGI; homepage no_website; matcher none",unchecked
+tachgo,ia/mid-iowa-glider-club-kamw,Mid Iowa Glider Club,Ames,IA,https://www.facebook.com/midiowagliderclub/,Flying club at KAMW; homepage parked; matcher none,unchecked
+tachgo,ia/myers-flying-service-kski,Myers Flying Service,Sac City,IA,http://www.myersflyingservice.com/,Flight school at KSKI; homepage parked; matcher none,unchecked
+tachgo,ia/o-leary-aviation-kisb,O'Leary Aviation,Sibley,IA,,"FBO, filed under school at KISB; homepage no_website; matcher none",unchecked
+tachgo,ia/ultra-flight-llc-klrj,Ultra Flight LLC,Le Mars,IA,,"FBO, filed under school at KLRJ; homepage no_website; matcher none",unchecked
+tachgo,id/clearwater-valley-aero-club-s73,Clearwater Valley Aero Club,Kamiah,ID,,Flying club at S73; homepage no_website; matcher none,new_training
+tachgo,id/hillcrest-aircraft-company-klws,Hillcrest Aircraft Company,Lewiston,ID,https://www.hillcrestaircraft.com/,"FBO, filed under school at KLWS; homepage no_training_text; matcher none",unchecked
+tachgo,id/myl-high-flying-club-kmyl,MYL High Flying Club,McCall,ID,https://mylhighflying.lovable.app/,Flying club at KMYL; homepage training; matcher none,unchecked
+tachgo,id/northern-air-aviation-65s,Northern Air Aviation,Bonners Ferry,ID,https://www.northernairaviation.com/,"FBO, filed under school at 65S; homepage training; matcher none",in_list
+tachgo,id/sea-holdings-keul,Sea Holdings,Caldwell,ID,,Flight school at KEUL; homepage no_website; matcher none,unchecked
+tachgo,id/western-idaho-aviation-keul,Western Idaho Aviation,Caldwell,ID,,Flight school at KEUL; homepage no_website; matcher none,unchecked
+tachgo,id/wings-of-grace-keul,Wings of Grace,Caldwell,ID,,Flight school at KEUL; homepage no_website; matcher none,unchecked
+tachgo,il/chicago-glider-club-il59,Chicago Glider Club,Channahon,IL,,Flying club at IL59; homepage no_website; matcher none,unchecked
+tachgo,il/chicagoland-aviation-klot,Chicagoland Aviation,Chicago,IL,https://www.chicagolandaviation.com/,Flight school at KLOT; homepage down; matcher none,unchecked
+tachgo,il/flywaterloo-kpwk,FlyWaterloo,Chicago,IL,https://flywaterloo.com/,Flight school at KPWK; homepage no_training_text; matcher none,unchecked
+tachgo,il/jw-aviation-1c5,JW Aviation,Bolingbrook,IL,,Flight school at 1C5; homepage no_website; matcher none,unchecked
+tachgo,il/midwest-aviation-kmwa,Midwest Aviation,Marion,IL,,"FBO, filed under school at KMWA; homepage no_website; matcher none",unchecked
+tachgo,il/morris-municipal-airport-c09,Morris Municipal Airport,Morris,IL,,"FBO, filed under school at C09; homepage no_website; matcher none",unchecked
+tachgo,il/outland-flight-kmvn,Outland Flight,Mount Vernon,IL,https://outlandflight.com/,Flight school at KMVN; homepage blocked; matcher none,unchecked
+tachgo,il/parks-college-of-engineering-aviation-and-technology-kcps,"Parks College of Engineering, Aviation and Technology",Cahokia,IL,,Flight school at KCPS; homepage no_website; matcher none,unchecked
+tachgo,il/st-louis-soaring-association-h07,St. Louis Soaring Association,Highland,IL,https://www.stlsoar.org/,Flying club at H07; homepage parked; matcher none,unchecked
+tachgo,il/stellar-aviation-of-springfield-kspi,Stellar Aviation of Springfield,Springfield,IL,https://stellaraviationgroup.com/locations/stellar-aviation-of-springfield/,"FBO, filed under school at KSPI; homepage blocked; matcher none",unchecked
+tachgo,il/synergy-flight-center-chicago-kpwk,Synergy Flight Center Chicago,Chicago,IL,https://flysynergy.aero/flight-training-chicago,Flight school at KPWK; homepage training; matcher none,unchecked
+tachgo,in/aircraft-specialists-services-kjvy,Aircraft Specialists Services,Jeffersonville,IN,,"FBO, filed under school at KJVY; homepage no_website; matcher none",unchecked
+tachgo,in/central-indiana-soaring-society-i99,Central Indiana Soaring Society,Alexandria,IN,https://www.centralindianasoaringsociety.com,Flying club at I99; homepage down; matcher none,in_list
+tachgo,in/indiana-state-university-flight-academy-khuf,Indiana State University Flight Academy,Terre Haute,IN,https://www.indianastate.edu/academics/colleges/technology/eas/avt,Flight school at KHUF; homepage training; matcher none,unchecked
+tachgo,in/kendallville-soaring-club-c62,Kendallville Soaring Club,Kendallville,IN,,Flying club at C62; homepage no_website; matcher none,unchecked
+tachgo,in/lafayette-aero-club-klaf,Lafayette Aero Club,West Lafayette,IN,http://www.lafayetteaero.org/,Flying club at KLAF; homepage training; matcher none,unchecked
+tachgo,in/pilots-club-inc-5i4,"Pilots Club, Inc.",Sheridan,IN,http://indianapilotsclub.org/,Flying club at 5I4; homepage training; matcher none,in_list
+tachgo,in/pilots-club-inc-8i3,"Pilots Club, Inc.",Kokomo,IN,http://indianapilotsclub.org/,Flying club at 8I3; homepage training; matcher none,unchecked
+tachgo,in/pilots-club-inc-kokk,"Pilots Club, Inc.",Kokomo,IN,http://indianapilotsclub.org/,Flying club at KOKK; homepage training; matcher none,unchecked
+tachgo,in/robinson-aerobatics-kims,Robinson Aerobatics,Madison,IN,,Flight school at KIMS; homepage no_website; matcher none,unchecked
+tachgo,in/sullivan-county-airport-ksiv,Sullivan County Airport,Sullivan,IN,,"FBO, filed under school at KSIV; homepage no_website; matcher none",unchecked
+tachgo,in/wings-aviators-kvpz,Wings Aviators,Valparaiso,IN,https://www.wingsaviators.com/,Flight school at KVPZ; homepage blocked; matcher none,unchecked
+tachgo,ks/advanced-aviation-kixd,Advanced Aviation,New Century,KS,,"FBO, filed under school at KIXD; homepage no_website; matcher none",unchecked
+tachgo,ks/alpha-pilot-academy-kojc,Alpha Pilot Academy,Olathe,KS,https://airassociatesinc.com/learn-to-fly/,Flight school at KOJC; homepage down; matcher none,unchecked
+tachgo,ks/bear-creek-aviation-kjhn,Bear Creek Aviation,Johnson City,KS,,"FBO, filed under school at KJHN; homepage no_website; matcher none",unchecked
+tachgo,ks/city-of-el-dorado-keqa,City of El Dorado,El Dorado,KS,,"FBO, filed under school at KEQA; homepage no_website; matcher none",unchecked
+tachgo,ks/crosby-flying-services-kgck,Crosby Flying Services,Garden City,KS,https://www.crosbyflying.com/copy-of-burnet,"FBO, filed under school at KGCK; homepage training; matcher none",unchecked
+tachgo,ks/dream-air-kixd,Dream Air,New Century,KS,https://www.dreamairglobal.com,Flight school at KIXD; homepage training; matcher none,unchecked
+tachgo,ks/high-planes-aviation-kcbk,High Planes Aviation,Colby,KS,https://www.highplanesaviation.com/,"FBO, filed under school at KCBK; homepage no_training_text; matcher none",new_training_weak
+tachgo,ks/link-aviation-kgbd,Link Aviation,Great Bend,KS,https://www.fly-linkaviation.com/,Flight school at KGBD; homepage training; matcher none,unchecked
+tachgo,ks/mcpherson-airport-kmpr,McPherson Airport,Mc Pherson,KS,http://www.mcphersonairport.com/,"FBO, filed under school at KMPR; homepage training; matcher none",unchecked
+tachgo,ky/bowman-field-flying-club-klou,Bowman Field Flying Club,Louisville,KY,,Flying club at KLOU; homepage no_website; matcher none,unchecked
+tachgo,ky/carter-aviation-kbry,Carter Aviation,Bardstown,KY,,Flight school at KBRY; homepage no_website; matcher none,unchecked
+tachgo,ky/kickstart-aviation-m25,Kickstart Aviation,Mayfield,KY,https://www.kickstartaviation.com/,Flight school at M25; homepage training; matcher none,unchecked
+tachgo,ky/kilroy-aviation-krga,Kilroy Aviation,Richmond,KY,,Flight school at KRGA; homepage no_website; matcher none,unchecked
+tachgo,ky/london-aviation-kloz,London Aviation,London,KY,,Flight school at KLOZ; homepage no_website; matcher none,unchecked
+tachgo,ky/max-air-kbry,Max Air,Bardstown,KY,,Flight school at KBRY; homepage no_website; matcher none,unchecked
+tachgo,la/louisiana-regional-airport-kreg,Louisiana Regional Airport,Gonzales,LA,,"FBO, filed under school at KREG; homepage no_website; matcher none",unchecked
+tachgo,la/southland-aviation-kuxl,Southland Aviation,Sulphur,LA,,"FBO, filed under school at KUXL; homepage no_website; matcher fuzzy (nearest: southlandflyers.com)",unchecked
+tachgo,la/sowela-flight-school-kcwf,Sowela Flight School,Lake Charles,LA,https://sowelaflightschool.com/,Flight school at KCWF; homepage down; matcher fuzzy (nearest: sowela.edu),unchecked
+tachgo,la/vector-aviation-llc-kiya,"Vector Aviation, LLC",Abbeville,LA,,"FBO, filed under school at KIYA; homepage no_website; matcher none",unchecked
+tachgo,ma/brockton-flying-club-ktan,Brockton Flying Club,Taunton,MA,,Flying club at KTAN; homepage no_website; matcher none,unchecked
+tachgo,ma/franklin-county-flying-club-0b5,Franklin County Flying Club,Montague,MA,,Flying club at 0B5; homepage no_website; matcher none,unchecked
+tachgo,ma/greater-boston-soaring-club-3b3,Greater Boston Soaring Club,Sterling,MA,https://www.soargbsc.net/,Flying club at 3B3; homepage training; matcher none,unchecked
+tachgo,ma/hanscom-afb-aero-club-kbed,Hanscom AFB Aero Club,Bedford,MA,https://www.hanscomfss.com/aero-club,Flying club at KBED; homepage parked; matcher none,unchecked
+tachgo,ma/mit-soaring-association-3b3,MIT Soaring Association,Sterling,MA,,Flying club at 3B3; homepage no_website; matcher none,unchecked
+tachgo,ma/norwood-air-kowd,Norwood Air,Norwood,MA,http://www.norwoodair.com/,Flight school at KOWD; homepage training; matcher none,unchecked
+tachgo,ma/pilgrim-aviation-ktan,Pilgrim Aviation,Taunton,MA,,Flight school at KTAN; homepage no_website; matcher none,unchecked
+tachgo,ma/total-tailwheel-6b6,Total Tailwheel,Stow,MA,https://www.totaltailwheel.com/,Flight school at 6B6; homepage training; matcher none,unchecked
+tachgo,md/atc-flight-training-kvkx,ATC Flight Training,Friendly,MD,,Flight school at KVKX; homepage no_website; matcher none,unchecked
+tachgo,md/congressional-flying-club-kgai,Congressional Flying Club,Gaithersburg,MD,https://congressionalflyingclub.com/,Flying club at KGAI; homepage training; matcher none,unchecked
+tachgo,md/fort-meade-flight-activity-kfme,Fort Meade Flight Activity,Fort Meade(Odenton),MD,https://www.fmfa.org,Flying club at KFME; homepage training; matcher none,unchecked
+tachgo,md/frederick-sport-flyers-kfdk,Frederick Sport Flyers,Frederick,MD,,Flying club at KFDK; homepage no_website; matcher none,unchecked
+tachgo,md/nasa-goddard-space-flight-center-flying-club-kfme,NASA Goddard Space Flight Center Flying Club,Fort Meade(Odenton),MD,,Flying club at KFME; homepage no_website; matcher none,unchecked
+tachgo,md/tidewater-aviation-kesn,Tidewater Aviation,Easton,MD,https://flytidewater.com/,Flight school at KESN; homepage down; matcher none,new_training
+tachgo,me/belfast-municipal-airport-kbst,Belfast Municipal Airport,Belfast,ME,,"FBO, filed under school at KBST; homepage no_website; matcher none",unchecked
+tachgo,me/houlton-international-flying-club-khul,Houlton International Flying Club,Houlton,ME,,Flying club at KHUL; homepage no_website; matcher none,unchecked
+tachgo,me/knox-county-flying-club-krkd,Knox County Flying Club,Rockland,ME,https://www.facebook.com/p/Knox-County-Flying-Club-61568854825829/,Flying club at KRKD; homepage parked; matcher none,unchecked
+tachgo,mi/american-eagle-flying-club-y47,American Eagle Flying Club,New Hudson,MI,,Flying club at Y47; homepage no_website; matcher none,unchecked
+tachgo,mi/bay-de-noc-flying-club-kesc,Bay de Noc Flying Club,Escanaba,MI,https://www.facebook.com/BaydeNocFlyingClub/,Flying club at KESC; homepage parked; matcher none,unchecked
+tachgo,mi/blue-sun-air-kgrr,Blue Sun Air,Grand Rapids,MI,http://www.bluesunair.com/,Flight school at KGRR; homepage down; matcher none,unchecked
+tachgo,mi/charlevoix-flying-club-kmgn,Charlevoix Flying Club,Harbor Springs,MI,https://charlevoixflyingclub.com/,Flying club at KMGN; homepage training; matcher none,unchecked
+tachgo,mi/clare-aviation-flying-club-48d,Clare Aviation Flying Club,Clare,MI,,Flying club at 48D; homepage no_website; matcher none,unchecked
+tachgo,mi/cousins-flying-club-kvll,Cousins Flying Club,Troy,MI,,Flying club at KVLL; homepage no_website; matcher none,unchecked
+tachgo,mi/flight-school-jackson-kjxn,Flight School Jackson,Jackson,MI,https://www.flightschooljackson.com/,Flight school at KJXN; homepage training; matcher none,unchecked
+tachgo,mi/gaylord-regional-airport-kglr,Gaylord Regional Airport,Gaylord,MI,https://www.gaylordregional.com/,"FBO, filed under school at KGLR; homepage parked; matcher none",unchecked
+tachgo,mi/great-lakes-aviation-services-kphn,Great Lakes Aviation Services,Port Huron,MI,,Flight school at KPHN; homepage no_website; matcher none,unchecked
+tachgo,mi/keweenaw-bay-aviation-llc-kcmx,Keweenaw Bay Aviation LLC,Hancock,MI,,Flight school at KCMX; homepage no_website; matcher none,unchecked
+tachgo,mi/kubick-aviation-services-kimt,Kubick Aviation Services,Kingsford,MI,http://www.kubickaviation.com,"FBO, filed under school at KIMT; homepage training; matcher none",unchecked
+tachgo,mi/kubick-aviation-services-ksaw,Kubick Aviation Services,Gwinn,MI,https://kubickaviation.com/,"FBO, filed under school at KSAW; homepage training; matcher none",unchecked
+tachgo,mi/let-there-be-flight-kazo,Let There Be Flight,Kalamazoo,MI,https://www.lettherebeflight.net/,Flight school at KAZO; homepage training; matcher none,unchecked
+tachgo,mi/linden-airport-leasing-9g2,Linden Airport Leasing,Linden,MI,,"FBO, filed under school at 9G2; homepage no_website; matcher none",unchecked
+tachgo,mi/machspeed-aviation-kptk,MachSpeed Aviation,Pontiac,MI,https://machspeedaviation.com/,Flight school at KPTK; homepage blocked; matcher none,unchecked
+tachgo,mi/marine-city-aviation-76g,Marine City Aviation,Marine City,MI,,"FBO, filed under school at 76G; homepage no_website; matcher none",unchecked
+tachgo,mi/northwest-soaring-club-kcad,Northwest Soaring Club,Cadillac,MI,https://www.facebook.com/p/Northwest-Soaring-Club-100057343183883/,Flying club at KCAD; homepage parked; matcher none,unchecked
+tachgo,mi/orchard-beach-aviation-kmbl,Orchard Beach Aviation,Manistee,MI,https://orchardbeachaviation.com/,"FBO, filed under school at KMBL; homepage down; matcher none",unchecked
+tachgo,mi/phoenix-aviation-services-kosc,Phoenix Aviation Services,Oscoda,MI,,"FBO, filed under school at KOSC; homepage no_website; matcher fuzzy (nearest: phoenix-mi.net)",unchecked
+tachgo,mi/skyway-aviation-kjxn,Skyway Aviation,Jackson,MI,,"FBO, filed under school at KJXN; homepage no_website; matcher none",unchecked
+tachgo,mi/sparta-aviation-flight-training-8d4,Sparta Aviation Flight Training,Sparta,MI,https://spartaaviation.com/,Flight school at 8D4; homepage training; matcher none,unchecked
+tachgo,mi/uofd-flying-club-kyip,UofD Flying Club,Detroit,MI,,Flying club at KYIP; homepage no_website; matcher none,unchecked
+tachgo,mi/white-pine-helicopters-kptk,White Pine Helicopters,Pontiac,MI,https://whitepinehelicopters.com/,Flight school at KPTK; homepage training; matcher none,unchecked
+tachgo,mi/winds-air-flying-club-krnp,Winds Air Flying Club,Owosso,MI,https://www.windsairowosso.com/,Flying club at KRNP; homepage training; matcher none,unchecked
+tachgo,mn/adventure-bound-seaplanes-llc-12d,Adventure Bound Seaplanes LLC,Tower,MN,,Flight school at 12D; homepage no_website; matcher fuzzy (nearest: adventureseaplanes.com),unchecked
+tachgo,mn/agassiz-flyers-06y,Agassiz Flyers,Herman,MN,,Flying club at 06Y; homepage no_website; matcher none,unchecked
+tachgo,mn/ascension-flyers-21d,Ascension Flyers,St Paul,MN,,Flying club at 21D; homepage no_website; matcher none,unchecked
+tachgo,mn/bemidji-flying-club-kbji,Bemidji Flying Club,Bemidji,MN,https://www.facebook.com/BemidjiFlyingClub,Flying club at KBJI; homepage parked; matcher none,unchecked
+tachgo,mn/big-falls-flying-club-7y9,Big Falls Flying Club,Big Falls,MN,,Flying club at 7Y9; homepage no_website; matcher none,unchecked
+tachgo,mn/cadotte-teaching-systems-llc-ksgs,"Cadotte Teaching Systems, LLC",South St Paul,MN,,Flight school at KSGS; homepage no_website; matcher fuzzy (nearest: cadotteaero.com),unchecked
+tachgo,mn/canby-pilots-club-kcnb,Canby Pilots Club,Canby,MN,,Flying club at KCNB; homepage no_website; matcher none,unchecked
+tachgo,mn/cirrus-services-kjkj,Cirrus Services,Moorhead,MN,,Flight school at KJKJ; homepage no_website; matcher none,unchecked
+tachgo,mn/colonels-flying-club-ksgs,Colonels Flying Club,South St Paul,MN,,Flying club at KSGS; homepage no_website; matcher none,unchecked
+tachgo,mn/country-aire-kpqn,Country Aire,Pipestone,MN,,"FBO, filed under school at KPQN; homepage no_website; matcher none",unchecked
+tachgo,mn/crow-wing-flying-club-kpwc,Crow Wing Flying Club,Pine River,MN,,Flying club at KPWC; homepage no_website; matcher none,unchecked
+tachgo,mn/darb-inc-8y4,DARB Inc,Lino Lakes,MN,,Flying club at 8Y4; homepage no_website; matcher none,closed
+tachgo,mn/eveleth-virginia-champ-club-kevm,Eveleth-Virginia Champ Club,Eveleth,MN,,Flying club at KEVM; homepage no_website; matcher none,unchecked
+tachgo,mn/fertile-flying-club-d14,Fertile Flying Club,Fertile,MN,,Flying club at D14; homepage no_website; matcher none,unchecked
+tachgo,mn/grant-county-pilots-y63,Grant County Pilots,Elbow Lake,MN,,Flying club at Y63; homepage no_website; matcher none,unchecked
+tachgo,mn/harry-s-hawks-68y,Harry's Hawks,Wells,MN,,Flying club at 68Y; homepage no_website; matcher none,unchecked
+tachgo,mn/hawley-flying-club-kjkj,Hawley Flying Club,Moorhead,MN,,Flying club at KJKJ; homepage no_website; matcher none,unchecked
+tachgo,mn/little-falls-pilots-association-klxl,Little Falls Pilots Association,Little Falls,MN,,Flying club at KLXL; homepage no_website; matcher none,unchecked
+tachgo,mn/minnesota-general-aviation-flying-club-kljf,Minnesota General Aviation Flying Club,Litchfield,MN,,Flying club at KLJF; homepage no_website; matcher none,unchecked
+tachgo,mn/morris-hancock-flying-club-kmox,Morris-Hancock Flying Club,Morris,MN,,Flying club at KMOX; homepage no_website; matcher none,unchecked
+tachgo,mn/oasis-aero-kbdh,Oasis Aero,Willmar,MN,https://www.oasisaero.com/,"FBO, filed under school at KBDH; homepage training; matcher none",unchecked
+tachgo,mn/red-lake-falls-flying-club-d81,Red Lake Falls Flying Club,Red Lake Falls,MN,,Flying club at D81; homepage no_website; matcher none,unchecked
+tachgo,mn/sky-crew-aviation-kffm,Sky Crew Aviation,Fergus Falls,MN,,Flight school at KFFM; homepage no_website; matcher fuzzy (nearest: skycrewservices.com),in_list
+tachgo,mn/sky-manor-aero-club-mn86,Sky Manor Aero Club,Park Rapids,MN,,Flying club at MN86; homepage no_website; matcher none,unchecked
+tachgo,mn/st-cloud-state-university-aero-club-kstc,St. Cloud State University Aero Club,Saint Cloud,MN,,Flying club at KSTC; homepage no_website; matcher none,unchecked
+tachgo,mn/tel-air-flying-club-kane,Tel-Air Flying Club,Minneapolis,MN,,Flying club at KANE; homepage no_website; matcher none,unclear
+tachgo,mn/vikingland-flying-club-kaxn,Vikingland Flying Club,Alexandria,MN,https://www.vikinglandflyingclub.com/,Flying club at KAXN; homepage training; matcher none,new_training
+tachgo,mn/wally-s-flyers-kmic,Wally's Flyers,Minneapolis,MN,,Flying club at KMIC; homepage no_website; matcher none,unchecked
+tachgo,mn/win-air-aviation-services-kona,Win Air Aviation Services,Winona,MN,,"FBO, filed under school at KONA; homepage no_website; matcher none",unchecked
+tachgo,mn/yellow-cub-club-klvn,Yellow Cub Club,Minneapolis,MN,,Flying club at KLVN; homepage no_website; matcher none,unchecked
+tachgo,mo/boeing-employees-flying-club-1h0,Boeing Employees' Flying Club,St Louis,MO,https://befcstl.org/,Flying club at 1H0; homepage blocked; matcher none,unchecked
+tachgo,mo/city-of-kennett-ktkx,City of Kennett,Kennett,MO,,"FBO, filed under school at KTKX; homepage no_website; matcher none",unchecked
+tachgo,mo/city-of-poplar-bluff-kpof,City of Poplar Bluff,Poplar Bluff,MO,,"FBO, filed under school at KPOF; homepage no_website; matcher none",unchecked
+tachgo,mo/daniel-boone-flying-club-kver,Daniel Boone Flying Club,Boonville,MO,,Flying club at KVER; homepage no_website; matcher none,new_training
+tachgo,mo/mexico-memorial-airport-kmyj,Mexico Memorial Airport,Mexico,MO,,"FBO, filed under school at KMYJ; homepage no_website; matcher none",unchecked
+tachgo,mo/st-charles-county-flying-club-kset,St. Charles County Flying Club,St Charles,MO,,Flying club at KSET; homepage no_website; matcher none,unchecked
+tachgo,mo/unusual-attitudes-flying-club-m17,Unusual Attitudes Flying Club,Bolivar,MO,,Flying club at M17; homepage no_website; matcher none,unchecked
+tachgo,ms/meridian-aviation-kmei,Meridian Aviation,Meridian,MS,,"FBO, filed under school at KMEI; homepage no_website; matcher none",unchecked
+tachgo,ms/red-panther-aero-llc-kckm,Red Panther Aero LLC,Clarksdale,MS,,"FBO, filed under school at KCKM; homepage no_website; matcher none",new_training_weak
+tachgo,ms/shaffer-aviation-ktup,Shaffer Aviation,Tupelo,MS,https://www.shafferaviation.com/,Flight school at KTUP; homepage training; matcher none,unchecked
+tachgo,mt/eagle-flight-services-kbzn,Eagle Flight Services,Bozeman,MT,http://www.eagleflightservices.com,Flight school at KBZN; homepage blocked; matcher none,unchecked
+tachgo,mt/happy-trails-flight-training-and-charter-khln,Happy Trails Flight Training and Charter,Helena,MT,,Flight school at KHLN; homepage no_website; matcher none,new_training_weak
+tachgo,mt/havre-flying-club-khvr,Havre Flying Club,Havre,MT,,Flying club at KHVR; homepage no_website; matcher none,unchecked
+tachgo,mt/headwaters-flying-service-9s5,Headwaters Flying Service,Three Forks,MT,,"FBO, filed under school at 9S5; homepage no_website; matcher none",unchecked
+tachgo,mt/skyline-aviation-klwt,Skyline Aviation,Lewistown,MT,,"FBO, filed under school at KLWT; homepage no_website; matcher none",unchecked
+tachgo,mt/sleeping-giant-flying-club-khln,Sleeping Giant Flying Club,Helena,MT,https://sleepinggiantflyingclub.weebly.com/,Flying club at KHLN; homepage training; matcher none,unchecked
+tachgo,mt/the-arrow-club-kbzn,The Arrow Club,Bozeman,MT,http://www.eagleflightservices.com,Flying club at KBZN; homepage blocked; matcher none,unchecked
+tachgo,mt/transmedics-aviation-kbzn,TransMedics Aviation,Bozeman,MT,https://www.transmedics.com/transmedics-aviation/flight-school/,Flight school at KBZN; homepage blocked; matcher none,unchecked
+tachgo,mt/yellowstone-air-service-6s0,Yellowstone Air Service,Big Timber,MT,,"FBO, filed under school at 6S0; homepage no_website; matcher none",unchecked
+tachgo,mt/yellowstone-air-service-klvm,Yellowstone Air Service,Livingston,MT,https://www.yellowstoneairservice.com/,"FBO, filed under school at KLVM; homepage training; matcher none",unchecked
+tachgo,nc/14a-flying-club-14a,14A Flying Club,Mooresville,NC,,Flying club at 14A; homepage no_website; matcher none,unchecked
+tachgo,nc/alpha-one-flight-training-kjqf,Alpha One Flight Training,Concord,NC,https://alphaoneflighttraining.com/,Flight school at KJQF; homepage training; matcher fuzzy (nearest: alphaoneairservice.com),unchecked
+tachgo,nc/arq-aviation-ktta,ARQ Aviation,Sanford,NC,https://www.arqaviation.com/,Flight school at KTTA; homepage training; matcher none,unchecked
+tachgo,nc/cloud-cappers-flying-club-kruq,Cloud Cappers Flying Club,Salisbury,NC,https://cloudcappers.org,Flying club at KRUQ; homepage training; matcher none,unchecked
+tachgo,nc/davidson-flight-academy-kexx,Davidson Flight Academy,Lexington,NC,,Flight school at KEXX; homepage no_website; matcher none,unchecked
+tachgo,nc/fly-rwi-aviation-academy-krwi,Fly - RWI Aviation Academy,Rocky Mount,NC,,Flight school at KRWI; homepage no_website; matcher none,unchecked
+tachgo,nc/statesville-regional-airport-ksvh,Statesville Regional Airport,Statesville,NC,,"FBO, filed under school at KSVH; homepage no_website; matcher none",unchecked
+tachgo,nc/table-rock-aviation-khky,Table Rock Aviation,Hickory,NC,,Flight school at KHKY; homepage no_website; matcher none,unchecked
+tachgo,nc/talon-aviation-kmwk,Talon Aviation,Mount Airy,NC,https://flytalonair.com/,Flight school at KMWK; homepage training; matcher none,unchecked
+tachgo,nc/tradewind-flight-services-kewn,Tradewind Flight Services,New Bern,NC,https://tradewind-fsi.com/,Flight school at KEWN; homepage training; matcher fuzzy (nearest: tradewind-aviation.com),unchecked
+tachgo,nc/tradewind-flight-services-kocw,Tradewind Flight Services,Washington,NC,https://tradewind-fsi.com/,Flight school at KOCW; homepage training; matcher none,unchecked
+tachgo,nc/vann-aero-sales-kpgv,Vann Aero Sales,Greenville,NC,http://vannaeroservices.weebly.com/,Flight school at KPGV; homepage training; matcher none,unchecked
+tachgo,nc/warriors-to-wings-aero-club-kacz,Warriors to Wings Aero Club,Wallace,NC,,Flying club at KACZ; homepage no_website; matcher none,closed
+tachgo,nc/western-carolina-regional-airport-krhp,Western Carolina Regional Airport,Andrews,NC,https://www.westerncarolinaregional.us/,"FBO, filed under school at KRHP; homepage down; matcher none",unchecked
+tachgo,nc/wilkes-county-airport-kukf,Wilkes County Airport,North Wilkesboro,NC,,"FBO, filed under school at KUKF; homepage no_website; matcher fuzzy (nearest: wilkesflyingclub.com)",unchecked
+tachgo,nd/foss-and-meier-flight-service-kdvl,Foss and Meier Flight Service,Devils Lake,ND,,"FBO, filed under school at KDVL; homepage no_website; matcher none",unchecked
+tachgo,nd/mandan-aero-center-y19,Mandan Aero Center,Mandan,ND,https://mandanaero.com/,Flight school at Y19; homepage training; matcher none,unchecked
+tachgo,nd/sports-flying-inc-4v4,Sports Flying Inc.,Northwood,ND,http://www.northwoodflyingclub.com/,Flying club at 4V4; homepage down; matcher none,unchecked
+tachgo,ne/beatrice-municipal-airport-kbie,Beatrice Municipal Airport,Beatrice,NE,https://www.beatrice.ne.gov/business-development/airport/,"FBO, filed under school at KBIE; homepage no_training_text; matcher none",unchecked
+tachgo,ne/hill-aviation-kggf,Hill Aviation,Grant,NE,,"FBO, filed under school at KGGF; homepage no_website; matcher none",not_training
+tachgo,ne/holdrege-aviation-khde,Holdrege Aviation,Holdrege,NE,https://www.holdregeaviation.com/,"FBO, filed under school at KHDE; homepage down; matcher none",unchecked
+tachgo,ne/lemay-aero-club-koff,LeMay Aero Club,Omaha,NE,,Flying club at KOFF; homepage no_website; matcher fuzzy (nearest: offutt55fss.com),unchecked
+tachgo,ne/trego-dugan-aviation-kgri,Trego Dugan Aviation,Grand Island,NE,https://www.trego-dugan.com/,"FBO, filed under school at KGRI; homepage no_training_text; matcher none",unchecked
+tachgo,ne/trego-dugan-aviation-klbf,Trego Dugan Aviation,North Platte,NE,https://www.trego-dugan.com/,"FBO, filed under school at KLBF; homepage no_training_text; matcher none",unchecked
+tachgo,ne/valley-airways-kbff,Valley Airways,Scottsbluff,NE,,"FBO, filed under school at KBFF; homepage no_website; matcher none",unchecked
+tachgo,nh/moco-aviation-4mb,Moco Aviation,Moultonborough,NH,,Flight school at 4MB; homepage no_website; matcher none,unchecked
+tachgo,nj/7-aces-aviation-club-kvay,7 Aces Aviation Club,Lumberton,NJ,https://www.7acesaviation.com/,Flying club at KVAY; homepage training; matcher none,unchecked
+tachgo,nj/crosswinds-flight-school-17n,Crosswinds Flight School,Cross Keys,NJ,,Flight school at 17N; homepage no_website; matcher none,unchecked
+tachgo,nj/mach-flying-club-47n,MACH Flying Club,Manville,NJ,https://machflyingclub.com/,Flying club at 47N; homepage training; matcher none,unchecked
+tachgo,nj/pilots-flight-school-3n6,Pilots Flight School,Old Bridge,NJ,https://pilotsflightschool.com/,Flight school at 3N6; homepage training; matcher none,unchecked
+tachgo,nm/cannon-aero-club-kcvs,Cannon Aero Club,Clovis,NM,,Flying club at KCVS; homepage no_website; matcher none,unchecked
+tachgo,nm/exile-aviation-kalm,Exile Aviation,Alamogordo,NM,,"FBO, filed under school at KALM; homepage no_website; matcher none",new_training_weak
+tachgo,nm/gofastpilots-llc-krow,GoFastPilots LLC,Roswell,NM,https://www.gofastpilots.com/,Flight school at KROW; homepage training; matcher none,unchecked
+tachgo,nv/702-aviation-kvgt,702 Aviation,Las Vegas,NV,https://www.702aviation.com/,Flight school at KVGT; homepage training; matcher fuzzy (nearest: 702helicopters.com),unchecked
+tachgo,nv/light-sport-aviation-kvgt,Light Sport Aviation,Las Vegas,NV,https://www.lightsportaviationllc.com/,Flight school at KVGT; homepage parked; matcher none,unchecked
+tachgo,nv/minden-soaring-club-kmev,Minden Soaring Club,Minden,NV,https://www.mindensoaring.org/,Flying club at KMEV; homepage training; matcher none,unchecked
+tachgo,nv/winnemucca-air-service-kwmc,Winnemucca Air Service,Winnemucca,NV,,"FBO, filed under school at KWMC; homepage no_website; matcher none",new_training_weak
+tachgo,ny/adirondack-aviation-academy-kslk,Adirondack Aviation Academy,Saranac Lake,NY,,Flight school at KSLK; homepage no_website; matcher none,unchecked
+tachgo,ny/adirondack-soaring-group-5b2,Adirondack Soaring Group,Saratoga Springs,NY,,Flying club at 5B2; homepage no_website; matcher fuzzy (nearest: adirondacksoaring.com),unchecked
+tachgo,ny/avquest-aviation-services-kmgj,Avquest Aviation Services,Montgomery,NY,,Flight school at KMGJ; homepage no_website; matcher none,unchecked
+tachgo,ny/brockport-flying-club-kgvq,Brockport Flying Club,Batavia,NY,https://www.facebook.com/Brockport-Flying-Club-105603161067217/,Flying club at KGVQ; homepage parked; matcher none,unchecked
+tachgo,ny/buffalo-lancaster-regional-airport-kbqr,Buffalo Lancaster Regional Airport,Lancaster,NY,https://www.buffalolancaster.com/,"FBO, filed under school at KBQR; homepage no_training_text; matcher none",unchecked
+tachgo,ny/cambridge-valley-flying-club-1b8,Cambridge Valley Flying Club,Cambridge,NY,,Flying club at 1B8; homepage no_website; matcher none,unchecked
+tachgo,ny/clarence-flying-club-d51,Clarence Flying Club,Buffalo,NY,,Flying club at D51; homepage no_website; matcher none,unchecked
+tachgo,ny/cooperstown-aviation-k23,Cooperstown Aviation,Cooperstown,NY,,"FBO, filed under school at K23; homepage no_website; matcher none",unchecked
+tachgo,ny/country-skies-aviation-44n,Country Skies Aviation,Millbrook,NY,http://www.countryskiesaviation.com,Flight school at 44N; homepage training; matcher none,unchecked
+tachgo,ny/finger-lakes-regional-airport-0g7,Finger Lakes Regional Airport,Seneca Falls,NY,,"FBO, filed under school at 0G7; homepage no_website; matcher none",unchecked
+tachgo,ny/galaxy-aviation-krme,Galaxy Aviation,Rome,NY,,Flight school at KRME; homepage no_website; matcher none,unchecked
+tachgo,ny/goodrich-pilot-training-center-kbgm,Goodrich Pilot Training Center,Binghamton,NY,https://goodrichpilottrainingcenter.com/,Flight school at KBGM; homepage training; matcher fuzzy (nearest: goodrichaviation.com),unchecked
+tachgo,ny/hamburg-airport-4g2,Hamburg Airport,Hamburg,NY,https://www.hamburgairport.com,"FBO, filed under school at 4G2; homepage training; matcher none",unchecked
+tachgo,ny/ledgedale-air-service-7g0,Ledgedale Air Service,Brockport,NY,https://ledgedaleairservice.com/,Flight school at 7G0; homepage training; matcher none,unchecked
+tachgo,ny/right-brother-aviation-krme,Right Brother Aviation,Rome,NY,https://www.rightbrotheraviation.com/,Flight school at KRME; homepage training; matcher none,unchecked
+tachgo,ny/take-angels-aviation-kart,Take Angels Aviation,Watertown,NY,https://nnyflys.com/,Flight school at KART; homepage blocked; matcher none,unchecked
+tachgo,ny/tango-whiskey-aerobatics-kroc,Tango Whiskey Aerobatics,Rochester,NY,https://www.flytangowhiskey.com/,Flight school at KROC; homepage training; matcher none,unchecked
+tachgo,ny/ventura-aviation-kfrg,Ventura Aviation,East Farmingdale,NY,http://www.ventura.aero/,Flight school at KFRG; homepage no_training_text; matcher none,unchecked
+tachgo,oh/auglaize-county-airport-authority-kaxv,Auglaize County Airport Authority,Wapakoneta,OH,https://www.neilarmstrongairport.com/,"FBO, filed under school at KAXV; homepage no_training_text; matcher none",unchecked
+tachgo,oh/buckeye-tailwheel-club-kmrt,Buckeye Tailwheel Club,Marysville,OH,https://www.facebook.com/BTWC2023,Flying club at KMRT; homepage parked; matcher none,unchecked
+tachgo,oh/central-ohio-soaring-association-kmnn,Central Ohio Soaring Association,Marion,OH,,Flying club at KMNN; homepage no_website; matcher none,unchecked
+tachgo,oh/cincinnati-west-airport-i67,Cincinnati West Airport,Harrison,OH,,"FBO, filed under school at I67; homepage no_website; matcher none",unchecked
+tachgo,oh/city-of-galion-kgqq,City of Galion,Galion,OH,,"FBO, filed under school at KGQQ; homepage no_website; matcher none",unchecked
+tachgo,oh/middletown-aviation-kmwo,Middletown Aviation,Middletown,OH,https://flymwo.com/fbo/,"FBO, filed under school at KMWO; homepage blocked; matcher none",unchecked
+tachgo,oh/moraine-air-park-i73,Moraine Air Park,Dayton,OH,https://www.moraineairpark.com/,"FBO, filed under school at I73; homepage parked; matcher none",unchecked
+tachgo,oh/the-aviation-works-kvta,The Aviation Works,Newark,OH,,"FBO, filed under school at KVTA; homepage no_website; matcher none",unchecked
+tachgo,oh/van-wert-county-airport-kvnw,Van Wert County Airport,Van Wert,OH,https://www.vwairport.com/,"FBO, filed under school at KVNW; homepage training; matcher none",unchecked
+tachgo,oh/volare-aviation-2g2,Volare Aviation,Steubenville,OH,,Flight school at 2G2; homepage no_website; matcher none,unchecked
+tachgo,ok/athena-aircraft-koun,Athena Aircraft,Norman,OK,https://flyathena.com/,Flight school at KOUN; homepage training; matcher none,unchecked
+tachgo,ok/blue-skies-flight-school-kgok,Blue Skies Flight School,Guthrie,OK,,Flight school at KGOK; homepage no_website; matcher none,unchecked
+tachgo,ok/centerline-aviation-kguy,Centerline Aviation,Guymon,OK,,"FBO, filed under school at KGUY; homepage no_website; matcher none",unchecked
+tachgo,ok/davis-field-aviation-kmko,Davis Field Aviation,Muskogee,OK,https://www.davisfieldaviation.com/,"FBO, filed under school at KMKO; homepage training; matcher none",new_training
+tachgo,ok/guardian-aerial-patrol-kgok,Guardian Aerial Patrol,Guthrie,OK,,Flight school at KGOK; homepage no_website; matcher none,unchecked
+tachgo,ok/integrity-airmotive-h68,Integrity Airmotive,Wagoner,OK,,Flight school at H68; homepage no_website; matcher none,unchecked
+tachgo,ok/jetset-fbo-kpwa,JetSet FBO,Oklahoma City,OK,https://www.jetsetokc.com/,"FBO, filed under school at KPWA; homepage no_training_text; matcher none",unchecked
+tachgo,ok/oklahoma-flying-aggies-kswo,Oklahoma Flying Aggies,Stillwater,OK,https://www.flyingaggies.com/,Flying club at KSWO; homepage no_training_text; matcher none,unchecked
+tachgo,ok/redeemed-flying-corps-ksnl,Redeemed Flying Corps,Shawnee,OK,https://redeemedflyingcorps.org/,Flight school at KSNL; homepage training; matcher none,unchecked
+tachgo,ok/volar-flight-school-kpwa,Volar Flight School,Oklahoma City,OK,,Flight school at KPWA; homepage no_website; matcher none,unchecked
+tachgo,or/coos-aviation-koth,Coos Aviation,North Bend,OR,https://www.coosaviation.com/,"FBO, filed under school at KOTH; homepage training; matcher none",unchecked
+tachgo,or/deschutes-flying-club-kbdn,Deschutes Flying Club,Bend,OR,https://www.deschutesflyingclub.org/,Flying club at KBDN; homepage training; matcher none,new_training
+tachgo,or/fly-north-aviation-kuao,Fly North Aviation,Aurora,OR,https://www.flynorthaviation.com/,Flight school at KUAO; homepage training; matcher none,unchecked
+tachgo,or/high-desert-soaring-club-kbdn,High Desert Soaring Club,Bend,OR,http://www.hdsoaring.org/,Flying club at KBDN; homepage parked; matcher none,unchecked
+tachgo,or/hood-river-soaring-4s2,Hood River Soaring,Hood River,OR,https://www.hoodriversoaring.org/,Flying club at 4S2; homepage blocked; matcher none,unchecked
+tachgo,or/silverhawk-aviation-kono,Silverhawk Aviation,Ontario,OR,,"FBO, filed under school at KONO; homepage no_website; matcher none",unchecked
+tachgo,or/willamette-valley-soaring-club-1or4,Willamette Valley Soaring Club,North Plains,OR,https://www.wvsc.org/,Flying club at 1OR4; homepage no_training_text; matcher none,unchecked
+tachgo,pa/abella-aviation-klns,Abella Aviation,Lancaster,PA,https://www.flyabella.com/,Flight school at KLNS; homepage no_training_text; matcher none,unchecked
+tachgo,pa/abella-aviation-kmqs,Abella Aviation,Coatesville,PA,https://www.flyabella.com/,Flight school at KMQS; homepage no_training_text; matcher none,unchecked
+tachgo,pa/acorn-flying-club-klns,Acorn Flying Club,Lancaster,PA,,Flying club at KLNS; homepage no_website; matcher none,new_training
+tachgo,pa/aero-aviation-flight-training-kvvs,Aero Aviation Flight Training,Connellsville,PA,,Flight school at KVVS; homepage no_website; matcher none,unchecked
+tachgo,pa/brandywine-aviation-and-maintenance-koqn,Brandywine Aviation & Maintenance,West Chester,PA,https://www.brandywineaviation.com/,Flight school at KOQN; homepage training; matcher fuzzy (nearest: brandywineflightschool.com),unchecked
+tachgo,pa/chiques-flying-club-klns,Chiques Flying Club,Lancaster,PA,https://chiquesflying.wixsite.com/home,Flying club at KLNS; homepage training; matcher none,unchecked
+tachgo,pa/soaring-tigers-9n1,Soaring Tigers,Erwinna,PA,https://www.soaringtigers.org/,Flying club at 9N1; homepage no_training_text; matcher none,unchecked
+tachgo,pa/towanda-flying-club-n27,Towanda Flying Club,Towanda,PA,,Flying club at N27; homepage no_website; matcher none,unchecked
+tachgo,pa/warrington-flying-club-kdyl,Warrington Flying Club,Doylestown,PA,,Flying club at KDYL; homepage no_website; matcher none,unchecked
+tachgo,ri/dooney-aviation-kwst,Dooney Aviation,Westerly,RI,,"FBO, filed under school at KWST; homepage no_website; matcher none",unchecked
+tachgo,ri/newport-aviation-flight-school-kuuu,Newport Aviation Flight School,Newport,RI,,Flight school at KUUU; homepage no_website; matcher none,unchecked
+tachgo,ri/quonset-aero-club-koqu,Quonset Aero Club,North Kingstown,RI,,Flying club at KOQU; homepage no_website; matcher none,unchecked
+tachgo,sc/advanced-performance-aviation-klro,Advanced Performance Aviation,Mount Pleasant,SC,,Flight school at KLRO; homepage no_website; matcher none,unchecked
+tachgo,sc/austin-aviation-krbw,Austin Aviation,Walterboro,SC,,Flight school at KRBW; homepage no_website; matcher none,unchecked
+tachgo,sc/beaufort-flight-training-rentals-and-tours-karw,"Beaufort Flight Training, Rentals and Tours",Beaufort,SC,,Flight school at KARW; homepage no_website; matcher none,unchecked
+tachgo,sc/doubleday-aviation-kgmu,DoubleDay Aviation,Greenville,SC,https://www.flydoubleday.com,Flight school at KGMU; homepage training; matcher none,unchecked
+tachgo,sc/flight-school-of-anderson-kand,Flight School of Anderson,Anderson,SC,https://www.flightschoolofanderson.com/,Flight school at KAND; homepage down; matcher none,unchecked
+tachgo,sc/lowcountry-aviation-krbw,Lowcountry Aviation,Walterboro,SC,https://www.lowcountryaviation.com/,"FBO, filed under school at KRBW; homepage no_training_text; matcher none",unchecked
+tachgo,sc/mid-coast-aviation-llc-kmks,"Mid-Coast Aviation, LLC",Moncks Corner,SC,,Flight school at KMKS; homepage no_website; matcher none,unchecked
+tachgo,sc/seven-rivers-aviation-kgge,Seven Rivers Aviation,Georgetown,SC,https://www.sevenriversaviation.com/,"FBO, filed under school at KGGE; homepage training; matcher none",unchecked
+tachgo,sd/brookings-aerosports-unlimited-kbkx,Brookings Aerosports Unlimited,Brookings,SD,,Flying club at KBKX; homepage no_website; matcher none,unchecked
+tachgo,sd/faulk-county-flying-club-3fu,Faulk County Flying Club,Faulkton,SD,,Flying club at 3FU; homepage no_website; matcher none,unchecked
+tachgo,tn/athens-air-llc-kmmi,"Athens Air, LLC",Athens,TN,,"FBO, filed under school at KMMI; homepage no_website; matcher none",new_training_weak
+tachgo,tn/collegedale-municipal-airport-kfgu,Collegedale Municipal Airport,Apison,TN,https://www.collegedaleairport.com/,"FBO, filed under school at KFGU; homepage training; matcher none",unchecked
+tachgo,tn/eagleville-soaring-club-50m,Eagleville Soaring Club,Eagleville,TN,https://eaglevillesoaring.org/,Flying club at 50M; homepage training; matcher none,unchecked
+tachgo,tn/fayette-hawks-flying-club-kfye,Fayette Hawks Flying Club,Somerville,TN,,Flying club at KFYE; homepage no_website; matcher none,unchecked
+tachgo,tn/highland-aero-ksrb,Highland Aero,Sparta,TN,,Flight school at KSRB; homepage no_website; matcher none,unchecked
+tachgo,tn/howell-enterprises-inc-kmqy,"Howell Enterprises, Inc.",Smyrna,TN,http://www.mu2b.com/,Flight school at KMQY; homepage training; matcher none,unchecked
+tachgo,tn/johnson-county-airport-6a4,Johnson County Airport,Mountain City,TN,https://johnsoncountyairport.com/,Flight school at 6A4; homepage training; matcher none,unchecked
+tachgo,tn/memphis-navy-flying-club-knqa,Memphis Navy Flying Club,Millington,TN,,Flying club at KNQA; homepage no_website; matcher none,unchecked
+tachgo,tn/new-tazewell-municipal-airport-3a2,New Tazewell Municipal Airport,Tazewell,TN,,"FBO, filed under school at 3A2; homepage no_website; matcher none",unchecked
+tachgo,tn/shelbyville-municipal-airport-ksyi,Shelbyville Municipal Airport,Shelbyville,TN,,"FBO, filed under school at KSYI; homepage no_website; matcher none",unchecked
+tachgo,tn/smithville-municipal-airport-0a3,Smithville Municipal Airport,Smithville,TN,,"FBO, filed under school at 0A3; homepage no_website; matcher none",unchecked
+tachgo,tn/stewmon-aircraft-klug,Stewmon Aircraft,Lewisburg,TN,,"FBO, filed under school at KLUG; homepage no_website; matcher none",unchecked
+tachgo,tn/t-and-t-aviation-kckv,T&T Aviation,Clarksville,TN,https://www.tandt-aviation.com/,Flight school at KCKV; homepage training; matcher none,unchecked
+tachgo,tn/tri-city-aviation-ktri,Tri-City Aviation,Blountville,TN,https://www.tricityaviation.com/,"FBO, filed under school at KTRI; homepage no_training_text; matcher none",unchecked
+tachgo,tn/upline-aviation-m54,Upline Aviation,Lebanon,TN,https://www.uplineaviation.com/,Flight school at M54; homepage no_training_text; matcher none,unchecked
+tachgo,tx/baytown-airport-khpy,Baytown Airport,Baytown,TX,https://www.baytownairport.com/,"FBO, filed under school at KHPY; homepage no_training_text; matcher none",unchecked
+tachgo,tx/black-star-aviation-84r,Black Star Aviation,Smithville,TX,https://www.blackstaraviation.com/,Flight school at 84R; homepage blocked; matcher none,unchecked
+tachgo,tx/east-texas-flying-service-inc-kjdd,East Texas Flying Service Inc.,Mineola,TX,,"FBO, filed under school at KJDD; homepage no_website; matcher none",unchecked
+tachgo,tx/falcon-flight-usa-kgpm,Falcon Flight USA,Grand Prairie,TX,https://falconflightusa.com/,Flight school at KGPM; homepage training; matcher none,unchecked
+tachgo,tx/freeman-jet-center-kact,Freeman Jet Center,Waco,TX,https://freemanholdingsgroup.com/aviation/freeman-jet-center-waco/,"FBO, filed under school at KACT; homepage training; matcher none",unchecked
+tachgo,tx/kerrville-aviation-kerv,Kerrville Aviation,Kerrville,TX,https://www.kerrvilleaviation.com/,"FBO, filed under school at KERV; homepage training; matcher none",unchecked
+tachgo,tx/kickapoo-downtown-airport-kcwc,Kickapoo Downtown Airport,Wichita Falls,TX,https://flywichitafalls.net/kickapoo-airport,"FBO, filed under school at KCWC; homepage training; matcher none",unchecked
+tachgo,tx/rising-aviation-high-school-kads,Rising Aviation High School,Dallas,TX,https://www.risingaviation.com/,Flight school at KADS; homepage training; matcher none,new_training
+tachgo,tx/searey-adventures-ktpl,SeaRey Adventures,Temple,TX,https://seareyadventures.com,Flight school at KTPL; homepage training; matcher none,unchecked
+tachgo,tx/southern-star-aviation-kjwy,Southern Star Aviation,Midlothian,TX,,"FBO, filed under school at KJWY; homepage no_website; matcher none",unchecked
+tachgo,tx/southmost-aviation-kbro,Southmost Aviation,Brownsville,TX,,"FBO, filed under school at KBRO; homepage no_website; matcher none",unchecked
+tachgo,tx/spartan-flight-academy-kgpm,Spartan Flight Academy,Grand Prairie,TX,https://www.spartanflightacademy.com/,"FBO, filed under school at KGPM; homepage training; matcher none",unchecked
+tachgo,tx/stephenville-aviation-ksep,Stephenville Aviation,Stephenville,TX,,"FBO, filed under school at KSEP; homepage no_website; matcher none",unchecked
+tachgo,tx/tailworks-llc-t41,TailWorks LLC,La Porte,TX,https://tailworksllc.com/,"FBO, filed under school at T41; homepage no_training_text; matcher none",unchecked
+tachgo,tx/terrell-aviation-ktrl,Terrell Aviation,Terrell,TX,,Flight school at KTRL; homepage no_website; matcher none,unchecked
+tachgo,tx/texas-soaring-association-ta11,Texas Soaring Association,Midlothian,TX,https://texassoaring.org/,Flying club at TA11; homepage no_training_text; matcher none,unchecked
+tachgo,tx/universal-flight-concepts-kact,Universal Flight Concepts,Waco,TX,https://universalheli.com/waco-tx/,Flight school at KACT; homepage down; matcher fuzzy (nearest: universalflightconcepts.com),unchecked
+tachgo,ut/gateone-aviation-kcdc,GateOne Aviation,Cedar City,UT,,"FBO, filed under school at KCDC; homepage no_website; matcher none",unchecked
+tachgo,ut/integrity-air-service-74v,Integrity Air Service,Roosevelt,UT,,"FBO, filed under school at 74V; homepage no_website; matcher none",unchecked
+tachgo,ut/richfield-municipal-airport-krif,Richfield Municipal Airport,Richfield,UT,,"FBO, filed under school at KRIF; homepage no_website; matcher none",unchecked
+tachgo,ut/sanpete-county-regional-airport-41u,Sanpete County Regional Airport,Manti,UT,,"FBO, filed under school at 41U; homepage no_website; matcher none",unchecked
+tachgo,ut/sparrow-air-inc-klgu,"Sparrow Air, Inc.",Logan,UT,https://www.logancacheairport.com/,Flight school at KLGU; homepage down; matcher none,unchecked
+tachgo,ut/utah-aviation-services-kspk,Utah Aviation Services,Spanish Fork,UT,,"FBO, filed under school at KSPK; homepage no_website; matcher none",unchecked
+tachgo,ut/utah-light-sport-kogd,Utah Light Sport,Ogden,UT,https://utahlightsport.com/,Flight school at KOGD; homepage training; matcher none,unchecked
+tachgo,va/ace-flight-academy-krmn,Ace Flight Academy,Fredericksburg,VA,,Flight school at KRMN; homepage no_website; matcher none,unchecked
+tachgo,va/bon-air-jet-klyh,Bon Air Jet,Lynchburg,VA,https://www.bonairjet.com/,Flight school at KLYH; homepage no_training_text; matcher none,unchecked
+tachgo,va/cumberlands-airport-commission-klnp,Cumberlands Airport Commission,Wise,VA,https://www.lonesomepineairport.com/,"FBO, filed under school at KLNP; homepage no_training_text; matcher none",unchecked
+tachgo,va/franklin-municipal-airport-kfkn,Franklin Municipal Airport,Franklin,VA,,"FBO, filed under school at KFKN; homepage no_website; matcher none",unchecked
+tachgo,va/hill-flying-service-kfyj,Hill Flying Service,Shacklefords,VA,https://www.hillflyingservice.com/,Flight school at KFYJ; homepage training; matcher none,unchecked
+tachgo,va/mclaren-corporation-w24,McLaren Corporation,Lynchburg,VA,,"FBO, filed under school at W24; homepage no_website; matcher none",unchecked
+tachgo,va/old-school-flight-school-kpvg,Old School Flight School,Chesapeake,VA,,Flight school at KPVG; homepage no_website; matcher none,unchecked
+tachgo,va/safe-flight-aviation-kpvg,Safe Flight Aviation,Chesapeake,VA,,Flight school at KPVG; homepage no_website; matcher none,unchecked
+tachgo,va/spark-aero-kbcb,Spark Aero,Blacksburg,VA,,Flight school at KBCB; homepage no_website; matcher none,unchecked
+tachgo,va/tazewell-county-airport-kjfz,Tazewell County Airport,Cedar Bluff,VA,https://fly.tazewellcountyva.org/,"FBO, filed under school at KJFZ; homepage no_training_text; matcher none",unchecked
+tachgo,va/voyager-aviation-kavc,Voyager Aviation,Brodnax,VA,,Flight school at KAVC; homepage no_website; matcher none,unchecked
+tachgo,va/white-hawk-aviation-kcjr,White Hawk Aviation,Culpeper,VA,,Flight school at KCJR; homepage no_website; matcher none,unchecked
+tachgo,vt/altitude-flight-training-vt-krut,Altitude Flight Training VT,Rutland,VT,https://altitudeflighttrainingvt.com/,Flight school at KRUT; homepage training; matcher none,unchecked
+tachgo,vt/high-wind-aviation-kvsf,High Wind Aviation,North Springfield,VT,,Flight school at KVSF; homepage no_website; matcher none,unchecked
+tachgo,vt/springfield-aviation-kvsf,Springfield Aviation,North Springfield,VT,,"FBO, filed under school at KVSF; homepage no_website; matcher none",unchecked
+tachgo,vt/upside-down-vt-kfso,Upside Down VT,Swanton,VT,https://www.upsidedownvt.com/,Flight school at KFSO; homepage training; matcher none,unchecked
+tachgo,wa/chehalis-skies-aviation-kcls,Chehalis Skies Aviation,Chehalis,WA,https://www.csaviation.net/,Flight school at KCLS; homepage training; matcher none,unchecked
+tachgo,wa/citizen-air-kclm,Citizen Air,Port Angeles,WA,http://www.flycitizenair.com/,"FBO, filed under school at KCLM; homepage training; matcher none",unchecked
+tachgo,wa/dungeness-aircraft-service-w28,Dungeness Aircraft Service,Sequim,WA,https://sequimvalleyairport.com/dungeness-aircraft-service/,"FBO, filed under school at W28; homepage training; matcher none",unchecked
+tachgo,wa/gorge-aviation-services-kalw,Gorge Aviation Services,Walla Walla,WA,https://www.gorgeaviationservices.com/,"FBO, filed under school at KALW; homepage training; matcher none",unchecked
+tachgo,wa/lima-charlie-air-kcls,Lima Charlie Air,Chehalis,WA,https://www.limacharlieair.com/,Flight school at KCLS; homepage training; matcher none,unchecked
+tachgo,wa/oak-harbor-flight-club-kokh,Oak Harbor Flight Club,Oak Harbor,WA,https://oakharborflightclub.org/,Flying club at KOKH; homepage training; matcher none,unchecked
+tachgo,wa/shuksan-air-service-kors,Shuksan Air Service,Eastsound,WA,https://shuksanairservice.com/,Flight school at KORS; homepage training; matcher none,unchecked
+tachgo,wa/warrior-aviation-kcls,Warrior Aviation,Chehalis,WA,https://www.taildraggerpilot.com/,Flight school at KCLS; homepage blocked; matcher none,unchecked
+tachgo,wi/aero-290-kbuu,Aero 290,Burlington,WI,https://www.aero290.com/,"FBO, filed under school at KBUU; homepage no_training_text; matcher none",unchecked
+tachgo,wi/brookfield-aero-02c,Brookfield Aero,Brookfield,WI,http://www.capitoldriveairport.com,"FBO, filed under school at 02C; homepage training; matcher none",unchecked
+tachgo,wi/hayward-aviation-khyr,Hayward Aviation,Hayward,WI,,"FBO, filed under school at KHYR; homepage no_website; matcher none",unchecked
+tachgo,wi/lake-country-aviation-flight-school-w11,Lake Country Aviation Flight School,Sullivan,WI,https://lakecountryairport.com/,Flight school at W11; homepage training; matcher none,unchecked
+tachgo,wi/ovation-cwa-kcwa,Ovation CWA,Mosinee,WI,http://www.ovationfbo.com,"FBO, filed under school at KCWA; homepage training; matcher none",in_list
+tachgo,wi/panther-aero-flying-club-kmke,Panther Aero Flying Club,Milwaukee,WI,,Flying club at KMKE; homepage no_website; matcher none,unchecked
+tachgo,wi/progressive-air-inc-kjvl,Progressive Air Inc,Janesville,WI,http://www.progressiveair.org/,Flight school at KJVL; homepage training; matcher none,unchecked
+tachgo,wi/rio-aero-club-94c,Rio Aero Club,Rio,WI,,Flying club at 94C; homepage no_website; matcher none,unchecked
+tachgo,wi/sylvania-airport-c89,Sylvania Airport,Sturtevant,WI,https://www.sylvaniaairport.com/,"FBO, filed under school at C89; homepage training; matcher none",unchecked
+tachgo,wv/ona-airpark-12v,Ona Airpark,Milton,WV,http://www.onaairpark.com,Flight school at 12V; homepage parked; matcher none,unchecked
+tachgo,wv/sky-ridge-aviation-llc-i18,Sky Ridge Aviation LLC,Ravenswood,WV,https://www.skyridgeaviation.com/,Flight school at I18; homepage training; matcher none,unchecked
+tachgo,wv/west-liberty-university-khlg,West Liberty University,Wheeling,WV,https://westliberty.edu/aviation/,Flight school at KHLG; homepage training; matcher none,unchecked
+tachgo,wy/atlas-flight-school-kcpr,Atlas Flight School,Casper,WY,http://www.atlasflightschool.com/,Flight school at KCPR; homepage training; matcher fuzzy,unchecked
+tachgo,wy/torrington-municipal-airport-ktor,Torrington Municipal Airport,Torrington,WY,,"FBO, filed under school at KTOR; homepage no_website; matcher none",unchecked
+tachgo,wy/wind-river-fliers-kpna,Wind River Fliers,Pinedale,WY,,Flying club at KPNA; homepage no_website; matcher none,unclear
+ppp,00ca45b9e6,"Parkwater Aviation, Inc",Spokane,WA,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,0152ccc476,Diesel Flying Llc,Kitty Hawk,NC,,"PPP NAICS 611512, 1 loan(s), Partnership; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,017a5a6bbb,Flight Methods Aviation L.L.C.,Alamosa,CO,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,01babd9cc5,American Helicopters Inc.,Manassas,VA,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,049e4a1082,Flying Cacti Llc,Waddell,AZ,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,05c6632ecd,"Way Up Skydiving, Llc",Danielson,CT,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,05ce4bf1f4,Aero Quest Llc,Olive Branch,MS,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 12 (9 training-flagged); matcher none",unchecked
+ppp,06d9e0b600,"Betria Systems, Inc.",Irvine,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,08c01a40d4,Baeza Practical Solutions Llc,Lake Mary,FL,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,08c3ab11d1,Inflight Holdings Llc,Eden Prairie,MN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,0a82988b46,Djm Pilot Services Incorporated,Evanston,IL,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,0aeb585293,Gem Air Llc,Salmon,ID,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,0cf7a27563,"Michigan Institute Of Aeronautics, Inc.",Canton,MI,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,0d37428eb8,"Ns Aviation Rental & Training, Inc.",Pembroke Pines,FL,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,0d734a52b0,Everheart Air,Douglaston,NY,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,0e8a784f61,Panjab Aviation Inc.,Acampo,CA,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,0ead4d98b1,"Cobra Kai Flight Services, Llc",Wichita Falls,TX,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,0f0936a53a,Atlantis Flight Academy Inc,Pembroke Pines,FL,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,0f09da2cd7,San Diego Flight Training International Inc,San Diego,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,0f3a4b20de,"Warbird Adventures, Inc.",Kissimmee,FL,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 7 (1 training-flagged); matcher none",unchecked
+ppp,0f61c92adf,"Deters Aviation, Llc",Preston,MN,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,0fb25f6858,Fensome Airline Careers Inc.,Pembroke Pines,FL,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,0fd46d8131,Bluegrass Aviation,Cedar Hill,TN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 2 (2 training-flagged); matcher none",unchecked
+ppp,1025953307,Gauntlet Aerospace Llc,Huntington Beach,CA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",not_training
+ppp,108165ea9b,Socal Flight 5280 Llc,Carlsbad,CA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,123e3e2831,Pilot Training Center Llc,Miami,FL,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 13 (7 training-flagged); matcher address",unchecked
+ppp,1343312165,Air Training Support,Englewood,CO,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,15fec7a349,Neltner Aviation Llc,Cincinnati,OH,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,167b777865,Aerotrek Flight Academy Llc,Wadsworth,OH,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,16d50d4d5a,Advanced Airmanship Incorporated,Johns Island,SC,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,177f7fcc3a,Kachemak Bay Flying Service Inc.,Huntsville,AL,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 3 (0 training-flagged); matcher none",unchecked
+ppp,1787d19342,"David Webb Cfi (Capri Blue Aviation), Flight Instruction",Norcross,GA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,17a9390e57,Adams Aviation Llc,Alexandria,VA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,17c14027e1,Flight Crew Systems Inc Dba Loft,Carlsbad,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher exact",unchecked
+ppp,1909bc0734,Teton Hang Gliding Llc,Wilson,WY,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,1929217d28,Tradewind Flight Services Inc.,New Bern,NC,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,19e6fe6f4a,Galvin Flight Services Hawaii Llc,Honolulu,HI,https://www.georgesaviation.com,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 2 (2 training-flagged); matcher colocated",in_list
+ppp,19fe4214a3,"Falcon Executive Aviation, Inc.",Mesa,AZ,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher fuzzy",unchecked
+ppp,1b3b979449,Hummingbird Aviation Llc,Modesto,CA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,1bd5f22944,Clipperjet Enterprises,Atlanta,GA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,1c2a646a61,Pittsburgh Institute Of Aeronautics,West Mifflin,PA,,"PPP NAICS 611512, 1 loan(s), Non-Profit Organization; aircraft registered in this name: 18 (0 training-flagged); matcher fuzzy",unchecked
+ppp,1d5f4e6437,Simcom International Inc. Dba Simcom Aviation Training Orlan,Orlando,FL,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,1d88454380,International Jet Training Inc,Sarasota,FL,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,1e01444489,"Knop Aviation Services, Llc",Castle Rock,CO,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,1e535b26c7,Benton Air Center Inc.,Redding,CA,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,1eb2fab20e,Blue Ridge Sport Flight Llc,Hendersonville,NC,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,1feaf52e96,"Flight Training International, Inc",Denver,CO,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,2014663358,Black Warrior Aviation,Cottondale,AL,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,201d9a5ada,Aero City Group Inc,Long Beach,CA,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher fuzzy",unchecked
+ppp,208f2a370c,Airborne Systems Inc,Merritt Island,FL,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,22355ae686,Flightime Aviation Llc,Jonesboro,AR,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,2336b9b96b,Todd Scholten Aviation Services Llc,Wyoming,MI,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,2470627330,Big V Air Llc,Mobile,AL,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,24f612bed0,Aircraft Development Flight Airways Corp,Miami,FL,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,254e225300,Cavu Aero Service Llc,Riverside,CA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,2555889e3f,Southern Aeromedical Institute Inc,Melbourne,FL,,"PPP NAICS 611512, 2 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,25cecc1a01,Flight Center International Llc,Hollywood,FL,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,261be3e1ad,"Gp Aviation Services, Llc",Armonk,NY,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",not_training
+ppp,2725749712,Segoria Aviation Llc,Gresham,OR,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,280d74ee84,"D & S Aviation, Llc",Spring,TX,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 13 (12 training-flagged); matcher colocated",unchecked
+ppp,2b0e2ab92b,Echo Victor Aviation Llc,Phoenix,AZ,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,2c2b61266b,"Skyward Aviation, Inc",Santa Monica,CA,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher fuzzy",unchecked
+ppp,2c8b00314f,"Tiffin Aviation Services, Inc.",Nogales,AZ,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,2e172f3e88,"Hyde Flight School, Llc",Granbury,TX,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unclear
+ppp,2f83922775,Above All Aviation Llc,Murfreesboro,TN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,300a8b5ed2,Rexair Flight & Maintenance Llc,Naples,FL,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,30379de421,South Plains Training Center Llc.,Lamesa,TX,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,311ad2f1bd,"Foothills Aviation, Llc",Buhl,ID,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 3 (0 training-flagged); matcher none",unchecked
+ppp,31c3dd4758,"Battlespace Flight Services, Llc",Reston,VA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,31fed4863f,Fullthrottle Aviation Llc,Houston,TX,https://www.fullthrottleaviationllc.com,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",not_training
+ppp,3248cc8307,Midwest Aero Club Llc,Minneapolis,MN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unclear
+ppp,3471e7d943,Lone Peak Aviation Llc,Sandy,UT,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,348e15e11c,Av-Ed Flight School California Inc,Concord,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,3577e64b64,Aurora Aviation Llc,Aurora,MO,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,36a9d1e069,Trinity Aviation Llc,Georgetown,TX,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 2 (0 training-flagged); matcher none",unchecked
+ppp,3772ed0b8e,Omniaero Llc,San Angelo,TX,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,37cf4592d9,Seminole Flying And Soaring,Clermont,FL,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 6 (1 training-flagged); matcher address",unchecked
+ppp,37cfb36a71,"Bell Murray Aerospace, Inc.",Marietta,GA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,39749dfb5e,Airborne Aviation Inc,Winnsboro,SC,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,39875071d7,Kane'S Communication Systems Inc,Salem,VA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,3ac49ee510,Pelican Flight Training Llc,San Carlos,CA,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 3 (3 training-flagged); matcher colocated",unchecked
+ppp,3b129f2498,G & Z Enterprise Inc,San Jose,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unclear
+ppp,3c65a7184c,Aptis Aviation Llc,Stow,MA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,3d16286653,American Aviation Academy,El Cajon,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,3dc5d5dd4a,"Morcom Aviation Services, Inc.",Everett,WA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 3 (2 training-flagged); matcher none",unchecked
+ppp,3f4d7832f6,Atp Jet Simulation Inc,Jacksonville Beach,FL,,"PPP NAICS 611512, 2 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,3f73498bf0,Jpg Aviation Services Llc,Phoenix,AZ,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,406dd3ae6e,"Sky Mates, Inc.",Grand Prairie,TX,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,41a1042558,Pegasus International Resources Inc,Westlake Village,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,41b4b2ce1b,Pilot Checkride Llc,Sandy,UT,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,42870ee231,Cobra Kai Flight Services Llc,Wichita Falls,TX,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,435ca2daf3,Dragon Flight Training,Monument,CO,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,44b5355436,Sinnott Enterprises Llc,Renton,WA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,44f181d55b,Fischer Aviation Inc,Fairfield,NJ,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,48d39dd3ab,Air Direct Holdings Llc,Stow,MA,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (0 training-flagged); matcher colocated",unchecked
+ppp,49297173c6,Future Flyers Of Connecticut Llc,Simsbury,CT,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,49b4c183cc,World Wide Wings Inc.,Pembroke Pines,FL,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,4a3fd1c3ed,Quantified Design Solutions Llc,Orlando,FL,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,4aa566c569,Roswell Flight Test Crew,Tigard,OR,,"PPP NAICS 611512, 1 loan(s), Single Member LLC; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,4b34f7c9fe,University Aviation Association,Memphis,TN,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,4b3db45754,Aviation Seminars Inc,El Cajon,CA,https://aviationseminars.com,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",not_training
+ppp,4dcb6167d3,"Melander Aviation, Llc",West Jordan,UT,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,4ea2e749b2,Oliver Enterprises Llc,Newalla,OK,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,50918f747f,Eagle Flyers I Llc,Zionsville,IN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,51bbe36174,Blue Earth Flying Service Llc,Blue Earth,MN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 7 (0 training-flagged); matcher none",unchecked
+ppp,528999962a,"Utah Warbird Adventures, Llc",Heber City,UT,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,5331aa19d2,The Pamagoza Group Inc,Fort Worth,TX,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,537f26085c,"Premier Training Center, Llc",Stuart,FL,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,54f04d1dcc,Acts Aviation Llc,Rockport,TX,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,54fd581dec,"Flight Worx, Llc",Duanesburg,NY,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,5542d454ea,Dhenry Aviation Llc,Springboro,OH,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,55d4903347,"Ideal Aviation Illinois, Llc",East Saint Louis,IL,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (1 training-flagged); matcher none",unchecked
+ppp,57803effdd,Abaris Training Resources Inc.,Reno,NV,https://abaris.com,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",not_training
+ppp,592fbe9780,Skyfaring Company Llc,Johnson City,TN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,594f69c78b,Learn To Fly Llc,Redlands,CA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,596f21c4b8,Canyon Aero Llc,Montoursville,PA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",not_training
+ppp,596fd29162,"Air Usa, Inc.",Las Vegas,NV,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,59f1dd3c4d,Genesis Aviation Inc.,Dallas,TX,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,5ce3ed6f62,"Landergood Aviation, Llc",Smithville,TN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (0 training-flagged); matcher none",not_training
+ppp,5dd0c1e7e1,Skyworks Aviation Inc,San Jose,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,5e69c26212,Aviation Maintenance Testing,Titusville,FL,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,5e9dd2362b,Drw Air Services Inc.,Cottondale,AL,,"PPP NAICS 611512, 2 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,5f2ddc35b1,Jet1 Llc,Scottsdale,AZ,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,60ffc69b08,Iac Training Inc,Gardena,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,618163f441,"Altius Aviation, Llc",Syracuse,NY,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 3 (2 training-flagged); matcher none",unchecked
+ppp,619f2eb8f0,Zulu Aeronautics & Aviation Consulting Llc,Daytona Beach,FL,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,61eaaab9d9,"Flight Concepts, Llc",Tulsa,OK,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,63c6ce8041,Hyldburg Aviation Inc,Plymouth,MA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 11 (11 training-flagged); matcher none",unchecked
+ppp,64d091eafa,Dartdrones Llc,Park City,UT,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,6528fca0ef,"Miami Hang Gliding, Corp.",Clewiston,FL,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,6728f9e629,Parks Aviation Holdings Llc,Sauget,IL,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,67fc27fdea,"Av-Ed Flight School-Winchester, Llc",Winchester,VA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",closed
+ppp,6ab850157f,"Cog Enterprises, Inc.",Aurora,CO,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,6b4ea44256,"Heli-Works Flight Services, Llc",Deer Lodge,MT,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 6 (0 training-flagged); matcher none",unchecked
+ppp,6b76c0164c,Dct Group Management,Waterford,MI,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,6c456edd52,Bay Flight Training Llc,Midland,MI,,"PPP NAICS 611512, 1 loan(s), Single Member LLC; aircraft registered in this name: 0 (0 training-flagged); matcher none",unclear
+ppp,6df4f8ddf6,"Ndt-Solutions, Inc.",Hollywood,FL,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,6e9ed35c72,Middle River Aviation Llc,Middle River,MD,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,7215e84e28,Mad River Air Llc,Urbana,OH,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,72e36ddce6,Stratus Aviation Llc,Vacaville,CA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,72ec9d7dcf,Vetter Aviation Llc,Helena,MT,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (0 training-flagged); matcher colocated",unchecked
+ppp,7327b9ec88,Up And Ready Flight Support Llc,Chesapeake,VA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,73da41de20,Herdair Group Llc,Conroe,TX,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (0 training-flagged); matcher colocated",unchecked
+ppp,74b2278f8f,"Iajets, Inc.",Sarasota,FL,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,74d9f28128,Rubicon Aviation Training & Consulting Inc.,Carnegie,PA,,"PPP NAICS 611512, 2 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,751b967dd8,Mn Aviation Proficiency Llc,Prior Lake,MN,,"PPP NAICS 611512, 1 loan(s), Single Member LLC; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,7599c01a63,Plane Guys Aviation Llc,Waupaca,WI,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,76bac0e747,Cs Vertical Flight Solutions Llc,Enterprise,AL,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",not_training
+ppp,776686dd89,Propellerhead Aviation Inc.,Sanford,FL,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,7ab001e41c,Gw Aviation Inc,Lords Valley,PA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,7c74a0a5d3,"Hawaii Glider And Sailplane Academy, Llc",Kailua,HI,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,7cc245e5b6,Airkraft Services Llc,Aspen,CO,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,7d1c89a602,Iajets Inc.,Sarasota,FL,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,7d94bff4cf,Goodrich Pilot Training Center Llc,Johnson City,NY,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 2 (0 training-flagged); matcher fuzzy",unchecked
+ppp,7dd87b1ff8,"Phoenix East Aviation Enterprises, Llc",Daytona Beach,FL,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,7de49d1b81,Hummingbird Ventures Llc,Eden Prairie,MN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,7e94be7059,Lon Brothers Aviation Llc,Doral,FL,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,7ee01fcdf4,Pacific Blue Air Inc,Hawthorne,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,8046c0af96,Staten Island Flying Club Inc,Morristown,NJ,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,809bdd13f7,"B &Amp; B Aero Services, Inc.",Middletown,OH,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,82312b5969,Spacecoast Aviation Serivices Inc,Titusville,FL,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,83142ea7af,Stearman Aeroventures Llc,Lakeland,FL,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 2 (0 training-flagged); matcher none",unchecked
+ppp,8463b91b94,Epix Services Llc,Chesapeake,VA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,84d26314eb,International Jet Training Inc,Sarasota,FL,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,8585a1b5ec,Alron Aviation Inc,Plantation,FL,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,86e19a021d,Sierra Skyport Ltd,Truckee,CA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,88d9ef9948,Aviation Consultation & Management Llc,Daytona Beach,FL,,"PPP NAICS 611512, 1 loan(s), Partnership; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,88f53c8394,Xp Services,Winchester,TN,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 7 (0 training-flagged); matcher none",unchecked
+ppp,8aac642454,Tolbert Aviation Llc,Broken Arrow,OK,,"PPP NAICS 611512, 1 loan(s), Single Member LLC; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,8b4423359d,Stewart'S Helicopter Llc,Jay,FL,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,8b970af713,Krasner Air Llc,Cleveland,MS,,"PPP NAICS 611512, 1 loan(s), Single Member LLC; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,8d9c52f582,Enflight Aviation Inc,Mount Juliet,TN,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,8e858f7e9a,"Cobra Kai Flight Academy, Llc",Wichita Falls,TX,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,8f0043df5e,Trikeschool Llc,Scottsdale,AZ,https://www.trikeschool.com,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 3 (0 training-flagged); matcher none",new_training
+ppp,8f11e5abd6,Itechnology Design Inc,Gypsum,CO,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 1 (1 training-flagged); matcher none",unchecked
+ppp,90a89bfa95,Tennessee Flying Machines Llc,Old Hickory,TN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 5 (0 training-flagged); matcher none",unchecked
+ppp,90d1da2afb,Extreme Flight Simulation Inc.,Gurnee,IL,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,93bae43948,Roma Jiu Jitsu Academy Llc,Hilo,HI,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,93e701d802,Aeromania Llc,Cheyenne,WY,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,94b12a61b0,R C Air Llc,Portage,MI,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unclear
+ppp,959511a5c9,Danza Helicopter Services Inc,Kula,HI,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,95f75f702f,The Aerobatic Experience Inc,Vero Beach,FL,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,96a1155928,Renaissance Management Solutions,Addison,TX,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,97bcfff511,Bay City Flyers Llc,Long Beach,CA,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher fuzzy",unchecked
+ppp,98456872f5,M&P Services Llc,Goddard,KS,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,9998f01e26,"Phoenix Flight Test, Inc.",Delaware,OH,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,99b4e7b51a,Wings Of Wyoming,Cheyenne,WY,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,9a30abbd22,Fly Legacy Aviation Llc,Chestnut Ridge,NY,https://www.flylegacyaviation.com,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",in_list
+ppp,9a887c7065,Bay Area Flying Club,Englewood,CO,https://www.bayareaflyingclub.com,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",in_list
+ppp,9be13dc7e6,Devinci Flight Training Institute Inc,Fort Lauderdale,FL,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,9d1642142d,"North-Aire Aviation, Llc",Prescott,AZ,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,a0ccced2b6,Cross Timbers Aviation,Bedford,TX,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,a1e5c03a53,"Billion Air Aviation, Inc.",El Monte,CA,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,a32ee62f03,Herald Charters,Charlotte,NC,,"PPP NAICS 611512, 1 loan(s), Professional Association; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,a33f34807b,Ega Aero Specialty Services Llc,Beaufort,SC,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 2 (0 training-flagged); matcher none",unchecked
+ppp,a48433bc10,"Sandusky Flight Academy, Llc",Sandusky,MI,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,a58cad07bd,Solverson Aircraft Management Llc,Waunakee,WI,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,a65ef92c44,Cook Aviation,Bemidji,MN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,a6ef0aacc9,Av Ed Flightschool Inc,Falls Church,VA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,a93a10dfcc,Loanflight Lending Llc,Tampa,FL,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,ab579d5dd1,"Infinity Flight Management, Llc",Trenton,NJ,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,abe5aab9b8,Academy Flight Operations Inc,Minneapolis,MN,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,abefc280be,"Flight Avionics Of North America, Inc.",Sanford,FL,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,ad62991785,Precision Aviation Training Llc,Newberg,OR,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (1 training-flagged); matcher colocated",unchecked
+ppp,ae71088541,"Survival Systems Usa, Inc.",Groton,CT,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,aefe8f82e2,Offshore Flight School Inc.,Honolulu,HI,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,af002635ec,Elite Flight Training & Aircraft Llc,Kankakee,IL,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,af20e8bb23,"Simulation Group Services, Inc",Medina,OH,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,af361b90b3,Three Green Aviation,Oklahoma City,OK,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,b128a628b7,Aeronautical Consulting Services Llc,Palm Bay,FL,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,b20850c14c,"Propjet 210 Aviation, Inc.",Santa Rosa,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 2 (0 training-flagged); matcher none",unchecked
+ppp,b20bc9036c,"Barnstorming Airventures, Llc",Lakeland,FL,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,b2aa8aaca8,"Flyboy Flight Instruction, Llc",Denver,CO,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unclear
+ppp,b3f190fc27,Vermont Flying Service Inc.,Barre,VT,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,b491268665,Kane Enterprises Inc.,Roanoke,VA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,b4adc6aa32,Carolina Aeronautical Testing & Certification Center,Simpsonville,SC,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,b4e6e8c3b9,Simlat Inc,Wilmington,DE,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,b5d9940d9e,Flight Escapades Inc,Apollo Beach,FL,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,b5df58562e,Aerotrain Corp.,Flint,MI,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,b616674fea,Ott Aviation Llc,Senatobia,MS,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,b81ead7a39,Advance Aircraft Training,Seal Beach,CA,,"PPP NAICS 611512, 1 loan(s), Single Member LLC; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,b82f78d75a,Latitude Aviation Llc,Redondo Beach,CA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,b90961bb84,Middle Tennessee Aviation Academy Llc,Clarksville,TN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,b910c38e66,Fly Elite Llc,Pottstown,PA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",closed
+ppp,b9756b01f7,Holloway Aviation Inc,Fountain Inn,SC,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,b9cae87917,"Anson Air, Llc",Sugar Land,TX,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 11 (11 training-flagged); matcher fuzzy",unchecked
+ppp,bbbc1ff710,"Air Flight Training, Llc",Overland Park,KS,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unclear
+ppp,bffc05fccf,Mtaviation Services Llc,Gold River,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unclear
+ppp,c167da41c2,"Sling Flying Club, Llc",Torrance,CA,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,c1ae7bdaad,Ccl Aviation Inc.,East Hartford,CT,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,c2d72a697e,"Nashville Flight School, Llc",Nashville,TN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 4 (4 training-flagged); matcher address",unchecked
+ppp,c31e258199,The Flight School Of Gwinnett Inc.,Lawrenceville,GA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 16 (8 training-flagged); matcher none",unchecked
+ppp,c664a824e5,Flyit Llc,Camas,WA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 11 (9 training-flagged); matcher address",unchecked
+ppp,c799ed3615,Willmar Aircraft Sales Llc,Willmar,MN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,c7fdb2447d,Phoenix Aicraft Certification Services,Phoenix,AZ,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unclear
+ppp,c927002354,Direct Flight Solutions,Lebanon,TN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,c9c7b7579d,Excite Aircraft Inc,Addison,TX,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,ca21accad7,On Wings As Eagle Aviation Llc,Luray,VA,,"PPP NAICS 611512, 1 loan(s), Single Member LLC; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,cbe2fb474e,Woods Aviation Llc,Stevensville,MD,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,cc6266c444,"Gateway Flight Solutions, Llc",Saint Louis,MO,https://www.gatewayflight.com,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher fuzzy",in_list
+ppp,ce268158ef,Hollywood Diagnostic Services,Los Angeles,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,cee7c17f9a,"California Professional Flyers, Inc.",Murrieta,CA,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 1 (0 training-flagged); matcher fuzzy",unchecked
+ppp,d0ab376c8f,Bc Aviation Llc,Morristown,NJ,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unclear
+ppp,d2bbd11427,Knjpa Aircraft Llc,Blairstown,NJ,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,d31ed95b51,Performance Aircraft Sales Inc.,Lincoln,NE,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 13 (9 training-flagged); matcher colocated",unchecked
+ppp,d327116710,Destiny Aviation Services,Uppr Marlboro,MD,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,d33ac8ba24,Lake Clark Flight School Llc,Council Bluffs,IA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,d402650910,Pilots Usa Llc,Chesapeake,VA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,d44ff2ed8a,Darton Innovative Technologies Inc,Plattsmouth,NE,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,d5787c03ce,Hunter Aviation Int'L,Newark,DE,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,d5cf58ef53,Usaerogroup Inc,Greenville,SC,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 1 (1 training-flagged); matcher address",unchecked
+ppp,d6182ff30f,New Orleans Aerial Tours & Flight,New Orleans,LA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,d6b77c54f6,"Strawberry Aviation, Inc.",Watsonville,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 2 (0 training-flagged); matcher colocated",unchecked
+ppp,d757bec297,"Red Arrow Aviation, Llc",Santa Teresa,NM,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 8 (6 training-flagged); matcher address",unchecked
+ppp,d78b860321,"Flying Start Aero Services, Llc",Reno,NV,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 5 (5 training-flagged); matcher colocated",unchecked
+ppp,d7e87bf902,"International Aero Maintenance, Llc",Lakeland,FL,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,d7eb680753,"Hartsfield National Aircraft, Inc",Wilson,NC,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,d85fc3f064,"Pluto Flight Service, Inc",Gilroy,CA,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,d8cd956143,Tc Flight Training,Stuart,FL,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,d9034f3114,Grey Aviation Advisors And Solutions Inc.,Gulf Breeze,FL,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,d95cbc1dd5,The Pamagoza Group Inc,Fort Worth,TX,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,dadbd23208,Avenger Flight Group Llc,Fort Lauderdale,FL,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,dc5d4510e5,Aeromain Llc,Phoenix,AZ,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,dde05e16ab,"Air Resources Helicopters, Inc.",Salt Lake City,UT,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 7 (0 training-flagged); matcher none",not_training
+ppp,df0b4db5d0,International Propeller Service Lincoln Llc,Lincoln,NE,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,dfd420c6c6,Aviation Facilities Inc.,Fullerton,CA,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,e01f1ac894,Chilhowee Soaring Association Inc.,Benton,TN,,"PPP NAICS 611512, 2 loan(s), Subchapter S Corporation; aircraft registered in this name: 9 (0 training-flagged); matcher none",unchecked
+ppp,e069b4f8ea,Brigade Air Inc Dba Mission Aviation Adventure Or Aviation A,Selma,NC,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,e12f8310e4,Institute Of Flight Operations And Dispatch Llc,Irving,TX,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,e1776d3800,Ras Aviation Llc,Elyria,OH,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 12 (7 training-flagged); matcher address",unchecked
+ppp,e1d7060240,Uninsured Texas Skydiving Company,Madisonville,TX,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",not_training
+ppp,e26c9cb42f,Blue Sky Gyros Llc,Oracle,AZ,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,e552f13e04,"Triad Air, Inc",Winston Salem,NC,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,e67a132965,New York Bartending School,New York,NY,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,e6ef131e0c,"A.P. Aviation Services, Llc",North Mankato,MN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,e78fe311cf,Fresno Flight Training Inc.,Madera,CA,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,e84d883df1,Carolina Air Llc,New London,NC,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (1 training-flagged); matcher colocated",unchecked
+ppp,e92b6824c8,Belle Fourche Flight Center Llc,Belle Fourche,SD,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 2 (0 training-flagged); matcher none",unchecked
+ppp,ec9af33498,700 South Aviation Llc,Plainfield,IN,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,ecd5b06574,"Skyray, Llc",Charleston,MS,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,ecdbfacbed,Garrick Aviation Enterprises Llc,Deland,FL,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,ee0cf18696,Aviation Fundamentals Llc,Oakwood,OH,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,ee424d632b,Ag Ventures Llc,Madison,MS,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unclear
+ppp,eef416bce3,Attitude Aviation,Livermore,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 2 (1 training-flagged); matcher none",unchecked
+ppp,ef06f59819,Skytrek Alaska Flight Training Llc,Anchorage,AK,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,f1b58b1da2,Dubois Aviation Inc.,Chino,CA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 8 (7 training-flagged); matcher address",unchecked
+ppp,f2da28148a,Clinton Flying Service Inc,Clinton,NC,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 5 (0 training-flagged); matcher none",unchecked
+ppp,f35e545ebc,Joebravo Aviation Llc,Derby,KS,https://joebravoaviation.com,"PPP NAICS 611512, 1 loan(s), Single Member LLC; aircraft registered in this name: 3 (0 training-flagged); matcher none",new_training
+ppp,f38ae8821f,Thunderun Aviation Corporation,Buffalo,NY,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 5 (0 training-flagged); matcher none",unchecked
+ppp,f46c4c257d,"Mcnaughton Aviation, Llc",Bondurant,IA,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,f4f31057e4,"Simcom International, Inc.",Orlando,FL,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,f560d90896,"Cleek Aviation, Inc.",Clinton,OK,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,f7106951c3,"Lookout Mountain Flight Park, Inc.",Rising Fawn,GA,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 1 (0 training-flagged); matcher none",unchecked
+ppp,f715b30b6a,"Martin Electrical & Technical School, Llc",Norwood,MA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,f720394f2b,Aerotropolis Business Concepts Llc,San Diego,CA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,f856ee141f,"Jackson Hole Paragliding, Llc",Jackson,WY,https://jhparagliding.com,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",not_training
+ppp,f8fccb5fff,Delta Aeronautics Inc.,Fort Worth,TX,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,f934d36cfa,Arizona Academy Of Beauty. Inc.,Tucson,AZ,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,f969b0f7fb,M.I. Air Corporation,Chino,CA,,"PPP NAICS 611512, 2 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,f9b284fef2,Skypilot Llc,Benbrook,TX,,"PPP NAICS 611512, 1 loan(s), Single Member LLC; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,f9b7200a5f,"Sheble'S Northtown Aviation, Llc",Las Vegas,NV,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher address",unchecked
+ppp,fa57285f2d,Flyaway Flight Training Llc,Lafayette,LA,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,fa74706203,Rb Aviation Llc,Vassar,MI,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 1 (1 training-flagged); matcher none",unchecked
+ppp,faaca94970,Cti Professional Flight Training Llc,Fort Lauderdale,FL,,"PPP NAICS 611512, 1 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,fb9912f251,Baldwin Aviation Inc,Hilton Head Island,SC,,"PPP NAICS 611512, 1 loan(s), Subchapter S Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,fc89993996,Rowland Resource Group Llc,Danville,KY,,"PPP NAICS 611512, 2 loan(s), Limited  Liability Company(LLC); aircraft registered in this name: 0 (0 training-flagged); matcher colocated",unchecked
+ppp,fe38ab42b2,Airplane Hotline Inc,Kingman,AZ,,"PPP NAICS 611512, 1 loan(s), Corporation; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+ppp,ff832ed51e,Russell Flying Service,Union City,TN,,"PPP NAICS 611512, 1 loan(s), Partnership; aircraft registered in this name: 0 (0 training-flagged); matcher none",unchecked
+nasr,4B0,Hewison Aviation,South Bethlehem,NY,http://hewisonaviation.com,NASR INSTR at 4B0; 6 strong new aircraft,in_list_other_airport
+nasr,4N1,"Sky Training, LLC",West Milford,NJ,http://www.discovertheskies.com,NASR INSTR/RNTL at 4N1; 8 strong new aircraft,in_list_other_airport
+nasr,50F,Harbour Aviation,Fort Worth,TX,,NASR INSTR/RNTL at 50F; 3 strong new aircraft,in_list_other_airport
+nasr,CMD,Wallace State Community College,Cullman,AL,http://www.wallacestate.edu,NASR INSTR/RNTL at CMD; 7 strong new aircraft,in_list_other_airport
+nasr,EVB,Epic Flight Academy,New Smyrna Beach,FL,https://epicflightacademy.com,NASR INSTR/RNTL at EVB; 6 strong new aircraft,in_list_other_airport
+nasr,EWK,Hesston College,Newton,KS,https://www.hesston.edu/aviation,NASR INSTR at EWK; 5 strong new aircraft,in_list_other_airport
+nasr,EZS,Pilotsmith,Shawano,WI,http://www.pilotsmith.com,NASR INSTR at EZS; 3 strong new aircraft,in_list_other_airport
+nasr,JCA,Next Level Aviation,Jefferson,GA,https://www.flynextlevel.com/,NASR INSTR/RNTL at JCA; 3 strong new aircraft,in_list_other_airport
+nasr,JVW,Hinds Community College,Raymond,MS,http://www.hindscc.edu,NASR INSTR/RNTL at JVW; 4 strong new aircraft,in_list_other_airport
+nasr,MKO,Davis Field Aviation,Muskogee,OK,https://davisfieldaviation.com,NASR INSTR/RNTL at MKO; 5 strong new aircraft,new_training
+nasr,MWL,Brazos River Aviation Group,Mineral Wells,TX,https://bragflight.com/,NASR INSTR at MWL; 3 strong new aircraft,in_list_other_airport
+nasr,O85,Cardan Aircraft Services,Redding,CA,,NASR INSTR/RNTL at O85; 3 strong new aircraft,new_training_weak
+nasr,ORS,Airhawks Flying Club,Eastsound,WA,https://airhawks.org,NASR INSTR at ORS; 3 strong new aircraft,new_training
+nasr,OTM,Indian Hills Community College,Ottumwa,IA,http://www.indianhills.edu,NASR INSTR/RNTL at OTM; 3 strong new aircraft,in_list_other_airport
+nasr,OXR,California Aeronautical University,Oxnard,CA,https://calaero.edu/oxnard/,NASR INSTR/RNTL at OXR; 10 strong new aircraft,in_list_other_airport
+nasr,PGV,Dillons Aviation,Greenville,NC,http://www.dillonsaviation.com,NASR INSTR/RNTL at PGV; 3 strong new aircraft,in_list_other_airport
+nasr,TDW,Coyote Flight Centers,Amarillo,TX,http://www.coyoteflight.com,NASR INSTR/RNTL at TDW; 3 strong new aircraft,in_list_other_airport
+nasr,UZA,Aces Flight School,Rock Hill,SC,https://www.acesflightschool.com/,NASR INSTR/RNTL at UZA; 5 strong new aircraft,in_list_other_airport
+nasr,VPC,Phoenix Air,Cartersville,GA,http://www.phoenixair.com,NASR INSTR/RNTL at VPC; 3 strong new aircraft,in_list_other_airport
+nasr,VTA,Aviation Works Flight Academy,Newark,OH,https://newarkheathairport.com/,NASR INSTR/RNTL at VTA; 5 strong new aircraft,in_list_other_airport
+nasr,WEA,Nationwide Aviation,Weatherford,TX,http://www.flynationwide.net,NASR INSTR at WEA; 6 strong new aircraft,in_list_other_airport

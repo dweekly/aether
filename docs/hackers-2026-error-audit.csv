@@ -1,0 +1,82 @@
+tail,outcome,class,subtype,raw,pass,domain,url,note
+N051GX,malformed,non_us_or_sim,simulator,N051GX,http,brettaviation.com,https://www.brettaviation.com/aircraft-rental/aircraft-rental-fleet,page lists a 2014 One G AATD simulator under the ID N051GX
+N13006C,malformed,page_typo,,N13006C,browser,learntoflysacramento.com,https://learntoflysacramento.com/general-aviation-pilot-training-executive-flyers-sacramento,page lists '2007 Cessna 172S N13006C'; registered N1306C is a Cessna 172S
+N16186T,malformed,page_typo,,N16186T,http,atlasaviation.com,https://atlasaviation.com/cessna-172sp-skyhawk-n16186t,only in the school's URL slug ...-skyhawk-n16186t; registered N6186T is a Cessna 172S
+N16OME,malformed,page_typo,,N16OME,http,silverhawkaviation.net,https://www.silverhawkaviation.net/aircraftinfo,page shows letter O; the school's series N160ME-N169ME are registered Cessna 172S
+N318OU,malformed,page_typo,,N318OU,http,flyredarrow.com,https://www.flyredarrow.com/about/our-fleet,"page shows letter O; registered N3180U is a Cessna 182F, the model the page names"
+N411OS,malformed,page_typo,,N411OS,http,kenmoreairharbor.com,https://www.kenmoreairharbor.com/aircraft-refurbishment-and-modification.html,page heading shows letter O (no I or O allowed in N-numbers); no registered one-edit variant
+N472KES,malformed,model_misread,,N472KES,browser,wvfc.org,https://wvfc.org/aircraft-rentals/advanced-aircraft,rendered table cell 'N472KESQL2019Cirrus': tail N472KE (registered SR22) run into the airport SQL
+N725295,malformed,page_typo,,N725295,browser,heritageairllc.com,https://heritageairllc.com/our-fleet,"page shows N725295 (six digits); registered N72529 is a Cessna 140, the model the listing names"
+N87IOU,malformed,page_typo,,N87IOU,http,savannahaviation.com,https://www.savannahaviation.com/flight-school-fleet,page shows 'Cessna 172-F N87IOU' with letters I and O; no registered one-edit variant
+NC41578,malformed,antique_nc,,NC41578,http,snohomishflying.com,https://www.snohomishflying.com/aircraft-fleet,vintage NC marking; registered N41578 is a Piper J3C-65 Cub
+NC71017,malformed,antique_nc,,NC71017,http,rightrudderaviation.com,https://rightrudderaviation.com/product/1946-piper-cub-nc71017,vintage NC marking (in the page URL); registered N71017 is a Piper J3C-65 Cub
+NC7987H,malformed,antique_nc,,NC7987H,http,allsportsaviation.com,https://allsportsaviation.com/about,vintage NC marking; registered N7987H is a Piper PA-12
+NCFEFY,malformed,non_us_or_sim,canada,C-FEFY,http,islandcoastalaviation.com,https://islandcoastalaviation.com/our-fleet,Canadian registration C-FEFY on a Canadian school's fleet page
+NCFENF,malformed,non_us_or_sim,canada,C-FENF,http,sealandair.ca,https://www.sealandair.ca/fleet.php,Canadian registration C-FENF on a Canadian school's fleet page
+NCFGTV,malformed,non_us_or_sim,canada,C-FGTV,http,sealandair.ca,https://www.sealandair.ca/fleet.php,Canadian registration C-FGTV on a Canadian school's fleet page
+NCFIBX,malformed,non_us_or_sim,canada,C-FIBX,browser,proifr.com,https://proifr.com/about-us/our-fleet/cessna-152,Canadian registration C-FIBX on a Canadian school's fleet page
+NCFISY,malformed,non_us_or_sim,canada,C-FISY,browser,proifr.com,https://proifr.com/about-us/our-fleet,Canadian registration C-FISY on a Canadian school's fleet page
+NCFMBX,malformed,non_us_or_sim,canada,C-FMBX,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-152,Canadian registration C-FMBX on a Canadian school's fleet page
+NCFMBY,malformed,non_us_or_sim,canada,C-FMBY,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-152,Canadian registration C-FMBY on a Canadian school's fleet page
+NCFMBZ,malformed,non_us_or_sim,canada,C-FMBZ,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-152,Canadian registration C-FMBZ on a Canadian school's fleet page
+NCFNJB,malformed,non_us_or_sim,canada,C-FNJB,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-172,Canadian registration C-FNJB on a Canadian school's fleet page
+NCFNJD,malformed,non_us_or_sim,canada,C-FNJD,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-152,Canadian registration C-FNJD on a Canadian school's fleet page
+NCFNJF,malformed,non_us_or_sim,canada,C-FNJF,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-152,Canadian registration C-FNJF on a Canadian school's fleet page
+NCFPME,malformed,non_us_or_sim,canada,C-FPME,http,sealandair.ca,https://www.sealandair.ca/fleet.php,Canadian registration C-FPME on a Canadian school's fleet page
+NCFQNC,malformed,non_us_or_sim,canada,C-FQNC,browser,proifr.com,https://proifr.com/about-us/our-fleet,Canadian registration C-FQNC on a Canadian school's fleet page
+NCFTDI,malformed,non_us_or_sim,canada,C-FTDI,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-172,Canadian registration C-FTDI on a Canadian school's fleet page
+NCFVPV,malformed,non_us_or_sim,canada,C-FVPV,browser,proifr.com,https://proifr.com/about-us/our-fleet,Canadian registration C-FVPV on a Canadian school's fleet page
+NCGBJD,malformed,non_us_or_sim,canada,C-GBJD,browser,proifr.com,https://proifr.com/about-us/our-fleet/cessna-152/c-gbjd,Canadian registration C-GBJD on a Canadian school's fleet page
+NCGBXJ,malformed,non_us_or_sim,canada,C-GBXJ,browser,proifr.com,https://proifr.com/about-us/our-fleet/cessna-152/c-gbxj,Canadian registration C-GBXJ on a Canadian school's fleet page
+NCGCZN,malformed,non_us_or_sim,canada,C-GCZN,browser,proifr.com,https://proifr.com/about-us/our-fleet,Canadian registration C-GCZN on a Canadian school's fleet page
+NCGDVP,malformed,non_us_or_sim,canada,C-GDVP,browser,proifr.com,https://proifr.com/about-us/our-fleet,Canadian registration C-GDVP on a Canadian school's fleet page
+NCGEML,malformed,non_us_or_sim,canada,C-GEML,http,sealandair.ca,https://www.sealandair.ca/fleet.php,Canadian registration C-GEML on a Canadian school's fleet page
+NCGFBB,malformed,non_us_or_sim,canada,C-GFBB,browser,proifr.com,https://proifr.com/about-us/our-fleet/cessna-152,Canadian registration C-GFBB on a Canadian school's fleet page
+NCGGCG,malformed,non_us_or_sim,canada,C-GGCG,browser,proifr.com,https://proifr.com/about-us/our-fleet,Canadian registration C-GGCG on a Canadian school's fleet page
+NCGHFH,malformed,non_us_or_sim,canada,C-GHFH,browser,proifr.com,https://proifr.com/about-us/our-fleet,Canadian registration C-GHFH on a Canadian school's fleet page
+NCGIFM,malformed,non_us_or_sim,canada,C-GIFM,browser,proifr.com,https://proifr.com/about-us/our-fleet,Canadian registration C-GIFM on a Canadian school's fleet page
+NCGILY,malformed,non_us_or_sim,canada,C-GILY,browser,proifr.com,https://proifr.com/about-us/our-fleet,Canadian registration C-GILY on a Canadian school's fleet page
+NCGJKE,malformed,non_us_or_sim,canada,C-GJKE,browser,proifr.com,https://proifr.com/about-us/our-fleet/cessna-152,Canadian registration C-GJKE on a Canadian school's fleet page
+NCGLCL,malformed,non_us_or_sim,canada,C-GLCL,http,sealandair.ca,https://www.sealandair.ca/fleet.php,Canadian registration C-GLCL on a Canadian school's fleet page
+NCGMUF,malformed,non_us_or_sim,canada,C-GMUF,http,islandcoastalaviation.com,https://islandcoastalaviation.com/our-fleet,Canadian registration C-GMUF on a Canadian school's fleet page
+NCGMZA,malformed,non_us_or_sim,canada,C-GMZA,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-152,Canadian registration C-GMZA on a Canadian school's fleet page
+NCGMZC,malformed,non_us_or_sim,canada,C-GMZC,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-152,Canadian registration C-GMZC on a Canadian school's fleet page
+NCGMZP,malformed,non_us_or_sim,canada,C-GMZP,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-152,Canadian registration C-GMZP on a Canadian school's fleet page
+NCGMZW,malformed,non_us_or_sim,canada,C-GMZW,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-152,Canadian registration C-GMZW on a Canadian school's fleet page
+NCGPDP,malformed,non_us_or_sim,canada,C-GPDP,http,sealandair.ca,https://www.sealandair.ca/fleet.php,Canadian registration C-GPDP on a Canadian school's fleet page
+NCGQSS,malformed,non_us_or_sim,canada,C-GQSS,browser,proifr.com,https://proifr.com/about-us/our-fleet/cessna-152,Canadian registration C-GQSS on a Canadian school's fleet page
+NCGRTJ,malformed,non_us_or_sim,canada,C-GRTJ,http,sealandair.ca,https://www.sealandair.ca/fleet.php,Canadian registration C-GRTJ on a Canadian school's fleet page
+NCGTAE,malformed,non_us_or_sim,canada,C-GTAE,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-172,Canadian registration C-GTAE on a Canadian school's fleet page
+NCGVNU,malformed,non_us_or_sim,canada,C-GVNU,browser,proifr.com,https://proifr.com/about-us/our-fleet/cessna-152,Canadian registration C-GVNU on a Canadian school's fleet page
+NCGVVG,malformed,non_us_or_sim,canada,C-GVVG,browser,proifr.com,https://proifr.com/about-us/our-fleet/cessna-152,Canadian registration C-GVVG on a Canadian school's fleet page
+NCGWCG,malformed,non_us_or_sim,canada,C-GWCG,browser,proifr.com,https://proifr.com/about-us/our-fleet,Canadian registration C-GWCG on a Canadian school's fleet page
+NCGWOK,malformed,non_us_or_sim,canada,C-GWOK,browser,proifr.com,https://proifr.com/about-us/our-fleet,Canadian registration C-GWOK on a Canadian school's fleet page
+NCGXRE,malformed,non_us_or_sim,canada,C-GXRE,browser,proifr.com,https://proifr.com/about-us/our-fleet,Canadian registration C-GXRE on a Canadian school's fleet page
+NCGXRG,malformed,non_us_or_sim,canada,C-GXRG,browser,proifr.com,https://proifr.com/about-us/our-fleet,Canadian registration C-GXRG on a Canadian school's fleet page
+NCGYPN,malformed,non_us_or_sim,canada,C-GYPN,http,islandcoastalaviation.com,https://islandcoastalaviation.com/our-fleet,Canadian registration C-GYPN on a Canadian school's fleet page
+NCGZPE,malformed,non_us_or_sim,canada,C-GZPE,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-152,Canadian registration C-GZPE on a Canadian school's fleet page
+NCGZPK,malformed,non_us_or_sim,canada,C-GZPK,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-172,Canadian registration C-GZPK on a Canadian school's fleet page
+NCGZPO,malformed,non_us_or_sim,canada,C-GZPO,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-152,Canadian registration C-GZPO on a Canadian school's fleet page
+NCGZPV,malformed,non_us_or_sim,canada,C-GZPV,browser,cfc.aero,https://cfc.aero/about-cfc/fleet/cessna-152,Canadian registration C-GZPV on a Canadian school's fleet page
+NCGZSP,malformed,non_us_or_sim,canada,C-GZSP,browser,proifr.com,https://proifr.com/about-us/our-fleet/cessna-152,Canadian registration C-GZSP on a Canadian school's fleet page
+NCGZTI,malformed,non_us_or_sim,canada,C-GZTI,browser,proifr.com,https://proifr.com/about-us/our-fleet,Canadian registration C-GZTI on a Canadian school's fleet page
+NCGZTZ,malformed,non_us_or_sim,canada,C-GZTZ,browser,proifr.com,https://proifr.com/about-us/our-fleet/cessna-152,Canadian registration C-GZTZ on a Canadian school's fleet page
+NSFTI1,malformed,non_us_or_sim,simulator,SFTI1,http,specialtyflight.com,http://www.specialtyflight.com/rentalfleet.html,page labels a Redbird FMX simulator SFTI1
+N15RY,not_found,unclear,,N15RY,http,honakeraviation.com,https://honakeraviation.com/fleet,"page shows 'Hawker 800XP - N15RY' (charter); registered N15RK is a Hawker 800XP, so possibly a page typo"
+N190CE,not_found,unclear,,N190CE,http,capital-flight.com,https://www.capital-flight.com/flight-training,page shows SR20 G7+ N190CE; N190CD and N190CT are registered SR20s; may be newer than the registry
+N20867,not_found,unclear,,N20867,browser,plusoneflyers.org,https://plusoneflyers.org/palomar-fleet,page table lists '20867 Cessna C182P' without the N; not registered
+N2195S,not_found,model_misread,,N2195S,http,hiltonheadflighttraining.com,http://www.hiltonheadflighttraining.com,"taken from the instructor's email address n2195s@..., not from an aircraft listing"
+N364RB,not_found,non_us_or_sim,simulator,N364RB,browser,aero-sphere.com,https://aero-sphere.com/flight-training/rates,page labels a Redbird FMX AATD simulator N364RB
+N42310,not_found,unclear,,N42310,http,oracleaviation.com,https://www.oracleaviation.com/flight-school-rental-aircraft,"page shows 'Cessna 172M N42310 $180/hr'; not registered, no matching one-edit variant"
+N544TH,not_found,unclear,,N544TH,http,flylftc.com,https://flylftc.com/aircraft-fleet,page shows 'Cessna 172S - N544TH' on fleet and contact pages; N444TH and N944TH are registered 172S
+N624TA,not_found,unclear,,N624TA,http,westhoustonairport.com,https://www.westhoustonairport.com/aircraftrental/aircraftrental.$html,rate table shows '172S Analog N624TA/N945SA'; not registered
+N632HB,not_found,unclear,,N632HB,browser,wingsflighttraining.com,https://wingsflighttraining.com/aircraft-rental,"page shows 'N632HB Aeroprakt A32'; not registered (light-sport, possibly pending)"
+N636TG,not_found,unclear,,N636TG,browser,rickaviation.com,https://rickaviation.com/fleet,page shows 'Coming Soon: BE-66 Baron N636TG'; not registered
+N650DR,not_found,unclear,,N650DR,http,tritonairways.com,https://tritonairways.com/our-fleet,charter page shows 'Citation Excel XLS+ N650DR'; not registered
+N666CK,not_found,unclear,,N666CK,http,midwest-aviation.com,https://midwest-aviation.com/aircraft/beechcraft-58-baron,"page shows 'Registration Number N666CK' for a Baron 58; registered N660CK is a Beech 58, so possibly a page typo"
+N752XF,not_found,unclear,,N752XF,http,skyeagle.aero,https://skyeagle.aero/about_academy/our-fleet,page shows 'Tecnam Echo MkII | N752XF'; not registered
+N7BR,not_found,unclear,,N7BR,http,fortworthflightschool.com,https://fortworthflightschool.com/piper-7br,page titled 'Piper 7BR' with no body text; the model added the N
+N803MT,not_found,unclear,,N803MT,browser,flygriffing.com,https://flygriffing.com/fleet,charter page lists King Air N803MT; not registered
+N835FS,not_found,unclear,,N835FS,http,coloradosportpilot.com,https://www.coloradosportpilot.com,photo caption 'Remos GX (N835FS)'; not registered
+N8384F,not_found,unclear,,N8384F,http,flyquestaviation.com,https://www.flyquestaviation.com/rates,rate table 'Piper Archer (N8384F / N8439T)'; not registered
+N855RB,not_found,non_us_or_sim,simulator,N855RB,browser,aero-sphere.com,https://aero-sphere.com/flight-training/rates,page labels a Redbird LD AATD simulator N855RB
