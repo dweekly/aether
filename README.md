@@ -4,12 +4,16 @@ Code, research notes and findings behind [aether-flight.com](https://aether-flig
 
 - Explore the data: <https://aether-flight.com/explore/>
 - Download it: the explorer's download links (ODbL, every field with its source).
+- Ask Claude about it: open this repo in Claude Code and the [`aether-data` skill](.claude/skills/aether-data/SKILL.md) knows the files, schemas, joins and traps ("what share of aircraft are government-registered?").
 - Try the pipeline: `cd research/FlightSchoolMapping && make sample` runs the ingest and registry join on small licensed fixtures (see the sample README below).
+
+Code is MIT licensed ([LICENSE](LICENSE)); the data is ODbL.
 
 Stage: prototype. This is a public copy of the project's history with some material left out: crawl outputs, raw ADS-B traces, data from sources whose terms forbid republishing (AOPA's directory, Flightradar24, Google and Yelp place details), the Cessna 172 story's data files (so that story page will not build from this repo), and unrelated product and IP drafts. Credentials that appeared in old scripts were public web tokens and have been replaced with placeholders. Some documents still link to files that are not here.
 
 ## Documents
 
+- [aether-data skill](.claude/skills/aether-data/SKILL.md): what each released file holds, its columns, how the tables join, tested DuckDB queries and the traps in reading them. (updated 2026-11-07; update when: a release adds, drops or renames a file or column)
 - [Research index](research/README.md): list of the hardware and data experiments under `research/`. (updated 2026-03-04; update when: an experiment is added or retired)
 - [DualMicTest](research/DualMicTest/README.md): Android test app for concurrent built-in and headset mic capture, and how to read its outcomes. (updated 2026-03-05; update when: the device test is run)
 - [Flight School Mapping](research/FlightSchoolMapping/README.md): pipeline, data sources, output schemas and current counts for the US flight school and fleet dataset. (updated 2026-11-04; update when: the pipeline or headline counts change)
