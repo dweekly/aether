@@ -9,7 +9,8 @@ local.properties
 .DS_Store
 
 # Claude
-.claude/
+.claude/*
+!.claude/skills/
 
 # Flight School Mapping — large data files
 research/FlightSchoolMapping/data/
