@@ -1,6 +1,6 @@
 # DualMicTest
 
-Android app to determine whether the Moto G 2026 (MediaTek Dimensity 6300, MT6365 PMIC) can simultaneously record from the built-in mic and a TRRS wired headset mic as independent audio streams. This is the foundational hardware validation for Aether's [GA-CVR](../../prd.md) dual-stream cockpit voice recorder.
+Android app to determine whether the Moto G 2026 (MediaTek Dimensity 6300, MT6365 PMIC) can simultaneously record from the built-in mic and a TRRS wired headset mic as independent audio streams. This is the foundational hardware validation for Aether's GA-CVR dual-stream cockpit voice recorder.
 
 ## Background
 

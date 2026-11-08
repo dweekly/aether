@@ -1,0 +1,1393 @@
+candidate_id,sources,aopa_only,lead_state,via,site,classification,operation_type,aircraft,not_training_kind,evidence_url,school_name,city,state,disposition,school_key,detail
+L0031,master;tachgo,no,AR,search,,yes,independent_instructor,airplane,,https://www.fayetteville-ar.gov/3339/Pilot-Training,"Ross Executive Aviation, Inc.",Fayetteville,AR,added,nosite:L0031,from a public page that names it (no website)
+L0130,master,yes,CA,search,,yes,flight_school,,,https://www.cameronparkairport.org/aviation-businesses,Flightime,,,added,nosite:L0130,from a public page that names it (no website)
+L0177,master;tachgo,no,CA,search,,yes,flight_school,airplane,,https://www.iflyvny.com/business-directory/flight-training,San Fernando Aviation LLC,,,added,nosite:L0177,from a public page that names it (no website)
+L0407,master;tachgo,no,IA,search,,yes,flight_school,,,https://iowadot.gov/modes-travel/aviation/flight-schools,Algona Aero Service Inc.,,,added,nosite:L0407,from a public page that names it (no website)
+L0409,master;tachgo,no,IA,search,,yes,flight_school,,,https://iowadot.gov/modes-travel/aviation/flight-schools,Blind Squrriel Aviation,,,added,nosite:L0409,from a public page that names it (no website)
+L0415,master;tachgo,no,IA,search,,yes,flight_school,,,https://iowadot.gov/modes-travel/aviation/flight-schools,Fairfield Flying Service,,,added,nosite:L0415,from a public page that names it (no website)
+L0416,master;tachgo,no,IA,search,,yes,flight_school,,,https://iowadot.gov/modes-travel/aviation/flight-schools,Forest City Aviation,,,added,nosite:L0416,from a public page that names it (no website)
+L0417,master;tachgo,no,IA,search,,yes,flight_school,,,https://iowadot.gov/modes-travel/aviation/flight-schools,Harlan Flying Service,,,added,nosite:L0417,from a public page that names it (no website)
+L0588,master,yes,MA,search,,yes,flight_school,airplane,,http://sterlingairport.net/FlightSchool.html,"Urban Aviation Services, Inc.",,,added,nosite:L0588,from a public page that names it (no website)
+L0592,master,yes,MD,search,,yes,flight_school,,,https://www.iac.org/aerobatic-flight-schools/usa/MD,Aerosport Limited,Annapolis,MD,added,nosite:L0592,from a public page that names it (no website)
+L0594,master;tachgo,no,MD,search,,yes,flight_school,airplane,,https://www.potomac-airfield.com/,ATC Flight Training,,,added,nosite:L0594,from a public page that names it (no website)
+L0614,master,yes,ME,search,,yes,flying_club,,,https://www.katahdinwings.org/flying-clubs,"ANG Aero Club, Inc.",Bangor,ME,added,nosite:L0614,from a public page that names it (no website)
+L0619,master,yes,ME,search,,yes,flight_school,airplane,,https://seaplanepilotsassociation.org/flight-schools/morgan-aviation-and-kennebec-seaplanes/,Morgan Aviation and Kennebec Seaplanes,Norridgewock,ME,added,nosite:L0619,from a public page that names it (no website)
+L0647,master;tachgo,no,MI,search,,yes,flight_school,,,https://www.houghtoncounty.org/pilots.php,Keweenaw Bay Aviation LLC,,,added,nosite:L0647,from a public page that names it (no website)
+L0733,master,yes,MO,search,,yes,flight_school,airplane,,https://www.warsawmo.gov/airport,"ChasAero, LLC",Warsaw,MO,added,nosite:L0733,from a public page that names it (no website)
+L0887,master;tachgo,no,NM,search,,yes,flying_club,,,https://cannonforce.com/aero-club/,Cannon AFB Aero Club,Cannon AFB,NM,added,nosite:L0887,from a public page that names it (no website)
+L1081,master;tachgo,no,PA,search,,yes,flying_club,airplane,,https://bradfordcountyairport.com/,Towanda Flying Club,,,added,nosite:L1081,from a public page that names it (no website)
+L1091,master;tachgo,no,SC,search,,yes,flight_school,,,https://iflychs.com/mount-pleasant-regional-airport/,Advanced Performance Aviation,,,added,nosite:L1091,from a public page that names it (no website)
+L1142,master;tachgo,no,TN,search,,yes,flying_club,,,https://www.navymwrmidsouth.com/flyingclub,Memphis Navy Flying Club,,,added,nosite:L1142,from a public page that names it (no website)
+L1188,master,yes,TX,search,,yes,flight_school,,,https://www.co.andrews.tx.us/303/Links,Flying Aces Aviation,,,added,nosite:L1188,from a public page that names it (no website)
+L1302,master;tachgo,no,VA,search,,yes,flight_school,airplane,,https://avcairport.com/voyager-aviation,"Voyager Aviation, Inc.",Brodnax,VA,added,nosite:L1302,from a public page that names it (no website)
+L1306,master;tachgo,no,VT,search,,yes,flight_school,airplane,,https://vtrans.vermont.gov/aviation/airports/hartness,High Wind Aviation,,,added,nosite:L1306,from a public page that names it (no website)
+L1345,master,yes,WA,search,,yes,flying_club,airplane,,https://www.uvaviation.com/wwfc-application,Walla Walla Flying Club,Walla Walla,WA,added,nosite:L1345,from a public page that names it (no website)
+L1383,master,yes,WI,search,,yes,flying_club,airplane,,https://82charlie.com/wisconsin-fun-flyers-flying-club/,Wisconsin Fun Flyers Flying Club,,,added,nosite:L1383,from a public page that names it (no website)
+S0008,master;tachgo,no,VA,search_named,aceflight-academy.com,yes,flight_school,airplane,,https://aceflight-academy.com/services,Ace Flight Academy,,,added,aceflight-academy.com,
+S0011,ppp,no,CA,search,advanceaircrafttraining.com,yes,independent_instructor,airplane,,https://advanceaircrafttraining.com/contact/,Advance Aircraft Training,,,added,advanceaircrafttraining.com,
+S0015,master,yes,SC,list,aero2academy.com,yes,flight_school,airplane,,https://www.aero2academy.com,AERO II ACADEMY,Spartanburg,SC,added,aero2academy.com,
+S0019,ppp,no,AZ,search,aeromain.com,yes,flight_school,airplane,,https://www.aeromain.com,AEROMAIN,Glendale,AZ,added,aeromain.com,
+S0030,ppp,no,KS,search,airflighttraining.com,yes,independent_instructor,airplane,,https://airflighttraining.com/initial-training,AIR Flight Training,,,added,airflighttraining.com,
+S0031,master,yes,WA,search,airhawks.org,yes,flying_club,airplane,,https://www.airhawks.org/,Airhawks Flying Club,Eastsound,WA,added,airhawks.org,
+S0038,master,yes,WI,list,ajraviationllc.squarespace.com,yes,flight_school,airplane,,https://ajraviationllc.squarespace.com/new-page-3,AJR Aviation,,,added,nosite:ajraviationllc.squarespace.com,
+S0040,master,yes,AK,list,alaskatailwheel.com,yes,independent_instructor,airplane,,https://www.alaskatailwheel.com/,"Alaska Tailwheel, LLC",,,added,alaskatailwheel.com,
+S0043,master;tachgo,no,VT,list,altitudeflighttrainingvt.com,yes,flight_school,airplane,,https://altitudeflighttrainingvt.com/pilot-training,Altitude Flight Training VT,North Clarendon,VT,added,altitudeflighttrainingvt.com,
+S0058,master;tachgo,no,WY,list,atlasflightschool.com,yes,flight_school,airplane,,http://www.atlasflightschool.com/,Atlas Flight School,Casper,WY,added,atlasflightschool.com,
+S0064,master,no,FL,search,aviatorsacademy.us,yes,flight_school,airplane,,https://aviatorsacademy.us/,Aviators Academy,Daytona Beach,FL,added,aviatorsacademy.us,
+S0067,master;tachgo,no,CA,list,bakersfieldflyingclub.com,yes,flying_club,airplane,,https://bakersfieldflyingclub.com/learn-to-fly,Bakersfield Flying Club,Bakersfield,CA,added,bakersfieldflyingclub.com,
+S0079,master;tachgo,no,CA,list,bestaviationllc.com,yes,flight_school,,,https://www.bestaviationllc.com/,BEST Aviation,Bakersfield,CA,added,bestaviationllc.com,
+S0097,master;tachgo,no,PA,list,brandywineaviation.com,yes,flight_school,airplane;light_sport,,https://www.brandywineaviation.com/flight-training/copy-of-cirrus-training-and-rental,Brandywine Aviation & Maintenance,West Chester,PA,added,brandywineaviation.com,
+S0104,master;tachgo,no,WI,list,capitoldriveairport.com,yes,independent_instructor,airplane,,http://www.capitoldriveairport.com,Capitol Drive Airport - 02C,Pewaukee,WI,added,capitoldriveairport.com,
+S0114,master;tachgo,no,OH,search,centralohiosoaring.org,yes,flying_club,glider,,https://centralohiosoaring.org/pricing,Central Ohio Soaring Association,Marion,OH,added,centralohiosoaring.org,
+S0116,master,yes,CA,list,cfii.com,yes,flight_school,airplane,,https://cfii.com,CFII,Riverside,CA,added,cfii.com,
+S0117,master;tachgo,no,CA,list,cfisba.com,yes,flight_school,airplane,,https://cfisba.com/,CFI SBA,Santa Barbara,CA,added,cfisba.com,
+S0122,master,yes,OR,search,chiefjosephflyers.org,yes,flying_club,airplane,,https://www.chiefjosephflyers.org/,"Chief Joseph Flyers, Inc.",Joseph,OR,added,chiefjosephflyers.org,
+S0127,master;tachgo,no,CA,list,cierva.aero,yes,flight_school,gyroplane,,https://www.cierva.aero,Cierva Aero,Petaluma,CA,added,cierva.aero,
+S0130,master;tachgo,no,IN,search,cliffrobinsonaerobatics.com,yes,independent_instructor,airplane,,https://cliffrobinsonaerobatics.com/,Robinson Aerobatics,Madison,IN,added,cliffrobinsonaerobatics.com,
+S0137,master;tachgo,no,CO,list,coloradospringsflightschool.com,yes,flight_school,airplane;light_sport,,https://coloradospringsflightschool.com/flight-training-colorado-springs,The Flight School at Colorado Springs,Peyton,CO,added,coloradospringsflightschool.com,
+S0138,master;tachgo,no,MD,list,congressionalflyingclub.com,yes,flying_club,airplane,,https://congressionalflyingclub.com/aircraft/N20300,Congressional Flying Club,Gaithersburg,MD,added,congressionalflyingclub.com,
+S0142,master;tachgo,no,NY,list,countryskiesaviation.com,yes,flight_school,airplane,,https://countryskiesaviation.com,Country Skies Aviation,Lagrangeville,NY,added,countryskiesaviation.com,
+S0145,master;tachgo,no,WA,list,csaviation.net,yes,independent_instructor,airplane,,https://www.csaviation.net/,Chehalis Skies Aviation LLC,Chehalis,WA,added,csaviation.net,
+S0154,master;tachgo,no,OK,list,davisfieldaviation.com,yes,flight_school,,,https://www.davisfieldaviation.com/,Davis Field Aviation LLC,Muskogee,OK,added,davisfieldaviation.com,
+S0159,master;tachgo,no,OR,list,deschutesflyingclub.org,yes,flying_club,airplane,,https://www.deschutesflyingclub.org/,Deschutes Flying Club,,,added,deschutesflyingclub.org,
+S0164,master;tachgo,no,KS,list,dreamairglobal.com,yes,flight_school,airplane,,https://www.dreamairglobal.com/flight-training,Dream Air Global,New Century,KS,added,dreamairglobal.com,
+S0171,master;tachgo,no,TN,list,eaglevillesoaring.org,yes,flying_club,glider,,https://eaglevillesoaring.org/,Eagleville Soaring Club,Eagleville,TN,added,eaglevillesoaring.org,
+S0172,master,yes,AL,list,eastaviation.net,yes,flight_school,airplane,,https://www.eastaviation.net/home,East Aviation LLC,Tuscumbia,AL,added,eastaviation.net,
+S0173,master;tachgo,no,TX,list,easttexasflyingservice.com,yes,flight_school,airplane,,https://www.easttexasflyingservice.com,East Texas Flying Service Inc,Mineola,TX,added,easttexasflyingservice.com,
+S0178,ppp,no,NY,search,everheartair.com,yes,flight_school,airplane,,https://everheartair.com,Everheart Air,Fairfield,NJ,added,everheartair.com,
+S0181,master;tachgo,no,TX,list,falconflightusa.com,yes,flight_school,airplane,,https://falconflightusa.com/,Falcon Flight USA,,,added,falconflightusa.com,
+S0185,master;tachgo,no,CA,list,firsttakeaviation.com,yes,flight_school,airplane,,https://www.firsttakeaviation.com/certified-flight-instructor,First Take Aviation,Van Nuys,CA,added,firsttakeaviation.com,
+S0195,master;tachgo,no,GA,list,flintriversoaring.com,yes,flying_club,glider,,https://www.flintriversoaring.com/flight-training,Flint River Soaring,Quitman,GA,added,flintriversoaring.com,
+S0197,master,no,FL,search,floridashuttle.net,yes,flight_school,airplane,,http://www.floridashuttle.net/Index.htm,"Florida Shuttle, Inc.",,,added,floridashuttle.net,
+S0199,master;tachgo,no,KS,list,fly-linkaviation.com,yes,flight_school,airplane,,https://www.fly-linkaviation.com/,Link Aviation,Great Bend,KS,added,fly-linkaviation.com,
+S0200,master;tachgo,no,MI,search,fly-pfs.com,yes,flight_school,airplane,,https://www.fly-pfs.com/,Phoenix Flight Services,Oscoda,MI,added,fly-pfs.com,
+S0207,master,yes,ID,list,flyapexacademy.com,yes,flight_school,airplane,,https://flyapexacademy.com,Apex Flight Academy,,,added,flyapexacademy.com,
+S0208,master;tachgo,no,OK,list,flyathena.com,yes,flight_school,airplane,,https://flyathena.com/,"Athena Aircraft, LLC",,,added,flyathena.com,
+S0213,master,no,TX,search,flycentraltexas.com,yes,flight_school,airplane,,https://www.flycentraltexas.com/,Skylark Aviation Killeen,Killeen,TX,added,flycentraltexas.com,
+S0217,master;tachgo,no,SC,list,flydoubleday.com,yes,flight_school,airplane,,https://www.flydoubleday.com/become-a-pilot,"DoubleDay Aviation, Inc.",Greenville,SC,added,flydoubleday.com,
+S0219,master;tachgo,no,AZ,search,flygforce.com,yes,independent_instructor,airplane,,https://flygforce.com/rates,G-Force Aviation LLC,Glendale,AZ,added,flygforce.com,
+S0224,master;tachgo,no,CO,list,flyleadville.com,yes,flying_club,airplane,,https://flyleadville.com/services/rentals,Leadville Flying Club,Leadville,CO,added,flyleadville.com,
+S0231,master,yes,GA,list,flynextlevelft.com,yes,flight_school,airplane,,https://www.flynextlevelft.com,Next Level Flight Training,Lagrange,GA,added,flynextlevelft.com,
+S0233,master,yes,MI,list,flynorthernflights.com,yes,flight_school,airplane,,https://www.flynorthernflights.com,Northern Flights,Calumet,MI,added,flynorthernflights.com,
+S0240,master;tachgo,no,NY,list,flytangowhiskey.com,yes,flight_school,airplane,,https://www.flytangowhiskey.com/aerobatic-flight-school,Tango Whiskey Aviation,Rochester,NY,added,flytangowhiskey.com,
+S0244,master;tachgo,no,CA,list,flytruckee.com,yes,flight_school,airplane;light_sport,,https://www.flytruckee.com/flight-training,Sierra Aero LLC,Truckee,CA,added,flytruckee.com,
+S0246,master;tachgo,no,IL,list,flywaterloo.com,yes,flight_school,airplane,,https://flywaterloo.com/learn-in-your-own-plane,FlyWaterloo,Wheeling,IL,added,flywaterloo.com,
+S0247,master,yes,NE,search,flywayne.com,yes,flying_club,airplane,,https://www.flywayne.com/,Northeast Nebraska Aviators,,,added,flywayne.com,
+S0248,master;tachgo,no,AZ,list,flywhiskeytango.com,yes,flight_school,airplane,,https://flywhiskeytango.com/programs,Fly Whiskey Tango,Scottsdale,AZ,added,flywhiskeytango.com,
+S0249,master,yes,MT,list,flywithvirga.com,yes,flight_school,airplane,,https://www.flywithvirga.com,Fly With Virga,Livingston,MT,added,flywithvirga.com,
+S0250,master;tachgo,no,MD,list,fmfa.org,yes,flying_club,airplane,,https://www.fmfa.org,"Fort Meade Flight Activity, Inc",Fort Meade,MD,added,fmfa.org,
+S0251,ppp,no,ID,search,foothillsaviationllc.com,yes,flight_school,airplane,,https://foothillsaviationllc.com/1969-cessna-150,Foothills Aviation LLC,Buhl,ID,added,foothillsaviationllc.com,
+S0252,master,no,OR,list,forge.aero,yes,flight_school,airplane,,https://forge.aero,AeroForge Flight Training LLC,Portland,OR,added,forge.aero,
+S0253,master,yes,FL,list,freedomflightclub.org,yes,flying_club,airplane,,https://freedomflightclub.org/memberships,Freedom Flight Club,Sarasota,FL,added,freedomflightclub.org,
+S0255,ppp,no,TX,list,fullthrottleaviationllc.com,yes,independent_instructor,airplane,,https://www.fullthrottleaviationllc.com,FullThrottle Aviation LLC,Erie,CO,added,fullthrottleaviationllc.com,
+S0259,master,yes,WA,search_named,gigharborflyingclub.org,yes,flying_club,airplane,,https://www.gigharborflyingclub.org/how-to-join,Gig Harbor Flying Club,Tacoma,WA,added,gigharborflyingclub.org,
+S0263,master;tachgo,no,NM,list,gofastpilots.com,yes,flight_school,airplane,,https://www.gofastpilots.com/,GoFastPilots LLC,Roswell,NM,added,gofastpilots.com,
+S0267,master;tachgo,no,WA,list,gorgeaviationservices.com,yes,flight_school,airplane,,https://www.gorgeaviationservices.com/flight-training,Gorge Aviation Services,Hermiston,OR,added,gorgeaviationservices.com,
+S0276,master;tachgo,no,MA,list,hanscomfss.com,yes,flying_club,airplane,,https://www.hanscomfss.com/aero-club,Hanscom Aero Club,,,added,hanscomfss.com,
+S0277,master;tachgo,no,MT,search,happytrailsflight.com,yes,flight_school,airplane,,https://happytrailsflight.com/,Happy Trails Flight 1,Helena,MT,added,happytrailsflight.com,
+S0286,master;tachgo,no,CA,list,hemetflightschool.com,yes,flight_school,airplane,,http://hemetflightschool.com/,Time to Climb Flight School,Hemet,CA,added,hemetflightschool.com,
+S0299,master;tachgo,no,ME,search,houltonflyingclub.com,yes,flying_club,airplane,,https://houltonflyingclub.com/,Houlton International Flying Club,Houlton,ME,added,houltonflyingclub.com,
+S0306,master;tachgo,no,OK,search,iflyvolar.com,yes,flight_school,airplane,,https://iflyvolar.com/,Volar Flight School,Bethany,OK,added,iflyvolar.com,
+S0315,master;tachgo,no,FL,list,jaxnfc.com,yes,flying_club,airplane,,https://www.jaxnfc.com,"Jax Navy Flying Club, Inc.",,,added,jaxnfc.com,
+S0320,ppp,no,KS,list,joebravoaviation.com,yes,flight_school,airplane;light_sport,,https://joebravoaviation.com/pages/flight-instruction,JoeBravo Aviation,Augusta,KS,added,joebravoaviation.com,
+S0322,master,yes,KS,search,kaltenbaeck.com,yes,flying_club,glider,,http://kaltenbaeck.com/kceagles/,KC Eagles Soaring Club,,,added,kaltenbaeck.com,
+S0325,master;tachgo,no,TX,list,kerrvilleaviation.com,yes,flight_school,,,https://www.kerrvilleaviation.com/,Kerrville Aviation,,,added,kerrvilleaviation.com,
+S0326,master;tachgo,no,KY,list,kickstartaviation.com,yes,flight_school,airplane,,,"Kickstart Aviation, LLC",Mayfield,KY,added,kickstartaviation.com,
+S0328,master;tachgo,no,IA,list,knoxvilleaviation.com,yes,flight_school,airplane;helicopter,,https://www.knoxvilleaviation.com/flight-school,Knoxville Aviation,Knoxville,IA,added,knoxvilleaviation.com,
+S0330,master,yes,PA,list,ksegairport.com,yes,flight_school,,,https://ksegairport.com/,Penn Valley Airport,Selinsgrove,PA,added,ksegairport.com,
+S0331,master;tachgo,no,MI,list,kubickaviation.com,yes,flight_school,airplane,,https://kubickaviation.com,Kubick Aviation Services,Kingsford,MI,added,kubickaviation.com,
+S0334,master;tachgo,no,WI,list,lakecountryairport.com,yes,flight_school,airplane,,https://lakecountryairport.com/,Lake Country Airport,Sullivan,WI,added,lakecountryairport.com,
+S0337,master,yes,IL,search,lakeshelbyvilleflyingclub.com,yes,flying_club,airplane,,https://lakeshelbyvilleflyingclub.com/,Lake Shelbyville Flying Club,Shelbyville,IL,added,lakeshelbyvilleflyingclub.com,
+S0340,master;tachgo,no,NY,list,ledgedaleairservice.com,yes,flight_school,airplane,,https://ledgedaleairservice.com/,Ledgedale Air Service,,,added,ledgedaleairservice.com,
+S0343,master;tachgo,no,WA,list,limacharlieair.com,yes,independent_instructor,airplane,,https://www.limacharlieair.com/,Lima Charlie Air,,,added,limacharlieair.com,
+S0344,master;tachgo,no,CA,list,liteflighthelicopters.com,yes,flight_school,helicopter,,https://www.liteflighthelicopters.com/,Lite Flight,Burbank,CA,added,liteflighthelicopters.com,
+S0345,master,yes,NE,search,lnlaviation.com,yes,independent_instructor,airplane,,https://lnlaviation.com/contact,"L&L Aviation, LLC",Sidney,NE,added,lnlaviation.com,
+S0357,master;tachgo,no,ND,list,mandanaero.com,yes,flight_school,,,https://mandanaero.com/,Mandan Aero Center,Mandan,ND,added,mandanaero.com,
+S0364,master,no,VA,list,mclarenflightacademy.org,yes,flight_school,airplane,,https://mclarenflightacademy.org/primary-flight-training,McLaren Flight Academy,Lynchburg,VA,added,mclarenflightacademy.org,
+S0383,master;tachgo,no,TN,list,mu2b.com,yes,flight_school,airplane,,http://www.mu2b.com/,"Howell Enterprises, Inc.",Smyrna,TN,added,mu2b.com,
+S0396,master,yes,ME,search,northernmaineflyingclub.org,yes,flying_club,airplane,,https://northernmaineflyingclub.org/membership,Northern Maine Flying Club,,,added,northernmaineflyingclub.org,
+S0401,master;tachgo,no,MI,search_named,northwestsoaringclub.com,yes,flying_club,glider,,https://northwestsoaringclub.com,Northwest Soaring Club,Cadillac,MI,added,northwestsoaringclub.com,
+S0403,master;tachgo,no,MA,list,norwoodair.com,yes,flight_school,airplane,,http://www.norwoodair.com/,Norwood Air,,,added,norwoodair.com,
+S0407,master;tachgo,no,MN,list,oasisaero.com,yes,flight_school,airplane,,,Oasis Aero,,,added,oasisaero.com,
+S0424,master,yes,FL,list,persimmonhollowaeroclub.com,yes,flying_club,airplane,,https://persimmonhollowaeroclub.com,Persimmon Hollow Aero Club,Deland,FL,added,persimmonhollowaeroclub.com,
+S0427,master;tachgo,no,AZ,list,phx-afc.com,yes,flying_club,airplane,,https://phx-afc.com/,Phoenix Area Flying Club,Mesa,AZ,added,phx-afc.com,
+S0430,master;tachgo,no,CA,search,pilotreza.com,yes,flight_school,airplane,,https://www.pilotreza.com/,Accelerated Flight Academy,Van Nuys,CA,added,pilotreza.com,
+S0431,master;tachgo,no,AZ,search,planefolks.com,yes,flight_school,airplane,,http://www.planefolks.com/,"PLANE FOLKS, LLC",,,added,planefolks.com,
+S0433,master;tachgo,no,CA,search,pmlaeroclub.org,yes,flying_club,airplane,,https://www.pmlaeroclub.org/,Pine Mountain Lake Aero Club,Groveland,CA,added,pmlaeroclub.org,
+S0439,master;tachgo,no,WI,list,progressiveair.org,yes,flight_school,,,http://www.progressiveair.org/,Progressive Air Inc.,Janesville,WI,added,progressiveair.org,
+S0450,master;tachgo,no,OK,list,redeemedflyingcorps.org,yes,flight_school,airplane,,https://redeemedflyingcorps.org/redeemedflyingcorps/aboutus,Redeemed Flying Corps,Oklahoma City,OK,added,redeemedflyingcorps.org,
+S0451,master,yes,SD,list,remedyaviation.com,yes,flight_school,,,https://remedyaviation.com,Remedy Aviation Flight Academy,,,added,remedyaviation.com,
+S0452,master,yes,WI,list,ricelakeaircenter.com,yes,flight_school,airplane,,https://www.ricelakeaircenter.com/About%2DUs.html,RICE LAKE AIR CENTER,Cameron,WI,added,ricelakeaircenter.com,
+S0453,master;tachgo,no,NY,list,rightbrotheraviation.com,yes,flight_school,airplane;helicopter,,https://www.rightbrotheraviation.com/services,Right Brother Aviation,Chaffee,NY,added,rightbrotheraviation.com,
+S0454,master;tachgo,no,WI,search,rioaeroclub.com,yes,flying_club,airplane,,https://www.rioaeroclub.com/membership,"Rio Aero Club, Inc.",Rio,WI,added,rioaeroclub.com,
+S0455,master;tachgo,no,TX,list,risingaviation.com,yes,flight_school,airplane,,https://www.risingaviation.com/,Rising Aviation High School,Addison,TX,added,risingaviation.com,
+S0463,master;tachgo,no,VA,search,safeflightaviation.com,yes,flight_school,airplane,,https://safeflightaviation.com/,Safe Flight Aviation,Chesapeake,VA,added,safeflightaviation.com,
+S0471,master,yes,OH,list,savillianair.com,yes,flying_club,airplane,,https://www.savillianair.com/,Savillian Air Flying Club,Elyria,OH,added,savillianair.com,
+S0474,master;tachgo,no,MN,search,scsuaeroclub.org,yes,flying_club,airplane,,https://www.scsuaeroclub.org,SCSU Aero Club,,,added,scsuaeroclub.org,
+S0476,master;tachgo,no,TX,list,seareyadventures.com,yes,flight_school,airplane;light_sport,,https://seareyadventures.com,SeaRey Adventures,Temple,TX,added,seareyadventures.com,
+S0478,master;tachgo,no,WA,list,sequimvalleyairport.com,yes,flight_school,airplane,,https://sequimvalleyairport.com/dungeness-aircraft-service/,Dungeness Aircraft Service,Sequim,WA,added,sequimvalleyairport.com,
+S0479,master;tachgo,no,FL,list,seu.edu,yes,university_program,airplane,,https://www.seu.edu/aviation/,Southeastern University,,,added,seu.edu,
+S0486,master;tachgo,no,WA,list,shuksanairservice.com,yes,independent_instructor,airplane;glider,,https://shuksanairservice.com/,"Shuksan Air Service, LLC",,,added,shuksanairservice.com,
+S0495,master;tachgo,no,WV,list,skyridgeaviation.com,yes,independent_instructor,airplane,,https://www.skyridgeaviation.com/,Sky Ridge Aviation,Millwood,WV,added,skyridgeaviation.com,
+S0498,master;tachgo,no,MA,list,soargbsc.net,yes,flying_club,glider,,https://www.soargbsc.net/,Greater Boston Soaring Club,Sterling,MA,added,soargbsc.net,
+S0500,master;tachgo,no,PA,list,soaringtigers.org,yes,flying_club,glider,,https://www.soaringtigers.org/,Soaring Tigers,Erwinna,PA,added,soaringtigers.org,
+S0501,master;tachgo,no,CO,list,soarsteamboat.org,yes,flying_club,glider,,https://soarsteamboat.org/,Steamboat Springs Soaring Association,,,added,soarsteamboat.org,
+S0514,master,yes,GA,list,stinsonflight.com,yes,flight_school,airplane,,https://Stinsonflight.com,Stinson Flight Academy,Athens,GA,added,stinsonflight.com,
+S0515,master;tachgo,no,IL,list,stlsoar.org,yes,flying_club,glider,,https://www.stlsoar.org/,St. Louis Soaring Association,Highland,IL,added,stlsoar.org,
+S0517,master,yes,FL,list,stuartflyingclub.org,yes,flying_club,airplane,,https://www.stuartflyingclub.org/about,"Stuart Flying Club, INC",Stuart,FL,added,stuartflyingclub.org,
+S0522,master;tachgo,no,WA,list,taildraggerpilot.com,yes,independent_instructor,airplane;light_sport,,https://www.taildraggerpilot.com/,Flight Instruction,,,added,taildraggerpilot.com,
+S0526,master;tachgo,no,FL,list,tampabayflyingclub.com,yes,flying_club,airplane,,https://www.tampabayflyingclub.com/aircraft.html,Tampa Bay Flying Club,Palmetto,FL,added,tampabayflyingclub.com,
+S0531,master;tachgo,no,TX,list,texassoaring.org,yes,flying_club,glider,,https://texassoaring.org/,Texas Soaring Association,Midlothian,TX,added,texassoaring.org,
+S0532,master,yes,TX,search,texomaaeroclub.com,yes,flying_club,airplane,,https://texomaaeroclub.com/,Texoma Aero Club,Denison,TX,added,texomaaeroclub.com,
+S0536,master,yes,OH,search,toledobuzzards.org,yes,flying_club,airplane,,http://www.toledobuzzards.org/,Toledo Buzzards Light Sport Aircraft Club,,,added,toledobuzzards.org,
+S0539,master;tachgo,no,MA,list,totaltailwheel.com,yes,flight_school,airplane,,https://www.totaltailwheel.com/,"Total Tailwheel, LLC",Stow,MA,added,totaltailwheel.com,
+S0544,ppp,no,AZ,list,trikeschool.com,yes,flight_school,weight_shift;light_sport,,https://www.trikeschool.com,TrikeSchool,Spokane,WA,added,trikeschool.com,
+S0550,ppp,no,VA,search,upandreadyflight.com,yes,flight_school,airplane,,https://www.upandreadyflight.com/,Up and Ready Flight Support,Chesapeake,VA,added,upandreadyflight.com,
+S0551,master;tachgo,no,TN,list,uplineaviation.com,yes,flight_school,,,https://www.uplineaviation.com/,Upline Aviation LLC,Portland,TN,added,uplineaviation.com,
+S0552,master;tachgo,no,VT,list,upsidedownvt.com,yes,flight_school,airplane,,https://www.upsidedownvt.com/discovery-flight,Upside Down VT,Highgate,VT,added,upsidedownvt.com,
+S0555,master;tachgo,no,UT,list,utahlightsport.com,yes,flight_school,airplane;light_sport,,https://utahlightsport.com/,Utah Light Sport,Ogden,UT,added,utahlightsport.com,
+S0563,master;tachgo,no,OH,search,volare-aviation.com,yes,flight_school,airplane,,https://www.volare-aviation.com/,Volare Aviation,Wintersville,OH,added,volare-aviation.com,
+S0570,master;tachgo,no,ID,search,westernidahoaviation.com,yes,flight_school,airplane,,https://www.westernidahoaviation.com/,Western Idaho Aviation LLC,Caldwell,ID,added,westernidahoaviation.com,
+S0571,master;tachgo,no,WV,list,westliberty.edu,yes,university_program,airplane,,https://westliberty.edu/aviation/,West Liberty University,,,added,westliberty.edu,
+S0573,master,yes,CO,list,wetsuaviation.com,yes,independent_instructor,airplane,,https://wetsuaviation.com,WETSU Aviation,Colorado Springs,CO,added,wetsuaviation.com,
+S0575,master;tachgo,no,MI,list,windsairowosso.com,yes,flying_club,airplane;light_sport,,https://www.windsairowosso.com/groundschool,Winds Air Flying Club,,,added,windsairowosso.com,
+S0580,master,yes,WI,list,wisoar.org,yes,flying_club,glider,,https://www.wisoar.org,Wisconsin Soaring Society,,,added,wisoar.org,
+S0584,master;tachgo,no,OR,list,wvsc.org,yes,flying_club,glider,,https://www.wvsc.org/instruction,Willamette Valley Soaring Club,Portland,OR,added,wvsc.org,
+S0585,ppp,no,TN,search,xpservices.us,yes,flight_school,airplane;helicopter,,https://xpservices.us/flight-training,XP Services Inc.,Tullahoma,TN,added,xpservices.us,
+S0588,master,yes,OH,list,zanesvilleaviation.com,yes,flight_school,airplane,,https://www.zanesvilleaviation.com/aircraft-rental,Southeastern Ohio Air Service Inc. (dba Zanesville Aviation),Zanesville,OH,added,zanesvilleaviation.com,
+S0001,master;tachgo,no,CO,list,21fss.com,yes,flying_club,airplane,,https://21fss.com/aero-club/,Peterson SFB Aero Club,Peterson SFB,CO,duplicate,,my.rockymountainflight.com (same phone)
+pre:2flyairborne.com,ppp,no,FL,search,2flyairborne.com,,,,,,,,,duplicate,,"2flyairborne.com (domain 2flyairborne.com, before crawling)"
+pre:702aviation.com,tachgo,no,NV,list,702aviation.com,,,,,,,,,duplicate,,"702helicopters.com (domain 702aviation.com, before crawling)"
+pre:a-centaviation.com,master,no,CO,search,a-centaviation.com,,,,,,,,,duplicate,,"a-centaviation.com (domain a-centaviation.com, before crawling)"
+S0007,master,no,CA,search,accessibleaviation.com,yes,flight_school,airplane,,https://www.accessibleaviation.com/international.php,Accessible Aviation Inc,,,duplicate,,pilottrainingpro.com (domain pilottrainingpro.com) - an earlier added school
+pre:acepilotacademy.com,ppp,no,AZ,search,acepilotacademy.com,,,,,,,,,duplicate,,"acepilotacademy.com (domain acepilotacademy.com, before crawling)"
+pre:adfairways.net,ppp,no,FL,search,adfairways.net,,,,,,,,,duplicate,,"adfairways.net (domain adfairways.net, before crawling)"
+pre:adirondacksoaring.com,master;tachgo,no,NY,search,adirondacksoaring.com,,,,,,,,,duplicate,,"adirondacksoaring.com (domain adirondacksoaring.com, before crawling)"
+pre:advanced-aviation-group.com,master,no,MD,search,advanced-aviation-group.com,,,,,,,,,duplicate,,"advanced-aviation-group.com (domain advanced-aviation-group.com, before crawling)"
+pre:adventureseaplanes.com,master;tachgo,no,MN,search,adventureseaplanes.com,,,,,,,,,duplicate,,"adventureseaplanes.com (domain adventureseaplanes.com, before crawling)"
+S0014,master;tachgo,no,WI,list,aero290.com,yes,flight_school,airplane,,https://www.aero290.com/flight-training,Aero 290,Burlington,WI,duplicate,,springcityaviation.com (same phone)
+pre:aerocitygroup.com,ppp,no,CA,search,aerocitygroup.com,,,,,,,,,duplicate,,"aerocitygroup.com (domain aerocitygroup.com, before crawling)"
+pre:aeromania.net,ppp,no,WY,search,aeromania.net,,,,,,,,,duplicate,,"aeromania.net (domain aeromania.net, before crawling)"
+pre:aftcenter.com,master,no,CA,search,aftcenter.com,,,,,,,,,duplicate,,"aftcenter.com (domain aftcenter.com, before crawling)"
+pre:aiaflight.com,master;tachgo,no,CA,search,aiaflight.com,,,,,,,,,duplicate,,"aiaflight.com (domain aiaflight.com, before crawling)"
+pre:air-venture.com,ppp,no,MS,search,air-venture.com,,,,,,,,,duplicate,,"air-venture.com (domain air-venture.com, before crawling)"
+pre:airfleettraining.com,master,no,NJ,search,airfleettraining.com,,,,,,,,,duplicate,,"airfleettraining.com (domain airfleettraining.com, before crawling)"
+pre:alamo.edu,master,no,TX,search,alamo.edu,,,,,,,,,duplicate,,"alamo.edu (domain alamo.edu, before crawling)"
+pre:allianceflighttraining.com,master,no,CO,search,allianceflighttraining.com,,,,,,,,,duplicate,,"allianceflighttraining.com (domain allianceflighttraining.com, before crawling)"
+pre:alpha-1.com,ppp,no,MA,search,alpha-1.com,,,,,,,,,duplicate,,"alpha-1.com (domain alpha-1.com, before crawling)"
+pre:alphaoneflighttraining.com,tachgo,no,NC,list,alphaoneflighttraining.com,,,,,,,,,duplicate,,"alphaoneairservice.com (domain alphaoneflighttraining.com, before crawling)"
+pre:ansonair.com,ppp,no,TX,search,ansonair.com,,,,,,,,,duplicate,,"ansonair.com (domain ansonair.com, before crawling)"
+S0050,master;tachgo,no,NC,list,arqaviation.com,yes,flight_school,airplane,,https://www.arqaviation.com/,ARQ Aviation,Wilmington,NC,duplicate,,flycfca.com (same phone)
+pre:attitudeaviation.com,master;ppp,no,CA,search,attitudeaviation.com,,,,,,,,,duplicate,,"attitudeaviation.com (domain attitudeaviation.com, before crawling)"
+pre:av8flight.com,ppp,no,MN,search,av8flight.com,,,,,,,,,duplicate,,"av8flight.com (domain av8flight.com, before crawling)"
+pre:aviationadventures.com,master,no,VA,search,aviationadventures.com,,,,,,,,,duplicate,,"aviationadventures.com (domain aviationadventures.com, before crawling)"
+pre:aviationcenter.aero,master,no,MI,search,aviationcenter.aero,,,,,,,,,duplicate,,"aviationcenter.aero (domain aviationcenter.aero, before crawling)"
+S0063,master;tachgo,no,OH,search_named,aviationworksinc.com,yes,flight_school,,,https://aviationworksinc.com/,Aviation Works Inc.,Heath,OH,duplicate,,newarkheathairport.com (Aviation Works Flight Academy): the same business at Licking County Regional; our record's domain now redirects to another site (hand review)
+pre:bayareaflyingclub.com,ppp,no,CO,list,bayareaflyingclub.com,,,,,,,,,duplicate,,"bayareaflyingclub.com (domain bayareaflyingclub.com, before crawling)"
+pre:beech45n.weebly.com,master,yes,MO,list,,,,,,,,,,duplicate,,
+pre:cadotteaero.com,master;tachgo,no,MN,search,cadotteaero.com,,,,,,,,,duplicate,,"cadotteaero.com (domain cadotteaero.com, before crawling)"
+pre:calaggieflyers.com,master,no,CA,search,calaggieflyers.com,,,,,,,,,duplicate,,"calaggieflyers.com (domain calaggieflyers.com, before crawling)"
+pre:chennaultflyingservice.com,master,no,NV,search,chennaultflyingservice.com,,,,,,,,,duplicate,,"chennaultflyingservice.com (domain chennaultflyingservice.com, before crawling)"
+pre:chesapeakesportpilot.com,ppp,no,MD,search,chesapeakesportpilot.com,,,,,,,,,duplicate,,"chesapeakesportpilot.com (domain chesapeakesportpilot.com, before crawling)"
+pre:chilhowee.com,ppp,no,TN,search,chilhowee.com,,,,,,,,,duplicate,,"chilhowee.com (domain chilhowee.com, before crawling)"
+pre:coastalsoaring.org,master;tachgo,no,AL,search,coastalsoaring.org,,,,,,,,,duplicate,,"coastalsoaring.org (domain coastalsoaring.org, before crawling)"
+S0141,master;tachgo,no,CA,list,corporatehelicopters.com,yes,flight_school,helicopter,,http://www.corporatehelicopters.com/,Corporate Helicopters,San Diego,CA,duplicate,,heliflighttraining.com (name in CA)
+pre:ctipft.com,ppp,no,FL,search,ctipft.com,,,,,,,,,duplicate,,"ctipft.com (domain ctipft.com, before crawling)"
+pre:davidsonflight.com,master;tachgo,no,NC,search,davidsonflight.com,,,,,,,,,duplicate,,"davidsonflight.com (domain davidsonflight.com, before crawling)"
+pre:deltaqualiflight.com,ppp,no,TX,search,deltaqualiflight.com,,,,,,,,,duplicate,,"deltaqualiflight.com (domain deltaqualiflight.com, before crawling)"
+pre:draggintailpilots.weebly.com,master,yes,PA,list,,,,,,,,,,duplicate,,
+pre:duboisaviation.com,ppp,no,CA,search,duboisaviation.com,,,,,,,,,duplicate,,"duboisaviation.com (domain duboisaviation.com, before crawling)"
+pre:epicflightacademy.com,tachgo,no,FL,search,epicflightacademy.com,,,,,,,,,duplicate,,"epicflightacademy.com (domain epicflightacademy.com, before crawling)"
+pre:epixaviation.com,ppp,no,VA,search,epixaviation.com,,,,,,,,,duplicate,,"epixaviation.com (domain epixaviation.com, before crawling)"
+pre:faapilottraining.com,ppp,no,FL,search,faapilottraining.com,,,,,,,,,duplicate,,"faapilottraining.com (domain faapilottraining.com, before crawling)"
+pre:facebook.com,master;tachgo,no,IA,list,facebook.com,,,,,,,,,duplicate,,"facebook.com (domain facebook.com, before crawling)"
+pre:fitaviation.com,tachgo,no,FL,search,fitaviation.com,,,,,,,,,duplicate,,"fitaviation.com (domain fitaviation.com, before crawling)"
+pre:flightcenterinternational.com,ppp,no,FL,search,flightcenterinternational.com,,,,,,,,,duplicate,,"flightcenterinternational.com (domain flightcenterinternational.com, before crawling)"
+S0189,master;tachgo,no,MI,list,flightschooljackson.com,yes,flight_school,airplane,,https://www.flightschooljackson.com/,"Solo Aviation Services, LLC",Ann Arbor,MI,duplicate,,soloaviation.aero (domain soloaviation.com)
+pre:flightschoolusa.com,master,no,FL,search,flightschoolusa.com,,,,,,,,,duplicate,,"flightschoolusa.com (domain flightschoolusa.com, before crawling)"
+pre:flighttimeaviation.com,master,no,TX,search,flighttimeaviation.com,,,,,,,,,duplicate,,"flighttimeaviation.com (domain flighttimeaviation.com, before crawling)"
+pre:fly-iowa.com,master,no,IA,search,fly-iowa.com,,,,,,,,,duplicate,,"fly-iowa.com (domain fly-iowa.com, before crawling)"
+pre:flyaeroaviation.com,master,no,CA,search,flyaeroaviation.com,,,,,,,,,duplicate,,"flyaeroaviation.com (domain flyaeroaviation.com, before crawling)"
+pre:flyafi.com,ppp,no,CA,search,flyafi.com,,,,,,,,,duplicate,,"flyafi.com (domain flyafi.com, before crawling)"
+S0211,master;tachgo,no,SC,search,flybeaufort.com,yes,flight_school,airplane,,https://www.flybeaufort.com,Beaufort Flight Training and Rentals,,,duplicate,,"BEAUFORT FLIGHT TRAINING LLC (BEAUFORT, SC) (name in SC)"
+pre:flycheaha.com,master,no,AL,search,flycheaha.com,,,,,,,,,duplicate,,"Flycheaha.com (domain flycheaha.com, before crawling)"
+pre:flycitizenair.com,master;tachgo,no,WA,list,flycitizenair.com,,,,,,,,,duplicate,,"ritebros.com (domain flycitizenair.com, before crawling)"
+pre:flydaretodream.com,master,no,FL,search,flydaretodream.com,,,,,,,,,duplicate,,"flydaretodream.com (domain flydaretodream.com, before crawling)"
+pre:flyingrangers.wordpress.com,master,yes,MT,list,,,,,,,,,,duplicate,,
+pre:flyitacademy.com,ppp,no,WA,search,flyitacademy.com,,,,,,,,,duplicate,,"flyitacademy.com (domain flyitacademy.com, before crawling)"
+pre:flyjwa.com,master;tachgo,no,IL,search,flyjwa.com,,,,,,,,,duplicate,,"flyjwa.com (domain flyjwa.com, before crawling)"
+pre:flylegacyaviation.com,ppp,no,NY,list,flylegacyaviation.com,,,,,,,,,duplicate,,"flylegacyaviation.com (domain flylegacyaviation.com, before crawling)"
+pre:flynewportri.com,tachgo,no,RI,search,flynewportri.com,,,,,,,,,duplicate,,"flynewportri.com (domain flynewportri.com, before crawling)"
+S0232,master;tachgo,no,OR,list,flynorthaviation.com,yes,flight_school,airplane,,https://www.flynorthaviation.com/,Fly North Aviation,Aurora,OR,duplicate,,auroraflighttraining.com (same phone)
+S0234,ppp,no,NE,search_named,flyperformance.com,yes,flight_school,airplane,,http://www.flyperformance.com,Ignite Flight Academy,Lincoln,NE,duplicate,,igniteflight.com (domain igniteflight.com)
+pre:flypft.com,ppp,no,NC,search,flypft.com,,,,,,,,,duplicate,,"flypft.com (domain flypft.com, before crawling)"
+pre:flyprecision.com,master;ppp,no,OR,search,flyprecision.com,,,,,,,,,duplicate,,"flyprecision.com (domain flyprecision.com, before crawling)"
+pre:flyredarrow.com,master,no,TX,search,flyredarrow.com,,,,,,,,,duplicate,,"flyredarrow.com (domain flyredarrow.com, before crawling)"
+S0235,ppp,no,CA,search_named,flyredlands.com,yes,flight_school,airplane,,http://www.FlyRedlands.com/,NextGen Aviation Academy,Riverside,CA,duplicate,,flyhere.aero (domain flyhere.aero)
+S0238,tachgo,no,IL,list,flysynergy.aero,yes,flight_school,airplane,,https://flysynergy.aero/flight-training-chicago,Fly Synergy,Bloomington,IL,duplicate,,synergyfbo.com (name in IL)
+pre:flytaa.com,master,no,NC,search,flytaa.com,,,,,,,,,duplicate,,"flytaa.com (domain flytaa.com, before crawling)"
+S0239,master;tachgo,no,NC,list,flytalonair.com,yes,flight_school,airplane,,https://flytalonair.com/about-us,Talon Aviation,Mount Airy,NC,duplicate,,"TALON AVIATION OF NC LLC (WINSTON SALEM, NC) (name in NC)"
+pre:flywingsofeagles.com,master,no,TN,search,flywingsofeagles.com,,,,,,,,,duplicate,,"flywingsofeagles.com (domain flywingsofeagles.com, before crawling)"
+pre:flywithnico.com,master,no,OR,search,flywithnico.com,,,,,,,,,duplicate,,"flywithnico.com (domain flywithnico.com, before crawling)"
+pre:frederickflightcenter.com,master,yes,MD,search,,,,,,,,,,duplicate,,
+pre:futureflyersct.com,ppp,no,CT,search,futureflyersct.com,,,,,,,,,duplicate,,"futureflyersct.com (domain futureflyersct.com, before crawling)"
+pre:gateone.com,tachgo,no,UT,search,gateone.com,,,,,,,,,duplicate,,"gateone.com (domain gateone.com, before crawling)"
+pre:gatewayflight.com,ppp,no,MO,list,gatewayflight.com,,,,,,,,,duplicate,,"gatewayflight.com (domain gatewayflight.com, before crawling)"
+pre:genesisflightschool.com,ppp,no,TX,search,genesisflightschool.com,,,,,,,,,duplicate,,"genesisaviationinc.com (domain genesisflightschool.com, before crawling)"
+pre:georgesaviation.com,ppp,no,HI,list,georgesaviation.com,,,,,,,,,duplicate,,"georgesaviation.com (domain georgesaviation.com, before crawling)"
+S0264,master,no,CA,search,goflysandiego.com,yes,flight_school,airplane,,https://goflysandiego.com/,GoFly San Diego,San Diego,CA,duplicate,,seaplanesoflosangeles.com (street address and a name word)
+S0266,ppp;tachgo,no,NY,list,goodrichpilottrainingcenter.com,yes,flight_school,airplane,,https://goodrichpilottrainingcenter.com/,Goodrich Pilot Training Center,Johnson City,NY,duplicate,,goodrichaviation.com (street address and a name word)
+pre:greenvilleaviation.com,master,no,SC,search,greenvilleaviation.com,,,,,,,,,duplicate,,"greenvilleaviation.com (domain greenvilleaviation.com, before crawling)"
+S0293,master;tachgo,no,VA,list,hillflyingservice.com,yes,flight_school,airplane,,https://www.hillflyingservice.com/,Hill Flying Service,,,duplicate,,achieveaviation.com (same phone)
+pre:idealaviationstl.com,ppp,no,IL,search,idealaviationstl.com,,,,,,,,,duplicate,,"idealaviationstl.com (domain idealaviationstl.com, before crawling)"
+pre:indianastate.edu,tachgo,no,IN,list,indianastate.edu,,,,,,,,,duplicate,,"indstate.edu (domain indianastate.edu, before crawling)"
+S0308,master,no,IN,search_named,indyjet.net,yes,flight_school,airplane,,https://indyjet.net,Jet Access,Indianapolis,IN,duplicate,,flyjetaccess.com (domain flyjetaccess.com)
+pre:inflightaviation.com,ppp,no,MN,search,inflightaviation.com,,,,,,,,,duplicate,,"inflightaviation.com (domain inflightaviation.com, before crawling)"
+S0313,master,no,NJ,search_named,ireallywanttofly.com,yes,flight_school,airplane,,http://www.ireallywanttofly.com/,Infinity Flight Group,,,duplicate,,infinityflightgroup.com (domain infinityflightgroup.com)
+S0316,master;tachgo,no,AK,list,jberlife.com,yes,flight_school,airplane,,https://www.jberlife.com/aero-club,Aero Club Flight Training Center,Joint Base Elmendorf-Richardson,AK,duplicate,,jberaeroclub.com (Elmendorf Aero Club): same street address and phone; jberlife.com is the base's page for its aero club (hand review)
+pre:jimmycartersflightschool.com,master,no,CA,search,jimmycartersflightschool.com,,,,,,,,,duplicate,,"jimmycartersflightschool.com (domain jimmycartersflightschool.com, before crawling)"
+pre:kb-air.com,ppp,no,AL,search,kb-air.com,,,,,,,,,duplicate,,"kb-air.com (domain kb-air.com, before crawling)"
+S0327,master;tachgo,no,KY,search,kilroyaviationllc.com,yes,flight_school,airplane;light_sport,,https://kilroyaviationllc.com/home/,Kilroy Flight Academy,Lexington,KY,duplicate,,kilroyflightacademy.com (domain kilroyflightacademy.com) - an earlier added school
+pre:lakenormanaviation.com,master,no,NC,search,lakenormanaviation.com,,,,,,,,,duplicate,,"lakenormanaviation.com (domain lakenormanaviation.com, before crawling)"
+pre:learntoflylaurel.com,master,no,MS,search,learntoflylaurel.com,,,,,,,,,duplicate,,"learntoflylaurel.com (domain learntoflylaurel.com, before crawling)"
+pre:legendsaviationacademy.com,master,no,FL,search,legendsaviationacademy.com,,,,,,,,,duplicate,,"legendsaviationacademy.com (domain legendsaviationacademy.com, before crawling)"
+pre:liberty.edu,master,no,VA,search,liberty.edu,,,,,,,,,duplicate,,"liberty.edu (domain liberty.edu, before crawling)"
+pre:loft.aero,ppp,no,CA,search,loft.aero,,,,,,,,,duplicate,,"loft.aero (domain loft.aero, before crawling)"
+S0352,master;tachgo,no,MI,list,machspeedaviation.com,yes,flight_school,airplane,,https://machspeedaviation.com/,MachSpeed Aviation,,,duplicate,,"Mach Speed (Pontiac, MI) (name in MI) - an earlier added school"
+pre:mga.edu,master,no,GA,search,mga.edu,,,,,,,,,duplicate,,"mga.edu (domain mga.edu, before crawling)"
+pre:miairservices.com,ppp,no,CA,search,miairservices.com,,,,,,,,,duplicate,,"miairservices.com (domain miairservices.com, before crawling)"
+pre:miamifly.com,master,no,FL,search,miamifly.com,,,,,,,,,duplicate,,"miamifly.com (domain miamifly.com, before crawling)"
+pre:miat.edu,ppp,no,MI,search,miat.edu,,,,,,,,,duplicate,,"miat.edu (domain miat.edu, before crawling)"
+pre:middleriveraviation.com,ppp,no,MD,search,middleriveraviation.com,,,,,,,,,duplicate,,"middleriveraviation.com (domain middleriveraviation.com, before crawling)"
+pre:midwest-aviation.com,master;tachgo,no,IL,search,midwest-aviation.com,,,,,,,,,duplicate,,"midwest-aviation.com (domain midwest-aviation.com, before crawling)"
+S0373,master;tachgo,no,NV,list,mindensoaring.org,yes,flying_club,glider,,https://www.mindensoaring.org/,Minden Soaring Club Inc.,Minden,NV,duplicate,,soaringnv.com (same phone)
+pre:motionairflight.com,master,no,TX,search,motionairflight.com,,,,,,,,,duplicate,,"motionairflight.com (domain motionairflight.com, before crawling)"
+pre:mountainlion.aero,ppp,no,CA,search,mountainlion.aero,,,,,,,,,duplicate,,"mountainlion.aero (domain mountainlion.aero, before crawling)"
+pre:multienginetimebuilding.com,master,no,TN,search,multienginetimebuilding.com,,,,,,,,,duplicate,,"multienginetimebuilding.com (domain multienginetimebuilding.com, before crawling)"
+S0391,ppp,no,LA,search,neworleansaerialtours.com,yes,flight_school,airplane,,https://www.neworleansaerialtours.com/all-tours-and-lessons,New Orleans Aerial Tours & Flight Training,New Orleans,LA,duplicate,,flynola.com (New Orleans Flight Training): same phone (hand review)
+pre:nobleaire.us,master;tachgo,no,AZ,list,nobleaire.us,,,,,,,,,duplicate,,"maranaflightschools.com (domain nobleaire.us, before crawling)"
+pre:none,master,yes,NY,list,,,,,,,,,,duplicate,,
+pre:northeast-planes.com,master,no,CO,search,northeast-planes.com,,,,,,,,,duplicate,,"northeast-planes.com (domain northeast-planes.com, before crawling)"
+pre:northernairaviation.com,tachgo,no,ID,list,northernairaviation.com,,,,,,,,,duplicate,,"northernair.biz (domain northernairaviation.com, before crawling)"
+pre:nova.aero,ppp,no,NJ,search,nova.aero,,,,,,,,,duplicate,,"nova.aero (domain nova.aero, before crawling)"
+pre:nsaviation.com,ppp,no,FL,search,nsaviation.com,,,,,,,,,duplicate,,"nsaviation.com (domain nsaviation.com, before crawling)"
+pre:ontheflytexas.com,master,no,TX,search,ontheflytexas.com,,,,,,,,,duplicate,,"ontheflytexas.com (domain ontheflytexas.com, before crawling)"
+S0413,master,yes,FL,list,,yes,flight_school,airplane,,,,,,duplicate,,
+pre:ovationfbo.com,master;tachgo,no,WI,list,ovationfbo.com,,,,,,,,,duplicate,,"cwa-fbo.com (domain ovationfbo.com, before crawling)"
+pre:parkwateraviation.com,ppp,no,WA,search,parkwateraviation.com,,,,,,,,,duplicate,,"parkwateraviation.com (domain parkwateraviation.com, before crawling)"
+pre:pea.com,ppp,no,FL,search,pea.com,,,,,,,,,duplicate,,"pea.com (domain pea.com, before crawling)"
+pre:petalumapilots.com,tachgo,no,CA,list,petalumapilots.com,,,,,,,,,duplicate,,"petalumapilottrainingcenter.com (domain petalumapilots.com, before crawling)"
+pre:pia.edu,ppp,no,PA,search,pia.edu,,,,,,,,,duplicate,,"pia.edu (domain pia.edu, before crawling)"
+pre:pilotsflightschool.com,master;tachgo,no,NJ,list,pilotsflightschool.com,,,,,,,,,duplicate,,"pilotsflyingschool.com (domain pilotsflightschool.com, before crawling)"
+pre:regalair.com,ppp,no,WA,search,regalair.com,,,,,,,,,duplicate,,"regalair.com (domain regalair.com, before crawling)"
+pre:rexair.net,ppp,no,FL,search,rexair.net,,,,,,,,,duplicate,,"rexair.net (domain rexair.net, before crawling)"
+pre:rudysaviationservices.com,master,no,TX,search,rudysaviationservices.com,,,,,,,,,duplicate,,"rudysaviationservices.com (domain rudysaviationservices.com, before crawling)"
+pre:salina.k-state.edu,master,no,KS,search,salina.k-state.edu,,,,,,,,,duplicate,,"polytechnic.k-state.edu (domain salina.k-state.edu, before crawling)"
+pre:shebleaviation.com,master;ppp,no,AZ,search,shebleaviation.com,,,,,,,,,duplicate,,"shebleaviation.com (domain shebleaviation.com, before crawling)"
+pre:silverhawkaviation.net,master;tachgo,no,OR,search,silverhawkaviation.net,,,,,,,,,duplicate,,"silverhawkaviation.net (domain silverhawkaviation.net, before crawling)"
+pre:simulator.com,ppp,no,FL,search,simulator.com,,,,,,,,,duplicate,,"simulator.com (domain simulator.com, before crawling)"
+pre:skyhawkflyingclub.org,master,yes,IL,search,,,,,,,,,,duplicate,,
+pre:skymates.com,master;ppp,no,TX,search,skymates.com,,,,,,,,,duplicate,,"skymates.com (domain skymates.com, before crawling)"
+pre:skysailors.com,master,no,NY,search,skysailors.com,,,,,,,,,duplicate,,"skysailors.com (domain skysailors.com, before crawling)"
+pre:sleepinggiantflyingclub.weebly.com,tachgo,no,MT,list,sleepinggiantflyingclub.weebly.com,,,,,,,,,duplicate,,"sleepinggiantflyingclub.weebly.com (domain sleepinggiantflyingclub.weebly.com, before crawling)"
+pre:slu.edu,master;tachgo,no,IL,search,slu.edu,,,,,,,,,duplicate,,"slu.edu (domain slu.edu, before crawling)"
+S0504,tachgo,no,MI,list,spartaaviation.com,yes,flight_school,airplane,,https://spartaaviation.com/,Sparta Aviation Flight Training,,,duplicate,,spartafbo.com (Sparta Aviation Services): same phone (hand review)
+pre:spartanflightacademy.com,tachgo,no,TX,list,spartanflightacademy.com,,,,,,,,,duplicate,,"aviatorair.com (domain spartanflightacademy.com, before crawling)"
+pre:sportysacademy.com,master,no,OH,search,sportysacademy.com,,,,,,,,,duplicate,,"sportysacademy.com (domain sportysacademy.com, before crawling)"
+S0510,master;tachgo,no,CO,list,steamboatflyingclub.com,yes,flying_club,airplane,,https://www.steamboatflyingclub.com/,"Steamboat Springs Flying Club, Inc",Steamboat Springs,CO,duplicate,,flysteamboat.net (name in CO)
+pre:superhawk.weebly.com,master,yes,UT,list,,,,,,,,,,duplicate,,
+pre:tampanorth.com,master;tachgo,no,FL,search,tampanorth.com,,,,,,,,,duplicate,,"tampanorth.com (domain tampanorth.com, before crawling)"
+pre:theflightschool.com,ppp;tachgo,no,GA,search,theflightschool.com,,,,,,,,,duplicate,,"theflightschool.com (domain theflightschool.com, before crawling)"
+pre:thefloridaridge.com,ppp,no,FL,search,thefloridaridge.com,,,,,,,,,duplicate,,"thefloridaridge.com (domain thefloridaridge.com, before crawling)"
+pre:thrustflight.com,ppp,no,TX,search,thrustflight.com,,,,,,,,,duplicate,,"thrustflight.com (domain thrustflight.com, before crawling)"
+pre:tnflighttraining.com,ppp,no,TN,search,tnflighttraining.com,,,,,,,,,duplicate,,"tnflighttraining.com (domain tnflighttraining.com, before crawling)"
+pre:tradewind-fsi.com,master;ppp;tachgo,no,NC,list,tradewind-fsi.com,,,,,,,,,duplicate,,"d2-fa.com (domain tradewind-fsi.com, before crawling)"
+pre:tradewindsaviation.com,ppp,no,CA,search,tradewindsaviation.com,,,,,,,,,duplicate,,"tradewindsaviation.com (domain tradewindsaviation.com, before crawling)"
+pre:transmedics.com,master;tachgo,no,MT,list,transmedics.com,,,,,,,,,duplicate,,"flysummit.net (domain transmedics.com, before crawling)"
+pre:treasurecoastflighttraining.com,ppp,no,FL,search,treasurecoastflighttraining.com,,,,,,,,,duplicate,,"treasurecoastflight.com (domain treasurecoastflighttraining.com, before crawling)"
+pre:trimbleaviation.com,master,yes,OR,list,,,,,,,,,,duplicate,,
+S0547,tachgo,no,TX,search,trlaviation.com,yes,flight_school,airplane,,https://www.trlaviation.com/flight-training,Terrell Aviation Inc.,Terrell,TX,duplicate,,mikesflyingservice.com (same phone)
+pre:universalheli.com,master;tachgo,no,TX,list,universalheli.com,,,,,,,,,duplicate,,"universalflightconcepts.com (domain universalheli.com, before crawling)"
+pre:usaeroflight.net,ppp,no,SC,search,usaeroflight.net,,,,,,,,,duplicate,,"usaeroflight.net (domain usaeroflight.net, before crawling)"
+S0553,master,no,TX,search_named,ussportflightacademy.com,yes,flight_school,airplane,,https://www.ussportflightacademy.com/,"Thrust Flight, LLC",Addison,TX,duplicate,,thrustflight.com (domain thrustflight.com)
+pre:vannaeroservices.weebly.com,tachgo,no,NC,list,vannaeroservices.weebly.com,,,,,,,,,duplicate,,"vannaeroservices.weebly.com (domain vannaeroservices.weebly.com, before crawling)"
+pre:vfaviation.com,master,no,NC,search,vfaviation.com,,,,,,,,,duplicate,,"vfaviation.com (domain vfaviation.com, before crawling)"
+pre:vintageairtours.com,master,no,TX,search,vintageairtours.com,,,,,,,,,duplicate,,"vintageairtours.com (domain vintageairtours.com, before crawling)"
+pre:wayman.edu,master,no,FL,search,wayman.edu,,,,,,,,,duplicate,,"wayman.edu (domain wayman.edu, before crawling)"
+pre:whitepinehelicopters.com,master;tachgo,no,MI,list,whitepinehelicopters.com,,,,,,,,,duplicate,,"magnumheli.com (domain whitepinehelicopters.com, before crawling)"
+pre:williamsonflyingclub.com,master;tachgo,no,NC,search,williamsonflyingclub.com,,,,,,,,,duplicate,,"williamsonflyingclub.com (domain williamsonflyingclub.com, before crawling)"
+pre:winairaviation.com,master;tachgo,no,MN,search,winairaviation.com,,,,,,,,,duplicate,,"winairaviation.com (domain winairaviation.com, before crawling)"
+pre:wingsflightschool.com,ppp,no,CA,search,wingsflightschool.com,,,,,,,,,duplicate,,"wingsflightschool.com (domain wingsflightschool.com, before crawling)"
+pre:wingsflighttraining.com,ppp,no,KY,search,wingsflighttraining.com,,,,,,,,,duplicate,,"wingsflighttraining.com (domain wingsflighttraining.com, before crawling)"
+pre:wingsofwyoming.com,ppp,no,WY,search,wingsofwyoming.com,,,,,,,,,duplicate,,"wingsofwyoming.com (domain wingsofwyoming.com, before crawling)"
+pre:wisconsinaviation.com,master,no,WI,search,wisconsinaviation.com,,,,,,,,,duplicate,,"wisconsinaviation.com (domain wisconsinaviation.com, before crawling)"
+pre:worldwidewings.net,ppp,no,FL,search,worldwidewings.net,,,,,,,,,duplicate,,"worldwidewings.net (domain worldwidewings.net, before crawling)"
+L0003,master;tachgo,no,AK,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0005,master;tachgo,no,AK,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0009,master,yes,AL,search,,no_public_source,,,,,,,,left_out,,
+L0010,ppp,no,AL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0011,ppp,no,AL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0015,ppp,no,AL,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0019,master,yes,AL,search,,no_public_source,,,,,,,,left_out,,
+L0022,master,yes,AL,search,,no_public_source,,,,,,,,left_out,,
+L0025,master,yes,AL,search,,no_public_source,,,,,,,,left_out,,
+L0028,master,yes,AR,search,,no_public_source,,,,,,,,left_out,,
+L0032,master,yes,AR,search,,facebook_only,,,,,,,,left_out,,
+L0034,master,yes,AR,search,,no_public_source,,,,,,,,left_out,,
+L0036,master,yes,AR,search,,directory_only,,,,,,,,left_out,,
+L0041,master;tachgo,no,AZ,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0042,master,yes,AZ,search,,no_public_source,,,,,,,,left_out,,
+L0043,ppp,no,AZ,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0045,ppp,no,AZ,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0047,master;ppp,no,AZ,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0049,ppp,no,AZ,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0052,master,no,AZ,search,,yes,flight_school,helicopter,,https://cronkitenewsonline.com/2013/04/funding-cuts-begin-at-four-arizona-airports-that-will-lose-control-towers/index.html,Gold Coast Helicopters,,,left_out,,"only a news page names it (news, archive or registry; not current confirmation)"
+L0058,master;tachgo,no,AZ,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0059,master,yes,AZ,search,,directory_only,,,,,,,,left_out,,
+L0060,ppp,no,AZ,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0064,master,yes,AZ,search,,no_public_source,,,,,,,,left_out,,
+L0066,ppp,no,AZ,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0073,master,yes,AZ,search,,directory_only,,,,,,,,left_out,,
+L0081,master,yes,CA,search,,no_public_source,,,,,,,,left_out,,
+L0082,master,no,CA,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0091,master,yes,CA,search,,no_public_source,,,,,,,,left_out,,
+L0093,ppp,no,CA,search,,facebook_only,,,,,,,,left_out,,"only a Facebook page, which our crawler cannot read"
+L0096,master,yes,CA,search,,facebook_only,,,,,,,,left_out,,
+L0099,ppp,no,CA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0100,ppp,no,CA,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0104,master,yes,CA,search,,no_public_source,,,,,,,,left_out,,
+L0107,master,no,CA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0108,ppp,no,CA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0109,master,yes,CA,search,,no_public_source,,,,,,,,left_out,,
+L0124,master,yes,CA,search,,closed_per_search,,,,,,,,left_out,,
+L0125,master,no,CA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0127,master,yes,CA,search,,no_public_source,,,,,,,,left_out,,
+L0132,ppp,no,CA,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0134,ppp,no,CA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0137,master;tachgo,no,CA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0138,master,yes,CA,search,,closed_per_search,,,,,,,,left_out,,
+L0139,ppp,no,CA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0148,master,yes,CA,search,,directory_only,,,,,,,,left_out,,
+L0150,ppp,no,CA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0152,master,yes,CA,search,,,,,,,,,,left_out,,
+L0155,master,no,CA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0158,master,no,CA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0159,master,yes,CA,search,,closed_per_search,,,,,,,,left_out,,
+L0161,master,yes,CA,search,,directory_only,,,,,,,,left_out,,
+L0162,ppp,no,CA,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0163,ppp,no,CA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0165,ppp,no,CA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0166,ppp,no,CA,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0169,master,yes,CA,search,,directory_only,,,,,,,,left_out,,
+L0170,ppp,no,CA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0171,master,yes,CA,search,,no_public_source,,,,,,,,left_out,,
+L0174,master,yes,CA,search,,directory_only,,,,,,,,left_out,,
+L0181,master,yes,CA,search,,directory_only,,,,,,,,left_out,,
+L0182,master,yes,CA,search,,no_public_source,,,,,,,,left_out,,
+L0185,ppp,no,CA,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0188,ppp,no,CA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0195,master,no,CA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0196,master,yes,CA,search,,directory_only,,,,,,,,left_out,,
+L0201,ppp,no,CO,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0206,ppp,no,CO,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0207,master,yes,CO,search,,no_public_source,,,,,,,,left_out,,
+L0210,ppp,no,CO,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0211,master,yes,CO,search,,no_public_source,,,,,,,,left_out,,
+L0212,master,yes,CO,search,,no_public_source,,,,,,,,left_out,,
+L0216,ppp,no,CO,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0221,ppp,no,CO,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0223,master;tachgo,no,CO,search,,yes,flying_club,,,https://coloradospringsflightschool.com/accelerated-training/flight-schools-at-meadow-lake-airport/,Meadow Lake Flyers,,,left_out,,"only a other page names it (news, archive or registry; not current confirmation)"
+L0224,master,yes,CO,search,,no_public_source,,,,,,,,left_out,,
+L0225,master,yes,CO,search,,no_public_source,,,,,,,,left_out,,
+L0232,master,yes,CO,search,,no_public_source,,,,,,,,left_out,,
+L0237,master,yes,CO,search,,directory_only,,,,,,,,left_out,,
+L0239,master,yes,CT,search,,no_public_source,,,,,,,,left_out,,
+L0242,master,yes,CT,search,,no_public_source,,,,,,,,left_out,,
+L0244,master,yes,CT,search,,no_public_source,,,,,,,,left_out,,
+L0247,master,no,CT,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0249,master,yes,DE,search,,no_public_source,,,,,,,,left_out,,
+L0250,master,yes,DE,search,,no_public_source,,,,,,,,left_out,,
+L0251,ppp,no,DE,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0252,ppp,no,DE,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0253,master,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0254,master;tachgo,no,FL,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0255,ppp,no,FL,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0256,ppp,no,FL,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0261,master;ppp,no,FL,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0264,ppp,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0265,ppp,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0267,ppp,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0270,ppp,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0274,master,yes,FL,search,,,,,,,,,,left_out,,
+L0275,master,yes,FL,search,,no_public_source,,,,,,,,left_out,,
+L0279,ppp,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0282,master,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0285,master,no,FL,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0286,master,no,FL,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0289,ppp,no,FL,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0293,ppp,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0294,master,no,FL,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0296,master,yes,FL,search,,directory_only,,,,,,,,left_out,,
+L0298,master,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0300,master,yes,FL,search,,directory_only,,,,,,,,left_out,,
+L0306,ppp,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0309,ppp,no,FL,search,,facebook_only,,,,,,,,left_out,,"only a Facebook page, which our crawler cannot read"
+L0312,master,no,FL,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0313,master;tachgo,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0316,master,no,FL,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0318,ppp,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0319,ppp,no,FL,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0321,master,yes,FL,search,,no_public_source,,,,,,,,left_out,,
+L0322,master,yes,FL,search,,,,,,,,,,left_out,,
+L0326,master,yes,FL,search,,closed_per_search,,,,,,,,left_out,,
+L0327,master,yes,FL,search,,no_public_source,,,,,,,,left_out,,
+L0334,master,yes,FL,search,,,,,,,,,,left_out,,
+L0343,ppp,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0350,ppp,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0352,ppp,no,FL,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0353,ppp,no,FL,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0360,master,no,FL,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0363,master,no,FL,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0364,ppp,no,FL,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0369,ppp,no,FL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0371,master,yes,GA,search,,,,,,,,,,left_out,,
+L0373,master,yes,GA,search,,no_public_source,,,,,,,,left_out,,
+L0376,ppp,no,GA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0377,ppp,no,GA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0379,master,yes,GA,search,,no_public_source,,,,,,,,left_out,,
+L0384,master,yes,GA,search,,no_public_source,,,,,,,,left_out,,
+L0386,master,yes,GA,search,,no_public_source,,,,,,,,left_out,,
+L0392,master;tachgo,no,GA,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0395,master,yes,GA,search,,no_public_source,,,,,,,,left_out,,
+L0396,master,yes,GA,search,,no_public_source,,,,,,,,left_out,,
+L0397,master,yes,GA,search,,no_public_source,,,,,,,,left_out,,
+L0399,ppp,no,HI,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0401,ppp,no,HI,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0405,master;tachgo,no,IA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0406,master;tachgo,no,IA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0410,master,yes,IA,search,,no_public_source,,,,,,,,left_out,,
+L0413,master,yes,IA,search,,no_public_source,,,,,,,,left_out,,
+L0418,master,yes,IA,search,,facebook_only,,,,,,,,left_out,,
+L0419,master,yes,IA,search,,no_public_source,,,,,,,,left_out,,
+L0421,ppp,no,IA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0422,master;tachgo,no,IA,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0424,master,yes,IA,search,,no_public_source,,,,,,,,left_out,,
+L0425,master;tachgo,no,IA,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0432,master,yes,ID,search,,no_public_source,,,,,,,,left_out,,
+L0434,master,yes,ID,search,,directory_only,,,,,,,,left_out,,
+L0438,master,yes,ID,search,,no_public_source,,,,,,,,left_out,,
+L0439,master,yes,ID,search,,no_public_source,,,,,,,,left_out,,
+L0443,master,yes,ID,search,,no_public_source,,,,,,,,left_out,,
+L0448,master,no,IL,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0449,master,yes,IL,search,,no_public_source,,,,,,,,left_out,,
+L0450,master,yes,IL,search,,no_public_source,,,,,,,,left_out,,
+L0451,master,yes,IL,search,,no_public_source,,,,,,,,left_out,,
+L0452,master,yes,IL,search,,no_public_source,,,,,,,,left_out,,
+L0453,master;tachgo,no,IL,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0455,master,yes,IL,search,,facebook_only,,,,,,,,left_out,,
+L0456,ppp,no,IL,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0457,ppp,no,IL,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0458,master,no,IL,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0460,master,yes,IL,search,,no_public_source,,,,,,,,left_out,,
+L0462,master,yes,IL,search,,no_public_source,,,,,,,,left_out,,
+L0463,master,yes,IL,search,,directory_only,,,,,,,,left_out,,
+L0465,master,yes,IL,search,,no_public_source,,,,,,,,left_out,,
+L0467,master,yes,IL,search,,directory_only,,,,,,,,left_out,,
+L0470,master,yes,IL,search,,directory_only,,,,,,,,left_out,,
+L0471,master,yes,IL,search,,no_public_source,,,,,,,,left_out,,
+L0479,master,yes,IL,search,,directory_only,,,,,,,,left_out,,
+L0482,master,yes,IL,search,,directory_only,,,,,,,,left_out,,
+L0485,master,yes,IN,search,,directory_only,,,,,,,,left_out,,
+L0486,ppp,no,IN,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0489,master,yes,IN,search,,,,,,,,,,left_out,,
+L0491,master,yes,IN,search,,no_public_source,,,,,,,,left_out,,
+L0494,master,yes,IN,search,,no_public_source,,,,,,,,left_out,,
+L0495,master,yes,IN,search,,no_public_source,,,,,,,,left_out,,
+L0496,master,yes,IN,search,,no_public_source,,,,,,,,left_out,,
+L0501,master,yes,IN,search,,closed_per_search,,,,,,,,left_out,,
+L0502,master,yes,IN,search,,directory_only,,,,,,,,left_out,,
+L0503,master,yes,IN,search,,directory_only,,,,,,,,left_out,,
+L0504,master,yes,IN,search,,,,,,,,,,left_out,,
+L0505,master,yes,IN,search,,directory_only,,,,,,,,left_out,,
+L0507,master,yes,IN,search,,directory_only,,,,,,,,left_out,,
+L0509,master,yes,IN,search,,directory_only,,,,,,,,left_out,,
+L0512,master,yes,KS,search,,directory_only,,,,,,,,left_out,,
+L0517,master;tachgo,no,KS,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0523,master,yes,KS,search,,facebook_only,,,,,,,,left_out,,
+L0527,master,no,KS,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0529,ppp,no,KS,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0530,master,yes,KS,search,,facebook_only,,,,,,,,left_out,,
+L0531,master,yes,KS,search,,directory_only,,,,,,,,left_out,,
+L0532,master,yes,KS,search,,yes,flight_school,helicopter,,,,,KS,left_out,,
+L0533,master,yes,KS,search,,yes,independent_instructor,airplane;powered_parachute,,,,,,left_out,,
+L0534,master;tachgo,no,KY,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0536,master,yes,KY,search,,no_public_source,,,,,,,,left_out,,
+L0537,master,yes,KY,search,,directory_only,,,,,,,,left_out,,
+L0546,master,yes,KY,search,,no_public_source,,,,,,,,left_out,,
+L0547,master,yes,KY,search,,no_public_source,,,,,,,,left_out,,
+L0548,master,no,KY,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0549,master,yes,LA,search,,yes,flying_club,,,,,,,left_out,,
+L0552,master,yes,LA,search,,directory_only,,,,,,,,left_out,,
+L0555,master,yes,LA,search,,no_public_source,,,,,,,,left_out,,
+L0558,master,yes,LA,search,,no_public_source,,,,,,,,left_out,,
+L0560,master,yes,LA,search,,no_public_source,,,,,,,,left_out,,
+L0562,master,yes,MA,search,,no_public_source,,,,,,,,left_out,,
+L0563,master,yes,MA,search,,no_public_source,,,,,,,,left_out,,
+L0564,ppp,no,MA,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0568,master,yes,MA,search,,no_public_source,,,,,,,,left_out,,
+L0569,master,yes,MA,search,,no_public_source,,,,,,,,left_out,,
+L0571,master,yes,MA,search,,no_public_source,,,,,,,,left_out,,
+L0572,master,yes,MA,search,,closed_per_search,,,,,,,,left_out,,
+L0573,master,no,MA,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0579,master,yes,MA,search,,no_public_source,,,,,,,,left_out,,
+L0584,master;tachgo,no,MA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0585,master,no,MA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0586,master,yes,MA,search,,directory_only,,,,,,,,left_out,,
+L0589,master,yes,MA,search,,no_public_source,,,,,,,,left_out,,
+L0590,master,yes,MA,search,,facebook_only,,,,,,,,left_out,,
+L0593,master,yes,MD,search,,no_public_source,,,,,,,,left_out,,
+L0596,master,yes,MD,search,,no_public_source,,,,,,,,left_out,,
+L0599,master,yes,MD,search,,directory_only,,,,,,,,left_out,,
+L0603,master;tachgo,no,MD,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0604,master,yes,MD,search,,no_public_source,,,,,,,,left_out,,
+L0605,master,yes,MD,search,,no_public_source,,,,,,,,left_out,,
+L0606,master,yes,MD,search,,no_public_source,,,,,,,,left_out,,
+L0608,master;tachgo,no,MD,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0609,master,yes,MD,search,,no_public_source,,,,,,,,left_out,,
+L0610,master,yes,MD,search,,no_public_source,,,,,,,,left_out,,
+L0612,master,yes,MD,search,,closed_per_search,,,,,,,,left_out,,
+L0618,master;tachgo,no,ME,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0621,master,yes,ME,search,,closed_per_search,,,,,,,,left_out,,
+L0622,master,yes,ME,search,,no_public_source,,,,,,,,left_out,,
+L0624,master,yes,MI,search,,no_public_source,,,,,,,,left_out,,
+L0627,master;tachgo,no,MI,search,,facebook_only,,,,,,,,left_out,,"only a Facebook page, which our crawler cannot read"
+L0630,master,yes,MI,search,,directory_only,,,,,,,,left_out,,
+L0633,master,yes,MI,search,,no_public_source,,,,,,,,left_out,,
+L0636,ppp,no,MI,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0637,master,yes,MI,search,,no_public_source,,,,,,,,left_out,,
+L0640,master,yes,MI,search,,closed_per_search,,,,,,,,left_out,,
+L0642,master,yes,MI,search,,yes,flying_club,,,,,,,left_out,,
+L0644,master,yes,MI,search,,directory_only,,,,,,,,left_out,,
+L0646,master,yes,MI,search,,no_public_source,,,,,,,,left_out,,
+L0649,master,yes,MI,search,,no_public_source,,,,,,,,left_out,,
+L0654,master,yes,MI,search,,no_public_source,,,,,,,,left_out,,
+L0659,master,yes,MI,search,,directory_only,,,,,,,,left_out,,
+L0662,ppp,no,MI,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0663,ppp,no,MI,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0664,master,yes,MI,search,,no_public_source,,,,,,,,left_out,,
+L0666,master;tachgo,no,MI,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0668,master,yes,MI,search,,,,,,,,,,left_out,,
+L0671,master;tachgo,no,MI,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0674,ppp,no,MN,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0677,master,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0678,master;tachgo,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0679,ppp,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0682,master;tachgo,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0684,ppp,no,MN,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0686,master;tachgo,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0687,master;tachgo,no,MN,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0688,master,yes,MN,search,,,,,,,,,,left_out,,
+L0689,master;tachgo,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0690,ppp,no,MN,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0691,master;tachgo,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0692,master,yes,MN,search,,facebook_only,,,,,,,,left_out,,
+L0693,master;tachgo,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0694,master;tachgo,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0697,master;tachgo,no,MN,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0698,master,yes,MN,search,,no_public_source,,,,,,,,left_out,,
+L0699,master;tachgo,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0704,master;tachgo,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0706,master;tachgo,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0708,master;tachgo,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0709,master,yes,MN,search,,no_public_source,,,,,,,,left_out,,
+L0714,master;tachgo,no,MN,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0715,master,yes,MN,search,,,,,,,,,,left_out,,
+L0716,tachgo,no,MN,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0719,master;tachgo,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0721,master;tachgo,no,MN,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0722,ppp,no,MN,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0724,master,yes,MN,search,,no_public_source,,,,,,,,left_out,,
+L0725,master,no,MN,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0726,tachgo,no,MN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0727,master;ppp,no,MO,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0729,master,yes,MO,search,,no_public_source,,,,,,,,left_out,,
+L0730,master,yes,MO,search,,no_public_source,,,,,,,,left_out,,
+L0732,master,yes,MO,search,,no_public_source,,,,,,,,left_out,,
+L0735,master,yes,MO,search,,directory_only,,,,,,,,left_out,,
+L0737,master,yes,MO,search,,no_public_source,,,,,,,,left_out,,
+L0740,master,yes,MO,search,,facebook_only,,,,,,,,left_out,,
+L0741,master,yes,MO,search,,directory_only,,,,,,,,left_out,,
+L0744,master,yes,MO,search,,no_public_source,,,,,,,,left_out,,
+L0745,master,yes,MO,search,,directory_only,,,,,,,,left_out,,
+L0746,master,yes,MO,search,,no_public_source,,,,,,,,left_out,,
+L0747,master,yes,MO,search,,no_public_source,,,,,,,,left_out,,
+L0749,master,yes,MO,search,,no_public_source,,,,,,,,left_out,,
+L0750,master,yes,MO,search,,yes,flying_club,airplane,,,,,MO,left_out,,
+L0751,master;tachgo,no,MO,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0752,master,yes,MO,search,,no_public_source,,,,,,,,left_out,,
+L0754,ppp,no,MS,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0756,master,yes,MS,search,,,,,,,,,,left_out,,
+L0757,master,yes,MS,search,,yes,flight_school,airplane,,,,,,left_out,,
+L0758,master,yes,MS,search,,no_public_source,,,,,,,,left_out,,
+L0759,master,yes,MS,search,,facebook_only,,,,,,,,left_out,,
+L0762,ppp,no,MS,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0765,master,yes,MS,search,,no_public_source,,,,,,,,left_out,,
+L0766,ppp,no,MS,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0767,master;tachgo,no,MS,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0769,ppp,no,MS,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0777,master;tachgo,no,MT,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0779,ppp,no,MT,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0781,master,yes,MT,search,,directory_only,,,,,,,,left_out,,
+L0785,master,yes,MT,search,,no_public_source,,,,,,,,left_out,,
+L0787,ppp,no,MT,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0789,master,yes,NC,search,,directory_only,,,,,,,,left_out,,
+L0795,master,yes,NC,search,,directory_only,,,,,,,,left_out,,
+L0796,ppp,no,NC,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0797,ppp,no,NC,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0798,ppp,no,NC,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0800,master,yes,NC,search,,no_public_source,,,,,,,,left_out,,
+L0802,ppp,no,NC,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0803,master,yes,NC,search,,no_public_source,,,,,,,,left_out,,
+L0804,master,yes,NC,search,,no_public_source,,,,,,,,left_out,,
+L0807,master,yes,NC,search,,no_public_source,,,,,,,,left_out,,
+L0809,master,yes,NC,search,,no_public_source,,,,,,,,left_out,,
+L0812,master,yes,NC,search,,directory_only,,,,,,,,left_out,,
+L0815,master,yes,NC,search,,facebook_only,,,,,,,,left_out,,
+L0817,master,yes,NC,search,,directory_only,,,,,,,,left_out,,
+L0818,master,no,NC,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0823,master,yes,NC,search,,directory_only,,,,,,,,left_out,,
+L0829,master,yes,NC,search,,facebook_only,,,,,,,,left_out,,
+L0830,master,yes,ND,search,,closed_per_search,,,,,,,,left_out,,
+L0831,master,yes,ND,search,,no_public_source,,,,,,,,left_out,,
+L0834,master,yes,ND,search,,directory_only,,,,,,,,left_out,,
+L0836,master,yes,NE,search,,no_public_source,,,,,,,,left_out,,
+L0837,master,yes,NE,search,,no_public_source,,,,,,,,left_out,,
+L0841,master,yes,NE,search,,directory_only,,,,,,,,left_out,,
+L0842,master,yes,NE,search,,no_public_source,,,,,,,,left_out,,
+L0843,master,yes,NE,search,,directory_only,,,,,,,,left_out,,
+L0844,master;tachgo,no,NE,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0848,tachgo,no,NE,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0853,master,yes,NE,search,,no_public_source,,,,,,,,left_out,,
+L0856,master,yes,NE,search,,no_public_source,,,,,,,,left_out,,
+L0858,master,no,NH,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0859,master,yes,NH,search,,directory_only,,,,,,,,left_out,,
+L0860,master,yes,NH,search,,yes,flying_club,airplane,,,,,NH,left_out,,
+L0861,master,yes,NH,search,,no_public_source,,,,,,,,left_out,,
+L0863,master,yes,NH,search,,directory_only,,,,,,,,left_out,,
+L0864,master,yes,NH,search,,directory_only,,,,,,,,left_out,,
+L0865,master,yes,NH,search,,closed_per_search,,,,,,,,left_out,,
+L0866,master,yes,NH,search,,yes,flying_club,,,,,,NH,left_out,,
+L0867,master,yes,NH,search,,directory_only,,,,,,,,left_out,,
+L0869,master,yes,NH,search,,directory_only,,,,,,,,left_out,,
+L0872,master,yes,NJ,search,,no_public_source,,,,,,,,left_out,,
+L0874,master;tachgo,no,NJ,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0875,master,yes,NJ,search,,no_public_source,,,,,,,,left_out,,
+L0876,ppp,no,NJ,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0877,master,yes,NJ,search,,no_public_source,,,,,,,,left_out,,
+L0878,ppp,no,NJ,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0879,ppp,no,NJ,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0885,master,no,NJ,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0886,ppp,no,NJ,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0888,master,no,NM,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0891,master;tachgo,no,NM,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0893,master,yes,NM,search,,no_public_source,,,,,,,,left_out,,
+L0894,ppp,no,NM,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L0895,master,yes,NM,search,,directory_only,,,,,,,,left_out,,
+L0898,ppp,no,NV,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0899,master,yes,NV,search,,facebook_only,,,,,,,,left_out,,
+L0901,master,yes,NV,search,,no_public_source,,,,,,,,left_out,,
+L0907,master,yes,NV,search,,no_public_source,,,,,,,,left_out,,
+L0908,master,yes,NV,search,,no_public_source,,,,,,,,left_out,,
+L0909,master,yes,NV,search,,no_public_source,,,,,,,,left_out,,
+L0911,master;tachgo,no,NV,search,,facebook_only,,,,,,,,left_out,,"only a Facebook page, which our crawler cannot read"
+L0919,master,yes,NY,search,,no_public_source,,,,,,,,left_out,,
+L0920,master,yes,NY,search,,no_public_source,,,,,,,,left_out,,
+L0921,master,yes,NY,search,,no_public_source,,,,,,,,left_out,,
+L0922,master;tachgo,no,NY,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0926,master;tachgo,no,NY,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L0927,master,yes,NY,search,,no_public_source,,,,,,,,left_out,,
+L0928,master;tachgo,no,NY,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0930,master,yes,NY,search,,no_public_source,,,,,,,,left_out,,
+L0932,ppp,no,NY,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L0937,master,yes,NY,search,,no_public_source,,,,,,,,left_out,,
+L0939,master,yes,NY,search,,no_public_source,,,,,,,,left_out,,
+L0942,master,yes,NY,search,,no_public_source,,,,,,,,left_out,,
+L0943,master,yes,NY,search,,no_public_source,,,,,,,,left_out,,
+L0949,master,yes,NY,search,,facebook_only,,,,,,,,left_out,,
+L0953,master,yes,NY,search,,directory_only,,,,,,,,left_out,,
+L0956,master,yes,OH,search,,no_public_source,,,,,,,,left_out,,
+L0959,ppp,no,OH,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0963,master,yes,OH,search,,no_public_source,,,,,,,,left_out,,
+L0965,master,yes,OH,search,,no_public_source,,,,,,,,left_out,,
+L0969,ppp,no,OH,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0970,master,yes,OH,search,,no_public_source,,,,,,,,left_out,,
+L0971,master,yes,OH,search,,no_public_source,,,,,,,,left_out,,
+L0972,master,yes,OH,search,,no_public_source,,,,,,,,left_out,,
+L0974,master,yes,OH,search,,yes,flight_school,,,,,,,left_out,,
+L0975,master,yes,OH,search,,no_public_source,,,,,,,,left_out,,
+L0981,ppp,no,OH,search,,no_public_source,,,,,,,,left_out,,no public source found
+L0984,ppp,no,OH,search,,yes,flight_school,airplane,,http://www.kathrynsreport.com/2018/09/flight-design-gmbh-ctls-n21za-incident.html,Ras Aviation Llc,,,left_out,,"only a other page names it (news, archive or registry; not current confirmation)"
+L0994,master,yes,OH,search,,no_public_source,,,,,,,,left_out,,
+L0995,master,yes,OH,search,,no_public_source,,,,,,,,left_out,,
+L0997,master,no,OK,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1001,master;tachgo,no,OK,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1002,ppp,no,OK,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L1008,master,yes,OK,search,,yes,flying_club,airplane,,,,,,left_out,,
+L1012,master,no,OK,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1014,ppp,no,OK,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1015,ppp,no,OK,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1025,master,yes,OR,search,,no_public_source,,,,,,,,left_out,,
+L1030,master,yes,OR,search,,facebook_only,,,,,,,,left_out,,
+L1031,master,yes,OR,search,,,,,,,,,,left_out,,
+L1035,master,yes,OR,search,,directory_only,,,,,,,,left_out,,
+L1036,ppp,no,OR,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1042,master,no,OR,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1052,master,yes,PA,search,,no_public_source,,,,,,,,left_out,,
+L1053,master,yes,PA,search,,no_public_source,,,,,,,,left_out,,
+L1056,master,yes,PA,search,,no_public_source,,,,,,,,left_out,,
+L1060,ppp,no,PA,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L1061,ppp,no,PA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1062,master,yes,PA,search,,no_public_source,,,,,,,,left_out,,
+L1067,master,yes,PA,search,,no_public_source,,,,,,,,left_out,,
+L1068,master,yes,PA,search,,no_public_source,,,,,,,,left_out,,
+L1071,master,yes,PA,search,,directory_only,,,,,,,,left_out,,
+L1072,ppp,no,PA,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L1075,master,yes,PA,search,,,,,,,,,,left_out,,
+L1076,master,yes,PA,search,,directory_only,,,,,,,,left_out,,
+L1077,master,yes,PA,search,,no_public_source,,,,,,,,left_out,,
+L1080,master,yes,PA,search,,,,,,,,,,left_out,,
+L1082,master,yes,PA,search,,directory_only,,,,,,,,left_out,,
+L1085,master,yes,PA,search,,,,,,,,,,left_out,,
+L1088,master;tachgo,no,RI,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1089,master,yes,RI,search,,no_public_source,,,,,,,,left_out,,
+L1094,master,no,SC,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1113,master,yes,SC,search,,no_public_source,,,,,,,,left_out,,
+L1116,master;tachgo,no,SD,search,,yes,flying_club,airplane,,http://flight-time-medical.com/,"Brookings Aerosports Unlimited, Inc. Flying Club",,,left_out,,"only a other page names it (news, archive or registry; not current confirmation)"
+L1119,master,yes,SD,search,,no_public_source,,,,,,,,left_out,,
+L1126,master,yes,TN,search,,no_public_source,,,,,,,,left_out,,
+L1127,ppp,no,TN,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1129,ppp,no,TN,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1131,master,no,TN,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L1134,master,no,TN,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1141,master,yes,TN,search,,no_public_source,,,,,,,,left_out,,
+L1148,ppp,no,TN,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1149,master,yes,TN,search,,no_public_source,,,,,,,,left_out,,
+L1150,master,yes,TN,search,,no_public_source,,,,,,,,left_out,,
+L1155,master,yes,TN,search,,facebook_only,,,,,,,,left_out,,
+L1156,ppp,no,TN,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1165,master,yes,TX,search,,no_public_source,,,,,,,,left_out,,
+L1169,master,yes,TX,search,,directory_only,,,,,,,,left_out,,
+L1172,master,yes,TX,search,,,,,,,,,,left_out,,
+L1176,master,yes,TX,search,,no_public_source,,,,,,,,left_out,,
+L1177,ppp,no,TX,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1179,ppp,no,TX,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1181,master,yes,TX,search,,no_public_source,,,,,,,,left_out,,
+L1182,master,yes,TX,search,,directory_only,,,,,,,,left_out,,
+L1184,master,yes,TX,search,,directory_only,,,,,,,,left_out,,
+L1189,master,yes,TX,search,,facebook_only,,,,,,,,left_out,,
+L1193,ppp,no,TX,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1194,master,yes,TX,search,,facebook_only,,,,,,,,left_out,,
+L1195,master,no,TX,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L1203,master,yes,TX,search,,directory_only,,,,,,,,left_out,,
+L1206,ppp,no,TX,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1209,ppp,no,TX,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1211,master,yes,TX,search,,no_public_source,,,,,,,,left_out,,
+L1213,master,no,TX,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1218,master,yes,TX,search,,directory_only,,,,,,,,left_out,,
+L1219,master,yes,TX,search,,no_public_source,,,,,,,,left_out,,
+L1227,ppp,no,TX,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1228,master,yes,TX,search,,no_public_source,,,,,,,,left_out,,
+L1231,ppp,no,TX,search,,facebook_only,,,,,,,,left_out,,"only a Facebook page, which our crawler cannot read"
+L1233,master,yes,TX,search,,closed_per_search,,,,,,,,left_out,,
+L1236,master,yes,TX,search,,no_public_source,,,,,,,,left_out,,
+L1241,master,no,TX,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1244,master,no,TX,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1247,master,yes,TX,search,,,,,,,,,,left_out,,
+L1254,master,no,UT,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1258,ppp,no,UT,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1259,ppp,no,UT,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1266,master,no,UT,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L1268,ppp,no,VA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1269,master,yes,VA,search,,no_public_source,,,,,,,,left_out,,
+L1270,master,yes,VA,search,,no_public_source,,,,,,,,left_out,,
+L1271,master,no,VA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1272,ppp,no,VA,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L1274,ppp,no,VA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1275,ppp,no,VA,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L1278,master,yes,VA,search,,no_public_source,,,,,,,,left_out,,
+L1279,master,yes,VA,search,,no_public_source,,,,,,,,left_out,,
+L1283,master,yes,VA,search,,no_public_source,,,,,,,,left_out,,
+L1284,ppp,no,VA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1287,master,yes,VA,search,,directory_only,,,,,,,,left_out,,
+L1288,tachgo,no,VA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1290,master,yes,VA,search,,facebook_only,,,,,,,,left_out,,
+L1292,ppp,no,VA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1293,ppp,no,VA,search,,no_public_source,,,,,,,,left_out,,no public source found
+L1294,master,no,VA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1296,master,yes,VA,search,,directory_only,,,,,,,,left_out,,
+L1300,master;tachgo,no,VA,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L1303,master;tachgo,no,VA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1304,master,yes,VA,search,,no_public_source,,,,,,,,left_out,,
+L1307,master,yes,VT,search,,no_public_source,,,,,,,,left_out,,
+L1311,master;ppp,no,VT,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1312,master,yes,WA,search,,directory_only,,,,,,,,left_out,,
+L1317,master,no,WA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1318,master,no,WA,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L1319,master,yes,WA,search,,no_public_source,,,,,,,,left_out,,
+L1321,master,yes,WA,search,,no_public_source,,,,,,,,left_out,,
+L1325,master,no,WA,search,,,,,,,,,,left_out,,"public page not readable (refused, challenge or down)"
+L1338,ppp,no,WA,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1339,master,yes,WA,search,,no_public_source,,,,,,,,left_out,,
+L1340,master,yes,WA,search,,directory_only,,,,,,,,left_out,,
+L1341,master,yes,WA,search,,,,,,,,,,left_out,,
+L1342,master,yes,WA,search,,no_public_source,,,,,,,,left_out,,
+L1344,master,yes,WA,search,,directory_only,,,,,,,,left_out,,
+L1350,master,yes,WI,search,,directory_only,,,,,,,,left_out,,
+L1352,master,yes,WI,search,,no_public_source,,,,,,,,left_out,,
+L1354,master,no,WI,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1355,master,yes,WI,search,,directory_only,,,,,,,,left_out,,
+L1356,master,yes,WI,search,,directory_only,,,,,,,,left_out,,
+L1361,master,yes,WI,search,,no_public_source,,,,,,,,left_out,,
+L1364,master,yes,WI,search,,no_public_source,,,,,,,,left_out,,
+L1365,master,yes,WI,search,,,,,,,,,,left_out,,
+L1367,master;tachgo,no,WI,search,,closed_per_search,,,,,,,,left_out,,search results say it closed
+L1373,master,yes,WI,search,,no_public_source,,,,,,,,left_out,,
+L1374,master,yes,WI,search,,no_public_source,,,,,,,,left_out,,
+L1375,master,yes,WI,search,,directory_only,,,,,,,,left_out,,
+L1377,master,yes,WI,search,,directory_only,,,,,,,,left_out,,
+L1381,master,yes,WI,search,,no_public_source,,,,,,,,left_out,,
+L1386,master,yes,WV,search,,no_public_source,,,,,,,,left_out,,
+L1394,master,no,WY,search,,directory_only,,,,,,,,left_out,,only directory listings (no own site or page that describes it)
+L1398,master,yes,WY,search,,facebook_only,,,,,,,,left_out,,
+L1399,master;tachgo,no,WY,search,,yes,flying_club,airplane,,https://www.pinedaleonline.com/news/2021/04/WindRiverFliersnewfl.htm,Wind River Fliers,Pinedale,WY,left_out,,"only a news page names it (news, archive or registry; not current confirmation)"
+L1400,master,yes,WY,search,,yes,flying_club,airplane,,,,,WY,left_out,,
+L0002,master,yes,AK,search,,no,flying_club,airplane,Flying club whose members share and fly club aircraft; no flight instruction described,,,,,rejected,,
+L0020,master,yes,AL,search,,unclear,none,,,,,,,rejected,,
+L0029,ppp,no,AR,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L0133,ppp,no,CA,search,,no,none,,"motor carrier registered with FMCSA (trucking), not a flight training business",https://safer.fmcsa.dot.gov/query.asp?query_type=queryCarrierSnapshot&query_param=USDOT&query_string=2854350,G AND Z ENTERPRISE INC,SAN JOSE,CA,rejected,,"public page: no (motor carrier registered with FMCSA (trucking), not a flight training business)"
+L0142,master;tachgo,no,CA,search,,unclear,none,,Listed under Aircraft Rentals; the pages do not describe any flight instruction or club membership,,Hyra Flying Club,Hayward,CA,rejected,,public page: unclear (Listed under Aircraft Rentals; the pages do not describe any flight instruction or club membership)
+L0145,master,yes,CA,search,,unclear,none,,Youth program run by the Fullerton Airport Pilot Association that helps young aviators obtain affordable flight training; the pages do not say the program itself gives instruction,,,,CA,rejected,,
+L0147,master;tachgo,no,CA,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L0157,ppp,no,CA,search,,unclear,none,airplane,aviation support and consulting services,https://masterinstructors.org/may-2026/,"MTAviation Services, LLC",Gold River,CA,rejected,,public page: unclear (aviation support and consulting services)
+L0179,master,no,CA,search,,unclear,flight_school,,,,Santa Monica Aviation,Santa Monica,CA,rejected,,public page: unclear ()
+L0189,master;tachgo,no,CA,search,,no,flying_club,airplane,flying club whose members share a club airplane,https://www.sonomanews.com/article/news/sonoma-skypark-flying-club-is-looking-for-rusty-pilots-itching-to-take-flig/,Sonoma Skypark Flying Club,,,rejected,,public page: no (flying club whose members share a club airplane)
+L0193,master,yes,CA,search,,unclear,none,,,,,,,rejected,,
+L0227,master,yes,CO,search,,unclear,none,,,,,,,rejected,,
+L0236,master,yes,CO,search,,unclear,none,,,,,,CO,rejected,,
+L0240,ppp,no,CT,search,,unclear,none,,,https://www.nlrb.gov/case/19-CA-274509,"CCL Aviation, Inc.",,,rejected,,public page: unclear ()
+L0273,master,yes,FL,search,,unclear,none,,,,,,,rejected,,
+L0283,master,no,FL,search,,unclear,university_program,,,https://www.mdc.edu/aviation/about/locations.aspx,Eig-Watson School of Aviation,Homestead,FL,rejected,,public page: unclear ()
+L0288,master,yes,FL,search,,no,flying_club,,Flying club membership program; members get reduced aircraft rental and instructor rates,,,,FL,rejected,,
+L0301,ppp,no,FL,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L0304,master;tachgo,no,FL,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L0342,master,yes,FL,search,,unclear,none,,,,,,,rejected,,
+L0347,master,no,FL,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L0391,master,yes,GA,search,,unclear,none,,,,,,,rejected,,
+L0412,master,yes,IA,search,,unclear,flying_club,,Named as a sponsor of an airport flight breakfast; the pages do not say it gives instruction,,,,,rejected,,
+L0428,master;tachgo,no,IA,search,,unclear,none,,Listed only as an airport operator at Sibley Municipal; no training described,https://opmapps.iowadot.gov/aviation/airports/ISB,O'Leary Aviation,,,rejected,,public page: unclear (Listed only as an airport operator at Sibley Municipal; no training described)
+L0430,master;tachgo,no,IA,search,,unclear,flight_school,,,,Ultra Flight LLC,,,rejected,,public page: unclear ()
+L0442,master;tachgo,no,ID,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L0473,master,yes,IL,search,,unclear,none,,,,,,,rejected,,
+L0477,master,yes,IL,search,,unclear,none,,Pages describe an airport with flying services; flight training is not mentioned,,,,,rejected,,
+L0492,master,yes,IN,search,,unclear,none,,,,,,,rejected,,
+L0493,master,yes,IN,search,,unclear,none,,,,,,,rejected,,
+L0499,master;tachgo,no,IN,search,,unclear,flying_club,glider,,https://www.kendallvillein.gov/departments/Airport/AirportServices,Kendallville Soaring Club,Kendallville,IN,rejected,,public page: unclear ()
+L0535,master;tachgo,no,KY,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L0542,master,yes,KY,search,,unclear,none,,,,,,,rejected,,
+L0550,master,yes,LA,search,,unclear,none,,,,,,,rejected,,
+L0556,master,yes,LA,search,,no,none,,"fixed base operator (FBO) offering fueling, storage and services for private planes; no flight training mentioned",,,,,rejected,,
+L0570,master;tachgo,no,MA,search,,unclear,flying_club,airplane,,https://www.capecod.com/cape-wide-news/cwn-followup-pilot-identified-as-investigation-continues-into-fatal-provincetown-plane-crash/,Brockton Flying Club Inc.,,,rejected,,public page: unclear ()
+L0574,master;tachgo,no,MA,search,,no,flying_club,airplane,not-for-profit flying club where members fly the club's own aircraft,https://www.recorder.com/Franklin-County-Flying-Club-4152273,Franklin County Flying Club,,,rejected,,public page: no (not-for-profit flying club where members fly the club's own aircraft)
+L0581,master;tachgo,no,MA,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L0595,master,no,MD,search,,no,none,,"EAA aviation chapter offering membership, education and builder/mentor support; the pages describe no flight instruction",https://www.washco-md.net/hagerstown-regional-airport/education-and-training/,EAA Chapter 36,Hagerstown,MD,rejected,,"public page: no (EAA aviation chapter offering membership, education and builder/mentor support; the pages describe no flight instruction)"
+L0625,master;tachgo,no,MI,search,,no,flying_club,,Flying club listed under Oakland/Southwest airport flying clubs; the page does not say it gives flight instruction,https://www.oakgov.com/community/airports/pilots/flying-clubs,American Eagle Flying Club,,,rejected,,public page: no (Flying club listed under Oakland/Southwest airport flying clubs; the page does not say it gives flight instruction)
+L0632,master;tachgo,no,MI,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L0634,master;tachgo,no,MI,search,,no,flying_club,,flying club listed under Oakland/Troy Airport Flying Clubs; the page does not say it gives flight instruction,https://www.oaklandcountymi.gov/community/airports/pilots/flying-clubs,Cousins,,,rejected,,public page: no (flying club listed under Oakland/Troy Airport Flying Clubs; the page does not say it gives flight instruction)
+L0645,master,yes,MI,search,,unclear,flight_school,helicopter,,,,,,rejected,,
+L0665,ppp,no,MI,search,,unclear,none,,The pages mention a flight academy at Sandusky City Airport but do not name this LLC,https://sanilaccountynews.com/articles/sandusky-airport-reaches-out-to-public/,,,,rejected,,public page: unclear (The pages mention a flight academy at Sandusky City Airport but do not name this LLC)
+L0669,master,yes,MI,search,,unclear,none,,,,,,,rejected,,
+L0670,ppp,no,MI,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L0676,master,yes,MN,search,,no,flying_club,airplane,social and recreational flying club whose members share operating costs of club aircraft,,,,,rejected,,
+L0680,master;tachgo,no,MN,search,,unclear,none,,,,ASCENSION FLYERS INC,,,rejected,,public page: unclear ()
+L0696,master;tachgo,no,MN,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L0700,master;tachgo,no,MN,search,,unclear,flying_club,,Flying club that sponsored a fly-in pancake breakfast; the pages do not describe instruction or club aircraft,https://www.mnflyer.com/node/5,Harry’s Hawks Flying Club,Wells,MN,rejected,,public page: unclear (Flying club that sponsored a fly-in pancake breakfast; the pages do not describe instruction or club aircraft)
+L0701,master;tachgo,no,MN,search,,unclear,none,,public charity listed in a grant database; no flight training described,https://www.instrumentl.com/990-report/hawley-flying-club-inc,Hawley Flying Club Inc,Fargo,ND,rejected,,public page: unclear (public charity listed in a grant database; no flight training described)
+L0712,master,yes,MN,search,,unclear,none,,,,,,MN,rejected,,
+L0728,master,yes,MO,search,,unclear,none,,,,,,MO,rejected,,
+L0770,master,yes,MT,search,,unclear,none,,,,,,,rejected,,
+L0771,master,yes,MT,search,,no,flying_club,airplane,flying club whose members fly a club-owned aircraft,,,,MT,rejected,,
+L0772,master,yes,MT,search,,no,none,,Listed only as a fixed base operator (FBO) with fuel at Three Forks Airport; no flight training is mentioned,,,,,rejected,,
+L0832,master;tachgo,no,ND,search,,no,none,,FBO fuel and line services at the airport; no flight training mentioned,https://devilslakeairport.com/general-aviation/,Foss and Meier Flight Service,Devils Lake,ND,rejected,,public page: no (FBO fuel and line services at the airport; no flight training mentioned)
+L0839,master,yes,NE,search,,unclear,none,,,,,,,rejected,,
+L0854,master,yes,NE,search,,unclear,none,,only listed as a member of the Nebraska Aviation Council; the page does not describe its services,,,,,rejected,,
+L0868,master,yes,NH,search,,no,flying_club,,flying club listed on a directory of flying clubs,,,,,rejected,,
+L0918,master,yes,NY,search,,unclear,none,,,,,,,rejected,,
+L0925,master,yes,NY,search,,unclear,none,,,,,,,rejected,,
+L0934,master;tachgo,no,NY,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L0964,master;tachgo,no,OH,search,,unclear,none,airplane,Forum member introduction post saying the club operates a 1973 7KCAB Citabria from KMRT; no training described,https://champcitabriadecathlonforums.com/threads/buckeye-tailwheel-club-n8549.2172/,Buckeye Tailwheel Club,,,rejected,,public page: unclear (Forum member introduction post saying the club operates a 1973 7KCAB Citabria from KMRT; no training described)
+L0973,master,yes,OH,search,,unclear,none,,,,,,,rejected,,
+L0982,ppp,no,OH,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L1041,master,yes,OR,search,,no,none,airplane,scenic flights,,,,,rejected,,
+L1046,master;tachgo,no,PA,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L1047,master,yes,PA,search,,unclear,none,,,,,,,rejected,,
+L1048,master;tachgo,no,PA,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L1050,master,yes,PA,search,,unclear,none,,,,,,,rejected,,
+L1065,master,yes,PA,search,,unclear,none,,,,,,,rejected,,
+L1074,master,yes,PA,search,,unclear,none,,,,,,,rejected,,
+L1086,master;tachgo,no,RI,search,,unclear,none,,Pages mention Dooney Aviation only as a location where HeliBlock operates; they do not describe its own services,https://heliblocktours.com/contact/,Dooney Aviation,Westerly,RI,rejected,,public page: unclear (Pages mention Dooney Aviation only as a location where HeliBlock operates; they do not describe its own services)
+L1101,ppp,no,SC,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L1105,master,yes,SC,search,,unclear,none,,,,,,,rejected,,
+L1114,master,yes,SC,search,,unclear,flying_club,,Flying club; pages show only a closed members-only FAA WINGS proficiency seminar,,,,,rejected,,
+L1117,master,yes,SD,search,,unclear,none,,,,,,,rejected,,
+L1118,master;tachgo,no,SD,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L1125,master,yes,SD,search,,unclear,none,,,,,,,rejected,,
+L1136,master;tachgo,no,TN,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L1140,ppp,no,TN,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L1144,master,yes,TN,search,,unclear,none,,,,,,,rejected,,
+L1151,master;tachgo,no,TN,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L1152,master,yes,TN,search,,no,none,,"airport management, fuel, repair and hangar services; no flight training mentioned",,,,,rejected,,
+L1196,ppp,no,TX,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L1202,master,no,TX,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L1212,master,yes,TX,search,,unclear,none,,,,,,,rejected,,
+L1235,master;tachgo,no,TX,search,,unclear,none,,,https://www.stephenvilletx.gov/176/Stephenville-Clark-Regional-Airport,Stephenville Aviation,,,rejected,,public page: unclear ()
+L1257,master;tachgo,no,UT,search,,no,none,,Fixed base operator and contract services,https://www.rooseveltcity.gov/BusinessDirectoryii.aspx?lngBusinessCategoryID=&lngNewPage=0&txtAreaCode=&txtBusinessName=&txtCity=&txtCustomField1=&txtCustomField2=&txtCustomField3=&txtCustomField4=&txtLetter=I&txtState=&txtZipCode=&ysnShowAll=0,Integrity Air Service,Roosevelt,UT,rejected,,public page: no (Fixed base operator and contract services)
+L1298,master,yes,VA,search,,unclear,none,,,,,,,rejected,,
+L1299,master,yes,VA,search,,unclear,none,,,,,,,rejected,,
+L1308,master,yes,VT,search,,unclear,none,,,,,,,rejected,,
+L1309,master;tachgo,no,VT,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+L1327,master,yes,WA,search,,unclear,none,,"Airfield with hangar rentals; the pages say lessons are given by certified instructors who work on their own planes at the field, not by the business itself",,,,WA,rejected,,
+L1331,master,yes,WA,search,,unclear,flying_club,,Pages describe a flying club founded in 1954 but do not state whether it gives current flight instruction.,,,,,rejected,,
+L1343,master,yes,WA,search,,unclear,none,,,,,,,rejected,,
+L1357,master,yes,WI,search,,unclear,none,,,,,,,rejected,,
+L1358,master,yes,WI,search,,unclear,none,,,,,,,rejected,,
+L1378,ppp,no,WI,search,,unclear,none,,,,,,,rejected,,public page: unclear ()
+S0000,master,yes,WI,search,,unclear,none,,,,,,,rejected,,
+S0002,master,yes,TX,search,,no,none,,"private aircraft-sharing flying club, not a flight training provider",,,,,rejected,,
+S0003,tachgo,no,AL,list,426as.com,no,none,,aircraft rental,https://426as.com/about-1,426th Aero Squadron dba FLIGHTLINE Aircraft Rental,Pell City,AL,rejected,,not flight training: aircraft rental
+S0004,master;tachgo,no,NJ,list,7acesaviation.com,unclear,none,,flying club,https://www.7acesaviation.com/,7 Aces Aviation Club,Lumberton,NJ,rejected,,unclear from its pages (flying club)
+S0005,ppp,no,NV,list,abaris.com,no,none,,advanced composite training provider (not flight instruction),https://abaris.com,"Abaris Training Resources, Inc.",Sparks,NV,rejected,,not flight training: advanced composite training provider (not flight instruction)
+S0006,master,yes,IL,search,,unclear,none,airplane,"flying club offering shared airplane ownership and flying, no instruction described",,,,,rejected,,
+S0009,ppp,no,TX,search,actsaviation.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0010,master;tachgo,no,NY,search_named,adirondackaviation.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0012,master;tachgo,no,KS,search_named,advancedaviation.net,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0013,master,yes,IA,search,,no_pages,,,,,,,,rejected,,
+S0016,master,yes,OR,list,,no,none,,"aircraft services company offering FBO, maintenance, charter, medical transport and fire tanker services",,,,OR,rejected,,
+S0017,master,yes,CA,search_named,,unclear,none,,,,,,,rejected,,
+S0018,master,yes,OR,search_named,,no_pages,,,,,,,,rejected,,
+S0020,master,yes,NC,list,,no,none,,aircraft maintenance and avionics shop,,,,NC,rejected,,
+S0021,ppp,no,MI,search,aerotrain.aero,no,none,,"aircraft maintenance training equipment and curriculum provider (trainers, CBT courseware, Part 147 curriculum development)",https://aerotrain.aero/,AeroTrain Corp.,Flint,MI,rejected,,"not flight training: aircraft maintenance training equipment and curriculum provider (trainers, CBT courseware, Part 147 curriculum development)"
+S0022,ppp,no,CA,search,aerotropolisbusinessconcepts.aero,no,none,,airport and aerotropolis business consulting firm,https://aerotropolisbusinessconcepts.aero/about/,"Aerotropolis Business Concepts, LLC",,,rejected,,not flight training: airport and aerotropolis business consulting firm
+S0023,ppp,no,FL,search,afgsim.com,no,none,,simulator training (Full Flight Simulator and flight training device provider for airlines),https://afgsim.com,"Avenger Flight Group, LLC",Fort Lauderdale,FL,rejected,,not flight training: simulator training (Full Flight Simulator and flight training device provider for airlines)
+S0024,master,yes,GA,search_named,,unclear,none,,,,,,,rejected,,
+S0025,master;tachgo,no,KS,search_named,airassociatesinc.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0026,ppp,no,SC,search,airborneavionics.com,no,none,,avionics shop,https://www.airborneavionics.com/,Airborne Avionics,,,rejected,,not flight training: avionics shop
+S0027,master,yes,ID,search,,no,none,,flying club,,,,ID,rejected,,
+S0028,ppp,no,SC,search_named,aircrewacademy.com,no,none,,online aviation eLearning provider for business aviation flight departments,http://www.AircrewAcademy.com,Advanced Aircrew Academy,Atlanta,GA,rejected,,not flight training: online aviation eLearning provider for business aviation flight departments
+S0029,master;tachgo,no,CA,list,airesearchflyingclub.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0032,ppp,no,TX,search_named,airlinedispatcher.com,no,none,,airline dispatcher ground school,https://www.airlinedispatcher.com,Institute of Flight Operations and Dispatch,,,rejected,,not flight training: airline dispatcher ground school
+S0033,ppp,no,AZ,search,airplanehotline.com,no,none,,"aircraft sourcing, sales and transport service",http://www.airplanehotline.com,Airplane Hotline,Kingman,AZ,rejected,,"not flight training: aircraft sourcing, sales and transport service"
+S0034,master,no,AZ,search,airplanerentalventures.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0035,master,yes,CA,list,,no,none,,aircraft sales and brokerage firm,,,,IL,rejected,,
+S0036,master,no,WA,search_named,airworkllc.com,no,none,,tour operator,http://www.airworkllc.com,WEST AIR HELICOPTERS,Las Vegas,NV,rejected,,not flight training: tour operator
+S0037,master,yes,TX,list,,no,none,,FAA/EASA Part 145 aircraft maintenance and avionics repair station,,,,TX,rejected,,
+S0039,master;tachgo,no,AK,list,akwingnuts.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0041,master,yes,MA,list,,unclear,none,,,,,,,rejected,,
+S0042,master,yes,CO,search_named,,unclear,none,,parked domain page with no business content,,,,,rejected,,
+S0044,master,yes,VA,list,,unclear,none,,nonprofit flying club,,,,VA,rejected,,
+S0045,master;tachgo,no,CA,list,apogee-air.com,no,none,,aircraft rental operator for advanced training,https://www.apogee-air.com,Apogee Air,,,rejected,,not flight training: aircraft rental operator for advanced training
+S0046,master;ppp,no,MA,search,aptisaviation.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0047,ppp,no,UT,search,arhi.com,no,none,,"helicopter charter and fire, utility, survey and disaster services operator",https://arhi.com/,"AIR RESOURCES HELICOPTERS, INC.",Thermal,CA,rejected,,"not flight training: helicopter charter and fire, utility, survey and disaster services operator"
+S0048,ppp,no,AZ,search_named,arizonaacademy.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0049,master,yes,WA,search,,no,none,,"equity flying club (aircraft co-ownership, not a flight school)",,,,WA,rejected,,
+S0051,master,no,WA,search_named,arrowhaviation.com,unclear,none,,"off-topic adult spam page, not an aviation business",,,,,rejected,,"unclear from its pages (off-topic adult spam page, not an aviation business)"
+S0052,master,no,TX,list,ascentaviation.net,unclear,none,,"online slot gambling site, unrelated to aviation",https://www.ascentaviation.net,JOKER123,,,rejected,,"unclear from its pages (online slot gambling site, unrelated to aviation)"
+S0053,master,yes,FL,list,,no,none,,"FAA Part 145 repair station (aircraft maintenance, avionics, WiFi, parts, consulting)",,,,,rejected,,
+S0054,master,yes,CA,search_named,,unclear,none,,,,,,,rejected,,
+S0055,master,yes,OH,search_named,,no_pages,,,,,,,,rejected,,
+S0056,master;tachgo,no,TN,search_named,athensair.net,no,none,,"online registration portal and link directory, not a flight operation",https://www.athensair.net,GERAKAN99,,,rejected,,"not flight training: online registration portal and link directory, not a flight operation"
+S0057,master,no,GA,search,atlantasportflight.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0059,ppp,no,CO,search_named,ats-denver.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0060,master,yes,FL,list,,no,none,,maintenance shop,,,,FL,rejected,,
+S0061,ppp,no,CA,list,aviationseminars.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0062,master,no,NY,search_named,aviationtrainingcenter.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0065,master;tachgo,no,NY,search,avquestjets.com,no,none,,aircraft sales and brokerage,https://www.avquestjets.com/,Avquest Jets,,,rejected,,not flight training: aircraft sales and brokerage
+S0066,master,yes,GA,list,,no_pages,,,,,,,,rejected,,
+S0068,ppp,no,SC,search_named,baldwinaviation.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0069,master,yes,FL,list,,unclear,none,,,,,,,rejected,,
+S0070,master,yes,FL,list,,no,none,,"pilot supply retailer (online and shop store selling headsets, flight computers, apparel and books)",,,,,rejected,,
+S0071,master,yes,NY,search,,no_pages,,,,,,,,rejected,,
+S0072,ppp,no,VA,search_named,battlespacefs.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0073,ppp,no,MI,search_named,bayflighttraining.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0074,master,no,TX,list,baytownairport.com,no,none,,"airport (FBO with fuel, hangars and car rental)",https://baytownairport.com/about-baytown-airport,Baytown Airport,Baytown,TX,rejected,,"not flight training: airport (FBO with fuel, hangars and car rental)"
+S0075,ppp,no,OH,search_named,bbaero.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0076,master;tachgo,no,MO,list,befcstl.org,no,none,,flying club,https://befcstl.org/,Boeing Employees' Flying Club,St. Louis,MO,rejected,,not flight training: flying club
+S0077,ppp,no,SD,search_named,bellefourcheflightcenter.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0078,tachgo,no,MN,search,bemidjiflyingclub.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0080,ppp,no,MN,search_named,bestjetsinternational.com,no,none,,private jet charter and aircraft management company,https://www.bestjetsinternational.com,Best Jets International,St Paul,MN,rejected,,not flight training: private jet charter and aircraft management company
+S0081,ppp,no,CA,search_named,betria.com,unclear,none,,unknown; page is an unclaimed Squarespace domain placeholder with no business information,http://www.betria.com,,,,rejected,,unclear from its pages (unknown; page is an unclaimed Squarespace domain placeholder with no business information)
+S0082,master,yes,ME,list,,no,none,,FBO,,,,ME,rejected,,
+S0083,ppp,no,CA,search_named,billionair.us,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0084,master,no,DE,search_named,birdseyeviewaviation.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0085,master,no,MN,search_named,birdseyeviewmn.com,no,none,,online slot game portal (not aviation),https://www.birdseyeviewmn.com/,BIGHOKI | PORTAL PRAGMATIC PLAY,,,rejected,,not flight training: online slot game portal (not aviation)
+S0086,master,yes,TX,list,,no_pages,,,,,,,,rejected,,
+S0087,master;tachgo,no,TX,list,blackstaraviation.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0088,master,no,OH,search_named,blueashaviation.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0089,master,yes,NE,search,,no,none,,FBO,,,,NE,rejected,,
+S0090,master;ppp,no,NC,search_named,blueridgesportflight.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0091,master,yes,TX,list,,no,none,,aircraft maintenance shop,,,,TX,rejected,,
+S0092,master;tachgo,no,OK,search,blueskiesflightschool.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0093,master;tachgo,no,MI,list,bluesunair.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0094,ppp,no,GA,search_named,bmaaviation.com,no,none,,simulator-based airline type rating and ATP training provider,https://www.bmaaviation.com,"Bell Murray Aerospace, Inc.",Fort Worth,TX,rejected,,not flight training: simulator-based airline type rating and ATP training provider
+S0095,master,yes,FL,list,,no,none,,aircraft maintenance shop (MRO) and FBO-based service provider,,,,FL,rejected,,
+S0096,master,yes,FL,list,,no,none,,aircraft rental operator that refers students to independent CFIs,,,,FL,rejected,,
+S0098,master,yes,OK,search_named,,unclear,none,,,,,,,rejected,,
+S0099,master;tachgo,no,CA,search_named,bsair.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0100,master,yes,KS,list,,no,none,,FAA/EASA repair station (avionics MRO and STC provider),,,,KS,rejected,,
+S0101,master;tachgo,no,NY,search_named,cambridgevalleyflyingclub.org,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0102,master,yes,OH,list,,unclear,none,,,,,,,rejected,,
+S0103,ppp,no,PA,search_named,canyonaerollc.com,no,none,,aircraft maintenance shop,http://canyonaerollc.com,Precision Aircraft Maintenance,Montoursville,PA,rejected,,not flight training: aircraft maintenance shop
+S0105,master;tachgo,no,CA,search,cardanaircraft.org,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0106,master,yes,PA,search,,no,none,,expired domain parking page; no business information available,,,,,rejected,,
+S0107,ppp,no,SC,search,carolina-aero.com,no,none,,aviation maintenance (A&P mechanic) training school,https://carolina-aero.com/,Carolina Aeronautical Testing and Certification Center,,,rejected,,not flight training: aviation maintenance (A&P mechanic) training school
+S0108,master,no,NV,search_named,carson-aviation-adventures.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0109,master,yes,NY,search_named,,no_pages,,,,,,,,rejected,,
+S0110,ppp,no,CA,search,cavuaeroservice.com,no,none,,aircraft maintenance shop,https://www.cavuaeroservice.com/,Cavu Aero Service,Riverside,CA,rejected,,not flight training: aircraft maintenance shop
+S0111,master,yes,CA,list,,no,none,,helicopter tour and charter operator,,,,CA,rejected,,
+S0112,master;tachgo,no,IN,list,centralindianasoaringsociety.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0113,master;tachgo,no,IA,list,centraliowaflyingclub.com,no,none,,flying club that rents its aircraft to members; instruction is given by independent approved instructors,https://www.centraliowaflyingclub.com/FAQs,Central Iowa Flying Club,,,rejected,,not flight training: flying club that rents its aircraft to members; instruction is given by independent approved instructors
+S0115,master,yes,CA,search,,no,none,,aviation membership and advocacy association,,,,,rejected,,
+S0118,master,no,SC,search_named,charlestonflight.net,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0119,master;tachgo,no,MI,list,charlevoixflyingclub.com,unclear,none,,flying club (aircraft membership),https://charlevoixflyingclub.com/,Charlevoix Flying Club,Harbor Springs,MI,rejected,,unclear from its pages (flying club (aircraft membership))
+S0120,master,yes,CT,search,,no_pages,,,,,,,,rejected,,
+S0121,master;tachgo,no,IL,list,chicagolandaviation.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0123,master;tachgo,no,PA,list,chiquesflying.wixsite.com,no,none,,private aircraft-sharing flying club with no instruction offered,https://chiquesflying.wixsite.com/home/about-chiques,CHIQUES AERO CORP,lANCASTER,PA,rejected,,not flight training: private aircraft-sharing flying club with no instruction offered
+S0124,master;tachgo,no,IN,search,chooseasi.com,no,none,,FBO and aircraft maintenance/avionics/charter business,https://chooseasi.com/,"Aircraft Specialists, Inc.",Sellersburg,IN,rejected,,not flight training: FBO and aircraft maintenance/avionics/charter business
+S0125,master;tachgo,no,CA,list,chuckhallaviation.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0126,master,yes,CO,list,,unclear,none,,,,,,,rejected,,
+S0128,master,yes,OH,list,,no,none,,flying club promoting general aviation and antique aircraft,,,,,rejected,,
+S0129,master,yes,CA,list,,unclear,none,,,,,,,rejected,,
+S0131,master;tachgo,no,NC,list,cloudcappers.org,unclear,none,,flying club,https://cloudcappers.org,Cloud Cappers Flying Club,Salisbury,NC,rejected,,unclear from its pages (flying club)
+S0132,master,yes,MS,search,,unclear,none,,flying club (pages do not describe any flight training),,,,MS,rejected,,
+S0133,master,yes,CA,list,,no_pages,,,,,,,,rejected,,
+S0134,master;tachgo,no,CA,list,coastaircenter.com,unclear,none,,"FBO, aircraft maintenance and charter operator",https://www.coastaircenter.com/,Coast Air Center,San Diego,CA,rejected,,"unclear from its pages (FBO, aircraft maintenance and charter operator)"
+S0135,ppp,no,TX,search_named,cobrakaiflightschool.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0136,master,yes,MD,list,,no,none,,airport,,,,,rejected,,
+S0139,master;tachgo,no,IA,list,connellflyingservice.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0140,master;tachgo,no,OR,list,coosaviation.com,unclear,none,,FBO,https://www.coosaviation.com/,Coos Aviation,North Bend,OR,rejected,,unclear from its pages (FBO)
+S0143,master;tachgo,no,KS,list,crosbyflying.com,no,none,,FBO and charter operator,https://www.crosbyflying.com/general-1,Crosby Flying Services LLC,Garden City,KS,rejected,,not flight training: FBO and charter operator
+S0144,master,yes,WA,list,,unclear,none,,,,,,,rejected,,
+S0146,ppp,no,AL,search,csvertical.com,unclear,none,,aviation consulting and contractor logistics support company,https://csvertical.com/,CS Vertical Flight Solutions LLC,,,rejected,,unclear from its pages (aviation consulting and contractor logistics support company)
+S0147,master;tachgo,no,FL,list,cubflying.com,unclear,none,,"unknown; the page is only a keyword list naming flight training, with no description of the business",https://www.cubflying.com/,CubFlying.com,,,rejected,,"unclear from its pages (unknown; the page is only a keyword list naming flight training, with no description of the business)"
+S0148,master,yes,SD,list,,no_pages,,,,,,,,rejected,,
+S0149,master,yes,TX,search,,no,none,,nonprofit flying club sharing an aircraft; no flight training described,,,,TX,rejected,,
+S0150,master;tachgo,no,MO,search_named,danielbooneflyingclub.org,unclear,none,,flying club; the pages do not describe any flight training,https://www.danielbooneflyingclub.org/,"Daniel Boone Flying Club, Inc",Boonville,MO,rejected,,unclear from its pages (flying club; the pages do not describe any flight training)
+S0151,ppp,no,UT,search,dartdrones.com,no,none,,drone school,https://www.dartdrones.com/,DARTdrones LLC,,,rejected,,not flight training: drone school
+S0152,ppp,no,NE,search_named,dartoninnovativetech.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0153,master,yes,LA,list,,no,none,,"aircraft maintenance, avionics and parts shop",,,,LA,rejected,,
+S0155,master,no,FL,search_named,daytonaaviationacademy.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0156,master,yes,NM,search,,no_pages,,,,,,,,rejected,,
+S0157,master;tachgo,no,CO,list,deadreckoningsociety.org,no,none,,non-profit flying club (aircraft sharing and social club); does not advertise flight training,http://deadreckoningsociety.org,The Dead Reckoning Society,Peyton,CO,rejected,,not flight training: non-profit flying club (aircraft sharing and social club); does not advertise flight training
+S0158,master,yes,CO,list,,no,none,,"avionics sales, installation and repair shop (FAA certified repair station)",,,,CO,rejected,,
+S0160,ppp,no,MD,search,destinyaviationservices.com,yes,flight_school,,,https://destinyaviationservices.com,"Destiny Aviation Services, LLC",Upper Marlboro,MD,rejected,,a youth aviation-education nonprofit whose newest content is from 2014-2016; no current flight-training offer (second hand check)
+S0161,ppp,no,MN,search_named,detersaviation.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0162,master;ppp,no,TN,list,directflightsolutions.com,no,none,,FBO,https://www.directflightsolutions.com,"Direct Flight Solutions, LLC",Lebanon,TN,rejected,,not flight training: FBO
+S0163,master;ppp,no,CO,search_named,dpejim.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0165,master,yes,FL,list,,no,none,,communications and emergency response training provider,,,,,rejected,,
+S0166,master,yes,FL,list,,unclear,none,,,,,,,rejected,,
+S0167,master,yes,MI,search,,unclear,none,,member-owned flying club that rents its aircraft to members,,,,,rejected,,
+S0168,master;tachgo,no,MT,list,eagleflightservices.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0169,ppp,no,IN,search_named,eagleflyersillc.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0170,master;tachgo,no,FL,list,eaglesport.org,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0174,master,yes,NM,search_named,,unclear,none,,,,,,,rejected,,
+S0175,ppp,no,TN,search,enflightaviation.com,no,none,,"aircraft decals, placards and printing services",https://enflightaviation.com/,Enflight Aviation Inc.,Mt. Juliet,TN,rejected,,"not flight training: aircraft decals, placards and printing services"
+S0176,master,yes,MI,list,,no_pages,,,,,,,,rejected,,
+S0177,master,yes,WY,list,,no,none,,FBO,,,,WY,rejected,,
+S0179,ppp,no,IL,search,extremeflightsimulation.com,no,none,,"simulator training (737 Max full-motion flight simulator experience, no aircraft flying)",https://extremeflightsimulation.com/,Extreme Flight Simulation,Colorado Springs,CO,rejected,,"not flight training: simulator training (737 Max full-motion flight simulator experience, no aircraft flying)"
+S0180,master;tachgo,no,AZ,list,falconaviationaz.com,no,none,,maintenance shop,https://www.falconaviationaz.com/,Falcon Aviation Services,Chandler,AZ,rejected,,not flight training: maintenance shop
+S0182,master,yes,GA,list,,no_pages,,,,,,,,rejected,,
+S0183,master,yes,NC,search_named,,no_pages,,,,,,,,rejected,,
+S0184,master,yes,PA,search,,no,none,,"flying club (social club offering shared aircraft for members, no training program)",,,,,rejected,,
+S0186,master,yes,MS,search_named,,no_pages,,,,,,,,rejected,,
+S0187,ppp,no,FL,search_named,flightavionics.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0188,master,yes,TN,list,,no,none,,Part 135 private aircraft charter and management operator,,,,TN,rejected,,
+S0190,master;tachgo,no,SC,list,flightschoolofanderson.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0191,master,yes,GA,list,,no,none,,flight simulation software,,,,,rejected,,
+S0192,master,yes,ME,search,,no,none,,fractional membership aircraft club,,,,,rejected,,
+S0193,master,no,CA,search,flighttrainingvannuys.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0194,master;tachgo,no,CA,list,flightventuresaviationacademy.com,unclear,none,,,https://flightventuresaviationacademy.com/,,,,rejected,,unclear from its pages ()
+S0196,master,yes,AZ,search,,no_pages,,,,,,,,rejected,,
+S0198,ppp,no,OK,search_named,fltconcepts.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0201,master;tachgo,no,NC,search_named,fly-rwi.business.site,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0202,ppp,no,CA,search_named,flyaaa.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0203,master;tachgo,no,PA,list,flyabella.com,no,none,,helicopter tour and charter operator,https://www.flyabella.com/,Pennsylvania Helicopter Tours,Lititz,PA,rejected,,not flight training: helicopter tour and charter operator
+S0204,master,no,WV,search_named,flyaerosmith.com,no,none,,"domain parked for sale (GoDaddy Auctions page), no business information",https://www.flyaerosmith.com,,,,rejected,,"not flight training: domain parked for sale (GoDaddy Auctions page), no business information"
+S0205,ppp,no,OH,search_named,flyaerotrek.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0206,ppp,no,NY,search,flyaltius.com,no,none,,charter operator (FAR Part 135 on-demand air carrier with aircraft management and sales),https://www.flyaltius.com,"Altius Aviation, LLC",Syracuse,NY,rejected,,not flight training: charter operator (FAR Part 135 on-demand air carrier with aircraft management and sales)
+S0209,ppp,no,LA,search,flyawayflighttraining.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0210,master;tachgo,no,CA,list,flybasa.org,no,none,,member-owned soaring club,https://www.flybasa.org/,Bay Area Soaring Associates,Hollister,CA,rejected,,not flight training: member-owned soaring club
+S0212,master,yes,AR,list,,no,none,,FBO,,,,AR,rejected,,
+S0214,master;tachgo,no,CA,list,flycruiseair.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0215,master,yes,WY,search_named,,no_pages,,,,,,,,rejected,,
+S0216,master;tachgo,no,AZ,list,flydaxair.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0218,master;tachgo,no,CO,list,flyeliteaero.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0220,master,yes,NC,list,,unclear,none,,FBO and charter operator at Davidson County Executive Airport (KEXX),,,,NC,rejected,,
+S0221,master;tachgo,no,OK,list,flyingaggies.com,no,none,,"student aviation club (flying club) that provides shared flying for members, with no flight instruction described",https://www.flyingaggies.com/,OSU Flying Aggies,,,rejected,,"not flight training: student aviation club (flying club) that provides shared flying for members, with no flight instruction described"
+S0222,ppp,no,CA,search_named,flyingclub.aero,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0223,ppp,no,NV,search_named,flyingstartaero.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0225,master,no,FL,search_named,flyliftair.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0226,ppp,no,GA,search,flylookout.com,no,none,,hang gliding and paragliding flight park,https://flylookout.com/,Lookout Mountain Flight Park,Rising Fawn,GA,rejected,,not flight training: hang gliding and paragliding flight park
+S0227,master;tachgo,no,SC,search_named,flylowcountry.com,no,none,,FBO,https://flylowcountry.com/,Lowcountry Aviation,Walterboro,SC,rejected,,not flight training: FBO
+S0228,master,no,WI,search_named,flymilwaukee.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0229,master;tachgo,no,OH,list,flymwo.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0230,master,yes,PA,list,,no,none,,"airpark (private, public use) offering fuel, hangars and on-field services; flight training is provided by others such as AirX PPG (powered paraglider training)",,,,PA,rejected,,
+S0236,master,no,AR,search,flysoutherneagle.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0237,master,yes,SC,list,,no,none,,charter operator with aircraft management and maintenance services,,,,SC,rejected,,
+S0241,master,yes,KS,list,,no_pages,,,,,,,,rejected,,
+S0242,master,yes,AL,list,,no,none,,"FBO / airport fixed-base services (fuel, aircraft maintenance, flight center operated by airport authority)",,,,AL,rejected,,
+S0243,master;tachgo,no,MD,list,flytidewater.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0245,master,no,AR,search,flyvx.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0254,ppp,no,CO,search,ftiratings.com,no,none,,simulator-based ATP and Boeing/Airbus type rating training provider,https://ftiratings.com/atp-training-package,Flight Training International,Denver,CO,rejected,,not flight training: simulator-based ATP and Boeing/Airbus type rating training provider
+S0256,master;tachgo,no,AL,search_named,gadsdenairport.com,no,none,,airport,https://www.gadsdenairport.com,Gadsden Airport,Gadsden,AL,rejected,,not flight training: airport
+S0257,ppp,no,ID,search,gemairflights.com,no,none,,charter operator,https://gemairflights.com/,"Gem Air, LLC",Salmon,ID,rejected,,not flight training: charter operator
+S0258,master,no,AL,search_named,generalaviationcenter.com,no,none,,film discussion and indexing website,,,,,rejected,,not flight training: film discussion and indexing website
+S0260,master,yes,CO,list,,no_pages,,,,,,,,rejected,,
+S0261,master,yes,KY,search_named,,no_pages,,,,,,,,rejected,,
+S0262,master;tachgo,no,MI,list,glaviation.net,no,none,,aircraft maintenance and avionics shop,https://www.glaviation.net,Great Lakes Aviation Services LLC,Kimball,MI,rejected,,not flight training: aircraft maintenance and avionics shop
+S0265,master,yes,TX,search_named,,unclear,none,,website providing line status and platform information queries,,,,,rejected,,
+S0268,ppp,no,NY,search_named,gpaviation.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0269,master,no,IL,search_named,greatriveraviation.com,no,none,,IT services and software company,,,,,rejected,,not flight training: IT services and software company
+S0270,master;tachgo,no,CO,list,greeleyflightschool.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0271,ppp,no,FL,search_named,greyaviation.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0272,master,yes,MA,search,,no_pages,,,,,,,,rejected,,
+S0273,master;tachgo,no,OK,search_named,guardianpatrol.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0274,master,yes,AL,search,,no,none,,"flying club (members' aircraft access, not flight training)",,,,AL,rejected,,
+S0275,master,yes,FL,search,,no,none,,equity-based flight club (aircraft ownership club),,,,FL,rejected,,
+S0278,master,yes,KY,list,,no_pages,,,,,,,,rejected,,
+S0279,ppp,no,NC,search,hartsfieldaircraft.com,no,none,,aircraft brokerage firm,https://www.hartsfieldaircraft.com/,"Hartsfield National Aircraft, Inc.",,,rejected,,not flight training: aircraft brokerage firm
+S0280,master;tachgo,no,WI,search_named,haywardaviation.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0281,tachgo,no,CA,list,haywardflyingclub.org,no,none,,non-profit aircraft access club for members,http://haywardflyingclub.org/,Hayward Flying Club,,,rejected,,not flight training: non-profit aircraft access club for members
+S0282,master;tachgo,no,OR,list,hdsoaring.org,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0283,master;tachgo,no,MT,search_named,headwatersfs.com,no,none,,aerial and ground agricultural spraying operator with chemical sales and fuel provider,https://www.headwatersfs.com,Headwaters Flying Service,Three Forks,MT,rejected,,not flight training: aerial and ground agricultural spraying operator with chemical sales and fuel provider
+S0284,master,yes,MS,list,,no,none,,Part-145 avionics repair station and maintenance shop,,,,MS,rejected,,
+S0285,master,no,NV,search_named,heliosaviation.com,unclear,none,,"lottery data and t-shirt sales page, unrelated to aviation",http://www.heliosaviation.com,,,,rejected,,"unclear from its pages (lottery data and t-shirt sales page, unrelated to aviation)"
+S0287,master,yes,GA,search_named,,unclear,none,,parked domain page with no business information,,,,,rejected,,
+S0288,master,yes,OR,search,,yes,independent_instructor,airplane,,,,,OR,rejected,,
+S0289,master;tachgo,no,TN,search_named,highlandaero.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0290,master;tachgo,no,KS,list,highplanesaviation.com,unclear,none,,aircraft brokerage and insurance agency,https://www.highplanesaviation.com/other-services,High Planes Aviation,Goodland,KS,rejected,,unclear from its pages (aircraft brokerage and insurance agency)
+S0291,master,yes,FL,list,,no,none,,flying club (aircraft rental club),,,,,rejected,,
+S0292,master;tachgo,no,ID,list,hillcrestaircraft.com,no,none,,"FBO, avionics and maintenance company",https://www.hillcrestaircraft.com/maintenance,HILLCREST AIRCRAFT COMPANY,Lewiston,ID,rejected,,"not flight training: FBO, avionics and maintenance company"
+S0294,master;tachgo,no,NE,list,holdregeaviation.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0295,ppp,no,SC,search_named,hollowayaviation.com,no,none,,aviation program management and flight operations contractor,https://hollowayaviation.com,"Holloway Aviation, Inc.",,,rejected,,not flight training: aviation program management and flight operations contractor
+S0296,master,yes,MI,search,,no,none,,flying club,,,,,rejected,,
+S0297,master,yes,CA,list,,unclear,none,,,,,,,rejected,,
+S0298,master;tachgo,no,OR,list,hoodriversoaring.org,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0300,ppp,no,CA,search_named,hummingbirdaviation.com,no,none,,online slot gambling website unrelated to aviation,http://www.hummingbirdaviation.com/,,,,rejected,,not flight training: online slot gambling website unrelated to aviation
+S0301,ppp,no,CA,search,iactraining.com,no,none,,"Indirect air carrier security compliance training and consulting company (TSA regulatory training, not flight training)",https://iactraining.com/,IAC Training Inc.,Gardena,CA,rejected,,"not flight training: Indirect air carrier security compliance training and consulting company (TSA regulatory training, not flight training)"
+S0302,master,yes,VA,list,,no_pages,,,,,,,,rejected,,
+S0303,master;tachgo,no,FL,list,ifctmb.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0304,master,no,PA,search_named,iflyattas.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0305,master,no,VA,search_named,iflyrea.com,no,none,,"domain sales listing (domain for sale, not a flight business)",https://www.iflyrea.com,,,,rejected,,"not flight training: domain sales listing (domain for sale, not a flight business)"
+S0307,master;tachgo,no,IN,list,indianapilotsclub.org,no,none,,flying club (aircraft rental; instruction is provided by separate Flight Training Centers),http://indianapilotsclub.org/,"Pilots Club, Inc.",Kokomo,IN,rejected,,not flight training: flying club (aircraft rental; instruction is provided by separate Flight Training Centers)
+S0309,master;tachgo,no,OK,search,integrityairmotive.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0310,ppp,no,FL,search,internationalaeromaintenance.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0311,master,no,FL,search_named,ipilotschool.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0312,ppp,no,NE,search,ipsl.aero,no,none,,propeller overhaul and sales company (aviation parts and services distributor),https://www.ipsl.aero/,International Propeller Service Lincoln,Lincoln,NE,rejected,,not flight training: propeller overhaul and sales company (aviation parts and services distributor)
+S0314,ppp,no,CO,search_named,itechnologydesign.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0317,master;tachgo,no,OK,list,jetsetokc.com,no,none,,FBO,https://www.jetsetokc.com/,JetSet FBO,Bethany,OK,rejected,,not flight training: FBO
+S0318,master;tachgo,no,FL,list,jetuat.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0319,ppp,no,WY,list,jhparagliding.com,no,none,,"paragliding tandem flights and instruction (foot-launched, not manned aircraft in the qualifying sense)",https://jhparagliding.com,Jackson Hole Paragliding,,,rejected,,"not flight training: paragliding tandem flights and instruction (foot-launched, not manned aircraft in the qualifying sense)"
+S0321,master,no,TN,search_named,jwnwings.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0323,ppp,no,VA,search,kanes.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0324,master;tachgo,no,CA,list,kernaviation.com,no,none,,aircraft rental operator,https://www.kernaviation.com/,Kern Aviation,Shafter,CA,rejected,,not flight training: aircraft rental operator
+S0329,master,no,TX,search,krameraviation.com,unclear,none,,,http://www.krameraviation.com/,krameraviation.com,,,rejected,,unclear from its pages ()
+S0332,master,yes,CA,list,,no,none,,avionics repair station,,,,,rejected,,
+S0333,master;tachgo,no,IN,list,lafayetteaero.org,no,none,,"flying club (member-owned aircraft access, no training program)",http://www.lafayetteaero.org/,"Lafayette Aero Club, Inc.",Lafayette,IN,rejected,,"not flight training: flying club (member-owned aircraft access, no training program)"
+S0335,master,no,WI,search_named,lakeland.edu,no,none,,university with no flight training program shown in the pages,,Lakeland University,Plymouth,WI,rejected,,not flight training: university with no flight training program shown in the pages
+S0336,master;tachgo,no,FL,list,lakelandaeroclub.org,unclear,none,,high school flying club,https://www.lakelandaeroclub.org,Lakeland Aero Club,,,rejected,,unclear from its pages (high school flying club)
+S0338,master,yes,NY,search_named,,no,none,,"domain for sale listing (domain marketplace, not a flight business)",,,,,rejected,,
+S0339,master,yes,OR,list,,no,none,,FBO,,,,OR,rejected,,
+S0341,master;tachgo,no,MI,list,lettherebeflight.net,no,none,,aircraft rental club,https://www.lettherebeflight.net/flight-training,Let There Be Flight,Portage,MI,rejected,,not flight training: aircraft rental club
+S0342,master;tachgo,no,NV,list,lightsportaviationllc.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0346,master;tachgo,no,UT,list,logancacheairport.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0347,master;tachgo,no,KY,search,london-aviation.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0348,master,no,SC,search,longaviation.com,no,none,,"aircraft sales, consulting and upfit business",https://longaviation.com/about,Long Aviation,Rock Hill,SC,rejected,,"not flight training: aircraft sales, consulting and upfit business"
+S0349,master;tachgo,no,SC,list,lowcountryaviation.com,no,none,,"FBO with charter, maintenance and hangar services",https://www.lowcountryaviation.com/,LOWCOUNTRY AVIATION,Walterboro,SC,rejected,,"not flight training: FBO with charter, maintenance and hangar services"
+S0350,master;tachgo,no,TX,search,m.southmostaviation.net,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0351,master;tachgo,no,NJ,search,machflyingclub.com,no,none,,"members-only flying club (shared aircraft rental, no flight instruction offered)",https://machflyingclub.com/,Mach Flying Club,Manville,NJ,rejected,,"not flight training: members-only flying club (shared aircraft rental, no flight instruction offered)"
+S0353,master,yes,MO,search,,no_pages,,,,,,,,rejected,,
+S0354,ppp,no,OH,search,madriverairllc.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0355,master,yes,PA,search,,no_pages,,,,,,,,rejected,,
+S0356,master,no,WV,search_named,malloryflightschool.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0358,master,yes,MI,list,,no_pages,,,,,,,,rejected,,
+S0359,master;tachgo,no,MI,list,marinecityaviation.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0360,master,yes,TX,search,,no,none,,FBO,,,,TX,rejected,,
+S0361,master,yes,TX,list,,no,none,,air cargo carrier,,,,TX,rejected,,
+S0362,ppp,no,MA,search,martinelectricalschool.org,no,none,,electrical training school,http://www.martinelectricalschool.org,"Martin Electrical & Technical School, LLC",Norwood,MA,rejected,,not flight training: electrical training school
+S0363,master;tachgo,no,KY,search_named,maxairbry.com,no,none,,aircraft rental and maintenance business,http://maxairbry.com,Max Air,,,rejected,,not flight training: aircraft rental and maintenance business
+S0365,ppp,no,IA,search,mcnaughtonaviation.com,no,none,,designated pilot examiner (checkride testing) services,https://mcnaughtonaviation.com/,McNaughton Aviation,,,rejected,,not flight training: designated pilot examiner (checkride testing) services
+S0366,master;tachgo,no,MS,search_named,meridianaviation.aero,no,none,,FBO,http://www.meridianaviation.aero/,Meridian Aviation,Meridian,MS,rejected,,not flight training: FBO
+S0367,master,yes,WV,list,,unclear,none,,membership-based flying club,,,,WV,rejected,,
+S0368,tachgo,no,FL,list,miamiflightcenter.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0369,master,yes,NE,list,,no,none,,"FBO (fixed base operator) providing fuel, hangars and airport services at Cozad Municipal Airport",,,,,rejected,,
+S0370,master;tachgo,no,SC,search,midcoaviation.com,no,none,,maintenance shop,https://midcoaviation.com/,Mid-Coast Aviation,Moncks Corner,SC,rejected,,not flight training: maintenance shop
+S0371,ppp,no,TN,search,midtn-aviation-academy.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0372,master,yes,MI,list,,no,none,,"aircraft dealer, build-assist center and maintenance shop",,,,MI,rejected,,
+S0374,master,yes,MT,list,,no,none,,flying club (nonprofit aircraft-sharing social club that does not provide instruction),,,,,rejected,,
+S0375,master,yes,AZ,list,,unclear,none,,aero club,,,,AZ,rejected,,
+S0376,ppp,no,MN,search_named,mnaviationpro.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0377,master;tachgo,no,NH,search,mocoaviation.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0378,master,yes,NC,list,,no,none,,FBO,,,,NC,rejected,,
+S0379,master,yes,IA,list,,no_pages,,,,,,,,rejected,,
+S0380,tachgo,no,OH,list,moraineairpark.com,no,none,,airport,https://www.moraineairpark.com/,"Moraine Air Park, Inc.",Dayton,OH,rejected,,not flight training: airport
+S0381,master,yes,PA,list,,unclear,none,,university,,,,PA,rejected,,
+S0382,master;tachgo,no,CA,search,motherlodeflyingclub.org,no,none,,flying club aircraft rental,http://www.motherlodeflyingclub.org/,Mother Lode Flying Club,San Andreas,CA,rejected,,not flight training: flying club aircraft rental
+S0384,master,yes,CA,search,,no,none,,aircraft maintenance shop,,,,CA,rejected,,
+S0385,master;tachgo,no,IA,list,myersflyingservice.com,unclear,none,,parked domain page with no business information,http://www.myersflyingservice.com/,,,,rejected,,unclear from its pages (parked domain page with no business information)
+S0386,master;tachgo,no,ID,list,mylhighflying.lovable.app,no,none,,"flying club (shared aircraft for partners, no instruction offered by the club)",https://mylhighflying.lovable.app/,"MYL High Flying Club, LLC",McCall,ID,rejected,,"not flight training: flying club (shared aircraft for partners, no instruction offered by the club)"
+S0387,master,yes,OH,list,,no_pages,,,,,,,,rejected,,
+S0388,master,yes,AR,list,,no_pages,,,,,,,,rejected,,
+S0389,master,yes,TX,list,,no,none,,college aviation maintenance program,,,,TX,rejected,,
+S0390,ppp,no,FL,search_named,ndt-solutions.com,no,none,,non-destructive testing and aerospace repair station,https://ndt-solutions.com/,"NDT-Solutions, Inc.",,,rejected,,not flight training: non-destructive testing and aerospace repair station
+S0392,ppp,no,NY,search,newyorkbartendingschool.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0393,master,yes,MA,list,,no,none,,"avionics installation, repair and maintenance shop (FAA repair station)",,,,MA,rejected,,
+S0394,master;tachgo,no,NY,list,nnyflys.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0395,master;ppp;tachgo,no,AZ,list,northaire.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0397,master,no,MT,search_named,northernskies.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0398,master,yes,NJ,list,,no,none,,"flying club (member aircraft rental, no training program described)",,,,NJ,rejected,,
+S0399,master;tachgo,no,FL,list,northperryflyingclub.com,no,none,,aircraft-sharing flying club,http://www.northperryflyingclub.com,North Perry Flying Club,Pembroke Pines,FL,rejected,,not flight training: aircraft-sharing flying club
+S0400,master,no,WA,search_named,northwayaviation.com,unclear,none,,,https://www.northwayaviation.com,,,,rejected,,unclear from its pages ()
+S0402,master;tachgo,no,ND,list,northwoodflyingclub.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0404,master,yes,AK,list,,no,none,,fly-out fishing lodge,,,,AK,rejected,,
+S0405,master,yes,FL,search,,no_pages,,,,,,,,rejected,,
+S0406,master;tachgo,no,WA,list,oakharborflightclub.org,no,none,,radio-controlled model aircraft club,https://oakharborflightclub.org/posts/faa-radio-control-aircraft-rules,Oak Harbor Flight Club,oak harbor,WA,rejected,,not flight training: radio-controlled model aircraft club
+S0408,master,yes,GA,list,,no,none,,avionics installer and FAA Part 145 aircraft maintenance shop,,,,GA,rejected,,
+S0409,master,yes,CA,list,,no,none,,"aircraft sales, maintenance and private FBO company",,,,CA,rejected,,
+S0410,ppp,no,HI,search_named,offshoreflightschool.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0411,master;tachgo,no,VA,search_named,oldschoolflightschool.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0412,master;tachgo,no,MI,list,orchardbeachaviation.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0414,tachgo,no,FL,list,orlandoaviators.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0415,master;tachgo,no,IL,list,outlandflight.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0416,master,yes,OH,list,,no_pages,,,,,,,,rejected,,
+S0417,master,yes,MO,search_named,,no,none,,HVAC contractor,,,,AR,rejected,,
+S0418,master,yes,OR,list,,no,none,,"FBO (line service, lounge concierge and ground services for arriving aircraft)",,,,OR,rejected,,
+S0419,ppp,no,IL,search,parksaviationmx.com,no,none,,aviation and avionics maintenance services provider,https://parksaviationmx.com/,Parks Aviation,Sauget,IL,rejected,,not flight training: aviation and avionics maintenance services provider
+S0420,ppp,no,AZ,search_named,patriotsglobaltraining.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0421,master;tachgo,no,GA,list,peachstateaero.com,unclear,none,,airpark with youth aviation program,https://www.peachstateaero.com/flying/flying-club/,Peach State Aerodome,Williamson,GA,rejected,,unclear from its pages (airpark with youth aviation program)
+S0422,master,no,OR,search,pegasusaviation.net,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0423,master,yes,AK,list,,no,none,,avionics installation and repair shop,,,,AK,rejected,,
+S0425,master,yes,SD,list,,no,none,,FBO,,,,SD,rejected,,
+S0426,master,no,TX,search_named,phoenyxaviation.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0428,master,yes,NC,search_named,,unclear,none,,online sports betting site (pages do not describe an aviation business),,,,,rejected,,
+S0429,ppp,no,UT,search,pilotcheckridellc.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0432,ppp,no,WI,search_named,planeguysaviation.co,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0434,master,yes,MN,list,,no,none,,helicopter maintenance shop (Robinson Service Center),,,,MN,rejected,,
+S0435,master,yes,SC,list,,unclear,none,,,,,,,rejected,,
+S0436,master,yes,OH,list,,no,none,,"charter, FBO and maintenance (MRO) operator",,,,OH,rejected,,
+S0437,ppp,no,FL,search,premierjettraining.com,no,none,,charter operator with MRO and FBO services,https://premierjettraining.com/,Premier Aviation Services,Vandalia,OH,rejected,,not flight training: charter operator with MRO and FBO services
+S0438,master;tachgo,no,AZ,list,prescottareaflyingclub.com,no,none,,aircraft rental flying club; instructors are independent contractors hired directly,https://prescottareaflyingclub.com/,Prescott Area Flying Club,Prescott,AZ,rejected,,not flight training: aircraft rental flying club; instructors are independent contractors hired directly
+S0440,master;ppp,no,FL,search_named,propellerheadaviation.com,unclear,none,,unknown; page is a default hosting placeholder with no business description,http://www.propellerheadaviation.com,,,,rejected,,unclear from its pages (unknown; page is a default hosting placeholder with no business description)
+S0441,master;ppp,no,CA,list,propjetaviation.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0442,ppp,no,FL,search,quantifieddesign.com,no,none,,"applied research and training systems development company (defense and aviation training solutions, not flight instruction)",http://quantifieddesign.com,Quantified Design Solutions,,,rejected,,"not flight training: applied research and training systems development company (defense and aviation training solutions, not flight instruction)"
+S0443,master,yes,SD,list,,no,none,,FBO and charter operator that refers flight lessons to a partner school,,,,SD,rejected,,
+S0444,master,no,WI,search,racinesportflyers.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0445,master,yes,MO,list,,no_pages,,,,,,,,rejected,,
+S0446,master,yes,CA,list,,no_pages,,,,,,,,rejected,,
+S0447,master,yes,CO,list,,unclear,none,,"military contract aviation support (paradrop and cargo delivery training, aircraft support)",,,,CO,rejected,,
+S0448,master,yes,MN,list,,no_pages,,,,,,,,rejected,,
+S0449,master,yes,TX,list,,no,none,,"flying club giving members affordable access to aircraft, not flight training",,,,TX,rejected,,
+S0456,ppp,no,TX,search_named,rmsaerospace.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0457,master,yes,TX,search_named,,no_pages,,,,,,,,rejected,,
+S0458,master,no,CO,search,rockymountainairsports.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0459,ppp,no,HI,search,romajiujitsuacademy.com,no,none,,martial arts academy (jiu jitsu),http://www.romajiujitsuacademy.com/,Roma Jiu Jitsu Academy,Hilo,HI,rejected,,not flight training: martial arts academy (jiu jitsu)
+S0460,master,yes,TX,list,,unclear,none,,,,,,,rejected,,
+S0461,master,yes,TX,list,,no,none,,member-run flying club that does not provide flight training,,,,,rejected,,
+S0462,ppp,no,TN,search_named,russellmb.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0464,master,no,OR,search_named,salem-flighttraining.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0465,master,yes,OH,search_named,,no,none,,"online gaming and betting portal, unrelated to aviation",,,,,rejected,,
+S0466,master,yes,OR,list,,no,none,,"flying club (member aircraft sharing, no instruction offered)",,,,,rejected,,
+S0467,ppp,no,FL,search_named,sami-aeromedical.com,no,none,,hypobaric chamber hypoxia training provider,http://sami-aeromedical.com,Southern AeroMedical Institute,,,rejected,,not flight training: hypobaric chamber hypoxia training provider
+S0468,master,yes,NE,search_named,,no_pages,,,,,,,,rejected,,
+S0469,master,yes,CA,list,,no_pages,,,,,,,,rejected,,
+S0470,master,yes,CA,list,,no,none,,"avionics repair station and avionics sales; offers avionics test and certification training courses, not flight instruction",,,,CA,rejected,,
+S0472,master,yes,NY,search,,unclear,none,,"unknown (parked domain page, no business content)",,,,,rejected,,
+S0473,master,yes,CO,list,,no,none,,private jet charter and aircraft management operator,,,,,rejected,,
+S0475,master;ppp;tachgo,no,CA,search_named,sdfti.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0477,ppp,no,OR,search,segoriaaviation.com,no,none,,designated pilot examiner offering check rides only,https://www.segoriaaviation.com/,Segoria Aviation LLC,,,rejected,,not flight training: designated pilot examiner offering check rides only
+S0480,master;tachgo,no,SC,list,sevenriversaviation.com,unclear,none,,FBO,https://www.sevenriversaviation.com/,Georgetown County Airport FBO Seven Rivers Aviation,Georgetown,SC,rejected,,unclear from its pages (FBO)
+S0481,ppp,no,OH,search_named,sgs-ohio.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0482,master;tachgo,no,MS,list,shafferaviation.com,no,none,,aircraft rental operator that lists independent instructors,https://www.shafferaviation.com/,Shaffer Aviation LLC,Tupelo,MS,rejected,,not flight training: aircraft rental operator that lists independent instructors
+S0483,master,yes,CA,list,,no,none,,aircraft maintenance shop,,,,CA,rejected,,
+S0484,ppp,no,FL,search,sheffield.com,no,none,,"aircraft dispatcher school (ground training for airline flight dispatchers, no flight instruction in aircraft)",https://www.sheffield.com,Sheffield School of Aeronautics,,,rejected,,"not flight training: aircraft dispatcher school (ground training for airline flight dispatchers, no flight instruction in aircraft)"
+S0485,master,yes,FL,search_named,,no_pages,,,,,,,,rejected,,
+S0487,master,yes,GA,search_named,,no_pages,,,,,,,,rejected,,
+S0488,master,no,SD,search_named,siouxfallsflightschool.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0489,master,yes,CA,list,,no,none,,"nonprofit flying club offering aircraft access, not a flight school",,,,,rejected,,
+S0490,master,yes,HI,list,,no,none,,skydiving,,,,HI,rejected,,
+S0491,master,yes,WI,list,,no,none,,skydiving,,,,WI,rejected,,
+S0492,master;tachgo,no,MT,search_named,skylineav.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0493,master;tachgo,no,MN,search,skymanor.org,no,none,,private airpark and aircraft owners community,https://www.skymanor.org/,Sky Manor Aero Estates,Park Rapids,MN,rejected,,not flight training: private airpark and aircraft owners community
+S0494,master,yes,OH,search_named,,no_pages,,,,,,,,rejected,,
+S0496,ppp,no,AK,search_named,skytrekalaska.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0497,master,yes,OH,list,,no,none,,FBO and aircraft maintenance,,,,OH,rejected,,
+S0499,master,yes,OK,search_named,,no_pages,,,,,,,,rejected,,
+S0502,master;tachgo,no,LA,search_named,southlandfield.com,no,none,,airport,https://www.southlandfield.com/airport,Southland Field,Sulphur,LA,rejected,,not flight training: airport
+S0503,master;tachgo,no,LA,list,sowelaflightschool.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0505,master,no,CT,search_named,sportflyingct.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0506,master;tachgo,no,FL,list,sportflyingusa.com,unclear,none,,light sport aircraft dealer,https://www.sportflyingusa.com/,Bristell Aircraft USA,The Villages,FL,rejected,,unclear from its pages (light sport aircraft dealer)
+S0507,master,yes,PA,list,,no,none,,charter operator,,,,PA,rejected,,
+S0508,master;tachgo,no,TX,search,ssajwy.com,no,none,,FBO with maintenance shop and avionics service,https://www.ssajwy.com,Southern Star Aviation,Midolthian,TX,rejected,,not flight training: FBO with maintenance shop and avionics service
+S0509,master;tachgo,no,MO,search,stcharlescountyflyingclub.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0511,master;tachgo,no,IL,list,stellaraviationgroup.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0512,master,yes,TX,search_named,,no_pages,,,,,,,,rejected,,
+S0513,master,yes,CA,search_named,,no_pages,,,,,,,,rejected,,
+S0516,master;ppp;tachgo,no,CA,search_named,strawberryaviation.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0518,master,yes,WI,list,,no,none,,non-profit providing flight simulators to K-12 classrooms,,,,WI,rejected,,
+S0519,master,yes,FL,list,,no,none,,WordPress theme website (coming soon page),,,,,rejected,,
+S0520,ppp,no,CT,search,survivalsystemsinc.com,no,none,,"underwater egress and survival training company (not flight instruction; aviation survival training is in-water/classroom survival, not pilot certificate training)",https://survivalsystemsinc.com/aviation-training,Survival Systems USA,Groton,CT,rejected,,"not flight training: underwater egress and survival training company (not flight instruction; aviation survival training is in-water/classroom survival, not pilot certificate training)"
+S0521,master;tachgo,no,NC,search_named,tablerockaviation.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0523,master,no,FL,search_named,tailwheelsetc.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0524,master,yes,WI,list,,no_pages,,,,,,,,rejected,,
+S0525,tachgo,no,TX,list,tailworksllc.com,unclear,none,,,https://tailworksllc.com/,TailWorks LLC,,,rejected,,unclear from its pages ()
+S0527,master;tachgo,no,TN,list,tandt-aviation.com,no,none,,aircraft maintenance shop,https://www.tandt-aviation.com/,T&T Aviation,Clarksville,TN,rejected,,not flight training: aircraft maintenance shop
+S0528,master,yes,TN,list,,unclear,none,,,,,,,rejected,,
+S0529,ppp,no,WY,search,tetonhanggliding.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0530,master,no,TX,search_named,texasrotorwingacademy.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0533,master,yes,PA,search,,no_pages,,,,,,,,rejected,,
+S0534,ppp,no,OK,search,theoliverenterprises.com,no,none,,"multi-service family company (bakery, podcast, photography, consulting, brow services); no flight instruction",,"The Oliver Enterprises, LLC",,,rejected,,"not flight training: multi-service family company (bakery, podcast, photography, consulting, brow services); no flight instruction"
+S0535,ppp,no,NY,search,thunderunaviation.com,no,none,,air charter and air ambulance operator,https://www.thunderunaviation.com/,Thunderun Aviation,Buffalo,NY,rejected,,not flight training: air charter and air ambulance operator
+S0537,master;tachgo,no,CA,list,torrance.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0538,master,yes,TX,list,,no_pages,,,,,,,,rejected,,
+S0540,master,no,AZ,search_named,transpacacademy.com,unclear,none,,,http://www.transpacacademy.com,,,,rejected,,unclear from its pages ()
+S0541,master;tachgo,no,FL,search,treasurecoastsoaringclub.org,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0542,master;tachgo,no,NE,list,trego-dugan.com,no,none,,"aviation services company (air cargo, ground handling, private jet charter, FBO, maintenance and avionics)",https://www.trego-dugan.com/,Trego Dugan Aviation,,,rejected,,"not flight training: aviation services company (air cargo, ground handling, private jet charter, FBO, maintenance and avionics)"
+S0543,master;tachgo,no,TN,list,tricityaviation.com,no,none,,FBO,https://www.tricityaviation.com/,Tri-City Aviation,Blountville,TN,rejected,,not flight training: FBO
+S0545,ppp,no,TX,search,trinityaviation.com,no,none,,aircraft sales and maintenance business,https://trinityaviation.com/aircraft-for-sale,Trinity Aviation,Georgetown,TX,rejected,,not flight training: aircraft sales and maintenance business
+S0546,master,yes,IN,search,,unclear,none,,flying club,,,,IN,rejected,,
+S0548,ppp,no,TN,search,uaa.aero,no,none,,professional association for collegiate aviation,https://www.uaa.aero,University Aviation Association,,,rejected,,not flight training: professional association for collegiate aviation
+S0549,master;tachgo,no,AZ,list,unitedaviate.com,unclear,none,,unknown; the only page retrieved is a security checkpoint,,,,,rejected,,unclear from its pages (unknown; the only page retrieved is a security checkpoint)
+S0554,tachgo,no,UT,search,utahaviation.com,no,none,,FBO,https://www.utahaviation.com/,Utah Aviation,Spanish Fork,UT,rejected,,not flight training: FBO
+S0556,ppp,no,UT,search,utahwarbirdadventures.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0557,master;tachgo,no,NE,list,valleyairways.com,no,none,,FBO,https://www.valleyairways.com,Valley Airways,Scottsbluff,NE,rejected,,not flight training: FBO
+S0558,master;tachgo,no,LA,search_named,vectoraviationabbeville.com,no,none,,FBO,https://www.vectoraviationabbeville.com,Vector Aviation,Abbeville,LA,rejected,,not flight training: FBO
+S0559,master;tachgo,no,AZ,list,velocityairinc.com,unclear,none,,FBO and aircraft maintenance shop,http://www.velocityairinc.com/,Velocity Air Inc,,,rejected,,unclear from its pages (FBO and aircraft maintenance shop)
+S0560,master;tachgo,no,NY,list,ventura.aero,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0561,master,yes,IL,search,,unclear,none,,online store with FAQ and newsletter signup; no description of flight training,,,,,rejected,,
+S0562,master;tachgo,no,MN,list,vikinglandflyingclub.com,no,none,,flying club (aircraft cost-sharing for certificated pilots),https://www.vikinglandflyingclub.com/,Vikingland Flying Club,Alexandria,MN,rejected,,not flight training: flying club (aircraft cost-sharing for certificated pilots)
+S0564,master;tachgo,no,NC,search_named,w2waero.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0565,master;tachgo,no,PA,search,warringtonflyingclub.org,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0566,master,no,TX,search_named,weavervector.com,unclear,none,,parked domain with no business content,https://www.weavervector.com,,,,rejected,,unclear from its pages (parked domain with no business content)
+S0567,master;tachgo,no,FL,list,wernsflying.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0568,master,yes,ID,list,,no,none,,"aircraft services, maintenance, FBO, charter and aircraft sales company",,,,ID,rejected,,
+S0569,master,yes,TX,list,,unclear,none,,,,,,,rejected,,
+S0572,master,yes,PA,search_named,,unclear,none,,parked domain page with no business information,,,,,rejected,,
+S0574,master,yes,WA,search,,unclear,none,,non-equity flying club offering shared access to a leased club airplane,,,,WA,rejected,,
+S0576,master,yes,CA,list,,no,none,,maintenance shop,,,,CA,rejected,,
+S0577,master,no,AZ,search_named,wings270.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0578,master;tachgo,no,IN,list,wingsaviators.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0579,master;tachgo,no,ID,search,wingsofgraceflight.com,unclear,none,,,,,,,rejected,,unclear from its pages ()
+S0581,master;tachgo,no,CA,search,wolfeaviation.com,no,none,,"aircraft sales, acquisition, maintenance and FBO services business",http://www.wolfeaviation.com,Wolfe Aviation,Stockton,CA,rejected,,"not flight training: aircraft sales, acquisition, maintenance and FBO services business"
+S0582,master,no,AZ,search_named,wrightflighttraining.com,no_pages,,,,,,,,rejected,,"no page text (site down, refused or a challenge)"
+S0583,master,yes,OH,search,,no_pages,,,,,,,,rejected,,
+S0586,master,yes,WA,search_named,,no_pages,,,,,,,,rejected,,
+S0587,master;tachgo,no,MT,list,yellowstoneairservice.com,no,none,,FBO,https://www.yellowstoneairservice.com/,Yellowstone Air Service,Livingston,MT,rejected,,not flight training: FBO
+S0589,master,yes,FL,search,,no_pages,,,,,,,,rejected,,
